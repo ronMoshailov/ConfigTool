@@ -1,9 +1,18 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QSpacerItem, \
-    QSizePolicy, QFrame, QComboBox
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QSpacerItem, QLineEdit
+from PyQt5.QtWidgets import QSizePolicy, QFrame, QComboBox
+
+# configure imports
+from ConfigTool.config.constants import ROW_SPACING, COLUMN_SPACING, BUTTON_WIDTH, BUTTON_HEIGHT
+from ConfigTool.config.style import combo_style, button_style
+from classes.ConfigManager import ConfigManager
+
+# imports
 import sys
 
-from ConfigTool.config.constants import ROW_SPACING, COLUMN_SPACING, BUTTON_WIDTH, BUTTON_HEIGHT
+from ConfigTool.panels.set_phase_panel import SetPhaseLayout
+config = ConfigManager()  # תמיד אותו מופע
+
 
 class MainWindow:
     def __init__(self):
@@ -11,11 +20,11 @@ class MainWindow:
 
         window = QWidget()
         window.setWindowTitle("ConfigTool")
-        window.setGeometry(300, 200, 300, 600)  # (X, Y, Width, Height)
+        window.setGeometry(1300, 300, 800, 600)  # (X, Y, Width, Height)
 
         # =============== layouts =============== #
         main_layout = QHBoxLayout()
-        config_layout = QVBoxLayout()
+        set_phase_layout = SetPhaseLayout()  # צד שמאל
         buttons_layout = QVBoxLayout()
 
         # =============== rows =============== #
@@ -33,7 +42,7 @@ class MainWindow:
         self.combo = QComboBox()
 
         # =============== buttons =============== #
-        btn0 = QPushButton("------")
+        btn0 = QPushButton("הגדר נתיב")
         btn1 = QPushButton("צומת חדש")
         btn2 = QPushButton("הגדר מופעים")
         btn3 = QPushButton("הפעל סלייב")
@@ -51,6 +60,8 @@ class MainWindow:
         self.buttons_checkable_list = [btn1, btn3, btn5, btn7]
         self.make_checkable()
 
+        btn2.clicked.connect(set_phase_layout.show_left_panel)
+
         # =============== set rows =============== #
         self.set_row(row0, self.combo , btn0 )
         self.set_row(row1, btn1 , btn2 )
@@ -66,9 +77,9 @@ class MainWindow:
         self.set_btn_style()
         self.add_employees()
 
-        # main_layout.addWidget(config_widget)
-        # main_layout.addWidget(line)
+        main_layout.addWidget(set_phase_layout)
         main_layout.addLayout(buttons_layout)
+
         # =============== show window =============== #
         window.setLayout(main_layout)
         window.show()
@@ -80,7 +91,6 @@ class MainWindow:
         # QVBoxLayout → Vertical Box Layout
         # QApplication – The main engine of the application, responsible for running the graphics loop
         # QWidget - Base for every graphical element (window, box, area, etc.)
-
         # ------------------------------------------------------------------------- #
 
     def start_up(self, btn4, btn6, btn8, btn9):
@@ -120,75 +130,16 @@ class MainWindow:
         self.combo.addItem("סרגיי")
         self.combo.addItem("קטיה")
         self.combo.addItem("שחר")
-
-        self.combo.setLayoutDirection(Qt.RightToLeft)  # טקסט יופיע מימין לשמאל
-
-        self.combo.setStyleSheet("""
-            QComboBox {
-                qproperty-alignment: 'AlignRight | AlignVCenter';  /* ליישר טקסט */
-                background-color: #ecf0f1;
-                border: 2px solid #3498db;
-                border-radius: 8px;
-                padding: 6px 12px;
-                font-size: 14px;
-                font-weight: bold;
-                color: #2c3e50;
-            }
-            QComboBox:hover {
-                border: 2px solid #2980b9;
-            }
-            QComboBox::drop-down {
-                subcontrol-origin: padding;
-                subcontrol-position: top left;
-                width: 25px;
-                border-right: 1px solid #3498db;
-            }
-            QComboBox::down-arrow {
-                image: url(:/qt-project.org/styles/commonstyle/images/arrowdown-16.png);
-                width: 12px;
-                height: 12px;
-            }
-            QComboBox QAbstractItemView {
-                background-color: #ffffff;
-                selection-background-color: #3498db;
-                selection-color: white;
-                border: 1px solid #2980b9;
-            }
-        """)
+        self.combo.setLayoutDirection(Qt.RightToLeft)
+        self.combo.setStyleSheet(combo_style)
 
     def set_btn_style(self):
         for btn in self.buttons_list:
-            btn.setStyleSheet("""
-                QPushButton {
-                    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                                      stop:0 #5dade2, stop:1 #2e86c1);
-                    color: white;
-                    border: 2px solid #2471a3;
-                    border-radius: 10px;
-                    padding: 10px;
-                    font-weight: bold;
-                    font-size: 14px;
-                }
-
-                QPushButton:hover {
-                    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                                      stop:0 #5499c7, stop:1 #21618c);
-                    border: 2px solid #1b4f72;
-                }
-
-                QPushButton:checked {
-                    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                                      stop:0 #58d68d, stop:1 #28b463);
-                    border: 2px solid #239b56;
-                }
-
-                QPushButton:disabled {
-                    background-color: #d5d8dc;
-                    border: 2px solid #a6acaf;
-                    color: #7f8c8d;
-                }
-            """)
+            btn.setStyleSheet(button_style)
 
     def make_checkable(self):
         for btn in self.buttons_checkable_list:
             btn.setCheckable(True)
+
+
+
