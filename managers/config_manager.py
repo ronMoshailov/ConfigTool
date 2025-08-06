@@ -1,4 +1,4 @@
-from classes.cards.Sk24 import Sk24
+from managers.sk24_manager import Sk24
 
 
 class ConfigManager:

@@ -1,6 +1,6 @@
 import re
 
-from classes.cards.SK_channel import SK_channel
+from entities.sk24_channel import SK24_channel
 from config.constants import RED
 
 

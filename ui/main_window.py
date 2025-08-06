@@ -2,16 +2,15 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QSizePolicy, QComboBox, QFileDialog
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QSpacerItem
 
-from classes.managers.PathsManager import PathsManager
 # configure imports
 from config.constants import ROW_SPACING, COLUMN_SPACING, BUTTON_WIDTH, BUTTON_HEIGHT
 from config.style import combo_style, button_style
-from classes.managers.MainController import MainController
+from controllers.main_controller import MainController
 
 # imports
 import sys
 
-from panels.set_phase_panel import SetPhaseLayout
+from ui.set_phase_panel import SetPhaseLayout
 
 
 class MainWindow:
@@ -45,7 +44,7 @@ class MainWindow:
         self.combo = QComboBox()
 
         # =============== buttons =============== #
-        btn0 = QPushButton("הגדר נתיב")
+        btn_set_path = QPushButton("הגדר נתיב")
         btn1 = QPushButton("צומת חדש")
         btn2 = QPushButton("הגדר מופעים")
         btn3 = QPushButton("הפעל סלייב")
@@ -59,15 +58,17 @@ class MainWindow:
         btn11 = QPushButton("הגדר מיפוי")
         btn12 = QPushButton("--------------------------------------------")
 
-        btn0.clicked.connect(self.main_controller.path_manager.set_paths)
-        self.buttons_list = [btn0, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12]
+        # =============== button → add actions =============== #
+        btn_set_path.clicked.connect(self.main_controller.path_manager.set_paths)
+        btn2.clicked.connect(set_phase_layout.show_left_panel)
+
+        self.buttons_list = [btn_set_path, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12]
         self.buttons_checkable_list = [btn1, btn3, btn5, btn7]
         self.make_checkable()
 
-        btn2.clicked.connect(set_phase_layout.show_left_panel)
 
         # =============== set rows =============== #
-        self.set_row(row0, self.combo , btn0 )
+        self.set_row(row0, self.combo , btn_set_path )
         self.set_row(row1, btn1 , btn2 )
         self.set_row(row2, btn3 , btn4 )
         self.set_row(row3, btn5 , btn6 )

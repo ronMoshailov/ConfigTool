@@ -1,6 +1,6 @@
-from classes.managers.CardsManager import CardsManager
-from classes.managers.ConfigManager import ConfigManager
-from classes.managers.PathsManager import PathsManager
+from managers.cards_manager import CardsManager
+from managers.config_manager import ConfigManager
+from managers.paths_manager import PathsManager
 
 
 class MainController:
