@@ -1,16 +1,18 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QSpacerItem, QLineEdit
+from PyQt5.QtWidgets import QLineEdit, QFileDialog
 from PyQt5.QtWidgets import QSizePolicy, QFrame, QComboBox
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QSpacerItem
 
+from classes.PathsManager import PathsManager
 # configure imports
-from ConfigTool.config.constants import ROW_SPACING, COLUMN_SPACING, BUTTON_WIDTH, BUTTON_HEIGHT
-from ConfigTool.config.style import combo_style, button_style
+from config.constants import ROW_SPACING, COLUMN_SPACING, BUTTON_WIDTH, BUTTON_HEIGHT
+from config.style import combo_style, button_style
 from classes.ConfigManager import ConfigManager
 
 # imports
 import sys
 
-from ConfigTool.panels.set_phase_panel import SetPhaseLayout
+from panels.set_phase_panel import SetPhaseLayout
 config = ConfigManager()  # תמיד אותו מופע
 
 
@@ -26,6 +28,9 @@ class MainWindow:
         main_layout = QHBoxLayout()
         set_phase_layout = SetPhaseLayout()  # צד שמאל
         buttons_layout = QVBoxLayout()
+
+        # =============== special fields =============== #
+        self.paths_manager = PathsManager()
 
         # =============== rows =============== #
         row0 = QHBoxLayout()
@@ -56,6 +61,7 @@ class MainWindow:
         btn11 = QPushButton("הגדר מיפוי")
         btn12 = QPushButton("--------------------------------------------")
 
+        btn0.clicked.connect(self.paths_manager.set_path_project)
         self.buttons_list = [btn0, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12]
         self.buttons_checkable_list = [btn1, btn3, btn5, btn7]
         self.make_checkable()
@@ -141,5 +147,8 @@ class MainWindow:
         for btn in self.buttons_checkable_list:
             btn.setCheckable(True)
 
-
+    def open_folder_dialog(self):
+        self.folder_path = QFileDialog.getExistingDirectory(None, "בחר תיקייה")
+        if self.folder_path:
+            print("Selected path:", self.folder_path)
 

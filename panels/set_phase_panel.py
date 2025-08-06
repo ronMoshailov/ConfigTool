@@ -3,7 +3,7 @@ import sys
 
 from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout
 
-from ConfigTool.config.constants import BUTTON_WIDTH, COLUMN_SPACING, BUTTON_HEIGHT
+from config.constants import BUTTON_WIDTH, COLUMN_SPACING, BUTTON_HEIGHT
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'classes')))
 
 
