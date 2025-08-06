@@ -1,4 +1,4 @@
-from classes.Sk24 import Sk24
+from classes.cards.Sk24 import Sk24
 
 
 class ConfigManager:
@@ -16,10 +16,6 @@ class ConfigManager:
         self.d_detectors = []
         self.e_detectors = []
         self.inter_stages = []
-        self.sk24 = []
-        self.sk24_idx = 1
-        self.io24 = []
-        self.io64 = []
 
     # =============== Add =============== #
     def add_main_phase(self, new_phase):
@@ -39,8 +35,13 @@ class ConfigManager:
         self.inter_stages.append(new_inter_stages)
 
     def add_sk24(self, path):
-        sk24 = Sk24(path, self.sk24_idx)
-        self.inter_stages.append(new_inter_stages)
+        new_sk24 = Sk24(path, self.sk24_idx)
+        self.sk24_idx += 1
+        self.sk24.append(new_sk24)
 
     def print_main_phases(self):
         print(f"main phases: {self.main_phases}")
+
+    # def get_phases_from_tk1(self, path):
+    #     return self.main_phases[self.sk24_idx]
+    # def find_not_main_phase(self):

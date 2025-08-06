@@ -1,10 +1,4 @@
-import re
-
-from classes.Channel import Channel
-from config.constants import RED
-
-
-class Sk24:
+class Io24:
     def __init__(self, number_card, path):
         """
         Initializes an SK24 instance, loads all relevant channels from the given init.java file.
@@ -14,9 +8,6 @@ class Sk24:
         """
         self.number_card = number_card
         self.channels = []
-
-        self.set_all_channels(path)
-        self._print_channels()
 
     # =============== methods =============== #
     def set_all_channels(self, path):
@@ -31,24 +22,24 @@ class Sk24:
             for code_line in cleared_code:
                 stripped = code_line.strip()
 
-                phase = self._find_phase(stripped)                          # find phase
-                color = self._find_color(stripped)                          # find color
-                channel = self._find_channel(stripped)                      # find channel
-                new_channel = Channel(phase, color, channel, True) # create new instance of Channel
-                self.channels.append(new_channel)                           # add the new channel to list
+                phase = self._find_phase(stripped)                              # find phase
+                color = self._find_color(stripped)                              # find color
+                channel = self._find_channel(stripped)                          # find channel
+                new_channel = SK_channel(phase, color, channel, True)   # create new instance of Channel
+                self.channels.append(new_channel)                               # add the new channel to list
 
 
     def _clear_code(self, old_code):
         """
-        This method get an object file of 'init.java' and return just the code lines that start with 'new SchaltKanal'
+        This method get an object file of 'init.java' and return just the code lines that start with 'new IoKanal'
 
         :param old_code: Object of file
-        :return: list of code that start with 'new SchaltKanal'
+        :return: list of code that start with 'new IoKanal'
         """
         code = []
         for line in old_code:
             line = line.strip()
-            if line.startswith("new SchaltKanal") and f"sk{self.number_card}" in line:
+            if line.startswith("new IoKanal") and f"io{self.number_card}" in line:
                 code.append(line)
         return code
 
@@ -114,5 +105,6 @@ class Sk24:
         """
         for channel in self.channels:
             channel.print()
+
 
 

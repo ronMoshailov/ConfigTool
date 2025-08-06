@@ -1,4 +1,4 @@
-class Channel:
+class SK_channel:
     def __init__(self, phase, color, channel, is_loaded = False):
         self.phase = phase
         self.color = color
