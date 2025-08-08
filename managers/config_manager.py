@@ -11,7 +11,7 @@ class ConfigManager:
         return cls._instance
 
     def _init(self):
-        self.main_phases = []
+        self.main_moves = []
         self.not_main_phases = []
         self.d_detectors = []
         self.e_detectors = []

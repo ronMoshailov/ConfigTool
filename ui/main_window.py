@@ -59,7 +59,7 @@ class MainWindow:
         btn12 = QPushButton("--------------------------------------------")
 
         # =============== button → add actions =============== #
-        btn_set_path.clicked.connect(self.main_controller.path_manager.set_paths)
+        btn_set_path.clicked.connect(self.main_controller.initialize)
         btn2.clicked.connect(set_phase_layout.show_left_panel)
 
         self.buttons_list = [btn_set_path, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12]
