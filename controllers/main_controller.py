@@ -1,7 +1,7 @@
 from managers.cards_manager import CardsManager
 from managers.config_manager import ConfigManager
 from managers.paths_manager import PathsManager
-from ui.set_phase_panel import SetPhaseLayout
+from ui.phase_panel_window import PhasePanelWindow
 
 
 class MainController:
@@ -12,7 +12,7 @@ class MainController:
         self.card_manager = CardsManager()
 
         # =============== Layouts =============== #
-        self.phase_layout = SetPhaseLayout()
+        self.phase_layout = PhasePanelWindow()
 
     # =============== initialize =============== #
     def initialize(self, btn_list):
