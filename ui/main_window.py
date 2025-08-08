@@ -23,10 +23,9 @@ class MainWindow:
 
         # =============== layouts =============== #
         main_layout = QHBoxLayout()
-        set_phase_layout = SetPhaseLayout()  # צד שמאל
         buttons_layout = QVBoxLayout()
 
-        # =============== special fields =============== #
+        # =============== controller =============== #
         self.main_controller = MainController()
 
         # =============== rows =============== #
@@ -46,7 +45,7 @@ class MainWindow:
         # =============== buttons =============== #
         btn_set_path = QPushButton("הגדר נתיב")
         btn1 = QPushButton("צומת חדש")
-        btn2 = QPushButton("הגדר מופעים")
+        btn_set_phase = QPushButton("הגדר מופעים")
         btn3 = QPushButton("הפעל סלייב")
         btn4 = QPushButton("הגדר מינימום")
         btn5 = QPushButton("הפעל מאסטר")
@@ -58,18 +57,17 @@ class MainWindow:
         btn11 = QPushButton("הגדר מיפוי")
         btn12 = QPushButton("--------------------------------------------")
 
-        # =============== button → add actions =============== #
-        btn_set_path.clicked.connect(self.main_controller.initialize)
-        btn2.clicked.connect(set_phase_layout.show_left_panel)
-
-        self.buttons_list = [btn_set_path, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12]
+        self.buttons_list = [btn_set_path, btn1, btn_set_phase, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12]
+        self.disable_btns = [btn1, btn_set_phase, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12]
         self.buttons_checkable_list = [btn1, btn3, btn5, btn7]
-        self.make_checkable()
 
+        # =============== button → add actions =============== #
+        btn_set_path.clicked.connect(lambda: self.main_controller.initialize(self.disable_btns))
+        btn_set_phase.clicked.connect(self.main_controller.show_phase_panel)
 
         # =============== set rows =============== #
         self.set_row(row0, self.combo , btn_set_path )
-        self.set_row(row1, btn1 , btn2 )
+        self.set_row(row1, btn1 , btn_set_phase )
         self.set_row(row2, btn3 , btn4 )
         self.set_row(row3, btn5 , btn6 )
         self.set_row(row4, btn7 , btn8 )
@@ -77,12 +75,13 @@ class MainWindow:
         self.set_row(row6, btn11, btn12)
 
         # =============== special methods =============== #
-        self.set_buttons_layout(buttons_layout)
-        self.start_up(btn4, btn6, btn8, btn9)
-        self.set_btn_style()
-        self.add_employees()
+        self.set_buttons_layout(buttons_layout)                         # set the button layout
+        self.set_buttons_status(self.disable_btns, True)      # Disable buttons
+        self.add_employees()                                            # add employees to combo box
+        self.make_checkable()                                           # make the buttons checkable
+        self.set_btn_style()                                            # Set style to buttons
 
-        main_layout.addWidget(set_phase_layout)
+        main_layout.addWidget(self.main_controller.get_phase_layout())
         main_layout.addLayout(buttons_layout)
 
         # =============== show window =============== #
@@ -98,20 +97,18 @@ class MainWindow:
         # QWidget - Base for every graphical element (window, box, area, etc.)
         # ------------------------------------------------------------------------- #
 
-    def start_up(self, btn4, btn6, btn8, btn9):
-        btn4.setDisabled(True)
-        btn6.setDisabled(True)
-        btn8.setDisabled(True)
-        btn9.setDisabled(True)
+    def set_buttons_status(self, btn_list, is_disabled):
+        for btn in btn_list:
+            btn.setDisabled(is_disabled)
 
-    def set_row(self, row, btn1, btn2):
+    def set_row(self, row, btn1, btn_set_phase):
         btn1.setFixedSize(BUTTON_WIDTH, BUTTON_HEIGHT)
-        btn2.setFixedSize(BUTTON_WIDTH, BUTTON_HEIGHT)
+        btn_set_phase.setFixedSize(BUTTON_WIDTH, BUTTON_HEIGHT)
 
         row.addStretch()
         row.addWidget(btn1)
         row.addSpacing(COLUMN_SPACING)
-        row.addWidget(btn2)
+        row.addWidget(btn_set_phase)
 
     def set_buttons_layout(self, main_layout):
         for idx, row in enumerate(self.rows_list):

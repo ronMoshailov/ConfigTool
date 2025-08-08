@@ -8,9 +8,10 @@ class PathsManager:
         self.path_project = None
         self.path_init = None
         self.path_tk1 = None
+        self.path_init_tk1 = None
 
     # =================== scan paths ===================
-    def set_paths(self):
+    def scan_set_paths(self):
         """
         This method set the paths of 'init.java' and 'Tk1.java'
 
@@ -24,6 +25,7 @@ class PathsManager:
         self.path_project = folder_path
 
         init_found = False
+        init_tk1_found = False
         tk1_found = False
 
         for root, dirs, files in os.walk(self.path_project):
@@ -36,6 +38,10 @@ class PathsManager:
                     self.path_tk1 = os.path.join(root, file)
                     tk1_found = True
                     print("Tk1.java was found in:", self.path_tk1)
+                elif file.lower() == "inittk1.java" and init_tk1_found is False:
+                    self.path_init_tk1 = os.path.join(root, file)
+                    init_tk1_found = True
+                    print("Tk1.java was found in:", self.path_init_tk1)
                 # ============================================================
                 # os.walk returns:
                 #   root - current path in the scan
@@ -44,3 +50,5 @@ class PathsManager:
                 # ============================================================
 
 
+    def get_path_init_tk1(self):
+        return self.path_init_tk1

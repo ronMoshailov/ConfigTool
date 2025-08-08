@@ -1,22 +1,40 @@
 from managers.cards_manager import CardsManager
 from managers.config_manager import ConfigManager
 from managers.paths_manager import PathsManager
+from ui.set_phase_panel import SetPhaseLayout
 
 
 class MainController:
     def __init__(self):
-        # Managers
+        # =============== Managers =============== #
         self.config_manager = ConfigManager()
         self.path_manager = PathsManager()
         self.card_manager = CardsManager()
 
-    # Set phases
-    def initialize(self):
+        # =============== Layouts =============== #
+        self.phase_layout = SetPhaseLayout()
+
+    # =============== initialize =============== #
+    def initialize(self, btn_list):
         """
         This method initialize the paths, moves, ...
 
         :return: None
         """
-        self.path_manager.set_paths()
-        self.config_manager
+        self.path_manager.scan_set_paths()
+        is_found = self.config_manager.scan_set_moves(self.path_manager.get_path_init_tk1())
+        if is_found is False:
+            print(f"Moves not found")
+            return None
+        for btn in btn_list:
+            btn.setDisabled(False)
 
+    # =============== getter =============== #
+    def get_phase_layout(self):
+        return self.phase_layout
+
+    # =============== setter =============== #
+
+    # =============== methods =============== #
+    def show_phase_panel(self):
+        self.phase_layout.show_panel(self.config_manager.get_all_phases())

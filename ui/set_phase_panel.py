@@ -16,6 +16,7 @@ class SetPhaseLayout(QWidget):
         d_detectors_label = QLabel("גלאי דרישה")
         e_detectors_label = QLabel("גלאי הארכה")
         inter_stage_label = QLabel("מעברים")
+        self.moves_layout = QVBoxLayout()
 
         # =============== textbox =============== #
         main_phase_textbox = QLineEdit()
@@ -58,6 +59,8 @@ class SetPhaseLayout(QWidget):
         self.setLayout(layout)
         self.hide()  # מוסתר כברירת מחדל
 
+        layout.addLayout(self.moves_layout)
+
     def set_row_of_set_phase(self, row, label, textbox, btn):
         label.setFixedSize(BUTTON_WIDTH, BUTTON_HEIGHT)
         textbox.setFixedSize(BUTTON_WIDTH, BUTTON_HEIGHT)
@@ -70,5 +73,17 @@ class SetPhaseLayout(QWidget):
         row.addWidget(btn)
         row.addStretch()
 
-    def show_left_panel(self):
+    def show_panel(self, phase_list):
+        self.display_moves(phase_list)
         self.show()
+
+    def display_moves(self, moves_list):
+
+        for move in moves_list:
+            phase = move.name
+            move_type = move.type
+            min_red = move.min_red
+            is_main = move.is_main
+
+            label = QLabel(f"phase: {phase:<5}  type: {move_type:<20}  min_red: {min_red:<3}  in_main: {is_main}")
+            self.moves_layout.addWidget(label)
