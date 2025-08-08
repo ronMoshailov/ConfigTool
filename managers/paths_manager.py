@@ -50,5 +50,13 @@ class PathsManager:
                 # ============================================================
 
 
+    # =================== getter ===================
     def get_path_init_tk1(self):
         return self.path_init_tk1
+
+    # =================== methods ===================
+    def reset(self):
+        self.path_project = None
+        self.path_init = None
+        self.path_tk1 = None
+        self.path_init_tk1 = None

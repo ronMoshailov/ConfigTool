@@ -21,6 +21,7 @@ class MainController:
 
         :return: None
         """
+        self.reset()
         self.path_manager.scan_set_paths()
         is_found = self.config_manager.scan_set_moves(self.path_manager.get_path_init_tk1())
         if is_found is False:
@@ -38,3 +39,8 @@ class MainController:
     # =============== methods =============== #
     def show_phase_panel(self):
         self.phase_layout.show_panel(self.config_manager.get_all_phases())
+
+    def reset(self):
+        self.config_manager.reset()
+        self.path_manager.reset()
+        self.card_manager.reset()

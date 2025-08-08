@@ -47,28 +47,29 @@ class PhasePanelWindow(QWidget):
         self.set_row(row4  , e_detectors_label       , e_detectors_textbox       , e_detectors_btn     )
         self.set_row(row5  , inter_stage_label       , inter_stage_textbox       , inter_stage_btn     )
 
+        # =============== scroll =============== #
+        self.scroll_area = QScrollArea()
+        self.scroll_area.setWidgetResizable(True)
+        self.scroll_content = QWidget()
+        self.scroll_layout = QVBoxLayout(self.scroll_content)
+
         # =============== layout =============== #
         layout              = QVBoxLayout()
         self.moves_layout   = QVBoxLayout()
 
+        # =============== create the layout =============== #
         layout.addLayout(row1)
         layout.addLayout(row2)
         layout.addLayout(row3)
         layout.addLayout(row4)
         layout.addLayout(row5)
         layout.addStretch()
-
-        self.setLayout(layout)
-        self.hide()  # מוסתר כברירת מחדל
-
         layout.addLayout(self.moves_layout)
 
-        self.scroll_area = QScrollArea()
-        self.scroll_area.setWidgetResizable(True)
-        self.scroll_content = QWidget()
-        self.scroll_layout = QVBoxLayout(self.scroll_content)
+        self.setLayout(layout)
+        self.hide()
 
-        # שלוש שורות (אופקיות) של מופעים
+        # =============== scroll rows =============== #
         self.phase_rows = [QHBoxLayout(), QHBoxLayout(), QHBoxLayout()]
         for row in self.phase_rows:
             self.scroll_layout.addLayout(row)

@@ -20,34 +20,10 @@ class ConfigManager:
         self.e_detectors = []
         self.inter_stages = []
 
-    # =============== Add =============== #
-    def add_main_phase(self, new_phase):
-        self.main_phases.append(new_phase)
-        self.print_main_phases()
-
-    def add_not_main_phase(self, new_phase):
-        self.not_main_phases.append(new_phase)
-
-    def add_d_detector(self, new_detector):
-        self.d_detectors.append(new_detector)
-
-    def add_e_detector(self, new_detector):
-        self.e_detectors.append(new_detector)
-
-    def add_inter_stages(self, new_inter_stages):
-        self.inter_stages.append(new_inter_stages)
-
-    def add_sk24(self, path):
-        new_sk24 = Sk24(path, self.sk24_idx)
-        self.sk24_idx += 1
-        self.sk24.append(new_sk24)
-
-    def print_main_phases(self):
-        print(f"main phases: {self.main_phases}")
-
     # =============== getter =============== #
     def get_all_phases(self):
         return self.main_moves + self.not_main_phases
+
     # =============== Scan =============== #
     def scan_set_moves(self, path):
         """
@@ -91,6 +67,63 @@ class ConfigManager:
 
         if is_found is False:
             return None
+
+    # =============== methods =============== #
+    def reset(self):
+        """
+        This method reset all fields
+
+        :return: None
+        """
+        self.main_moves = []
+        self.not_main_phases = []
+        self.d_detectors = []
+        self.e_detectors = []
+        self.inter_stages = []
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    # =============== Add =============== #
+    def add_main_phase(self, new_phase):
+        self.main_phases.append(new_phase)
+        self.print_main_phases()
+
+    def add_not_main_phase(self, new_phase):
+        self.not_main_phases.append(new_phase)
+
+    def add_d_detector(self, new_detector):
+        self.d_detectors.append(new_detector)
+
+    def add_e_detector(self, new_detector):
+        self.e_detectors.append(new_detector)
+
+    def add_inter_stages(self, new_inter_stages):
+        self.inter_stages.append(new_inter_stages)
+
+    def add_sk24(self, path):
+        new_sk24 = Sk24(path, self.sk24_idx)
+        self.sk24_idx += 1
+        self.sk24.append(new_sk24)
+
+    def print_main_phases(self):
+        print(f"main phases: {self.main_phases}")
+
                     # print(f"phase: {phase:<5}, type: {move_type:<25}, min_red: {min_red:<5}, in_main: {is_main:<5}")
 
     # def get_phases_from_tk1(self, path):
