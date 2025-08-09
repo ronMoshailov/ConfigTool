@@ -1,15 +1,18 @@
 import os
 import sys
 
-from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QScrollArea
+from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QScrollArea, \
+    QCheckBox
 
 from config.constants import BUTTON_WIDTH, COLUMN_SPACING, BUTTON_HEIGHT
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'classes')))
 
 
 class PhasePanelWindow(QWidget):
-    def __init__(self):
+    def __init__(self, main_controller):
         super().__init__()
+        self.main_controller = main_controller
 
         # =============== labels =============== #
         main_phase_label        = QLabel("מופע ראשי"    )
@@ -32,13 +35,19 @@ class PhasePanelWindow(QWidget):
         e_detectors_btn         = QPushButton("➕")
         inter_stage_btn         = QPushButton("➕")
 
+        # =============== active buttons =============== #
+        main_phase_btn.clicked.connect(lambda: self.add_move(main_phase_label.text(), main_phase_textbox.text()))
+        not_main_phase_btn.clicked.connect(lambda: self.add_move(not_main_phase_label.text(), not_main_phase_textbox.text()))
+        # d_detectors_btn         = QPushButton("➕")
+        # e_detectors_btn         = QPushButton("➕")
+        # inter_stage_btn         = QPushButton("➕")
+
         # =============== rows =============== #
         row1 = QHBoxLayout()
         row2 = QHBoxLayout()
         row3 = QHBoxLayout()
         row4 = QHBoxLayout()
         row5 = QHBoxLayout()
-        row6 = QHBoxLayout()
 
         # =============== rows =============== #
         self.set_row(row1  , main_phase_label        , main_phase_textbox        , main_phase_btn      )
@@ -48,34 +57,37 @@ class PhasePanelWindow(QWidget):
         self.set_row(row5  , inter_stage_label       , inter_stage_textbox       , inter_stage_btn     )
 
         # =============== scroll =============== #
-        self.scroll_area = QScrollArea()
+        self.scroll_area = QScrollArea()                            # create the container of the scroll bar. (get only widget)
+        self.scroll_content = QWidget()                             # create the widget that will be in the layout.
+        self.scroll_layout = QVBoxLayout()
+
         self.scroll_area.setWidgetResizable(True)
-        self.scroll_content = QWidget()
-        self.scroll_layout = QVBoxLayout(self.scroll_content)
+
+        self.scroll_content.setLayout(self.scroll_layout)
+        self.scroll_area.setWidget(self.scroll_content)
+
+        #
+        self.phase_rows = [QHBoxLayout(), QHBoxLayout(), QHBoxLayout()]
+        self.scroll_layout.addLayout(self.phase_rows[0])
+        self.scroll_layout.addLayout(self.phase_rows[1])
+        self.scroll_layout.addLayout(self.phase_rows[2])
 
         # =============== layout =============== #
-        layout              = QVBoxLayout()
-        self.moves_layout   = QVBoxLayout()
+        main_layout              = QVBoxLayout()
 
         # =============== create the layout =============== #
-        layout.addLayout(row1)
-        layout.addLayout(row2)
-        layout.addLayout(row3)
-        layout.addLayout(row4)
-        layout.addLayout(row5)
-        layout.addStretch()
-        layout.addLayout(self.moves_layout)
+        main_layout.addLayout(row1)
+        main_layout.addLayout(row2)
+        main_layout.addLayout(row3)
+        main_layout.addLayout(row4)
+        main_layout.addLayout(row5)
+        main_layout.addStretch()
+        main_layout.addWidget(self.scroll_area)
 
-        self.setLayout(layout)
+        self.setLayout(main_layout)
         self.hide()
 
         # =============== scroll rows =============== #
-        self.phase_rows = [QHBoxLayout(), QHBoxLayout(), QHBoxLayout()]
-        for row in self.phase_rows:
-            self.scroll_layout.addLayout(row)
-
-        self.scroll_area.setWidget(self.scroll_content)
-        layout.addWidget(self.scroll_area)
 
     def set_row(self, row, label, textbox, btn):
         label.setFixedSize(BUTTON_WIDTH, BUTTON_HEIGHT)
@@ -87,19 +99,20 @@ class PhasePanelWindow(QWidget):
         row.addWidget(textbox)
         row.addSpacing(COLUMN_SPACING)
         row.addWidget(btn)
+        row.addSpacing(COLUMN_SPACING)
         row.addStretch()
 
-    def show_panel(self, phase_list):
-        self.display_moves(phase_list)
+    def show_panel(self, moves_list):
+        self.display_moves(moves_list)
         self.show()
 
     def display_moves(self, moves_list):
         # נקה את השורות הקיימות
         for row in self.phase_rows:
             while row.count():
-                item = row.takeAt(0)
-                widget = item.widget()
-                if widget:
+                item = row.takeAt(0)        # get the first QLayoutItem of the layout
+                widget = item.widget()      # get the widget
+                if widget:                  #
                     widget.deleteLater()
 
         for move in moves_list:
@@ -119,11 +132,11 @@ class PhasePanelWindow(QWidget):
             label = QLabel(phase)
             label.setFixedHeight(30)
 
-            btn_remove = QPushButton("➖")
+            btn_remove = QPushButton("❌")
             btn_remove.setFixedSize(30, 30)
-            btn_remove.clicked.connect(lambda _, p=phase: self.remove_phase(p))
+            btn_remove.clicked.connect(lambda _, p=phase: self.remove_move(p))
 
-            item_layout = QHBoxLayout()
+            item_layout = QVBoxLayout()
             item_layout.addWidget(label)
             item_layout.addWidget(btn_remove)
 
@@ -132,6 +145,18 @@ class PhasePanelWindow(QWidget):
             container.setStyleSheet("background-color: #f0f0f0; border-radius: 5px; padding: 5px;")
 
             self.phase_rows[row_idx].addWidget(container)
+        self.phase_rows[0].addStretch()
+        self.phase_rows[1].addStretch()
+        self.phase_rows[2].addStretch()
 
-    def remove_phase(self, phase_name):
-        print(f"הוסר: {phase_name}")  # תחליף בלוגיקה שלך
+    def remove_move(self, move_name):
+        self.main_controller.remove_move(move_name)
+        self.main_controller.show_phase_panel()
+
+    def add_move(self, label, value):
+        if label == "מופע ראשי":
+            self.main_controller.add_move(value, True)
+        elif label == "לא מופע ראשי":
+            self.main_controller.add_move(value, False)
+        self.main_controller.show_phase_panel()
+        print("not built yet")

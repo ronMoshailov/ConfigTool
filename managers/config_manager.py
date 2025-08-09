@@ -7,24 +7,36 @@ from managers.sk24_manager import Sk24
 class ConfigManager:
     _instance = None
 
+    # =============== class methods =============== #
     def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super(ConfigManager, cls).__new__(cls)
-            cls._instance._init()
-        return cls._instance
+        """
+        This method runs before __init__ when new instance is created.
+        """
+        if cls._instance is None:                                       # checks if there is an instance of the class
+            cls._instance = super(ConfigManager, cls).__new__(cls)      # create new instance and store him in _instance before __init__
+            cls._instance.__init__()                                    # run _init
+        return cls._instance                                            # return _instance
 
-    def _init(self):
+    def __init__(self):
+        """
+        This method runs when the object initialized.
+        """
         self.main_moves = []
-        self.not_main_phases = []
+        self.not_main_moves = []
         self.d_detectors = []
         self.e_detectors = []
         self.inter_stages = []
 
-    # =============== getter =============== #
-    def get_all_phases(self):
-        return self.main_moves + self.not_main_phases
+    # =============== get methods =============== #
+    def get_all_moves(self):
+        """
+        This method return all the moves combined.
 
-    # =============== Scan =============== #
+        :return: list of all moves
+        """
+        return self.main_moves + self.not_main_moves
+
+    # =============== scan methods =============== #
     def scan_set_moves(self, path):
         """
         This method set from path the moves in the app.
@@ -63,12 +75,12 @@ class ConfigManager:
                     if is_main == "True":
                         self.main_moves.append(new_move)
                         continue
-                    self.not_main_phases.append(new_move)
+                    self.not_main_moves.append(new_move)
 
         if is_found is False:
             return None
 
-    # =============== methods =============== #
+    # =============== general methods =============== #
     def reset(self):
         """
         This method reset all fields
@@ -76,54 +88,71 @@ class ConfigManager:
         :return: None
         """
         self.main_moves = []
-        self.not_main_phases = []
+        self.not_main_moves = []
         self.d_detectors = []
         self.e_detectors = []
         self.inter_stages = []
 
+    def remove_move(self, move_name):
+        print("--\nremove_move: Start", flush=True)
 
+        target = next((m for m in self.main_moves if m.name == move_name), None)
+        if target:
+            self.main_moves.remove(target)
+            print(f"{move_name} removed (main)", flush=True)
+            print("remove_move: End\n--", flush=True)
+            return True
 
+        target = next((m for m in self.not_main_moves if m.name == move_name), None)
+        if target:
+            self.not_main_moves.remove(target)
+            print(f"{move_name} removed (not_main)", flush=True)
+            print("remove_move: End\n--", flush=True)
+            return True
 
+        print("Move wasn't found", flush=True)
+        return False
 
+    # # =============== Add =============== #
+    def add_move(self, value, is_main):
+        if value.startswith("k"):
+            target_type = "Traffic"
+        elif value.startswith("p"):
+            target_type = "Pedestrian"
+        elif value.startswith("B"):
+            target_type = "Blinker_Conditional"
+        else:
+            print("Invalid name")
+            return False
 
+        new_move = Move(value, target_type, 0, is_main)
+        if is_main is True:
+            self.main_moves.append(new_move)
+        else:
+            self.not_main_moves.append(new_move)
+        return True
 
-
-
-
-
-
-
-
-
-
-
-
-
-    # =============== Add =============== #
-    def add_main_phase(self, new_phase):
-        self.main_phases.append(new_phase)
-        self.print_main_phases()
-
-    def add_not_main_phase(self, new_phase):
-        self.not_main_phases.append(new_phase)
-
-    def add_d_detector(self, new_detector):
-        self.d_detectors.append(new_detector)
-
-    def add_e_detector(self, new_detector):
-        self.e_detectors.append(new_detector)
-
-    def add_inter_stages(self, new_inter_stages):
-        self.inter_stages.append(new_inter_stages)
-
-    def add_sk24(self, path):
-        new_sk24 = Sk24(path, self.sk24_idx)
-        self.sk24_idx += 1
-        self.sk24.append(new_sk24)
-
-    def print_main_phases(self):
-        print(f"main phases: {self.main_phases}")
-
+    #
+    # def add_not_main_phase(self, new_phase):
+    #     self.not_main_phases.append(new_phase)
+    #
+    # def add_d_detector(self, new_detector):
+    #     self.d_detectors.append(new_detector)
+    #
+    # def add_e_detector(self, new_detector):
+    #     self.e_detectors.append(new_detector)
+    #
+    # def add_inter_stages(self, new_inter_stages):
+    #     self.inter_stages.append(new_inter_stages)
+    #
+    # def add_sk24(self, path):
+    #     new_sk24 = Sk24(path, self.sk24_idx)
+    #     self.sk24_idx += 1
+    #     self.sk24.append(new_sk24)
+    #
+    # def print_main_phases(self):
+    #     print(f"main phases: {self.main_phases}")
+    #
                     # print(f"phase: {phase:<5}, type: {move_type:<25}, min_red: {min_red:<5}, in_main: {is_main:<5}")
 
     # def get_phases_from_tk1(self, path):
