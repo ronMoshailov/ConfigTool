@@ -52,7 +52,7 @@ class MainWindow:
 
         btn_set_path.   clicked.connect(lambda: self.main_controller.initialize(self.disable_btns)  )
         btn_set_phase.  clicked.connect(        self.main_controller.show_phase_panel               )
-
+        btn4         .  clicked.connect(lambda: self.main_controller.get_min_green_layout().show_panel())
         # =============== combo =============== #
         self.combo = QComboBox()
 
@@ -77,6 +77,7 @@ class MainWindow:
         self.set_btn_style()                            # Set style to buttons
 
         main_layout.addWidget(self.main_controller.get_phase_layout())
+        main_layout.addWidget(self.main_controller.get_min_green_layout())
         main_layout.addLayout(buttons_layout)
 
         # =============== show window =============== #

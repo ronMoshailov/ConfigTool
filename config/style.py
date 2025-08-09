@@ -61,3 +61,44 @@ button_style = """
                     color: #7f8c8d;
                 }
             """
+
+min_group_row_style = """
+/* הווידג'ט העוטף כל שורה */
+#minRowCard {
+    background-color: #ecf0f1;
+    border: 2px solid #3498db;
+    border-radius: 10px;
+    padding: 10px;           /* ריווח פנימי יפה */
+    margin: 4px 0;           /* רווח בין קלפים */
+}
+
+/* פקדי קלט בתוך השורה */
+#minRowCard QLineEdit {
+    background: #ffffff;
+    border: 1px solid #bcd6f0;
+    border-radius: 6px;
+    padding: 6px 8px;
+    font-size: 14px;
+    color: #2c3e50;
+}
+#minRowCard QLineEdit:focus {
+    border: 1px solid #3498db;
+}
+
+/* כפתור עדכון – תואם לסגנון שלך */
+#minRowCard QPushButton {
+    background-color: qlineargradient(x1:0,y1:0,x2:0,y2:1,
+                                      stop:0 #5dade2, stop:1 #2e86c1);
+    color: white;
+    border: 2px solid #2471a3;
+    border-radius: 10px;
+    padding: 6px 12px;
+    font-weight: bold;
+    font-size: 14px;
+}
+#minRowCard QPushButton:hover {
+    background-color: qlineargradient(x1:0,y1:0,x2:0,y2:1,
+                                      stop:0 #5499c7, stop:1 #21618c);
+    border: 2px solid #1b4f72;
+}
+"""
