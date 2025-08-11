@@ -11,6 +11,8 @@ from controllers.ui_controller import UIController
 # imports
 import sys
 
+from data.debug import displayAllMoves
+
 
 class MainWindow:
     def __init__(self):
@@ -26,7 +28,7 @@ class MainWindow:
 
         # =============== controller =============== #
         self.data_controller = DataController()
-        self.ui_controller = UIController()
+        self.ui_controller = UIController(self.data_controller.get_add_move_ref())
 
         # =============== rows =============== #
         row0 = QHBoxLayout()
@@ -40,7 +42,7 @@ class MainWindow:
         # =============== buttons =============== #
         btn_set_path    = QPushButton("הגדר נתיב"   )
         btn_new_node    = QPushButton("צומת חדש"    )
-        btn_set_moves   = QPushButton("הגדר מופעים" )
+        btn_set_moves   = QPushButton("ניהול מופעים" )
         btn3            = QPushButton("הפעל סלייב"  )
         btn_set_min     = QPushButton("הגדר מינימום")
         btn5            = QPushButton("הפעל מאסטר"  )
@@ -50,20 +52,21 @@ class MainWindow:
         btn9            = QPushButton("הגדר מעברים" )
         btn10           = QPushButton("-----------" )
         btn11           = QPushButton("הגדר מיפוי"  )
-        btn12           = QPushButton("-----------" )
+        debug_print_btn = QPushButton("הדפס הכל"    )
 
         btn_set_path    .clicked.connect(lambda: self.data_controller.   initialize(self.disable_btns)                                   )
-        btn_set_moves   .clicked.connect(lambda: self.ui_controller.     show_set_move_layout(self.data_controller.get_all_moves())      )
-        btn_set_min     .clicked.connect(lambda: self.ui_controller.     show_min_green_layout(self.data_controller.get_all_moves())                    )
+        btn_set_moves   .clicked.connect(lambda: self.ui_controller.     show_set_move_layout(self.data_controller.get_all_moves()      )       )
+        btn_set_min     .clicked.connect(lambda: self.ui_controller.     show_min_green_layout(self.data_controller.get_all_moves())     )
+        debug_print_btn .clicked.connect(lambda: displayAllMoves(self.data_controller.get_all_moves())     )
 
         # =============== combo =============== #
         self.combo = QComboBox()
 
         # =============== lists =============== #
-        self.buttons_list             = [btn_set_path, btn_new_node, btn_set_moves, btn3, btn_set_min, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12]
-        self.disable_btns             = [btn_new_node, btn_set_moves, btn3, btn_set_min, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12]
+        self.buttons_list             = [btn_set_path, btn_new_node, btn_set_moves, btn3, btn_set_min, btn5, btn6, btn7, btn8, btn9, btn10, btn11, debug_print_btn]
+        self.disable_btns             = [btn_new_node, btn_set_moves, btn3, btn_set_min, btn5, btn6, btn7, btn8, btn9, btn10, btn11, debug_print_btn]
         self.buttons_checkable_list   = [btn_new_node, btn3, btn5, btn7]
-        self.rows_list                = [row0, row1, row2, row3, row4, row5]
+        self.rows_list                = [row0, row1, row2, row3, row4, row5, row6]
 
         # =============== special methods =============== #
         self.set_row(row0, self.combo, btn_set_path)    # set row
@@ -72,7 +75,7 @@ class MainWindow:
         self.set_row(row3, btn5, btn6)                  # set row
         self.set_row(row4, btn7, btn8)                  # set row
         self.set_row(row5, btn9, btn10)                 # set row
-        self.set_row(row6, btn11, btn12)                # set row
+        self.set_row(row6, btn11, debug_print_btn)      # set row
         self.add_rows_to_layout(buttons_layout)         # add the button layout
         self.set_btn_disable()                          # Disable buttons
         self.add_employees()                            # add employees to combo box

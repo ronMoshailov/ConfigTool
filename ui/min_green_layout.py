@@ -7,7 +7,6 @@ from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout
 from config.constants import BUTTON_WIDTH, COLUMN_SPACING, BUTTON_HEIGHT
 from config.style import min_group_row_style
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'classes')))
 
 
 class MinGreenLayout(QWidget):

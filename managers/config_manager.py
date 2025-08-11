@@ -91,7 +91,7 @@ class ConfigManager:
                     phase, move_type, min_red, is_main = match.groups()
                     is_main = is_main.capitalize()
 
-                    new_move = Move(phase, move_type, min_red, is_main)
+                    new_move = Move(phase, move_type, is_main, min_red)
                     self.moves = self.moves + [new_move]
         print(f"config_manager:\tscan_set_moves\t[end]\n")
 

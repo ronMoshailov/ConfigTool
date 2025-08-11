@@ -1,4 +1,3 @@
-from managers.cards_manager import CardsManager
 from managers.config_manager import ConfigManager
 from managers.paths_manager import PathsManager
 
@@ -25,6 +24,8 @@ class DataController:
         self.path_manager = PathsManager()
         # self.card_manager = CardsManager()
 
+
+
     # =============== initialize =============== #
     def initialize(self, btn_list):
         """
@@ -50,9 +51,10 @@ class DataController:
         # disable buttons
         for btn in btn_list:
             btn.setDisabled(False)
-
         return True
     # =============== getter =============== #
+
+
 
     # =============== methods =============== #
 
@@ -65,9 +67,16 @@ class DataController:
         # self.card_manager.reset()
 
     def get_all_moves(self):
+        """
+        This method returns all the moves.
+
+        :return: list of all moves.
+        """
         print("get_all_moves")
         return self.config_manager.get_all_moves()
 
+    def get_add_move_ref(self):
+        return self.config_manager.add_move
 
 
 
@@ -80,19 +89,19 @@ class DataController:
 
 
 
-
-
-
-
-
-
-
-    # =============== I don't know why these are here =============== #
-
-
-    def remove_move(self, move_name):
-        self.config_manager.remove_move(move_name)
-
-    def add_move(self, value, is_main):
-        self.config_manager.add_move(value, is_main)
-
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    # # =============== I don't know why these are here =============== #
+    #
+    #
+    # def remove_move(self, move_name):
+    #     self.config_manager.remove_move(move_name)
+    #
+    # def add_move(self, value, is_main):
+    #     self.config_manager.add_move(value, is_main)
+    #

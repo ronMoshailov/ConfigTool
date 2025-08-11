@@ -2,62 +2,77 @@ import os
 import sys
 
 from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QScrollArea, \
-    QCheckBox
+    QCheckBox, QRadioButton
 
 from config.constants import BUTTON_WIDTH, COLUMN_SPACING, BUTTON_HEIGHT
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'classes')))
-
 
 class SetMoveLayout(QWidget):
-    def __init__(self):
+    def __init__(self, add_move_ref):
         super().__init__()
 
         # =============== labels =============== #
-        main_phase_label        = QLabel("מופע ראשי"    )
-        not_main_phase_label    = QLabel("לא מופע ראשי" )
-        d_detectors_label       = QLabel("גלאי דרישה"   )
-        e_detectors_label       = QLabel("גלאי הארכה"   )
-        inter_stage_label       = QLabel("מעברים"       )
+        label_layout = QHBoxLayout()
+
+        main_phase_label = QLabel("שם המופע")
+        not_main_phase_label = QLabel("סוג המופע")
+        d_detectors_label = QLabel("מופע ראשי")
 
         # =============== textbox =============== #
-        main_phase_textbox      = QLineEdit()
-        not_main_phase_textbox  = QLineEdit()
-        d_detectors_textbox     = QLineEdit()
-        e_detectors_textbox     = QLineEdit()
-        inter_stage_textbox     = QLineEdit()
+        main_phase_textbox = QLineEdit()
 
-        # =============== plus buttons =============== #
-        main_phase_btn          = QPushButton("➕")
-        not_main_phase_btn      = QPushButton("➕")
-        d_detectors_btn         = QPushButton("➕")
-        e_detectors_btn         = QPushButton("➕")
-        inter_stage_btn         = QPushButton("➕")
+        # =============== button =============== #
+        run_button = QPushButton("הוסף")
 
-        # =============== active buttons =============== #
-        main_phase_btn.clicked.connect(lambda: self.add_move(main_phase_label.text(), main_phase_textbox.text()))
-        not_main_phase_btn.clicked.connect(lambda: self.add_move(not_main_phase_label.text(), not_main_phase_textbox.text()))
-        # d_detectors_btn         = QPushButton("➕")
-        # e_detectors_btn         = QPushButton("➕")
-        # inter_stage_btn         = QPushButton("➕")
+        # =============== type move =============== #
+        type_radio_layout = QHBoxLayout()
+
+        self.traffic_radio = QRadioButton("🚗")
+        self.traffic_flashing_radio = QRadioButton("🚛")
+        self.pedestrian_radio = QRadioButton("🏃‍♂️")
+        self.blinker_radio = QRadioButton("🟡")
+        self.blinker_conditional_radio = QRadioButton("⚠️")
+        self.traffic_radio.setChecked(True)  # ברירת מחדל
+
+        type_radio_layout.addWidget(self.traffic_radio)
+        type_radio_layout.addWidget(self.traffic_flashing_radio)
+        type_radio_layout.addWidget(self.pedestrian_radio)
+        type_radio_layout.addWidget(self.blinker_radio)
+        type_radio_layout.addWidget(self.blinker_conditional_radio)
+
+        # =============== main =============== #
+        main_radio_layout = QHBoxLayout()
+
+        self.main_radio = QRadioButton("כן")
+        self.not_main_radio = QRadioButton("לא")
+        self.main_radio.setChecked(True)
+
+        main_radio_layout.addWidget(self.main_radio)
+        main_radio_layout.addWidget(self.not_main_radio)
+
+        # # inter_stage_btn         = QPushButton("➕")
 
         # =============== rows =============== #
         row1 = QHBoxLayout()
         row2 = QHBoxLayout()
         row3 = QHBoxLayout()
         row4 = QHBoxLayout()
-        row5 = QHBoxLayout()
+        # row5 = QHBoxLayout()
 
-        # =============== rows =============== #
-        self.set_row(row1  , main_phase_label        , main_phase_textbox        , main_phase_btn      )
-        self.set_row(row2  , not_main_phase_label    , not_main_phase_textbox    , not_main_phase_btn  )
-        self.set_row(row3  , d_detectors_label       , d_detectors_textbox       , d_detectors_btn     )
-        self.set_row(row4  , e_detectors_label       , e_detectors_textbox       , e_detectors_btn     )
-        self.set_row(row5  , inter_stage_label       , inter_stage_textbox       , inter_stage_btn     )
+        row1.addWidget(main_phase_label)
+        row1.addWidget(main_phase_textbox)
+
+        row2.addWidget(not_main_phase_label)
+        row2.addLayout(type_radio_layout)
+
+        row3.addWidget(d_detectors_label)
+        row3.addLayout(main_radio_layout)
+
+        row4.addWidget(run_button)
 
         # =============== scroll =============== #
-        self.scroll_area = QScrollArea()                            # create the container of the scroll bar. (get only widget)
-        self.scroll_content = QWidget()                             # create the widget that will be in the layout.
+        self.scroll_area = QScrollArea()  # create the container of the scroll bar. (get only widget)
+        self.scroll_content = QWidget()  # create the widget that will be in the layout.
         self.scroll_layout = QVBoxLayout()
 
         self.scroll_area.setWidgetResizable(True)
@@ -72,14 +87,14 @@ class SetMoveLayout(QWidget):
         self.scroll_layout.addLayout(self.phase_rows[2])
 
         # =============== layout =============== #
-        main_layout              = QVBoxLayout()
+        main_layout = QVBoxLayout()
 
         # =============== create the layout =============== #
         main_layout.addLayout(row1)
         main_layout.addLayout(row2)
         main_layout.addLayout(row3)
         main_layout.addLayout(row4)
-        main_layout.addLayout(row5)
+
         main_layout.addStretch()
         main_layout.addWidget(self.scroll_area)
 
@@ -102,17 +117,16 @@ class SetMoveLayout(QWidget):
         row.addStretch()
 
     def show_panel(self, moves_list):
-        print("show_panel")
-        self.display_moves(moves_list)
+        self.show_scroll_bar(moves_list)
         self.show()
 
-    def display_moves(self, moves_list):
+    def show_scroll_bar(self, moves_list):
         # נקה את השורות הקיימות
         for row in self.phase_rows:
             while row.count():
-                item = row.takeAt(0)        # get the first QLayoutItem of the layout
-                widget = item.widget()      # get the widget
-                if widget:                  #
+                item = row.takeAt(0)  # get the first QLayoutItem of the layout
+                widget = item.widget()  # get the widget
+                if widget:  #
                     widget.deleteLater()
 
         for move in moves_list:
@@ -153,10 +167,8 @@ class SetMoveLayout(QWidget):
         self.main_controller.remove_move(move_name)
         self.main_controller.show_phase_panel()
 
-    def add_move(self, label, value):
+    def add_move(self, label, value, add_move_ref):
         if label == "מופע ראשי":
-            self.main_controller.add_move(value, True)
+            add_move_ref(value, True)
         elif label == "לא מופע ראשי":
-            self.main_controller.add_move(value, False)
-        self.main_controller.show_phase_panel()
-        print("not built yet")
+            add_move_ref(value, False)

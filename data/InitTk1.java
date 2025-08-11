@@ -37,8 +37,8 @@ public class InitTk1 extends InitTk {
 		tk.k2     =  new Move(   tk    , "_2"   , MoveType.Traffic            ,      1 ,   0 , true );
 		tk.k3     =  new Move(   tk    , "_3"   , MoveType.Traffic            ,      1 ,   0 , false);
 		tk.k32    =  new Move(   tk    , "_32"  , MoveType.Traffic            ,      1 ,   0 , false);
-		tk.k4     =  new Move(   tk    , "_4"   , MoveType.Traffic            ,      1 ,   0 , false);
-		tk.k5     =  new Move(   tk    , "_5"   , MoveType.Traffic            ,      1 ,   0 , false);
+		tk.k4     =  new Move(   tk    , "_4"   , MoveType.Traffic_Flashing   ,      1 ,   0 , false);
+		tk.k5     =  new Move(   tk    , "_5"   , MoveType.Traffic_Flashing   ,      1 ,   0 , false);
 
 		tk.pa     =  new Move(   tk    , "_a"   , MoveType.Pedestrian         ,      8 ,   0 , false); 
 //		tk.pb     =  new Move(   tk    , "_b"   , MoveType.Pedestrian         ,      6 ,   0 , false);
