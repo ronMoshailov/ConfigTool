@@ -9,4 +9,4 @@ class Move:
         self.min_green = min_green
         self.is_main = is_main
 
-        print(f"self.name: {self.name}, move_type: {move_type}, is_main: {is_main}, min_green: {min_green}")
+        # print(f"self.name: {self.name:<5}, move_type: {move_type:<25}, is_main: {is_main:<8}, min_green: {min_green:<3}")

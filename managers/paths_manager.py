@@ -4,6 +4,18 @@ from PyQt5.QtWidgets import QFileDialog
 
 
 class PathsManager:
+    _instance = None
+
+    # =============== class methods =============== #
+    def __new__(cls):
+        """
+        This method runs before __init__ when new instance is created.
+        """
+        if cls._instance is None:                                       # checks if there is an instance of the class
+            cls._instance = super(PathsManager, cls).__new__(cls)     # create new instance and store him in _instance before __init__
+            cls._instance.__init__()                                    # run _init
+        return cls._instance                                            # return _instance
+
     def __init__(self):
         self.path_project = None
         self.path_init = None
@@ -20,7 +32,7 @@ class PathsManager:
         folder_path = QFileDialog.getExistingDirectory(None, "בחר תיקייה")
         if not folder_path:
             print("Error in the root path")
-            return None
+            return False
 
         self.path_project = folder_path
 
@@ -48,7 +60,6 @@ class PathsManager:
                 #   dirs - list of all the folders in root
                 #   files - list of all the files in root
                 # ============================================================
-
 
     # =================== getter ===================
     def get_path_init_tk1(self):

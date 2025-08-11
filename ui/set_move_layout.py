@@ -9,10 +9,9 @@ from config.constants import BUTTON_WIDTH, COLUMN_SPACING, BUTTON_HEIGHT
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'classes')))
 
 
-class PhasePanelWindow(QWidget):
-    def __init__(self, main_controller):
+class SetMoveLayout(QWidget):
+    def __init__(self):
         super().__init__()
-        self.main_controller = main_controller
 
         # =============== labels =============== #
         main_phase_label        = QLabel("מופע ראשי"    )
@@ -103,6 +102,7 @@ class PhasePanelWindow(QWidget):
         row.addStretch()
 
     def show_panel(self, moves_list):
+        print("show_panel")
         self.display_moves(moves_list)
         self.show()
 

@@ -21,8 +21,7 @@ class ConfigManager:
         """
         This method runs when the object initialized.
         """
-        self.main_moves = []
-        self.not_main_moves = []
+        self.moves = []
         self.d_detectors = []
         self.e_detectors = []
         self.inter_stages = []
@@ -34,7 +33,27 @@ class ConfigManager:
 
         :return: list of all moves
         """
-        return self.main_moves + self.not_main_moves
+        print(f"config_manager:\tget_all_moves\t[start] ")
+        self.moves = sorted(self.moves, key=lambda m: m.name)
+        sorted_moves = []
+
+        # insert to list all moves that start with 'k'
+        for move in self.moves:
+            if move.name.startswith("k"):
+                sorted_moves.append(move)
+
+        # insert to list all moves that start with 'p'
+        for move in self.moves:
+            if move.name.startswith("p"):
+                sorted_moves.append(move)
+
+        # insert to list all moves that start with 'B'
+        for move in self.moves:
+            if move.name.startswith("B"):
+                sorted_moves.append(move)
+
+        print(f"config_manager:\tget_all_moves\t[end]\n")
+        return sorted_moves
 
     # =============== scan methods =============== #
     def scan_set_moves(self, path):
@@ -58,6 +77,7 @@ class ConfigManager:
             """, re.VERBOSE
         )
 
+        print(f"config_manager:\tscan_set_moves\t[start] ")
         with open(path, 'r', encoding='utf-8') as file:
             for line in file:
                 line = line.strip()
@@ -72,10 +92,8 @@ class ConfigManager:
                     is_main = is_main.capitalize()
 
                     new_move = Move(phase, move_type, min_red, is_main)
-                    if is_main == "True":
-                        self.main_moves.append(new_move)
-                        continue
-                    self.not_main_moves.append(new_move)
+                    self.moves = self.moves + [new_move]
+        print(f"config_manager:\tscan_set_moves\t[end]\n")
 
         if is_found is False:
             return None
@@ -87,8 +105,7 @@ class ConfigManager:
 
         :return: None
         """
-        self.main_moves = []
-        self.not_main_moves = []
+        self.moves = []
         self.d_detectors = []
         self.e_detectors = []
         self.inter_stages = []
@@ -96,17 +113,10 @@ class ConfigManager:
     def remove_move(self, move_name):
         print("--\nremove_move: Start", flush=True)
 
-        target = next((m for m in self.main_moves if m.name == move_name), None)
+        target = next((m for m in self.moves if m.name == move_name), None)
         if target:
-            self.main_moves.remove(target)
+            self.moves.remove(target)
             print(f"{move_name} removed (main)", flush=True)
-            print("remove_move: End\n--", flush=True)
-            return True
-
-        target = next((m for m in self.not_main_moves if m.name == move_name), None)
-        if target:
-            self.not_main_moves.remove(target)
-            print(f"{move_name} removed (not_main)", flush=True)
             print("remove_move: End\n--", flush=True)
             return True
 
@@ -126,10 +136,7 @@ class ConfigManager:
             return False
 
         new_move = Move(value, target_type, 0, is_main)
-        if is_main is True:
-            self.main_moves.append(new_move)
-        else:
-            self.not_main_moves.append(new_move)
+        self.moves.append(new_move)
         return True
 
     #

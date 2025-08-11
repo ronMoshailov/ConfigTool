@@ -36,6 +36,7 @@ public class InitTk1 extends InitTk {
 		tk.k1     =  new Move(   tk    , "_1"   , MoveType.Traffic            ,      1 ,   0 , true );
 		tk.k2     =  new Move(   tk    , "_2"   , MoveType.Traffic            ,      1 ,   0 , true );
 		tk.k3     =  new Move(   tk    , "_3"   , MoveType.Traffic            ,      1 ,   0 , false);
+		tk.k32    =  new Move(   tk    , "_32"  , MoveType.Traffic            ,      1 ,   0 , false);
 		tk.k4     =  new Move(   tk    , "_4"   , MoveType.Traffic            ,      1 ,   0 , false);
 		tk.k5     =  new Move(   tk    , "_5"   , MoveType.Traffic            ,      1 ,   0 , false);
 

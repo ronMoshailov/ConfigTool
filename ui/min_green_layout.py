@@ -10,10 +10,9 @@ from config.style import min_group_row_style
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'classes')))
 
 
-class MinGreenPanel(QWidget):
-    def __init__(self, main_controller):
+class MinGreenLayout(QWidget):
+    def __init__(self):
         super().__init__()
-        self.main_controller = main_controller
         self.col = QVBoxLayout()
         # =============== labels =============== #
         print("end to build min green panel")
@@ -33,19 +32,17 @@ class MinGreenPanel(QWidget):
 
 
 
-    def show_panel(self):
-        print("show_panel green_min")
+    def show_panel(self, all_moves):
+        print(f"min_green_layout:\tshow_panel\t[start] ")
 
+        print("* starting to remove children")
         while self.col.count():
             item = self.col.takeAt(0)        # get the first QLayoutItem of the layout
             widget = item.widget()      # get the widget
             if widget:                  #
                 widget.deleteLater()
 
-        all_moves = self.main_controller.config_manager.get_all_moves()
-        print("all_moves: ", all_moves)
-
-        print("start to build min green panel")
+        print("* creating rows for each move")
         for move in all_moves:
             row = QHBoxLayout()
             label = QLabel(move.name)
@@ -63,4 +60,5 @@ class MinGreenPanel(QWidget):
 
         self.col.addStretch()
         self.show()
+        print(f"min_green_layout:\tshow_panel\t[end]\n")
 

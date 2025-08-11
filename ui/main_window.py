@@ -5,7 +5,8 @@ from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QHB
 # configure imports
 from config.constants import ROW_SPACING, COLUMN_SPACING, BUTTON_WIDTH, BUTTON_HEIGHT
 from config.style import combo_style, button_style
-from controllers.main_controller import MainController
+from controllers.data_controller import DataController
+from controllers.ui_controller import UIController
 
 # imports
 import sys
@@ -24,7 +25,8 @@ class MainWindow:
         buttons_layout = QVBoxLayout()
 
         # =============== controller =============== #
-        self.main_controller = MainController()
+        self.data_controller = DataController()
+        self.ui_controller = UIController()
 
         # =============== rows =============== #
         row0 = QHBoxLayout()
@@ -38,9 +40,9 @@ class MainWindow:
         # =============== buttons =============== #
         btn_set_path    = QPushButton("הגדר נתיב"   )
         btn_new_node    = QPushButton("צומת חדש"    )
-        btn_set_phase   = QPushButton("הגדר מופעים" )
+        btn_set_moves   = QPushButton("הגדר מופעים" )
         btn3            = QPushButton("הפעל סלייב"  )
-        btn4            = QPushButton("הגדר מינימום")
+        btn_set_min     = QPushButton("הגדר מינימום")
         btn5            = QPushButton("הפעל מאסטר"  )
         btn6            = QPushButton("הגדר מטריצה" )
         btn7            = QPushButton("dx הפעל"     )
@@ -50,22 +52,23 @@ class MainWindow:
         btn11           = QPushButton("הגדר מיפוי"  )
         btn12           = QPushButton("-----------" )
 
-        btn_set_path.   clicked.connect(lambda: self.main_controller.initialize(self.disable_btns)  )
-        btn_set_phase.  clicked.connect(        self.main_controller.show_phase_panel               )
-        btn4         .  clicked.connect(lambda: self.main_controller.get_min_green_layout().show_panel())
+        btn_set_path    .clicked.connect(lambda: self.data_controller.   initialize(self.disable_btns)                                   )
+        btn_set_moves   .clicked.connect(lambda: self.ui_controller.     show_set_move_layout(self.data_controller.get_all_moves())      )
+        btn_set_min     .clicked.connect(lambda: self.ui_controller.     show_min_green_layout(self.data_controller.get_all_moves())                    )
+
         # =============== combo =============== #
         self.combo = QComboBox()
 
         # =============== lists =============== #
-        self.buttons_list             = [btn_set_path, btn_new_node, btn_set_phase, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12]
-        self.disable_btns             = [btn_new_node, btn_set_phase, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12]
+        self.buttons_list             = [btn_set_path, btn_new_node, btn_set_moves, btn3, btn_set_min, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12]
+        self.disable_btns             = [btn_new_node, btn_set_moves, btn3, btn_set_min, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12]
         self.buttons_checkable_list   = [btn_new_node, btn3, btn5, btn7]
         self.rows_list                = [row0, row1, row2, row3, row4, row5]
 
         # =============== special methods =============== #
         self.set_row(row0, self.combo, btn_set_path)    # set row
-        self.set_row(row1, btn_new_node, btn_set_phase) # set row
-        self.set_row(row2, btn3, btn4)                  # set row
+        self.set_row(row1, btn_new_node, btn_set_moves) # set row
+        self.set_row(row2, btn3, btn_set_min)           # set row
         self.set_row(row3, btn5, btn6)                  # set row
         self.set_row(row4, btn7, btn8)                  # set row
         self.set_row(row5, btn9, btn10)                 # set row
@@ -76,8 +79,8 @@ class MainWindow:
         self.make_checkable()                           # make the buttons checkable
         self.set_btn_style()                            # Set style to buttons
 
-        main_layout.addWidget(self.main_controller.get_phase_layout())
-        main_layout.addWidget(self.main_controller.get_min_green_layout())
+        main_layout.addWidget(self.ui_controller.get_set_move_layout())
+        main_layout.addWidget(self.ui_controller.get_min_green_layout())
         main_layout.addLayout(buttons_layout)
 
         # =============== show window =============== #
