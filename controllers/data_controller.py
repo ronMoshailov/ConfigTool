@@ -10,11 +10,12 @@ class DataController:
         """
         This method runs before __init__ when new instance is created.
         """
-        if cls._instance is None:                                       # checks if there is an instance of the class
-            cls._instance = super(DataController, cls).__new__(cls)     # create new instance and store him in _instance before __init__
-            cls._instance.__init__()                                    # run _init
+        if cls._instance is None:  # checks if there is an instance of the class
+            cls._instance = super(DataController, cls).__new__(
+                cls)  # create new instance and store him in _instance before __init__
+            cls._instance.__init__()  # run _init
             print("** data controller was set successfully")
-        return cls._instance                                            # return _instance
+        return cls._instance  # return _instance
 
     def __init__(self):
         """
@@ -23,7 +24,6 @@ class DataController:
         # =============== Managers =============== #
         self.data_manager = DataManager()
         self.path_manager = PathsManager()
-
 
     # =============== initialize =============== #
     def initialize(self, btn_list):
@@ -52,14 +52,13 @@ class DataController:
             btn.setDisabled(False)
         return True
 
-
     # =============== add =============== #
-
+    def add_move(self, move_name, move_type, is_main, min_green):
+        self.data_manager.add_move(move_name, move_type, is_main, min_green)
 
     # =============== remove =============== #
     def remove_move(self, move_name):
         self.data_manager.remove_move(move_name)
-
 
     # =============== get =============== #
     def get_all_moves(self):
@@ -69,18 +68,9 @@ class DataController:
         :return: list of all moves.
         """
         print("get_all_moves")
-        return self.data_manager._get_all_moves()
+        return self.data_manager.get_all_moves()
 
     # =============== update =============== #
-
-
-
-
-
-
-
-
-
 
     # =============== methods =============== #
 
@@ -91,7 +81,6 @@ class DataController:
         self.path_manager.reset()
         self.data_manager.reset()
         # self.card_manager.reset()
-
 
     # def get_add_move_ref(self):
     #     """
@@ -108,16 +97,6 @@ class DataController:
     #     :return: reference to the 'remove move' method.
     #     """
     #     return self.data_manager.remove_move
-
-
-
-
-
-
-
-
-
-
 
     #
     #

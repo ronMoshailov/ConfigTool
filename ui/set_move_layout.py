@@ -103,7 +103,7 @@ class SetMoveLayout(QWidget):
         row3.addWidget(d_detectors_label)
 
         row4.addWidget(run_button)
-        # run_button.clicked.connect(lambda: self.add_move(main_phase_textbox.text(), add_move_ref))
+        run_button.clicked.connect(lambda: self.add_move(main_phase_textbox.text()))
 
         # =============== scroll =============== #
         self.scroll_area = QScrollArea()  # create the container of the scroll bar. (get only widget)
@@ -155,11 +155,15 @@ class SetMoveLayout(QWidget):
         row.addSpacing(COLUMN_SPACING)
         row.addStretch()
 
-    def show_panel(self, moves_list):
-        self.show_scroll_bar(moves_list)
+    def show_panel(self):
+        print("start print")
+        self.show_scroll_bar()
+        print("start print")
         self.show()
 
-    def show_scroll_bar(self, moves_list):
+    def show_scroll_bar(self):
+        moves_list = self.data_controller.get_all_moves()
+
         # נקה את השורות הקיימות
         for row in self.phase_rows:
             while row.count():
@@ -187,6 +191,7 @@ class SetMoveLayout(QWidget):
 
             btn_remove = QPushButton("❌")
             btn_remove.setFixedSize(30, 30)
+
             btn_remove.clicked.connect(
                 lambda _=False, phase_clean=clean_text(phase):  # קיבוע הערך
                 self.remove_move(phase_clean)
@@ -208,12 +213,11 @@ class SetMoveLayout(QWidget):
     def remove_move(self, move_name):
         print(f"remove move: move_name: {move_name}")
         self.data_controller.remove_move(move_name)
-        print(f"aa")
         # for move in self.all_moves():
         #     print(f"aa {move.name}")
-        self.show_scroll_bar(self.data_controller.get_all_moves())
+        self.show_scroll_bar()
 
-    def add_move(self, name, add_move_ref):
+    def add_move(self, name):
 
         is_main = True if self.main_radio.isChecked() else False
         move_name = ""
@@ -223,7 +227,7 @@ class SetMoveLayout(QWidget):
             move_type = "Traffic"
             move_name = "k" + name
         elif self.traffic_flashing_radio.isChecked():
-            move_type = "Traffic Flashing"
+            move_type = "Traffic_Flashing"
             move_name = "k" + name
         elif self.pedestrian_radio.isChecked():
             move_type = "Pedestrian"
@@ -232,14 +236,15 @@ class SetMoveLayout(QWidget):
             move_type = "Blinker"
             move_name = "B" + name
         elif self.blinker_conditional_radio.isChecked():
-            move_type = "Blinker Conditional"
+            move_type = "Blinker_Conditional"
             move_name = "B" + name
 
         if move_type is None or move_name == "":
             print("Error with type in \"add_move\"")
             return
         print(f"Go to \"add move\" ref with: move_name: {move_name}, move_type: {move_type}, is_main: {is_main}, min_green: 0")
-        add_move_ref(move_name, move_type, is_main, 0)
+        self.data_controller.add_move(move_name, move_type, is_main, 0)
+        self.show_scroll_bar()
 
     # def remove_move(self, name, ):
     #     remove_move_ref(name)

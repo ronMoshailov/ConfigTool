@@ -1,6 +1,8 @@
 import re
 
 from entities.signal_group import SignalGroup
+
+
 # from managers.sk24_manager import Sk24
 
 
@@ -14,10 +16,11 @@ class DataManager:
         """
         This method runs before __init__ when new instance is created.
         """
-        if cls._instance is None:                                       # checks if there is an instance of the class
-            cls._instance = super(DataManager, cls).__new__(cls)      # create new instance and store him in _instance before __init__
-            cls._instance.__init__()                                    # run _init
-        return cls._instance                                            # return _instance
+        if cls._instance is None:  # checks if there is an instance of the class
+            cls._instance = super(DataManager, cls).__new__(
+                cls)  # create new instance and store him in _instance before __init__
+            cls._instance.__init__()  # run _init
+        return cls._instance  # return _instance
 
     def __init__(self):
         """
@@ -28,12 +31,12 @@ class DataManager:
         self.e_detectors = []
         self.inter_stages = []
 
-
     # =========================================== #
     #                 add methods                 #
     # =========================================== #
     def add_move(self, move_name, move_type, is_main, min_green):
         new_move = SignalGroup(move_name, move_type, is_main, min_green)
+        print(f"appending \"add move\" ref with: move_name: {new_move.name}, move_type: {new_move.type}, is_main: {new_move.is_main}, min_green: {new_move.min_green}")
 
         self.moves.append(new_move)
         return True
@@ -77,7 +80,6 @@ class DataManager:
 
         if is_found is False:
             return None
-
 
     # =========================================== #
     #                 get methods                 #
@@ -126,23 +128,6 @@ class DataManager:
         print("Move wasn't found", flush=True)
         return False
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     # =============== scan methods =============== #
 
     # =============== general methods =============== #
@@ -156,7 +141,6 @@ class DataManager:
         self.d_detectors = []
         self.e_detectors = []
         self.inter_stages = []
-
 
     # # =============== Add =============== #
 
@@ -181,7 +165,7 @@ class DataManager:
     # def print_main_phases(self):
     #     print(f"main phases: {self.main_phases}")
     #
-                    # print(f"phase: {phase:<5}, type: {move_type:<25}, min_red: {min_red:<5}, in_main: {is_main:<5}")
+    # print(f"phase: {phase:<5}, type: {move_type:<25}, min_red: {min_red:<5}, in_main: {is_main:<5}")
 
     # def get_phases_from_tk1(self, path):
     #     return self.main_phases[self.sk24_idx]
