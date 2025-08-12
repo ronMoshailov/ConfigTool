@@ -1,4 +1,1 @@
-use interpreter of python 10
-python -m venv .venv
-.\.venv\Scripts\activate
-pip install PyQt5
+PyQt5~=5.15.11

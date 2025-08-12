@@ -1,28 +1,26 @@
-import os
-import sys
-
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QScrollArea, \
-    QCheckBox, QRadioButton, QButtonGroup
+from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QScrollArea
+from PyQt5.QtWidgets import QRadioButton, QButtonGroup
 
-from config.constants import BUTTON_WIDTH, COLUMN_SPACING, BUTTON_HEIGHT, GREEN_IMAGE_PATH, \
-    GREEN_BLINKER_IMAGE_PATH, PEDESTRIAN_IMAGE_PATH, BLINKER_IMAGE_PATH, BLINKER_CONDITIONAL_IMAGE_PATH
+from config.constants import BUTTON_WIDTH, COLUMN_SPACING, BUTTON_HEIGHT
+from config.constants import GREEN_IMAGE_PATH, GREEN_BLINKER_IMAGE_PATH, PEDESTRIAN_IMAGE_PATH, BLINKER_IMAGE_PATH, \
+    BLINKER_CONDITIONAL_IMAGE_PATH
+
 from config.special import clean_text
 from controllers.data_controller import DataController
 
 
 class SetMoveLayout(QWidget):
+
     def __init__(self):
         super().__init__()
 
         self.data_controller = DataController()
 
         # =============== labels =============== #
-        label_layout = QHBoxLayout()
-
-        main_phase_label = QLabel("שם המופע")
-        not_main_phase_label = QLabel("סוג המופע")
-        d_detectors_label = QLabel("מופע ראשי")
+        move_name_label = QLabel("שם המופע")
+        move_type_label = QLabel("סוג המופע")
+        is_main_label = QLabel("מופע ראשי")
 
         # =============== textbox =============== #
         main_phase_textbox = QLineEdit()
@@ -49,14 +47,12 @@ class SetMoveLayout(QWidget):
         self.blinker_conditional_radio = QRadioButton()
         self.blinker_conditional_radio.setIcon(QIcon(BLINKER_CONDITIONAL_IMAGE_PATH))
 
-
         type_radio_group = QButtonGroup(self)
         type_radio_group.addButton(self.traffic_radio)
         type_radio_group.addButton(self.traffic_flashing_radio)
         type_radio_group.addButton(self.pedestrian_radio)
         type_radio_group.addButton(self.blinker_radio)
         type_radio_group.addButton(self.blinker_conditional_radio)
-
 
         type_radio_layout.addWidget(self.traffic_radio)
         type_radio_layout.addStretch()
@@ -76,8 +72,8 @@ class SetMoveLayout(QWidget):
         self.main_radio.setChecked(True)
 
         main_group = QButtonGroup(self)
-        main_group.addButton(self.main_radio)
         main_group.addButton(self.not_main_radio)
+        main_group.addButton(self.main_radio)
 
         main_radio_layout.addStretch()
         main_radio_layout.addWidget(self.main_radio)
@@ -94,13 +90,13 @@ class SetMoveLayout(QWidget):
         # row5 = QHBoxLayout()
 
         row1.addWidget(main_phase_textbox)
-        row1.addWidget(main_phase_label)
+        row1.addWidget(move_name_label)
 
         row2.addLayout(type_radio_layout)
-        row2.addWidget(not_main_phase_label)
+        row2.addWidget(move_type_label)
 
         row3.addLayout(main_radio_layout)
-        row3.addWidget(d_detectors_label)
+        row3.addWidget(is_main_label)
 
         row4.addWidget(run_button)
         run_button.clicked.connect(lambda: self.add_move(main_phase_textbox.text()))
@@ -127,14 +123,14 @@ class SetMoveLayout(QWidget):
 
         # =============== create the layout =============== #
         main_layout.addLayout(row1)
-        main_layout.addStretch()
+        main_layout.addStretch(1)
         main_layout.addLayout(row2)
-        main_layout.addStretch()
+        main_layout.addStretch(1)
         main_layout.addLayout(row3)
-        main_layout.addStretch()
+        main_layout.addStretch(1)
         main_layout.addLayout(row4)
 
-        main_layout.addStretch()
+        main_layout.addStretch(10)
         main_layout.addWidget(self.scroll_area)
 
         self.setLayout(main_layout)
@@ -156,9 +152,7 @@ class SetMoveLayout(QWidget):
         row.addStretch()
 
     def show_panel(self):
-        print("start print")
         self.show_scroll_bar()
-        print("start print")
         self.show()
 
     def show_scroll_bar(self):
@@ -186,7 +180,7 @@ class SetMoveLayout(QWidget):
             else:
                 continue  # אם ה-type לא תואם – דלג
             print(f"move name: {move.name}, move main: {move.is_main}")
-            label = QLabel(phase + ("⭐" if move.is_main is True else "" ))
+            label = QLabel(phase + ("⭐" if move.is_main is True else ""))
             label.setFixedHeight(30)
 
             btn_remove = QPushButton("❌")
@@ -211,10 +205,7 @@ class SetMoveLayout(QWidget):
         self.phase_rows[2].addStretch()
 
     def remove_move(self, move_name):
-        print(f"remove move: move_name: {move_name}")
         self.data_controller.remove_move(move_name)
-        # for move in self.all_moves():
-        #     print(f"aa {move.name}")
         self.show_scroll_bar()
 
     def add_move(self, name):
@@ -242,37 +233,9 @@ class SetMoveLayout(QWidget):
         if move_type is None or move_name == "":
             print("Error with type in \"add_move\"")
             return
-        print(f"Go to \"add move\" ref with: move_name: {move_name}, move_type: {move_type}, is_main: {is_main}, min_green: 0")
+        print(
+            f"Go to \"add move\" ref with: move_name: {move_name}, move_type: {move_type}, is_main: {is_main}, min_green: 0")
         self.data_controller.add_move(move_name, move_type, is_main, 0)
         self.show_scroll_bar()
-
-    # def remove_move(self, name, ):
-    #     remove_move_ref(name)
-        # move_name = ""
-        # move_type = None
-        #
-        # if self.traffic_radio.isChecked():
-        #     move_type = "Traffic"
-        #     move_name = "k" + name
-        # elif self.traffic_flashing_radio.isChecked():
-        #     move_type = "Traffic Flashing"
-        #     move_name = "k" + name
-        # elif self.pedestrian_radio.isChecked():
-        #     move_type = "Pedestrian"
-        #     move_name = "p" + name
-        # elif self.blinker_radio.isChecked():
-        #     move_type = "Blinker"
-        #     move_name = "B" + name
-        # elif self.blinker_conditional_radio.isChecked():
-        #     move_type = "Blinker Conditional"
-        #     move_name = "B" + name
-        #
-        # if move_type is None or move_name == "":
-        #     print("Error with type in \"add_move\"")
-        #     return
-        # print(f"Go to \"add move\" ref with: move_name: {move_name}, move_type: {move_type}, is_main: {is_main}, min_green: 0")
-
-
-
 
 

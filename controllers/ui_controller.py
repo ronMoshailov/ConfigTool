@@ -38,6 +38,7 @@ class UIController:
 
         :return: None
         """
+        self.set_move_layout.hide()
         self.set_move_layout.show_panel()
 
 
