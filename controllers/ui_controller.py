@@ -2,11 +2,23 @@ from ui.min_green_layout import MinGreenLayout
 from ui.set_move_layout import SetMoveLayout
 
 class UIController:
-    def __init__(self, add_move_ref):
+    _instance = None
+
+    def __new__(cls):
+        """
+        This method runs before __init__ when new instance is created.
+        """
+        if cls._instance is None:                                       # checks if there is an instance of the class
+            cls._instance = super(UIController, cls).__new__(cls)     # create new instance and store him in _instance before __init__
+            cls._instance.__init__()                                    # run _init
+            print("** UI controller was set successfully")
+        return cls._instance                                            # return _instance
+
+    def __init__(self):
         """
         This method runs when the object initialized.
         """
-        self.set_move_layout = SetMoveLayout(add_move_ref)
+        self.set_move_layout = SetMoveLayout()
         self.min_green_layout = MinGreenLayout()
 
 
@@ -20,14 +32,13 @@ class UIController:
         """
         return self.set_move_layout
 
-    def show_set_move_layout(self, moves_list):
+    def show_set_move_layout(self):
         """
         This method shows the 'set move' layout.
 
-        :param moves_list: List of all moves.
         :return: None
         """
-        self.set_move_layout.show_panel(moves_list)
+        self.set_move_layout.show_panel()
 
 
 
@@ -40,11 +51,10 @@ class UIController:
         """
         return self.min_green_layout
 
-    def show_min_green_layout(self, moves_list):
+    def show_min_green_layout(self):
         """
         This method shows the 'min green' layout.
 
-        :param moves_list: List of all moves.
         :return: None
         """
-        self.min_green_layout.show_panel(moves_list)
+        self.min_green_layout.show_panel()

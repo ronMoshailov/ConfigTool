@@ -14,7 +14,6 @@ class MinGreenLayout(QWidget):
         super().__init__()
         self.col = QVBoxLayout()
         # =============== labels =============== #
-        print("end to build min green panel")
 
         # =============== active buttons =============== #
         # btn         = QPushButton("➕")

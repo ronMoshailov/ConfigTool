@@ -1,4 +1,4 @@
-from managers.config_manager import ConfigManager
+from managers.config_manager import DataManager
 from managers.paths_manager import PathsManager
 
 
@@ -13,6 +13,7 @@ class DataController:
         if cls._instance is None:                                       # checks if there is an instance of the class
             cls._instance = super(DataController, cls).__new__(cls)     # create new instance and store him in _instance before __init__
             cls._instance.__init__()                                    # run _init
+            print("** data controller was set successfully")
         return cls._instance                                            # return _instance
 
     def __init__(self):
@@ -20,10 +21,8 @@ class DataController:
         This method runs when the object initialized.
         """
         # =============== Managers =============== #
-        self.config_manager = ConfigManager()
+        self.data_manager = DataManager()
         self.path_manager = PathsManager()
-        # self.card_manager = CardsManager()
-
 
 
     # =============== initialize =============== #
@@ -39,11 +38,11 @@ class DataController:
             return False
 
         # clean all data
-        self.config_manager.reset()
+        self.data_manager.reset()
         # self.card_manager.reset()
 
         # scan for moves
-        is_found = self.config_manager.scan_set_moves(self.path_manager.get_path_init_tk1())
+        is_found = self.data_manager.init_moves_from_file(self.path_manager.get_path_init_tk1())
         if is_found is False:
             print(f"Moves not found")
             return False
@@ -52,7 +51,34 @@ class DataController:
         for btn in btn_list:
             btn.setDisabled(False)
         return True
-    # =============== getter =============== #
+
+
+    # =============== add =============== #
+
+
+    # =============== remove =============== #
+    def remove_move(self, move_name):
+        self.data_manager.remove_move(move_name)
+
+
+    # =============== get =============== #
+    def get_all_moves(self):
+        """
+        This method returns all the moves.
+
+        :return: list of all moves.
+        """
+        print("get_all_moves")
+        return self.data_manager._get_all_moves()
+
+    # =============== update =============== #
+
+
+
+
+
+
+
 
 
 
@@ -63,21 +89,25 @@ class DataController:
         This method resets all the data.
         """
         self.path_manager.reset()
-        self.config_manager.reset()
+        self.data_manager.reset()
         # self.card_manager.reset()
 
-    def get_all_moves(self):
-        """
-        This method returns all the moves.
 
-        :return: list of all moves.
-        """
-        print("get_all_moves")
-        return self.config_manager.get_all_moves()
-
-    def get_add_move_ref(self):
-        return self.config_manager.add_move
-
+    # def get_add_move_ref(self):
+    #     """
+    #     This method returns a reference to the 'add move' method.
+    #
+    #     :return: reference to the 'add move' method.
+    #     """
+    #     return self.data_manager.add_move
+    #
+    # def get_remove_move_ref(self):
+    #     """
+    #     This method returns a reference to the 'remove move' method.
+    #
+    #     :return: reference to the 'remove move' method.
+    #     """
+    #     return self.data_manager.remove_move
 
 
 
@@ -100,8 +130,8 @@ class DataController:
     #
     #
     # def remove_move(self, move_name):
-    #     self.config_manager.remove_move(move_name)
+    #     self.data_manager.remove_move(move_name)
     #
     # def add_move(self, value, is_main):
-    #     self.config_manager.add_move(value, is_main)
+    #     self.data_manager.add_move(value, is_main)
     #

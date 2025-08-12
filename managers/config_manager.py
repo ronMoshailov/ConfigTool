@@ -1,19 +1,21 @@
 import re
 
-from entities.move import Move
-from managers.sk24_manager import Sk24
+from entities.signal_group import SignalGroup
+# from managers.sk24_manager import Sk24
 
 
-class ConfigManager:
+class DataManager:
     _instance = None
 
-    # =============== class methods =============== #
+    # =========================================== #
+    #                class methods                #
+    # =========================================== #
     def __new__(cls):
         """
         This method runs before __init__ when new instance is created.
         """
         if cls._instance is None:                                       # checks if there is an instance of the class
-            cls._instance = super(ConfigManager, cls).__new__(cls)      # create new instance and store him in _instance before __init__
+            cls._instance = super(DataManager, cls).__new__(cls)      # create new instance and store him in _instance before __init__
             cls._instance.__init__()                                    # run _init
         return cls._instance                                            # return _instance
 
@@ -26,37 +28,17 @@ class ConfigManager:
         self.e_detectors = []
         self.inter_stages = []
 
-    # =============== get methods =============== #
-    def get_all_moves(self):
-        """
-        This method return all the moves combined.
 
-        :return: list of all moves
-        """
-        print(f"config_manager:\tget_all_moves\t[start] ")
-        self.moves = sorted(self.moves, key=lambda m: m.name)
-        sorted_moves = []
+    # =========================================== #
+    #                 add methods                 #
+    # =========================================== #
+    def add_move(self, move_name, move_type, is_main, min_green):
+        new_move = SignalGroup(move_name, move_type, is_main, min_green)
 
-        # insert to list all moves that start with 'k'
-        for move in self.moves:
-            if move.name.startswith("k"):
-                sorted_moves.append(move)
+        self.moves.append(new_move)
+        return True
 
-        # insert to list all moves that start with 'p'
-        for move in self.moves:
-            if move.name.startswith("p"):
-                sorted_moves.append(move)
-
-        # insert to list all moves that start with 'B'
-        for move in self.moves:
-            if move.name.startswith("B"):
-                sorted_moves.append(move)
-
-        print(f"config_manager:\tget_all_moves\t[end]\n")
-        return sorted_moves
-
-    # =============== scan methods =============== #
-    def scan_set_moves(self, path):
+    def init_moves_from_file(self, path):
         """
         This method set from path the moves in the app.
 
@@ -77,7 +59,7 @@ class ConfigManager:
             """, re.VERBOSE
         )
 
-        print(f"config_manager:\tscan_set_moves\t[start] ")
+        print(f"data_manager:\tinit_moves_from_file\t[start] ")
         with open(path, 'r', encoding='utf-8') as file:
             for line in file:
                 line = line.strip()
@@ -89,14 +71,79 @@ class ConfigManager:
                 if match:
                     is_found = True
                     phase, move_type, min_red, is_main = match.groups()
-                    is_main = is_main.capitalize()
-
-                    new_move = Move(phase, move_type, is_main, min_red)
+                    new_move = SignalGroup(phase, move_type, True if is_main == "true" else False, min_red)
                     self.moves = self.moves + [new_move]
-        print(f"config_manager:\tscan_set_moves\t[end]\n")
+        print(f"data_manager:\tinit_moves_from_file\t[end]\n")
 
         if is_found is False:
             return None
+
+
+    # =========================================== #
+    #                 get methods                 #
+    # =========================================== #
+    def get_all_moves(self):
+        """
+        This method return all the moves combined.
+
+        :return: list of all moves
+        """
+        print(f"[class] data_manager:\t [method] get_all_moves\t[start] ")
+        self.moves = sorted(self.moves, key=lambda m: m.name)
+        sorted_moves = []
+
+        # insert to list all moves that start with 'k'
+        for move in self.moves:
+            if move.name.startswith("k"):
+                sorted_moves.append(move)
+
+        # insert to list all moves that start with 'p'
+        for move in self.moves:
+            if move.name.startswith("p"):
+                sorted_moves.append(move)
+
+        # insert to list all moves that start with 'B'
+        for move in self.moves:
+            if move.name.startswith("B"):
+                sorted_moves.append(move)
+
+        print(f"[class] data_manager:\t [method] get_all_moves\t[end]\n")
+        return sorted_moves
+
+    # =========================================== #
+    #               remove methods                #
+    # =========================================== #
+    def remove_move(self, move_name):
+        print(f"--\nremove_move: Start. {move_name}", flush=True)
+
+        target = next((m for m in self.moves if m.name == move_name), None)
+        if target:
+            self.moves.remove(target)
+            print(f"{move_name} removed (main)", flush=True)
+            print("remove_move: End\n--", flush=True)
+            return True
+
+        print("Move wasn't found", flush=True)
+        return False
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    # =============== scan methods =============== #
 
     # =============== general methods =============== #
     def reset(self):
@@ -110,34 +157,8 @@ class ConfigManager:
         self.e_detectors = []
         self.inter_stages = []
 
-    def remove_move(self, move_name):
-        print("--\nremove_move: Start", flush=True)
-
-        target = next((m for m in self.moves if m.name == move_name), None)
-        if target:
-            self.moves.remove(target)
-            print(f"{move_name} removed (main)", flush=True)
-            print("remove_move: End\n--", flush=True)
-            return True
-
-        print("Move wasn't found", flush=True)
-        return False
 
     # # =============== Add =============== #
-    def add_move(self, value, is_main):
-        if value.startswith("k"):
-            target_type = "Traffic"
-        elif value.startswith("p"):
-            target_type = "Pedestrian"
-        elif value.startswith("B"):
-            target_type = "Blinker_Conditional"
-        else:
-            print("Invalid name")
-            return False
-
-        new_move = Move(value, target_type, 0, is_main)
-        self.moves.append(new_move)
-        return True
 
     #
     # def add_not_main_phase(self, new_phase):

@@ -28,7 +28,7 @@ class MainWindow:
 
         # =============== controller =============== #
         self.data_controller = DataController()
-        self.ui_controller = UIController(self.data_controller.get_add_move_ref())
+        self.ui_controller = UIController()
 
         # =============== rows =============== #
         row0 = QHBoxLayout()
@@ -55,8 +55,8 @@ class MainWindow:
         debug_print_btn = QPushButton("הדפס הכל"    )
 
         btn_set_path    .clicked.connect(lambda: self.data_controller.   initialize(self.disable_btns)                                   )
-        btn_set_moves   .clicked.connect(lambda: self.ui_controller.     show_set_move_layout(self.data_controller.get_all_moves()      )       )
-        btn_set_min     .clicked.connect(lambda: self.ui_controller.     show_min_green_layout(self.data_controller.get_all_moves())     )
+        btn_set_moves   .clicked.connect(lambda: self.ui_controller.     show_set_move_layout()       )
+        btn_set_min     .clicked.connect(lambda: self.ui_controller.     show_min_green_layout()     )
         debug_print_btn .clicked.connect(lambda: displayAllMoves(self.data_controller.get_all_moves())     )
 
         # =============== combo =============== #
@@ -89,6 +89,7 @@ class MainWindow:
         # =============== show window =============== #
         window.setLayout(main_layout)
         window.show()
+        print("** main window was set successfully")
         sys.exit(app.exec_())
 
     def set_btn_disable(self):

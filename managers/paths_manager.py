@@ -6,7 +6,9 @@ from PyQt5.QtWidgets import QFileDialog
 class PathsManager:
     _instance = None
 
-    # =============== class methods =============== #
+    # =========================================== #
+    #                class methods                #
+    # =========================================== #
     def __new__(cls):
         """
         This method runs before __init__ when new instance is created.
@@ -22,7 +24,21 @@ class PathsManager:
         self.path_tk1 = None
         self.path_init_tk1 = None
 
-    # =================== scan paths ===================
+    # =========================================== #
+    #                  get methods                #
+    # =========================================== #
+    def get_path_init_tk1(self):
+        return self.path_init_tk1
+
+    # =========================================== #
+    #                general methods              #
+    # =========================================== #
+    def reset(self):
+        self.path_project = None
+        self.path_init = None
+        self.path_tk1 = None
+        self.path_init_tk1 = None
+
     def scan_set_paths(self):
         """
         This method set the paths of 'init.java' and 'Tk1.java'
@@ -60,14 +76,3 @@ class PathsManager:
                 #   dirs - list of all the folders in root
                 #   files - list of all the files in root
                 # ============================================================
-
-    # =================== getter ===================
-    def get_path_init_tk1(self):
-        return self.path_init_tk1
-
-    # =================== methods ===================
-    def reset(self):
-        self.path_project = None
-        self.path_init = None
-        self.path_tk1 = None
-        self.path_init_tk1 = None
