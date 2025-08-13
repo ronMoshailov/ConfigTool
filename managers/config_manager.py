@@ -128,6 +128,19 @@ class DataManager:
         print("Move wasn't found", flush=True)
         return False
 
+    # =========================================== #
+    #               update methods                #
+    # =========================================== #
+    def update_min_green(self, name, value):
+
+        for move in self.moves:
+            if move.name == name:
+                print(f"The name is {name}, the value is {value}")
+                print("found")
+                move.min_green = value
+                return True
+        return None
+
     # =============== scan methods =============== #
 
     # =============== general methods =============== #

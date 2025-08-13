@@ -6,12 +6,14 @@ from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout
 
 from config.constants import BUTTON_WIDTH, COLUMN_SPACING, BUTTON_HEIGHT
 from config.style import min_group_row_style
-
+from controllers.data_controller import DataController
 
 
 class MinGreenLayout(QWidget):
     def __init__(self):
         super().__init__()
+        self.data_controller = DataController()
+
         self.col = QVBoxLayout()
         # =============== labels =============== #
 
@@ -30,9 +32,9 @@ class MinGreenLayout(QWidget):
 
 
 
-    def show_panel(self, all_moves):
+    def show_panel(self):
         print(f"min_green_layout:\tshow_panel\t[start] ")
-
+        all_moves = self.data_controller.get_all_moves()
         print("* starting to remove children")
         while self.col.count():
             item = self.col.takeAt(0)        # get the first QLayoutItem of the layout
@@ -55,6 +57,10 @@ class MinGreenLayout(QWidget):
             container.setLayout(row)
             container.setStyleSheet(min_group_row_style)
             self.col.addWidget(container)
+
+            btn.clicked.connect(
+                lambda _=False, l=label, t=textbox: self.data_controller.update_min_green(l.text(), t.text())
+            )
 
         self.col.addStretch()
         self.show()

@@ -71,6 +71,8 @@ class DataController:
         return self.data_manager.get_all_moves()
 
     # =============== update =============== #
+    def update_min_green(self, name, value):
+        self.data_manager.update_min_green(name, value)
 
     # =============== methods =============== #
 
