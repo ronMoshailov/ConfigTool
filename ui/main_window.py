@@ -1,18 +1,12 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QSizePolicy, QComboBox, QFileDialog
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QSpacerItem
+from PyQt5.QtCore                   import Qt
+from PyQt5.QtWidgets                import QSizePolicy, QComboBox, QApplication, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QSpacerItem
+from config.constants               import ROW_SPACING, COLUMN_SPACING, BUTTON_WIDTH, BUTTON_HEIGHT
+from config.style                   import combo_style, button_style
+from controllers.data_controller    import DataController
+from controllers.ui_controller      import UIController
+from data.debug                     import displayAllMoves
 
-# configure imports
-from config.constants import ROW_SPACING, COLUMN_SPACING, BUTTON_WIDTH, BUTTON_HEIGHT
-from config.style import combo_style, button_style
-from controllers.data_controller import DataController
-from controllers.ui_controller import UIController
-
-# imports
 import sys
-
-from data.debug import displayAllMoves
-
 
 class MainWindow:
     def __init__(self):
@@ -157,6 +151,11 @@ class MainWindow:
             btn.setStyleSheet(button_style)
 
     def make_checkable(self):
+        """
+        This method make buttons checkable.
+
+        :return: None
+        """
         for btn in self.buttons_checkable_list:
             btn.setCheckable(True)
 

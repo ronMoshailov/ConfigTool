@@ -4,6 +4,9 @@ from ui.set_move_layout import SetMoveLayout
 class UIController:
     _instance = None
 
+    # =========================================== #
+    #                class methods                #
+    # =========================================== #
     def __new__(cls):
         """
         This method runs before __init__ when new instance is created.
@@ -22,8 +25,14 @@ class UIController:
         self.min_green_layout = MinGreenLayout()
 
 
+    # =========================================== #
+    #                 add methods                 #
+    # =========================================== #
 
-    # =============== SetMove methods =============== #
+
+    # =========================================== #
+    #                 get methods                 #
+    # =========================================== #
     def get_set_move_layout(self):
         """
         This method returns the 'set move' layout.
@@ -32,6 +41,27 @@ class UIController:
         """
         return self.set_move_layout
 
+    def get_min_green_layout(self):
+        """
+        This method returns the 'min green' layout.
+
+        :return: Returns the 'min green' layout.
+        """
+        return self.min_green_layout
+
+    # =========================================== #
+    #               update methods                #
+    # =========================================== #
+
+
+    # =========================================== #
+    #               remove methods                #
+    # =========================================== #
+
+
+    # =========================================== #
+    #               general methods               #
+    # =========================================== #
     def show_set_move_layout(self):
         """
         This method shows the 'set move' layout.
@@ -40,17 +70,6 @@ class UIController:
         """
         self.min_green_layout.hide()
         self.set_move_layout.show_panel()
-
-
-
-    # =============== MinGreen methods =============== #
-    def get_min_green_layout(self):
-        """
-        This method returns the 'min green' layout.
-
-        :return: Returns the 'min green' layout.
-        """
-        return self.min_green_layout
 
     def show_min_green_layout(self):
         """

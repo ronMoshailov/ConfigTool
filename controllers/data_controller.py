@@ -1,11 +1,12 @@
-from managers.config_manager import DataManager
+from managers.data_manager import DataManager
 from managers.paths_manager import PathsManager
-
 
 class DataController:
     _instance = None
 
-    # =============== class methods =============== #
+    # =========================================== #
+    #                class methods                #
+    # =========================================== #
     def __new__(cls):
         """
         This method runs before __init__ when new instance is created.
@@ -25,7 +26,51 @@ class DataController:
         self.data_manager = DataManager()
         self.path_manager = PathsManager()
 
-    # =============== initialize =============== #
+    # =========================================== #
+    #                 add methods                 #
+    # =========================================== #
+    def add_move(self, move_name, move_type, is_main, min_green):
+        self.data_manager.add_move(move_name, move_type, is_main, min_green)
+
+    # =========================================== #
+    #                 get methods                 #
+    # =========================================== #
+    def get_all_moves(self):
+        """
+        This method returns all the moves.
+
+        :return: list of all moves.
+        """
+        return self.data_manager.get_all_moves()
+
+    # =========================================== #
+    #               update methods                #
+    # =========================================== #
+    def update_min_green(self, name, value):
+        """
+        This method updates the minimum green time of a move.
+
+        :param name: name of the move.
+        :param value: minimum green time of the move.
+        :return: None
+        """
+        self.data_manager.update_min_green(name, value)
+
+    # =========================================== #
+    #               remove methods                #
+    # =========================================== #
+    def remove_move(self, move_name):
+        """
+        This method removes a move.
+
+        :param move_name: name of the move.
+        :return: None
+        """
+        self.data_manager.remove_move(move_name)
+
+    # =========================================== #
+    #               general methods               #
+    # =========================================== #
     def initialize(self, btn_list):
         """
         This method initialize the paths, moves, ...
@@ -52,67 +97,10 @@ class DataController:
             btn.setDisabled(False)
         return True
 
-    # =============== add =============== #
-    def add_move(self, move_name, move_type, is_main, min_green):
-        self.data_manager.add_move(move_name, move_type, is_main, min_green)
-
-    # =============== remove =============== #
-    def remove_move(self, move_name):
-        self.data_manager.remove_move(move_name)
-
-    # =============== get =============== #
-    def get_all_moves(self):
-        """
-        This method returns all the moves.
-
-        :return: list of all moves.
-        """
-        print("get_all_moves")
-        return self.data_manager.get_all_moves()
-
-    # =============== update =============== #
-    def update_min_green(self, name, value):
-        self.data_manager.update_min_green(name, value)
-
-    # =============== methods =============== #
-
     def reset(self):
         """
         This method resets all the data.
         """
         self.path_manager.reset()
         self.data_manager.reset()
-        # self.card_manager.reset()
 
-    # def get_add_move_ref(self):
-    #     """
-    #     This method returns a reference to the 'add move' method.
-    #
-    #     :return: reference to the 'add move' method.
-    #     """
-    #     return self.data_manager.add_move
-    #
-    # def get_remove_move_ref(self):
-    #     """
-    #     This method returns a reference to the 'remove move' method.
-    #
-    #     :return: reference to the 'remove move' method.
-    #     """
-    #     return self.data_manager.remove_move
-
-    #
-    #
-    #
-    #
-    #
-    #
-    #
-    # # =============== I don't know why these are here =============== #
-    #
-    #
-    # def remove_move(self, move_name):
-    #     self.data_manager.remove_move(move_name)
-    #
-    # def add_move(self, value, is_main):
-    #     self.data_manager.add_move(value, is_main)
-    #

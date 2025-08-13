@@ -179,7 +179,7 @@ class SetMoveLayout(QWidget):
                 row_idx = 2
             else:
                 continue  # אם ה-type לא תואם – דלג
-            print(f"move name: {move.name}, move main: {move.is_main}")
+            # print(f"move name: {move.name}, move main: {move.is_main}")
             label = QLabel(phase + ("⭐" if move.is_main is True else ""))
             label.setFixedHeight(30)
 
@@ -233,8 +233,7 @@ class SetMoveLayout(QWidget):
         if move_type is None or move_name == "":
             print("Error with type in \"add_move\"")
             return
-        print(
-            f"Go to \"add move\" ref with: move_name: {move_name}, move_type: {move_type}, is_main: {is_main}, min_green: 0")
+        # print(f"Go to \"add move\" ref with: move_name: {move_name}, move_type: {move_type}, is_main: {is_main}, min_green: 0")
         self.data_controller.add_move(move_name, move_type, is_main, 0)
         self.show_scroll_bar()
 
