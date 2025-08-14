@@ -1,3 +1,4 @@
+from ui.matrix_window import Matrix
 from ui.min_green_layout import MinGreenLayout
 from ui.set_move_layout import SetMoveLayout
 
@@ -23,6 +24,7 @@ class UIController:
         """
         self.set_move_layout = SetMoveLayout()
         self.min_green_layout = MinGreenLayout()
+        self.matrix_layout = Matrix()
 
 
     # =========================================== #
@@ -49,6 +51,14 @@ class UIController:
         """
         return self.min_green_layout
 
+    def get_matrix_layout(self):
+        """
+        This method returns the 'matrix' layout.
+
+        :return: Returns the 'matrix' layout.
+        """
+        return self.matrix_layout
+
     # =========================================== #
     #               update methods                #
     # =========================================== #
@@ -68,6 +78,7 @@ class UIController:
 
         :return: None
         """
+        self.matrix_layout.hide()
         self.min_green_layout.hide()
         self.set_move_layout.show_panel()
 
@@ -77,5 +88,16 @@ class UIController:
 
         :return: None
         """
+        self.matrix_layout.hide()
         self.set_move_layout.hide()
         self.min_green_layout.show_panel()
+
+    def show_matrix_layout(self):
+        """
+        This method shows the 'matrix' layout.
+
+        :return: None
+        """
+        self.min_green_layout.hide()
+        self.set_move_layout.hide()
+        self.matrix_layout.show_panel()

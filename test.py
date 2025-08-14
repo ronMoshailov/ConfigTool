@@ -1,30 +1,20 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QCheckBox, QLabel
-from PyQt5.QtCore import Qt
 import sys
+from PyQt5.QtWidgets import QApplication, QWidget, QTableWidget, QTableWidgetItem, QVBoxLayout
+from PyQt5.QtCore import Qt
 
 app = QApplication(sys.argv)
 
-w = QWidget()
-w.setWindowTitle("Checkbox demo")
+# מספר שהמשתמש נותן
+n = 5  # נקבל מטריצה בגודל 6x6
+size = n + 1
 
-layout = QVBoxLayout(w)
+window = QWidget()
+layout = QVBoxLayout(window)
 
-label = QLabel("מצב: לא מסומן")
-chk = QCheckBox("אפשרות כלשהי")
-chk.setChecked(False)              # התחלה לא מסומן
-# chk.setTristate(True)            # אם תרצה מצב שלישי (לא חובה)
+table = QTableWidget(size, size)
 
-def on_change(state):
-    if state == Qt.Checked:
-        label.setText("מצב: מסומן")
-    elif state == Qt.Unchecked:
-        label.setText("מצב: לא מסומן")
-    else:
-        label.setText("מצב: ביניים")
 
-chk.stateChanged.connect(on_change)   # או chk.toggled.connect(lambda b: ...)
-layout.addWidget(chk)
-layout.addWidget(label)
+layout.addWidget(table)
+window.show()
 
-w.show()
 sys.exit(app.exec_())

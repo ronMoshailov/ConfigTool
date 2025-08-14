@@ -1,5 +1,6 @@
 import re
 
+from entities.matrix import MatrixCell
 from entities.signal_group import SignalGroup
 
 class DataManager:
@@ -25,6 +26,7 @@ class DataManager:
         self.d_detectors = []
         self.e_detectors = []
         self.inter_stages = []
+        self.MatrixCells = []
 
     # =========================================== #
     #                 add methods                 #
@@ -83,6 +85,38 @@ class DataManager:
         if is_found is False:
             return None
 
+    def init_matrix(self, path):
+        pattern = re.compile(
+            r"""
+            tk\.zwz\.setzeZwz                      # קריאת הפונקציה
+            \(\s*                                   # (
+            tk\.(?P<out>[A-Za-z_]\w*)\s*,          # out
+            \s*tk\.(?P<inn>[A-Za-z_]\w*)\s*,       # in
+            \s*(?P<t1>-?\d+)\s*,                   # זמן 1
+            \s*(?P<t2>-?\d+)\s*                    # זמן 2
+            \)\s*;                                  # );
+            """,
+            re.VERBOSE
+        )
+
+        with open(path, "r", encoding="utf-8") as f:
+            for line in f:
+                # מסירים הערות ושורות ריקות
+                line = line.split("//", 1)[0].strip()
+                if not line:
+                    continue
+
+                match = pattern.search(line)
+                if match:
+                    out = match.group("out")
+                    inn = match.group("inn")
+                    t1 = int(match.group("t1"))
+                    t2 = int(match.group("t2"))
+
+                    # יוצרים את שני הכיוונים
+                    self.MatrixCells.append(MatrixCell(out, inn, t1))
+                    self.MatrixCells.append(MatrixCell(inn, out, t2))
+
     # =========================================== #
     #                 get methods                 #
     # =========================================== #
@@ -114,6 +148,8 @@ class DataManager:
         print(f"[class] data_manager:\t [method] get_all_moves\t[end]\n")
         return sorted_moves
 
+    def get_all_matrix_cells(self):
+        return self.MatrixCells
 
     # =========================================== #
     #               update methods                #

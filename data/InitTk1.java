@@ -45,7 +45,10 @@ public class InitTk1 extends InitTk {
 		tk.pc     =  new Move(   tk    , "_c"   , MoveType.Pedestrian         ,      6 ,   0 , true ); 
 		tk.pd     =  new Move(   tk    , "_d"   , MoveType.Pedestrian         ,      8 ,   0 , true ); 
                                                                                                       
+		tk.Ba     =  new Move(   tk    , "_Ba"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
+		tk.Bb     =  new Move(   tk    , "_Bb"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
 		tk.Bc     =  new Move(   tk    , "_Bc"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
+		tk.Bd     =  new Move(   tk    , "_Bd"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
 	}
 
 	//INTERGREEN MATRIX

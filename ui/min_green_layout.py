@@ -1,12 +1,14 @@
 import os
 import sys
 
+from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QScrollArea, \
     QCheckBox
 
 from config.constants import BUTTON_WIDTH, COLUMN_SPACING, BUTTON_HEIGHT
 from config.style import min_group_row_style
 from controllers.data_controller import DataController
+from entities.toast import Toast
 
 
 class MinGreenLayout(QWidget):
@@ -15,22 +17,11 @@ class MinGreenLayout(QWidget):
         self.data_controller = DataController()
 
         self.col = QVBoxLayout()
-        # =============== labels =============== #
-
-        # =============== active buttons =============== #
-        # btn         = QPushButton("➕")
-
-
-        # =============== layout =============== #
-
-        # =============== create the layout =============== #
 
         self.setLayout(self.col)
         self.hide()
 
         # =============== scroll rows =============== #
-
-
 
     def show_panel(self):
         print(f"min_green_layout:\tshow_panel\t[start] ")
@@ -61,6 +52,7 @@ class MinGreenLayout(QWidget):
             btn.clicked.connect(
                 lambda _=False, l=label, t=textbox: self.data_controller.update_min_green(l.text(), t.text())
             )
+        QTimer.singleShot(500, lambda: Toast("הודעה נשלחה בהצלחה"))
 
         self.col.addStretch()
         self.show()

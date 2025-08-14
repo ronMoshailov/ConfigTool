@@ -12,9 +12,9 @@ class DataController:
         This method runs before __init__ when new instance is created.
         """
         if cls._instance is None:  # checks if there is an instance of the class
-            cls._instance = super(DataController, cls).__new__(
-                cls)  # create new instance and store him in _instance before __init__
-            cls._instance.__init__()  # run _init
+            cls._instance = super().__new__(cls)  # create new instance and store him in _instance before __init__
+            cls.data_manager = DataManager()
+            cls.path_manager = PathsManager()
             print("** data controller was set successfully")
         return cls._instance  # return _instance
 
@@ -22,9 +22,8 @@ class DataController:
         """
         This method runs when the object initialized.
         """
-        # =============== Managers =============== #
-        self.data_manager = DataManager()
-        self.path_manager = PathsManager()
+        pass
+
 
     # =========================================== #
     #                 add methods                 #
@@ -43,6 +42,8 @@ class DataController:
         """
         return self.data_manager.get_all_moves()
 
+    def get_all_matrix_cells(self):
+        return self.data_manager.get_all_matrix_cells()
     # =========================================== #
     #               update methods                #
     # =========================================== #
@@ -92,10 +93,13 @@ class DataController:
             print(f"Moves not found")
             return False
 
+        self.data_manager.init_matrix(self.path_manager.get_path_init_tk1())
+
         # disable buttons
         for btn in btn_list:
             btn.setDisabled(False)
         return True
+
 
     def reset(self):
         """
