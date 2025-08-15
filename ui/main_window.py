@@ -1,5 +1,6 @@
 from PyQt5.QtCore                   import Qt
-from PyQt5.QtWidgets                import QSizePolicy, QComboBox, QApplication, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QSpacerItem
+from PyQt5.QtWidgets import QSizePolicy, QComboBox, QApplication, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, \
+    QSpacerItem, QLabel
 from config.constants               import ROW_SPACING, COLUMN_SPACING, BUTTON_WIDTH, BUTTON_HEIGHT
 from config.style                   import combo_style, button_style
 from controllers.data_controller    import DataController
@@ -7,6 +8,7 @@ from controllers.ui_controller      import UIController
 from data.debug                     import displayAllMoves
 
 import sys
+
 
 class MainWindow:
     def __init__(self):
@@ -88,6 +90,7 @@ class MainWindow:
         window.setLayout(main_layout)
         window.show()
         print("** main window was set successfully")
+
         sys.exit(app.exec_())
 
     def set_btn_disable(self):
@@ -170,3 +173,4 @@ class MainWindow:
 # QWidget → Base for every graphical element (window, box, area, etc.)
 # QScrollArea → Allows you to display scrollable content when the content is larger than the available space.
 # ------------------------------------------------------------------------- #
+

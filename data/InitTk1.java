@@ -41,10 +41,12 @@ public class InitTk1 extends InitTk {
 		tk.k5     =  new Move(   tk    , "_5"   , MoveType.Traffic_Flashing   ,      1 ,   0 , false);
 
 		tk.pa     =  new Move(   tk    , "_a"   , MoveType.Pedestrian         ,      8 ,   0 , false); 
-//		tk.pb     =  new Move(   tk    , "_b"   , MoveType.Pedestrian         ,      6 ,   0 , false);
+		tk.pb     =  new Move(   tk    , "_b"   , MoveType.Pedestrian         ,      6 ,   0 , false);
 		tk.pc     =  new Move(   tk    , "_c"   , MoveType.Pedestrian         ,      6 ,   0 , true ); 
 		tk.pd     =  new Move(   tk    , "_d"   , MoveType.Pedestrian         ,      8 ,   0 , true ); 
-                                                                                                      
+		tk.pe     =  new Move(   tk    , "_e"   , MoveType.Pedestrian         ,      8 ,   0 , true );
+		tk.pf     =  new Move(   tk    , "_f"   , MoveType.Pedestrian         ,      8 ,   0 , true );
+
 		tk.Ba     =  new Move(   tk    , "_Ba"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
 		tk.Bb     =  new Move(   tk    , "_Bb"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
 		tk.Bc     =  new Move(   tk    , "_Bc"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
