@@ -34,6 +34,14 @@ class PathsManager:
         """
         return self.path_init_tk1
 
+    def get_path_init(self):
+        """
+        This method returns the path of 'init.java'.
+
+        :return: None
+        """
+        return self.path_init
+
     # =========================================== #
     #                general methods              #
     # =========================================== #

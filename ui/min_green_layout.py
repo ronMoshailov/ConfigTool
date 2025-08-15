@@ -1,36 +1,38 @@
-import os
-import sys
-
+from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout
 from PyQt5.QtCore import QTimer
-from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QScrollArea, \
-    QCheckBox
 
-from config.constants import BUTTON_WIDTH, COLUMN_SPACING, BUTTON_HEIGHT
-from config.style import min_group_row_style
 from controllers.data_controller import DataController
+from config.style import min_group_row_style
+
 from entities.toast import Toast
 
 
 class MinGreenLayout(QWidget):
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
     def __init__(self):
         super().__init__()
         self.data_controller = DataController()
-
         self.col = QVBoxLayout()
-
         self.setLayout(self.col)
         self.hide()
 
-        # =============== scroll rows =============== #
+
+    # =============== scroll rows =============== #
 
     def show_panel(self):
         print(f"min_green_layout:\tshow_panel\t[start] ")
         all_moves = self.data_controller.get_all_moves()
         print("* starting to remove children")
         while self.col.count():
-            item = self.col.takeAt(0)        # get the first QLayoutItem of the layout
-            widget = item.widget()      # get the widget
-            if widget:                  #
+            item = self.col.takeAt(0)  # get the first QLayoutItem of the layout
+            widget = item.widget()  # get the widget
+            if widget:  #
                 widget.deleteLater()
 
         print("* creating rows for each move")
