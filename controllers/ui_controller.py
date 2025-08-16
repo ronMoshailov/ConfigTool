@@ -1,6 +1,8 @@
 from ui.matrix_window import Matrix
 from ui.min_green_layout import MinGreenLayout
 from ui.set_move_layout import SetMoveLayout
+from ui.sk_layout import SkLayout
+
 
 class UIController:
     _instance = None
@@ -25,6 +27,7 @@ class UIController:
         self.set_move_layout = SetMoveLayout()
         self.min_green_layout = MinGreenLayout()
         self.matrix_layout = Matrix()
+        self.sk_layout = SkLayout()
 
 
     # =========================================== #
@@ -59,6 +62,15 @@ class UIController:
         """
         return self.matrix_layout
 
+    def get_sk_layout(self):
+        """
+        This method returns the 'sk' layout.
+
+        :return: Returns the 'sk' layout.
+        """
+        return self.sk_layout
+
+
     # =========================================== #
     #               update methods                #
     # =========================================== #
@@ -80,6 +92,7 @@ class UIController:
         """
         self.matrix_layout.hide()
         self.min_green_layout.hide()
+        self.sk_layout.hide()
         self.set_move_layout.show_panel()
 
     def show_min_green_layout(self):
@@ -90,6 +103,7 @@ class UIController:
         """
         self.matrix_layout.hide()
         self.set_move_layout.hide()
+        self.sk_layout.hide()
         self.min_green_layout.show_panel()
 
     def show_matrix_layout(self):
@@ -100,4 +114,17 @@ class UIController:
         """
         self.min_green_layout.hide()
         self.set_move_layout.hide()
+        self.sk_layout.hide()
         self.matrix_layout.show_panel()
+
+    def show_sk_layout(self):
+        """
+        This method shows the 'sk' layout.
+
+        :return: None
+        """
+        self.min_green_layout.hide()
+        self.set_move_layout.hide()
+        self.matrix_layout.hide()
+        self.sk_layout.show_layout()
+

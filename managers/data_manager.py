@@ -195,3 +195,4 @@ class DataManager:
         self.d_detectors = []
         self.e_detectors = []
         self.inter_stages = []
+

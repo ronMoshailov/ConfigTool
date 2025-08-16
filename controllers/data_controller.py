@@ -47,6 +47,21 @@ class DataController:
 
     def get_all_matrix_cells(self):
         return self.data_manager.get_all_matrix_cells()
+
+    def get_sk_count(self):
+        """
+        This method returns the sk count.
+
+        :return: sk count.
+        """
+        return len(self.sk_manager)
+
+    def get_all_sk_channels(self, number_card):
+        for sk_manager in self.sk_manager:
+            if sk_manager.number_card == number_card:
+                return sk_manager.get_sk_channel_list()
+        return None
+
     # =========================================== #
     #               update methods                #
     # =========================================== #
@@ -59,6 +74,13 @@ class DataController:
         :return: None
         """
         self.data_manager.update_min_green(name, value)
+
+    def update_sk_comment(self, card_number, channel):
+        print(f"[class] DataController:\t [method] update_sk_comment\t[start] ")
+        for sk_manager in self.sk_manager:
+            if sk_manager.number_card == card_number:
+                sk_manager.update_sk_comment(channel)
+        print(f"[class] DataController:\t [method] update_sk_comment\t[end] ")
 
     # =========================================== #
     #               remove methods                #

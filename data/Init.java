@@ -172,8 +172,8 @@ public class Init implements enp.Initialisierung {
 		new SchaltKanal(Var.tk1.pf   , Var.lred,        hwRed200  , Hw.HF, sk1,23, Hw.SK);
 		new SchaltKanal(Var.tk1.pf   , Var.lgreen,      hwGreen200, Hw.HF, sk1,24, Hw.SK);
 
-		new SchaltKanal(Var.tk1.Bg   , Var.lamber_nuge, hwAmber200, Hw.HF, sk2, 1, Hw.KK);
-		new SchaltKanal(Var.tk1.Bh   , Var.lamber_nuge, hwAmber200, Hw.HF, sk2, 2, Hw.KK);
+		new SchaltKanal(Var.tk1.Ba   , Var.lamber_nuge, hwAmber200, Hw.HF, sk2, 1, Hw.KK);
+		new SchaltKanal(Var.tk1.Bb   , Var.lamber_nuge, hwAmber200, Hw.HF, sk2, 2, Hw.KK);
 
 		//all blinkers, including conditioned (mutne), have to be excluded  from current monitoring
 		//therefore the last parameter must be Hw.KK
