@@ -1,12 +1,12 @@
 from PyQt5.QtCore                   import Qt
-from PyQt5.QtWidgets import QSizePolicy, QComboBox, QApplication, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, \
+from PyQt5.QtWidgets import QSizePolicy, QComboBox, QApplication, QPushButton, QVBoxLayout, QHBoxLayout, \
     QSpacerItem
 from config.constants               import ROW_SPACING, COLUMN_SPACING, BUTTON_WIDTH, BUTTON_HEIGHT
-from config.special import createWindow, set_blue_button_white_text_style, make_checkable, set_btn_disable
-from config.style                   import combo_style, button_style
+from config.special import createWindow, set_blue_button_white_text_style, make_checkable, set_btn_disable, build_combo
+from config.style                   import combo_style
 from controllers.data_controller    import DataController
 from controllers.ui_controller      import UIController
-from data.debug                     import displayAllMoves
+from config.debug import displayAllMoves
 
 import sys
 
@@ -62,6 +62,9 @@ class MainWindow:
         disable_btns               = [btn_new_node, btn_set_moves, btn3, btn_set_min, btn5, btn_matrix, btn7, btn_sk, btn9, btn10, btn8, debug_print_btn]
         buttons_checkable_list          = [btn_new_node, btn3, btn5, btn7]
         self.rows_list                  = [row0, row1, row2, row3, row4, row5, row6]
+        employee_list                   = ["אליה", "דוד", "לנה", "לירוי", "רון", "סרגיי", "קטיה", "שחר"]
+
+
 
         # =============== special methods =============== #
         self.set_row(row0, self.combo, btn_set_path)    # set row
@@ -73,7 +76,7 @@ class MainWindow:
         self.set_row(row6, btn8, debug_print_btn)       # set row
         self.add_rows_to_layout(buttons_layout)         # add the button layout
         set_btn_disable(disable_btns)                          # Disable buttons
-        self.add_employees()                            # add employees to combo box
+        build_combo(self.combo, employee_list)                            # add employees to combo box
         make_checkable(buttons_checkable_list)
         set_blue_button_white_text_style(self.buttons_list)
 

@@ -26,7 +26,6 @@ class SkManager:
                 line = line.strip()
 
                 if "new SchaltKanal" not in line:
-                    print("not found line matched")
                     continue
                 print("found line matched")
                 match = pattern.match(line)
@@ -37,7 +36,7 @@ class SkManager:
                     card = int(match.group(4))
                     channel = int(match.group(5))
                     if card == self.number_card:
-                        print("match pattern")
+                        print(f"match pattern: {card}")
                         self.sk_channel_list.append(SkChannel(name, color, channel, is_commented))
 
         print(f"SkManager:\tinitialize_sk\t[end] ")

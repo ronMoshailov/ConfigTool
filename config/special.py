@@ -1,8 +1,9 @@
 import re
 
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget
 
-from config.style import button_style
+from config.style import button_style, combo_style
 
 
 def clean_text(text):
@@ -54,4 +55,11 @@ def set_btn_disable(btn_list):
     """
     for btn in btn_list:
         btn.setDisabled(True)
+
+def build_combo(combo, list):
+    for item in list:
+        combo.addItem(item)
+    combo.setLayoutDirection(Qt.RightToLeft)
+    combo.setStyleSheet(combo_style)
+
 

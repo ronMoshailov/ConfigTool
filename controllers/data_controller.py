@@ -78,7 +78,7 @@ class DataController:
     def initialize(self, btn_list):
         init_moves = self.initialize_moves(btn_list)
         DataController.set_sk_list(self.path_manager.get_path_init())
-        for sk in DataController.data_manager:
+        for sk in DataController.sk_manager:
             sk.initialize_sk(self.path_manager.get_path_init())
         if init_moves:
             return True
@@ -122,7 +122,6 @@ class DataController:
                     print(f"Sk number: {card_num}")
                     cls.sk_manager.append(SkManager(card_num))
                     card_num = card_num + 1
-
         print(f"DataController:\tset_sk_list\t[end] ")
 
 
