@@ -82,6 +82,20 @@ class DataController:
                 sk_manager.update_sk_comment(channel)
         print(f"[class] DataController:\t [method] update_sk_comment\t[end] ")
 
+    def update_sk_color(self, card_number, row):
+        print(f"[class] DataController:\t [method] update_sk_color\t[start] ")
+        for sk_manager in self.sk_manager:
+            if sk_manager.number_card == card_number:
+                sk_manager.update_sk_color(row)
+        print(f"[class] DataController:\t [method] update_sk_color\t[end] ")
+
+    def update_sk_name(self, card_number, row, new_name):
+        print(f"[class] DataController:\t [method] update_sk_name\t[start] ")
+        for sk_manager in self.sk_manager:
+            if sk_manager.number_card == card_number:
+                sk_manager.update_sk_name(row, new_name)
+        print(f"[class] DataController:\t [method] update_sk_name\t[end] ")
+
     # =========================================== #
     #               remove methods                #
     # =========================================== #
@@ -153,4 +167,6 @@ class DataController:
         """
         self.path_manager.reset()
         self.data_manager.reset()
+
+
 

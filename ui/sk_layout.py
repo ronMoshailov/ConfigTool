@@ -24,119 +24,112 @@ class SkLayout(QWidget):
 
     # =============== scroll rows =============== #
 
-
     def _build_card_table(self, card_number: int):
-        #
         wrap = QWidget(self)
-        vbox = QVBoxLayout()
-        wrap.setLayout(vbox)
+        vbox = QVBoxLayout(wrap)
         vbox.setContentsMargins(0, 0, 0, 0)
         vbox.setSpacing(6)
 
-        # title
         title = QLabel(f"card number {card_number}", wrap)
         title.setAlignment(Qt.AlignCenter)
         vbox.addWidget(title)
 
         tbl = QTableWidget(24, 4, wrap)
-        was = tbl.blockSignals(True)
+
+        # חסימת סיגנלים של הטבלה בזמן בנייה
+        was_tbl = tbl.blockSignals(True)
+
         tbl.setHorizontalHeaderLabels(["#", "value", "color", "comment"])
         tbl.verticalHeader().setVisible(False)
-        tbl.itemChanged.connect(lambda item: self.update_comment(item, card_number))
-        tbl.cellClicked.connect(lambda r, c, t=tbl, card=card_number: self.on_cell_clicked(t, r, c, card))
-
-        # מידות עמודות (אופציונלי, כוונן כרצונך)
         tbl.setColumnWidth(0, 36)
-        tbl.setColumnWidth(1, 60)
+        tbl.setColumnWidth(1, 160)  # נתתי קצת רוחב לקומבו שיהיה נוח
         tbl.setColumnWidth(2, 50)
         tbl.setColumnWidth(3, 60)
-        # tbl.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
-        # tbl.setMinimumWidth(tbl.columnWidth(0) + tbl.columnWidth(1) + tbl.columnWidth(2) + tbl.columnWidth(3) + 20)
 
-        # color
         gray = QBrush(QColor(230, 230, 230))
-        green = QColor(180,255,180)
+        green_bg = QBrush(QColor(180, 255, 180))
 
         all_moves = self.data_controller.get_all_moves()
-        all_moves_names = ["-"] + list((m.name for m in all_moves))
+        all_moves_names = ["-"] + [m.name for m in all_moves]
         all_channels_list = self.data_controller.get_all_sk_channels(card_number)
 
-        # create table
+        # נבנה את השורות והווידג'טים
         for r in range(24):
-            # column 0, number channel
-            col_0 = QTableWidgetItem(str(r + 1))
-            col_0.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
-            col_0.setBackground(gray)
-            col_0.setTextAlignment(Qt.AlignCenter)
-            tbl.setItem(r, 0, col_0)
+            # עמודה 0: מספר ערוץ (לא ניתן לעריכה)
+            it0 = QTableWidgetItem(str(r + 1))
+            it0.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
+            it0.setBackground(gray)
+            it0.setTextAlignment(Qt.AlignCenter)
+            tbl.setItem(r, 0, it0)
 
-            # column 1, name of the move
+            # עמודה 1: קומבו של השם
             combo = QComboBox()
-            for name in all_moves_names:
-                combo.addItem(name)
+            combo.addItems(all_moves_names)
             tbl.setCellWidget(r, 1, combo)
 
+            # עמודה 2: אימוג'י צבע (לא ניתן לעריכה ידנית)
+            it2 = QTableWidgetItem("")
+            it2.setTextAlignment(Qt.AlignCenter)
+            it2.setFlags(it2.flags() & ~Qt.ItemIsEditable)
+            tbl.setItem(r, 2, it2)
 
-            # column 2, color
-            col_2 = QTableWidgetItem("")
-            col_2.setTextAlignment(Qt.AlignCenter)
-            tbl.setItem(r, 2, col_2)
+            # עמודה 3: צ'קבוקס להערה
+            it3 = QTableWidgetItem("")
+            it3.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+            it3.setCheckState(Qt.Unchecked)
+            tbl.setItem(r, 3, it3)
 
-            # column 3, check box
-            col_3 = QTableWidgetItem("")
-            col_3.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)   # הפוך את התא לצ’קבוקס
-            col_3.setCheckState(Qt.Unchecked)                           # מצב התחלתי
-            tbl.setItem(r, 3, col_3)
+        # אתחול ערכים מהמודל (כולל סט בחירה לקומבו) – נחסום סיגנלים מהקומבו עצמו בזמן setCurrentIndex
+        for ch in all_channels_list:
+            row = ch.channel - 1
+            is_commented = bool(ch.is_comment)
 
-        # set values
-        for channel in all_channels_list:
-            is_colored = False
+            # עמודה 3: צ'קבוקס
+            it3 = tbl.item(row, 3)
+            it3.setCheckState(Qt.Checked if is_commented else Qt.Unchecked)
 
-            # column 3, check box
-            item = tbl.item(channel.channel - 1, 3)
-            if channel.is_comment:
-                item.setCheckState(Qt.Checked)
-                is_colored = True
-                item.setBackground(QBrush(green))
+            # עמודה 0: רקע אם מסומן
+            if is_commented:
+                tbl.item(row, 0).setBackground(green_bg)
 
-            # column 0, number channel
-            item = tbl.item(channel.channel - 1, 0)
-            if is_colored:
-                item.setBackground(QBrush(green))
+            # עמודה 1: קומבו – סט ערך ללא סיגנלים
+            combo = tbl.cellWidget(row, 1)
+            if isinstance(combo, QComboBox):
+                idx = combo.findText(ch.name)
+                if idx < 0:
+                    idx = 0  # או להוסיף את הערך אם חשוב שיתווסף
+                if idx != combo.currentIndex():
+                    blocker = QSignalBlocker(combo)
+                    combo.setCurrentIndex(idx)
+                if is_commented:
+                    combo.setStyleSheet("background-color: rgb(200,255,200);")
 
+            # עמודה 2: אימוג'י צבע + רקע אם מסומן
+            it2 = tbl.item(row, 2)
+            it2.setText("🔴" if ch.color == "hwRed200"
+                        else "🟢" if ch.color == "hwGreen200"
+            else "🟡" if ch.color == "hwAmber200"
+            else "")
+            if is_commented:
+                it2.setBackground(green_bg)
 
-            # column 1, name of the move
-            item = tbl.cellWidget(channel.channel - 1, 1)
-            if is_colored:
-                item.setStyleSheet("background-color: rgb(200,255,200);")
-            index = item.findText(channel.name)
-            item.setCurrentIndex(index)
+        # שחרור חסימת הטבלה
+        tbl.blockSignals(was_tbl)
 
-            # for name in all_moves_names:
-            #     combo.addItem(name)
-            # tbl.setCellWidget(r, 1, combo)
+        # חיבורים לסיגנלים – רק אחרי שהכל מאותחל
+        # שינוי צבע בלחיצה על תא (עמודה 2)
+        tbl.cellClicked.connect(lambda r, c, t=tbl, card=card_number: self.update_color(t, r, c, card))
+        # שינוי צ'קבוקס (עמודה 3)
+        tbl.itemChanged.connect(lambda it, c=card_number: self.update_comment(it, c))
+        # שינוי קומבו – לכל שורה חיבור אחד משלו
+        for r in range(24):
+            combo = tbl.cellWidget(r, 1)
+            if isinstance(combo, QComboBox):
+                combo.currentTextChanged.connect(
+                    lambda _text, row=r, t=tbl, card=card_number: self.update_name(t, row, 1, card)
+                )
 
-
-            # column 2, color
-            item = tbl.item(channel.channel - 1, 2)
-            if channel.color == "hwRed200":
-                item.setText("🔴")
-            elif channel.color == "hwGreen200":
-                item.setText("🟢")
-            elif channel.color == "hwAmber200":
-                item.setText("🟡")
-            if is_colored:
-                item.setBackground(QBrush(green))
-
-
-            # col_3 = QTableWidgetItem("")
-            # col_3.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)   # הפוך את התא לצ’קבוקס
-            # col_3.setCheckState(Qt.Unchecked)                           # מצב התחלתי
-            # tbl.setItem(r, 3, col_3)
-
-            is_colored = False
-        tbl.blockSignals(was)
-        vbox.addWidget(tbl)  # ← חשוב!
+        vbox.addWidget(tbl)
         return wrap
 
     def show_layout(self):
@@ -210,30 +203,47 @@ class SkLayout(QWidget):
         print(f"[class] SkLayout:\t [method] update_color\t[start] ")
 
         COL_COLOR = 2  # העמודה של האימוג'י
-        if col != COL_COLOR:
+        if col != 2:
             return
 
-        # נחסום סיגנלים כדי שלא יופעל itemChanged לשווא
-        blocker = QSignalBlocker(table)
-
         item = table.item(row, COL_COLOR)
-        if item is None:
-            item = QTableWidgetItem("")
-            item.setTextAlignment(Qt.AlignCenter)
-            table.setItem(row, COL_COLOR, item)
 
         cur = item.text()
-        nxt = {"🔴": "🟡", "🟡": "🟢", "🟢": "🔴", "": "🔴"}.get(cur, "🔴")
-        item.setText(nxt)
+        nxt_color = {"🔴": "🟡", "🟡": "🟢", "🟢": "🔴", "": "🔴"}.get(cur, "🔴")
+        item.setText(nxt_color)
 
         # (אופציונלי) לצבוע רקע לפי הצבע
         bg = {
             "🔴": QColor(255, 210, 210),
             "🟡": QColor(255, 250, 200),
             "🟢": QColor(210, 255, 210),
-        }.get(nxt, QColor(255, 255, 255))
-        item.setBackground(QBrush(bg))
+        }.get(nxt_color, QColor(255, 255, 255))
         print(f"[class] SkLayout:\t [method] update_comment\t[end] ")
-
         # אם צריך לעדכן מודל:
-        # self.data_controller.update_sk_color(card_number, row+1, nxt)
+        self.data_controller.update_sk_color(card_number, row)
+
+    def update_name(self, table: QTableWidget, row: int, col: int, card_number: int):
+        print(f"[class] SkLayout:\t [method] update_name\t[start] ")
+        if col != 1:
+            print(f"The column is not 1, it was {col}")
+            return
+
+        # שליפת הטקסט מתוך התא (באותו row/col)
+        combo = table.cellWidget(row, col)
+        with QSignalBlocker(combo), QSignalBlocker(table):
+            name_text = combo.currentText()
+            # כאן לא נוגעים ב־UI – רק מודל
+            self.data_controller.update_sk_name(card_number, row, name_text)
+
+        # item = table.item(row, col)
+        # if item is not None:
+        #     name_text = item.text().strip()
+        #     print(f"update_name -> row={row}, col={col}, name='{name_text}'")
+        #
+        #     # עדכון ב-data_controller
+        #     self.data_controller.update_sk_name(card_number, row, name_text)
+        #
+        # else:
+        #     print(f"update_name -> no item found at row={row}, col={col}")
+
+        print(f"[class] SkLayout:\t [method] update_name\t[end] ")

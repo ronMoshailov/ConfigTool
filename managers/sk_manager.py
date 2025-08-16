@@ -50,3 +50,20 @@ class SkManager:
                 sk_channel.is_comment = not sk_channel.is_comment
         print(f"[class] SkManager:\t [method] update_sk_comment\t[end] ")
 
+    def update_sk_color(self, row):
+        print(f"[class] SkManager:\t [method] update_sk_color\t[start] ")
+        cur_color = self.sk_channel_list[row].color
+        if cur_color == "hwRed200":
+            self.sk_channel_list[row].color = "hwAmber200"
+        elif cur_color == "hwAmber200":
+            self.sk_channel_list[row].color = "hwGreen200"
+        elif cur_color == "hwGreen200":
+            self.sk_channel_list[row].color = "hwRed200"
+        print(f"[class] SkManager:\t [method] update_sk_color\t[end] ")
+
+    def update_sk_name(self, row, new_name):
+        print(f"[class] SkManager:\t [method] update_sk_name\t[start] ")
+        self.sk_channel_list[row].name = new_name
+        print(f"[class] SkManager:\t [method] update_sk_name\t[end] ")
+
+
