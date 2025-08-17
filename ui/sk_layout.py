@@ -235,15 +235,4 @@ class SkLayout(QWidget):
             # כאן לא נוגעים ב־UI – רק מודל
             self.data_controller.update_sk_name(card_number, row, name_text)
 
-        # item = table.item(row, col)
-        # if item is not None:
-        #     name_text = item.text().strip()
-        #     print(f"update_name -> row={row}, col={col}, name='{name_text}'")
-        #
-        #     # עדכון ב-data_controller
-        #     self.data_controller.update_sk_name(card_number, row, name_text)
-        #
-        # else:
-        #     print(f"update_name -> no item found at row={row}, col={col}")
-
         print(f"[class] SkLayout:\t [method] update_name\t[end] ")

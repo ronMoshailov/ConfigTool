@@ -234,7 +234,7 @@ class SetMoveLayout(QWidget):
             print("Error with type in \"add_move\"")
             return
         # print(f"Go to \"add move\" ref with: move_name: {move_name}, move_type: {move_type}, is_main: {is_main}, min_green: 0")
-        self.data_controller.add_move(move_name, move_type, is_main, 0)
+        self.data_controller.add_move(move_name, move_type, is_main, "0")
         self.show_scroll_bar()
 
 

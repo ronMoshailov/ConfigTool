@@ -31,7 +31,7 @@ combo_style = """
             }
         """
 
-button_style = """
+blue_button_white_text_style = """
                 QPushButton {
                     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                                                       stop:0 #5dade2, stop:1 #2e86c1);

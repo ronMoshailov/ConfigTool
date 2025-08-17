@@ -30,7 +30,6 @@ class Matrix(QWidget):
         all_moves           = self.data_controller.get_all_moves()
         all_moves_names     = [m.name for m in all_moves if not m.name.startswith("B")]
         self.length              = len(all_moves_names)
-        matrix_size         = 50
 
         # Set matrix
         self.tbl.setRowCount(self.length)
@@ -51,7 +50,7 @@ class Matrix(QWidget):
     def set_values(self):
         all_cells = self.data_controller.get_all_matrix_cells()
         self.tbl.clearContents()
-        
+
 
         row_idx = {}  # key - value of header, value - index of the header
         for i in range(self.length):
@@ -69,6 +68,8 @@ class Matrix(QWidget):
         for cell in all_cells:
             i = row_idx.get(cell.move_out) # value = dict.get(key)
             j = col_idx.get(cell.move_in)
+            if i is None or j is None:
+                continue
 
             item = QTableWidgetItem(str(cell.wait_time))
             item.setTextAlignment(Qt.AlignCenter)

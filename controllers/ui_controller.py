@@ -8,14 +8,14 @@ class UIController:
     _instance = None
 
     # =========================================== #
-    #                class methods                #
+    #                Construction                 #
     # =========================================== #
     def __new__(cls):
         """
         This method runs before __init__ when new instance is created.
         """
         if cls._instance is None:                                       # checks if there is an instance of the class
-            cls._instance = super(UIController, cls).__new__(cls)     # create new instance and store him in _instance before __init__
+            cls._instance = super(UIController, cls).__new__(cls)       # create new instance and store him in _instance before __init__
             cls._instance.__init__()                                    # run _init
             print("** UI controller was set successfully")
         return cls._instance                                            # return _instance

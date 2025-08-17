@@ -2,18 +2,18 @@ import os
 
 from PyQt5.QtWidgets import QFileDialog
 
+from entities.log import Log
+
+
 class PathsManager:
     _instance = None
 
     # =========================================== #
-    #                class methods                #
+    #                Construction                 #
     # =========================================== #
     def __new__(cls):
-        """
-        This method runs before __init__ when new instance is created.
-        """
         if cls._instance is None:                                       # checks if there is an instance of the class
-            cls._instance = super(PathsManager, cls).__new__(cls)     # create new instance and store him in _instance before __init__
+            cls._instance = super(PathsManager, cls).__new__(cls)       # create new instance and store him in _instance before __init__
             cls._instance.__init__()                                    # run _init
         return cls._instance                                            # return _instance
 
@@ -22,6 +22,10 @@ class PathsManager:
         self.path_init = None
         self.path_tk1 = None
         self.path_init_tk1 = None
+
+    # =========================================== #
+    #                 add methods                 #
+    # =========================================== #
 
     # =========================================== #
     #                  get methods                #
@@ -43,28 +47,24 @@ class PathsManager:
         return self.path_init
 
     # =========================================== #
+    #               update methods                #
+    # =========================================== #
+
+    # =========================================== #
+    #               remove methods                #
+    # =========================================== #
+
+    # =========================================== #
     #                general methods              #
     # =========================================== #
-    def reset(self):
-        """
-        This method reset all the paths.
-
-        :return: None
-        """
-        self.path_project = None
-        self.path_init = None
-        self.path_tk1 = None
-        self.path_init_tk1 = None
-
     def scan_set_paths(self):
         """
-        This method set the paths of 'init.java' and 'Tk1.java'
+        This method set the paths of for all the files that needed.
 
-        :return: None
+        :return: False if failed, otherwise True.
         """
         folder_path = QFileDialog.getExistingDirectory(None, "בחר תיקייה")
         if not folder_path:
-            print("Error in the root path")
             return False
 
         self.path_project = folder_path
@@ -78,20 +78,38 @@ class PathsManager:
                 if file.lower() == "init.java" and init_found is False:  # בודק בלי תלות ברישיות
                     self.path_init = os.path.join(root, file)
                     init_found = True
-                    # print("init.java was found in:", self.path_init)
                 elif file.lower() == "tk1.java" and tk1_found is False:
                     self.path_tk1 = os.path.join(root, file)
                     tk1_found = True
-                    # print("Tk1.java was found in:", self.path_tk1)
                 elif file.lower() == "inittk1.java" and init_tk1_found is False:
                     self.path_init_tk1 = os.path.join(root, file)
                     init_tk1_found = True
-                    # print("Tk1.java was found in:", self.path_init_tk1)
 
+        if not init_found:
+            Log.warning(f"Warning: init.java wasn't found")
+        if not tk1_found:
+            Log.warning(f"Warning: Tk1.java wasn't found")
+        if not init_tk1_found:
+            Log.warning(f"Warning: initTk1.java wasn't found")
+        return True
 
-            # ============================================================
-            # os.walk returns:
-            #   root - current path in the scan
-            #   dirs - list of all the folders in root
-            #   files - list of all the files in root
-            # ============================================================
+    # ============================================================
+    # os.walk returns:
+    #   root - current path in the scan
+    #   dirs - list of all the folders in root
+    #   files - list of all the files in root
+    # ============================================================
+
+    # ======================================================= #
+    #    not needed for now but maybe in future I will use    #
+    # ======================================================= #
+    # def reset(self):
+    #     """
+    #     This method reset all the paths.
+    #
+    #     :return: None
+    #     """
+    #     self.path_project = None
+    #     self.path_init = None
+    #     self.path_tk1 = None
+    #     self.path_init_tk1 = None

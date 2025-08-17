@@ -10,11 +10,11 @@ ROW_SPACING = 20
 COLUMN_SPACING = 20
 
 # =============== paths =============== #
-GREEN_IMAGE_PATH                = os.path.join(PROJECT_DIR, "data\icons", "green.png")
-GREEN_BLINKER_IMAGE_PATH        = os.path.join(PROJECT_DIR, "data\icons", "green_blink.png")
-PEDESTRIAN_IMAGE_PATH           = os.path.join(PROJECT_DIR, "data\icons", "pedestrian.png")
-BLINKER_IMAGE_PATH              = os.path.join(PROJECT_DIR, "data\icons", "blinker.png")
-BLINKER_CONDITIONAL_IMAGE_PATH  = os.path.join(PROJECT_DIR, "data\icons", "blinker conditional.png")
+GREEN_IMAGE_PATH                = os.path.join(PROJECT_DIR, "data", "icons", "green.png")
+GREEN_BLINKER_IMAGE_PATH        = os.path.join(PROJECT_DIR, "data", "icons", "green_blink.png")
+PEDESTRIAN_IMAGE_PATH           = os.path.join(PROJECT_DIR, "data", "icons", "pedestrian.png")
+BLINKER_IMAGE_PATH              = os.path.join(PROJECT_DIR, "data", "icons", "blinker.png")
+BLINKER_CONDITIONAL_IMAGE_PATH  = os.path.join(PROJECT_DIR, "data", "icons", "blinker conditional.png")
 
 # =============== log colors =============== #
 RED = "\033[91m"

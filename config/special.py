@@ -3,7 +3,8 @@ import re
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget
 
-from config.style import button_style, combo_style
+from config.style import blue_button_white_text_style, combo_style
+from entities.log import Log
 
 
 def clean_text(text):
@@ -16,13 +17,16 @@ def clean_text(text):
     return re.sub(r'[^A-Za-z0-9א-ת]', '', text)
 
 
-def createWindow(app, title):
+def create_window(app, title = None):
     """
     This method create new window and return him.
 
+    :param title: The title of the window
     :param app: The app
     :return:
     """
+    if title is None:
+        Log.warning("WARNING: Your title is 'None' so the window has no title")
     window = QWidget()
     window.setWindowTitle(title)
     screen = app.primaryScreen().availableGeometry().center()
@@ -38,7 +42,7 @@ def set_blue_button_white_text_style(btn_list):
     :return: None
     """
     for btn in btn_list:
-        btn.setStyleSheet(button_style)
+        btn.setStyleSheet(blue_button_white_text_style)
 
 
 def make_checkable(btn_list):
@@ -62,40 +66,17 @@ def set_btn_disable(btn_list):
 
 
 def build_combo(combo, item_list):
+    """
+    This method set values to combo from the item_list.
+
+    :param combo: The combo box
+    :param item_list: The list of values to add to the combo box
+    :return: None
+    """
+    item_list.sort()
     for item in item_list:
         combo.addItem(item)
     combo.setLayoutDirection(Qt.RightToLeft)
     combo.setStyleSheet(combo_style)
 
 
-def error(message: str):
-    """
-    This method print to the console red message to indicate for errors
-
-    :param message: string of the message
-    :return: None
-    """
-    print(f"\033[91m{message}\033[0m")
-    # \033 → means control sequence for the text between '[' to 'm'
-
-
-def warning(message: str):
-    """
-    This method print to the console yellow message to indicate for warnings
-
-    :param message: string of the message
-    :return: None
-    """
-    print(f"\033[93m{message}\033[0m")
-    # \033 → means control sequence for the text between '[' to 'm'
-
-
-def success(message: str):
-    """
-    This method print to the console green message to indicate for success
-
-    :param message: string of the message
-    :return: None
-    """
-    print(f"\033[92m{message}\033[0m")
-    # \033 → means control sequence for the text between '[' to 'm'
