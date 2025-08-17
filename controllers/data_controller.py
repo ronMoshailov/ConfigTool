@@ -51,6 +51,7 @@ class DataController:
         print(f"**** [class] DataController:\t [method] add_move\t[end] ")
         return True
 
+    # def add_sk(self):
     # =========================================== #
     #                 get methods                 #
     # =========================================== #
@@ -126,8 +127,11 @@ class DataController:
         print(f"**** [class] DataController:\t [method] update_sk_comment\t[start] ")
         for sk_manager in self.sk_manager:
             if sk_manager.number_card == card_number:
-                sk_manager.update_sk_comment(channel)
+                if sk_manager.update_sk_comment(channel):
+                    print(f"**** [class] DataController:\t [method] update_sk_comment\t[end] ")
+                    return True
         print(f"**** [class] DataController:\t [method] update_sk_comment\t[end] ")
+        return False
 
     def update_sk_color(self, card_number: int, row: int):
         """
@@ -140,7 +144,8 @@ class DataController:
         print(f"**** [class] DataController:\t [method] update_sk_color\t[start] ")
         for sk_manager in self.sk_manager:
             if sk_manager.number_card == card_number:
-                sk_manager.update_sk_color(row)
+                return sk_manager.update_sk_color(row)
+        return False
         print(f"**** [class] DataController:\t [method] update_sk_color\t[end] ")
 
     def update_sk_name(self, card_number: int, row: int, new_name: str):
@@ -262,3 +267,4 @@ class DataController:
     # =========================================== #
     #                static methods               #
     # =========================================== #
+

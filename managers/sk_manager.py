@@ -43,20 +43,30 @@ class SkManager:
         for sk_channel in self.sk_channel_list:
             if sk_channel.channel == int(channel):
                 sk_channel.is_comment = not sk_channel.is_comment
+                print(f"[class] SkManager:\t [method] update_sk_comment\t[end] ")
+                return True
         print(f"[class] SkManager:\t [method] update_sk_comment\t[end] ")
+        return False
 
     def update_sk_color(self, row: int):
         print(f"[class] SkManager:\t [method] update_sk_color\t[start] ")
         cur_color = self.sk_channel_list[row].color
         if cur_color == "hwRed200":
             self.sk_channel_list[row].color = "hwAmber200"
+            print(f"[class] SkManager:\t [method] update_sk_color\t[end] ")
+            return True
         elif cur_color == "hwAmber200":
             self.sk_channel_list[row].color = "hwGreen200"
+            print(f"[class] SkManager:\t [method] update_sk_color\t[end] ")
+            return True
         elif cur_color == "hwGreen200":
             self.sk_channel_list[row].color = "hwRed200"
+            print(f"[class] SkManager:\t [method] update_sk_color\t[end] ")
+            return True
         else:
             Log.error("The color is not 'hwRed20' or 'hwAmber200' or 'hwGreen200'")
-        print(f"[class] SkManager:\t [method] update_sk_color\t[end] ")
+            return False
+
 
     def update_sk_name(self, row: int, new_name: str):
         print(f"[class] SkManager:\t [method] update_sk_name\t[start] ")
@@ -95,6 +105,21 @@ class SkManager:
                     channel = int(match.group(5))
                     if card == self.number_card:
                         self.sk_channel_list.append(SkChannel(name, color, channel, is_commented))
+        self.initialize_channels()
         print(f"** [class] SkManager:\t [method] initialize_sk\t[end] ")
 
 
+    def initialize_channels(self):
+        print(f"[class] SkManager:\t [method] initialize_channels\t[start] ")
+        # create list of all the channels
+        channel_numbers = list(range(1, 25))
+
+        # remove the exist channels
+        for channel in self.sk_channel_list:
+            channel_numbers.remove(channel.channel)
+
+        # initialize the empty channels
+        for channel in channel_numbers:
+            self.sk_channel_list.append(SkChannel("", "", channel, False))
+
+        print(f"[class] SkManager:\t [method] initialize_channels\t[start] ")

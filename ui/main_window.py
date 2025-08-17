@@ -43,7 +43,7 @@ class MainWindow:
         btn5            = QPushButton("הפעל מאסטר"  )
         btn_matrix      = QPushButton("הגדר מטריצה" )
         btn7            = QPushButton("dx הפעל"     )
-        btn_sk          = QPushButton("SK24 כרטיסי"  )
+        btn_sk          = QPushButton("SK24 כרטיסי" )
         btn8            = QPushButton("הגדר פרמטרים")
         btn9            = QPushButton("הגדר מעברים" )
         btn10           = QPushButton("IO24 כרטיסי" )

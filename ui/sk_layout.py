@@ -169,33 +169,29 @@ class SkLayout(QWidget):
 
     def update_comment(self, item, card_number):
         print(f"[class] SkLayout:\t [method] update_comment\t[start] ")
-        table = item.tableWidget()
-        was = table.blockSignals(True)
+        table = item.tableWidget() # The table
+        was = table.blockSignals(True) # block signal
 
-        if item.column() != 3:
-            table.blockSignals(was)
-            return None
+        # check the column
+        # if item.column() != 3:
+        #     table.blockSignals(was)
+        #     return None
 
-        row_number = item.row()
+        row_number = item.row() # get the row number (channel)
+        is_success = self.data_controller.update_sk_comment(card_number, row_number + 1)
+
         brush = QBrush(QColor(180, 255, 180)) if item.checkState() == Qt.Checked else QBrush(QColor(255, 255, 255))
+        Column = 3
+        cell = table.item(row_number, Column)
+        r, g, b = brush.color().red(), brush.color().green(), brush.color().blue()
 
-        for col in range(table.columnCount()):
-            print(f"-- row: {row_number<5}, col: {col<5}")
-            cell = table.cellWidget(row_number, col)
-            if col == 0:
-                cell = table.item(row_number, col)
-                print(f"card_number: {card_number}")
-                self.data_controller.update_sk_comment(card_number, cell.text())
-                continue
-            if cell is not None:
-                c = brush.color()
-                cell.setStyleSheet(f"background-color: rgb({c.red()},{c.green()},{c.blue()});")
-            else:
-                it = table.item(row_number, col)
-                if it is None:
-                    it = QTableWidgetItem("")
-                    table.setItem(row_number, col, it)
-                it.setBackground(brush)
+        if is_success:
+            for col in range(table.columnCount()):
+                cell = table.item(row_number, col) or table.cellWidget(row_number, col) # if it's column 1 (combo) the first argument will be None so we call the combo with 'cellWidget'
+                if col == 1:
+                    cell.setStyleSheet(f"QComboBox {{ background-color: rgb({r},{g},{b}); }}")
+                    continue
+                cell.setBackground(brush)
         table.blockSignals(was)
         print(f"[class] SkLayout:\t [method] update_comment\t[end] ")
 
@@ -210,17 +206,11 @@ class SkLayout(QWidget):
 
         cur = item.text()
         nxt_color = {"🔴": "🟡", "🟡": "🟢", "🟢": "🔴", "": "🔴"}.get(cur, "🔴")
-        item.setText(nxt_color)
 
-        # (אופציונלי) לצבוע רקע לפי הצבע
-        bg = {
-            "🔴": QColor(255, 210, 210),
-            "🟡": QColor(255, 250, 200),
-            "🟢": QColor(210, 255, 210),
-        }.get(nxt_color, QColor(255, 255, 255))
         print(f"[class] SkLayout:\t [method] update_comment\t[end] ")
         # אם צריך לעדכן מודל:
-        self.data_controller.update_sk_color(card_number, row)
+        if self.data_controller.update_sk_color(card_number, row):
+            item.setText(nxt_color)
 
     def update_name(self, table: QTableWidget, row: int, col: int, card_number: int):
         print(f"[class] SkLayout:\t [method] update_name\t[start] ")
@@ -231,7 +221,7 @@ class SkLayout(QWidget):
         # שליפת הטקסט מתוך התא (באותו row/col)
         combo = table.cellWidget(row, col)
         with QSignalBlocker(combo), QSignalBlocker(table):
-            name_text = combo.currentText()
+            name_text = ("" if combo.currentText() == "-" else combo.currentText())
             # כאן לא נוגעים ב־UI – רק מודל
             self.data_controller.update_sk_name(card_number, row, name_text)
 

@@ -28,4 +28,5 @@ def displayAllMoves():
     for sk in sk_list:
         print(f"Number card: {sk.number_card}")
         for channel in sk.sk_channel_list:
-            print(f"name: {channel.name:<5}, color: {channel.color:<10}, card_number: {channel.channel:<5}, is_comment: {channel.is_comment}")
+            if channel.name != "":
+                print(f"name: {channel.name:<5}, color: {channel.color:<10}, channel: {channel.channel:<5}, is_comment: {channel.is_comment}")
