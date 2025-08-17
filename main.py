@@ -12,4 +12,9 @@ main_window = MainWindow()
 # QWidget → Base for every graphical element (window, box, area, etc.)
 
 # QScrollArea → Allows you to display scrollable content when the content is larger than the available space.
+
+# ----- Table -----
+# QTableWidget        -> ready table that based on QTableWidgetItem.
+# QTableWidgetItem    ->
+
 # ------------------------------------------------------------------------- #

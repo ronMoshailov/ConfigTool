@@ -132,9 +132,3 @@ class Matrix(QWidget):
         # אופציונלי: להימנע מריבוי רשומות, אפשר לשמור גם במפה:
         # self._last_changes[(row_name, col_name)] = val
 
-########################################################
-# QTableWidget        -> ready table that based on QTableWidgetItem.
-# QTableWidgetItem    ->
-#
-#
-#

@@ -1,6 +1,27 @@
+import logging
+
+from config.special import error
 from managers.data_manager import DataManager
 from managers.paths_manager import PathsManager
 from managers.sk_manager import SkManager
+
+
+def is_move_valid(move_name, move_type):
+    if move_type == "Traffic" or move_type == "Traffic_Flashing":
+        if not move_name.startswith("k"):
+            error(f"Invalid name for the type. name: {move_name}, type: {move_type}")
+            return False
+        return True
+    if move_type == "Pedestrian":
+        if not move_name.startswith("p"):
+            error(f"Invalid name for the type. name: {move_name}, type: {move_type}")
+            return False
+        return True
+    if move_type == "Blinker" or move_type == "Blinker_Conditional":
+        if not move_name.startswith("B"):
+            error(f"Invalid name for the type. name: {move_name}, type: {move_type}")
+            return False
+        return True
 
 
 class DataController:
@@ -27,11 +48,15 @@ class DataController:
         """
         pass
 
-
     # =========================================== #
     #                 add methods                 #
     # =========================================== #
     def add_move(self, move_name, move_type, is_main, min_green):
+        print(f"**** DataController:\tadd_move\t[start] ")
+        if not is_move_valid(move_name, move_type):
+            return False
+        print(f"name: {move_name}, type: {move_type}, is main: {is_main}, min green: {min_green}")
+        print(f"**** DataController:\tadd_move\t[end] ")
         self.data_manager.add_move(move_name, move_type, is_main, min_green)
 
     # =========================================== #

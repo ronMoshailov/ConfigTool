@@ -1,6 +1,5 @@
 from controllers.data_controller import DataController
 
-
 def displayAllMoves():
     """
     This method print all the information about all moves.
@@ -12,17 +11,19 @@ def displayAllMoves():
 
     moves_list = data_controller.get_all_moves()
 
-    print(moves_list)
-    print("\ndisplayAllMoves:")
+    # print all the moves
+    print("\nAll moves::")
     for move in moves_list:
         print(f"self.name: {move.name:<5}, move_type: {move.type:<25}, is_main: {move.is_main:<8}, min_green: {move.min_green:<3}")
 
-    print("\ndisplayMatrixMoves:")
+    # print all matrix instances
+    print("\nall matrix::")
     matrix_cells = data_controller.data_manager.MatrixCells
     for cell in matrix_cells:
         print(f"out: {cell.move_out:<5}, in: {cell.move_in:<5}, out: {cell.wait_time:<5}")
 
-    print("\ndisplaySk:")
+    # print all sk channels
+    print("\nall sk::")
     sk_list = data_controller.sk_manager
     for sk in sk_list:
         print(f"Number card: {sk.number_card}")
