@@ -29,8 +29,9 @@ def create_window(app, title = None):
         Log.warning("WARNING: Your title is 'None' so the window has no title")
     window = QWidget()
     window.setWindowTitle(title)
-    screen = app.primaryScreen().availableGeometry().center()
-    window.setGeometry(screen.x(), screen.y() // 2, 800, 600)  # (X, Y, Width, Height)
+    window.setWindowState(Qt.WindowMaximized)
+    # screen = app.primaryScreen().availableGeometry().center()
+    # window.setGeometry(screen.x(), screen.y() // 2, 800, 600)  # (X, Y, Width, Height)
     return window
 
 
@@ -74,8 +75,9 @@ def build_combo(combo, item_list):
     :return: None
     """
     item_list.sort()
-    for item in item_list:
+    for idx, item in enumerate (item_list):
         combo.addItem(item)
+        combo.setItemData(idx, Qt.AlignCenter, Qt.TextAlignmentRole)
     combo.setLayoutDirection(Qt.RightToLeft)
     combo.setStyleSheet(combo_style)
 

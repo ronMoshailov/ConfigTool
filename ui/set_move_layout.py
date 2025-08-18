@@ -21,12 +21,48 @@ class SetMoveLayout(QWidget):
         move_name_label = QLabel("שם המופע")
         move_type_label = QLabel("סוג המופע")
         is_main_label = QLabel("מופע ראשי")
+        label_style = """
+            QLabel {
+                font-size: 32px;
+                font-weight: bold;
+                color: #333333;
+                background-color: #e0e0e0;
+                border: 1px solid #aaaaaa;
+                border-radius: 5px;
+                padding: 5px;
+            }
+        """
+
+        move_name_label.setStyleSheet(label_style)
+        move_type_label.setStyleSheet(label_style)
+        is_main_label.setStyleSheet(label_style)
 
         # =============== textbox =============== #
         main_phase_textbox = QLineEdit()
 
         # =============== button =============== #
         run_button = QPushButton("הוסף")
+        main_phase_textbox.setMinimumWidth(150)
+        main_phase_textbox.setFixedHeight(32)  # שורה בגובה אחיד
+
+        main_phase_textbox.setStyleSheet("""
+            QLineEdit {
+                font-size: 32px;
+                padding: 6px 10px;
+                border: 2px solid #cccccc;
+                border-radius: 6px;
+                background-color: #fdfdfd;
+                selection-background-color: #3399ff;
+            }
+            QLineEdit:focus {
+                border: 2px solid #3399ff;       /* מסגרת כחולה בזמן פוקוס */
+                background-color: #ffffff;
+            }
+            QLineEdit:disabled {
+                background-color: #eeeeee;
+                color: #888888;
+            }
+        """)
 
         # =============== type move =============== #
         type_radio_layout = QHBoxLayout()
@@ -54,14 +90,15 @@ class SetMoveLayout(QWidget):
         type_radio_group.addButton(self.blinker_radio)
         type_radio_group.addButton(self.blinker_conditional_radio)
 
+        type_radio_layout.addStretch()
         type_radio_layout.addWidget(self.traffic_radio)
-        type_radio_layout.addStretch()
+        type_radio_layout.addSpacing(20)
         type_radio_layout.addWidget(self.traffic_flashing_radio)
-        type_radio_layout.addStretch()
+        type_radio_layout.addSpacing(20)
         type_radio_layout.addWidget(self.pedestrian_radio)
-        type_radio_layout.addStretch()
+        type_radio_layout.addSpacing(20)
         type_radio_layout.addWidget(self.blinker_radio)
-        type_radio_layout.addStretch()
+        type_radio_layout.addSpacing(20)
         type_radio_layout.addWidget(self.blinker_conditional_radio)
 
         # =============== main =============== #
@@ -77,9 +114,9 @@ class SetMoveLayout(QWidget):
 
         main_radio_layout.addStretch()
         main_radio_layout.addWidget(self.main_radio)
-        main_radio_layout.addStretch()
+        main_radio_layout.addSpacing(10)
         main_radio_layout.addWidget(self.not_main_radio)
-        main_radio_layout.addStretch()
+        main_radio_layout.addSpacing(30)
         # # inter_stage_btn         = QPushButton("➕")
 
         # =============== rows =============== #
@@ -123,15 +160,16 @@ class SetMoveLayout(QWidget):
 
         # =============== create the layout =============== #
         main_layout.addLayout(row1)
-        main_layout.addStretch(1)
+        main_layout.addSpacing(30)
         main_layout.addLayout(row2)
-        main_layout.addStretch(1)
+        main_layout.addSpacing(30)
         main_layout.addLayout(row3)
-        main_layout.addStretch(1)
+        main_layout.addSpacing(30)
         main_layout.addLayout(row4)
 
-        main_layout.addStretch(10)
+        main_layout.addSpacing(50)
         main_layout.addWidget(self.scroll_area)
+        main_layout.addStretch()
 
         self.setLayout(main_layout)
         self.hide()

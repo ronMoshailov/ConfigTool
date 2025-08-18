@@ -1,3 +1,4 @@
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QSizePolicy, QComboBox, QApplication, QPushButton, QVBoxLayout, QHBoxLayout
 from PyQt5.QtWidgets import QSpacerItem
 
@@ -37,7 +38,7 @@ class MainWindow:
         # =============== buttons =============== #
         btn_set_path    = QPushButton("הגדר נתיב"   )
         btn_new_node    = QPushButton("צומת חדש"    )
-        btn_set_moves   = QPushButton("ניהול מופעים" )
+        btn_set_moves   = QPushButton("🚦 ניהול מופעים 🚦" )
         btn3            = QPushButton("הפעל סלייב"  )
         btn_set_min     = QPushButton("הגדר מינימום")
         btn5            = QPushButton("הפעל מאסטר"  )
@@ -111,9 +112,6 @@ class MainWindow:
         :param arg_btn2: second button in the row
         :return: None
         """
-        arg_btn1.setFixedSize(BUTTON_WIDTH, BUTTON_HEIGHT)
-        arg_btn2.setFixedSize(BUTTON_WIDTH, BUTTON_HEIGHT)
-
         row.addStretch()
         row.addWidget(arg_btn1)
         row.addSpacing(COLUMN_SPACING)

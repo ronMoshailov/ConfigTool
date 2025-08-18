@@ -1,11 +1,12 @@
+# Set move layout
 combo_style = """
             QComboBox {
-                qproperty-alignment: 'AlignRight | AlignVCenter';  /* ליישר טקסט */
                 background-color: #ecf0f1;
                 border: 2px solid #3498db;
                 border-radius: 8px;
-                padding: 6px 12px;
-                font-size: 14px;
+                font-size: 22px;
+                min-width: 173px;
+                min-height: 50px;
                 font-weight: bold;
                 color: #2c3e50;
             }
@@ -18,17 +19,6 @@ combo_style = """
                 width: 25px;
                 border-right: 1px solid #3498db;
             }
-            QComboBox::down-arrow {
-                image: url(:/qt-project.org/styles/commonstyle/images/arrowdown-16.png);
-                width: 12px;
-                height: 12px;
-            }
-            QComboBox QAbstractItemView {
-                background-color: #ffffff;
-                selection-background-color: #3498db;
-                selection-color: white;
-                border: 1px solid #2980b9;
-            }
         """
 
 blue_button_white_text_style = """
@@ -38,9 +28,11 @@ blue_button_white_text_style = """
                     color: white;
                     border: 2px solid #2471a3;
                     border-radius: 10px;
-                    padding: 10px;
+                    padding: 0px;
                     font-weight: bold;
-                    font-size: 14px;
+                    font-size: 24px;
+                    min-width: 200px;
+                    min-height: 50px;
                 }
 
                 QPushButton:hover {
