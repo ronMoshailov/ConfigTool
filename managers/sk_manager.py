@@ -63,6 +63,10 @@ class SkManager:
             self.sk_channel_list[row].color = "hwRed200"
             print(f"[class] SkManager:\t [method] update_sk_color\t[end] ")
             return True
+        elif cur_color == "":
+            self.sk_channel_list[row].color = "hwRed200"
+            print(f"[class] SkManager:\t [method] update_sk_color\t[end] ")
+            return True
         else:
             Log.error("The color is not 'hwRed20' or 'hwAmber200' or 'hwGreen200'")
             return False

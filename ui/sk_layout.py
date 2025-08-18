@@ -1,10 +1,10 @@
 from PyQt5.QtCore import Qt, QSignalBlocker
 from PyQt5.QtGui import QBrush, QColor
 from PyQt5.QtWidgets import QWidget, QScrollArea, QVBoxLayout, QHBoxLayout, QSizePolicy, QTableWidget, QLabel, \
-    QTableWidgetItem, QComboBox
+    QTableWidgetItem, QComboBox, QCheckBox, QAbstractItemView
 
 from controllers.data_controller import DataController
-
+from entities.log import Log
 
 
 class SkLayout(QWidget):
@@ -24,113 +24,124 @@ class SkLayout(QWidget):
 
     # =============== scroll rows =============== #
 
-    def _build_card_table(self, card_number: int):
+    def init_table(self, card_number: int):
         wrap = QWidget(self)
+
         vbox = QVBoxLayout(wrap)
         vbox.setContentsMargins(0, 0, 0, 0)
         vbox.setSpacing(6)
 
-        title = QLabel(f"card number {card_number}", wrap)
+        title = QLabel(f"SK_{card_number}", wrap)
         title.setAlignment(Qt.AlignCenter)
+
         vbox.addWidget(title)
 
         tbl = QTableWidget(24, 4, wrap)
+        tbl.setSelectionMode(QAbstractItemView.NoSelection) # remove selection colors
+        tbl.setFocusPolicy(Qt.NoFocus) # remove focus style
 
-        # חסימת סיגנלים של הטבלה בזמן בנייה
+        # block signals
         was_tbl = tbl.blockSignals(True)
 
-        tbl.setHorizontalHeaderLabels(["#", "value", "color", "comment"])
-        tbl.verticalHeader().setVisible(False)
-        tbl.setColumnWidth(0, 36)
-        tbl.setColumnWidth(1, 160)  # נתתי קצת רוחב לקומבו שיהיה נוח
-        tbl.setColumnWidth(2, 50)
-        tbl.setColumnWidth(3, 60)
-
-        gray = QBrush(QColor(230, 230, 230))
-        green_bg = QBrush(QColor(180, 255, 180))
-
-        all_moves = self.data_controller.get_all_moves()
-        all_moves_names = ["-"] + [m.name for m in all_moves]
-        all_channels_list = self.data_controller.get_all_sk_channels(card_number)
-
-        # נבנה את השורות והווידג'טים
-        for r in range(24):
-            # עמודה 0: מספר ערוץ (לא ניתן לעריכה)
-            it0 = QTableWidgetItem(str(r + 1))
-            it0.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
-            it0.setBackground(gray)
-            it0.setTextAlignment(Qt.AlignCenter)
-            tbl.setItem(r, 0, it0)
-
-            # עמודה 1: קומבו של השם
-            combo = QComboBox()
-            combo.addItems(all_moves_names)
-            tbl.setCellWidget(r, 1, combo)
-
-            # עמודה 2: אימוג'י צבע (לא ניתן לעריכה ידנית)
-            it2 = QTableWidgetItem("")
-            it2.setTextAlignment(Qt.AlignCenter)
-            it2.setFlags(it2.flags() & ~Qt.ItemIsEditable)
-            tbl.setItem(r, 2, it2)
-
-            # עמודה 3: צ'קבוקס להערה
-            it3 = QTableWidgetItem("")
-            it3.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
-            it3.setCheckState(Qt.Unchecked)
-            tbl.setItem(r, 3, it3)
-
-        # אתחול ערכים מהמודל (כולל סט בחירה לקומבו) – נחסום סיגנלים מהקומבו עצמו בזמן setCurrentIndex
-        for ch in all_channels_list:
-            row = ch.channel - 1
-            is_commented = bool(ch.is_comment)
-
-            # עמודה 3: צ'קבוקס
-            it3 = tbl.item(row, 3)
-            it3.setCheckState(Qt.Checked if is_commented else Qt.Unchecked)
-
-            # עמודה 0: רקע אם מסומן
-            if is_commented:
-                tbl.item(row, 0).setBackground(green_bg)
-
-            # עמודה 1: קומבו – סט ערך ללא סיגנלים
-            combo = tbl.cellWidget(row, 1)
-            if isinstance(combo, QComboBox):
-                idx = combo.findText(ch.name)
-                if idx < 0:
-                    idx = 0  # או להוסיף את הערך אם חשוב שיתווסף
-                if idx != combo.currentIndex():
-                    blocker = QSignalBlocker(combo)
-                    combo.setCurrentIndex(idx)
-                if is_commented:
-                    combo.setStyleSheet("background-color: rgb(200,255,200);")
-
-            # עמודה 2: אימוג'י צבע + רקע אם מסומן
-            it2 = tbl.item(row, 2)
-            it2.setText("🔴" if ch.color == "hwRed200"
-                        else "🟢" if ch.color == "hwGreen200"
-            else "🟡" if ch.color == "hwAmber200"
-            else "")
-            if is_commented:
-                it2.setBackground(green_bg)
+        self.create_table(tbl, card_number)
+        self.fill_table(tbl, card_number)
 
         # שחרור חסימת הטבלה
         tbl.blockSignals(was_tbl)
 
-        # חיבורים לסיגנלים – רק אחרי שהכל מאותחל
-        # שינוי צבע בלחיצה על תא (עמודה 2)
-        tbl.cellClicked.connect(lambda r, c, t=tbl, card=card_number: self.update_color(t, r, c, card))
-        # שינוי צ'קבוקס (עמודה 3)
-        tbl.itemChanged.connect(lambda it, c=card_number: self.update_comment(it, c))
-        # שינוי קומבו – לכל שורה חיבור אחד משלו
+        # connect signals
+        # signal for col 2 (color)
+        tbl.cellClicked.connect(lambda r, c, t=tbl, card=card_number: self.update_color(t, r, c, card) if c == 2 else None) # 'r' and 'c' send automatically
+        # signal for col 3 (checkBox)
+        tbl.itemChanged.connect(lambda item, c=card_number, t=tbl: self.update_comment(item, c, t) if item.column() == 3 else None)
+
+        # # שינוי קומבו – לכל שורה חיבור אחד משלו
         for r in range(24):
             combo = tbl.cellWidget(r, 1)
-            if isinstance(combo, QComboBox):
-                combo.currentTextChanged.connect(
-                    lambda _text, row=r, t=tbl, card=card_number: self.update_name(t, row, 1, card)
-                )
+            combo.currentTextChanged.connect(lambda _text, row=r, t=tbl, card=card_number: self.update_name(t, row, 1, card))
 
         vbox.addWidget(tbl)
         return wrap
+
+    def create_table(self, tbl, card_number):
+        # set table
+        tbl.setHorizontalHeaderLabels(["#", "value", "color", "comment"])
+        tbl.verticalHeader().setVisible(False)
+        tbl.setColumnWidth(0, 36)
+        tbl.setColumnWidth(1, 160)
+        tbl.setColumnWidth(2, 50)
+        tbl.setColumnWidth(3, 90)
+
+        # colors
+        gray = QBrush(QColor(230, 230, 230))
+
+        # data
+        all_moves = self.data_controller.get_all_moves()
+        all_moves_names = ["-"] + [m.name for m in all_moves]
+
+        # create the table
+        for r in range(24):
+            # col 0 (display)
+            it0 = QTableWidgetItem(str(r + 1)) # set the cell
+            it0.setFlags(Qt.NoItemFlags) # the cell is just for display
+            it0.setBackground(gray) # set background color
+            it0.setTextAlignment(Qt.AlignCenter) # set text in the middle
+            tbl.setItem(r, 0, it0) # set the cell
+
+            # col 1 (combo)
+            combo = QComboBox() # create combo
+            combo.addItems(all_moves_names) # add options
+            combo.wheelEvent = lambda event: None # options will be change just from clicks or arrow (not scrolling)
+            tbl.setCellWidget(r, 1, combo) # set the cell
+
+            # col 2 (color)
+            it2 = QTableWidgetItem("")
+            it2.setTextAlignment(Qt.AlignCenter)
+            it2.setFlags(it2.flags() & ~Qt.ItemIsEditable) # disable the edit
+            tbl.setItem(r, 2, it2)
+
+            # col 3 (check box)
+            it3 = QCheckBox()
+            it3.setChecked(False)  # ברירת מחדל לא מסומן
+            it3.setStyleSheet("margin-left:auto; margin-right:auto;")  # אופציונלי – למרכז/להפוך כיוון
+            tbl.setCellWidget(r, 3, it3)
+
+            it3.stateChanged.connect(lambda state, row=r, t=tbl, card=card_number: self.update_comment(row, state, card, t))
+            # it3.setTextAlignment(Qt.AlignCenter)
+            # it3.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled) # make the cell checkable and can be changed
+            # it3.setCheckState(Qt.Unchecked) # init with unchecked
+
+    def fill_table(self, tbl, card_number):
+        all_channels_list = self.data_controller.get_all_sk_channels(card_number)
+        green_bg = QBrush(QColor(180, 255, 180))
+
+        # initialize values
+        for ch in all_channels_list:
+            row = ch.channel - 1
+            is_commented = bool(ch.is_comment)
+
+            # col 3 (check box)
+            it3 = tbl.cellWidget(row, 3)
+            was = it3.blockSignals(True)  # block signal
+            it3.setCheckState(Qt.Checked if is_commented else Qt.Unchecked)
+            it3.blockSignals(was) # release signal
+
+            # col 2 (color)
+            it2 = tbl.item(row, 2)
+            it2.setText("🔴" if ch.color == "hwRed200" else "🟢" if ch.color == "hwGreen200" else "🟡" if ch.color == "hwAmber200" else "")
+            if is_commented:
+                it2.setBackground(green_bg)
+
+            # col 1 (combo)
+            combo = tbl.cellWidget(row, 1) # get the combo
+            idx = 0 if combo.findText(ch.name) == -1 else combo.findText(ch.name) # get he index of the value in the combo
+            combo.setCurrentIndex(idx)
+            if is_commented:
+                combo.setStyleSheet("background-color: rgb(200,255,200);")
+
+            # col 0 (display)
+            if is_commented:
+                tbl.item(row, 0).setBackground(green_bg)
 
     def show_layout(self):
         # שורש: סקרול אופקי
@@ -156,7 +167,7 @@ class SkLayout(QWidget):
         num_cards = len(self.data_controller.sk_manager)
 
         for i in range(1, num_cards + 1):
-            card_widget = self._build_card_table(i)
+            card_widget = self.init_table(i)
             hbox.addWidget(card_widget)
 
         # רווח בסוף לשיפור מראה
@@ -167,42 +178,72 @@ class SkLayout(QWidget):
         self._initialized = True
         self.show()
 
-    def update_comment(self, item, card_number):
+    def update_comment(self, row_number, state, card_number, table):
         print(f"[class] SkLayout:\t [method] update_comment\t[start] ")
-        table = item.tableWidget() # The table
+        if table.cellWidget(row_number, 1).currentText() == "-":
+            table.cellWidget(row_number, 3).setCheckState(Qt.Unchecked)
+            # table.cellWidget(row_number, 3).setChecked(False)
+            return False
+
         was = table.blockSignals(True) # block signal
 
-        # check the column
-        # if item.column() != 3:
-        #     table.blockSignals(was)
-        #     return None
-
-        row_number = item.row() # get the row number (channel)
         is_success = self.data_controller.update_sk_comment(card_number, row_number + 1)
 
-        brush = QBrush(QColor(180, 255, 180)) if item.checkState() == Qt.Checked else QBrush(QColor(255, 255, 255))
-        Column = 3
-        cell = table.item(row_number, Column)
-        r, g, b = brush.color().red(), brush.color().green(), brush.color().blue()
+        if not is_success:
+            Log.error("The change of the comment state didn't succeeded")
+            table.blockSignals(was)
+            return False
 
-        if is_success:
-            for col in range(table.columnCount()):
-                cell = table.item(row_number, col) or table.cellWidget(row_number, col) # if it's column 1 (combo) the first argument will be None so we call the combo with 'cellWidget'
-                if col == 1:
-                    cell.setStyleSheet(f"QComboBox {{ background-color: rgb({r},{g},{b}); }}")
-                    continue
-                cell.setBackground(brush)
+        gray = QBrush(QColor(230, 230, 230))
+        green = QBrush(QColor(180, 255, 180))
+        white = QBrush(QColor(255, 255, 255))
+
+        if state == Qt.Checked:
+            # col 0
+            cell = table.item(row_number, 0)
+            cell.setBackground(green)
+
+            # col 1
+            cell = table.cellWidget(row_number, 1)
+            cell.setStyleSheet(
+                f"QComboBox {{ background-color: rgb({green.color().red()},{green.color().green()},{green.color().blue()}); }}")  # set style to combo
+
+            # col 2
+            cell = table.item(row_number, 2)
+            cell.setBackground(green)
+
+            # # col 3
+            # cell = table.cellWidget(row_number, 3)
+            # cell.setBackground(green)
+
+        else:
+            # col 0
+            cell = table.item(row_number, 0)
+            cell.setBackground(gray)
+
+            # col 1
+            cell = table.cellWidget(row_number, 1)
+            cell.setStyleSheet(
+                f"QComboBox {{ background-color: rgb({white.color().red()},{white.color().green()},{white.color().blue()}); }}")  # set style to combo
+
+            # col 2
+            cell = table.item(row_number, 2)
+            cell.setBackground(white)
+
         table.blockSignals(was)
         print(f"[class] SkLayout:\t [method] update_comment\t[end] ")
 
     def update_color(self, table: QTableWidget, row: int, col: int, card_number: int):
         print(f"[class] SkLayout:\t [method] update_color\t[start] ")
 
-        COL_COLOR = 2  # העמודה של האימוג'י
-        if col != 2:
-            return
+        combo = table.cellWidget(row, 1)
+        item = table.item(row, 2)
 
-        item = table.item(row, COL_COLOR)
+        with QSignalBlocker(combo), QSignalBlocker(table):
+            if combo.currentText() == "-":
+                Log.error("no move was chosen")
+                return False
+
 
         cur = item.text()
         nxt_color = {"🔴": "🟡", "🟡": "🟢", "🟢": "🔴", "": "🔴"}.get(cur, "🔴")
@@ -214,15 +255,31 @@ class SkLayout(QWidget):
 
     def update_name(self, table: QTableWidget, row: int, col: int, card_number: int):
         print(f"[class] SkLayout:\t [method] update_name\t[start] ")
-        if col != 1:
-            print(f"The column is not 1, it was {col}")
-            return
 
         # שליפת הטקסט מתוך התא (באותו row/col)
         combo = table.cellWidget(row, col)
+        white = QBrush(QColor(255, 255, 255))
+        gray = QBrush(QColor(230, 230, 230))
+
         with QSignalBlocker(combo), QSignalBlocker(table):
-            name_text = ("" if combo.currentText() == "-" else combo.currentText())
+            name_text = "" if combo.currentText() == "-" else combo.currentText()
+            is_success = self.data_controller.update_sk_name(card_number, row, name_text)
+            if is_success is False:
+                Log.error("update name failed")
+                return False
+
+            if name_text == "":
+                # column 0
+                table.item(row, 0).setBackground(gray)
+                # column 1
+                table.cellWidget(row, 1).setStyleSheet(f"QComboBox {{ background-color: rgb({white.color().red()},{white.color().green()},{white.color().blue()}); }}") # set style to combo
+                # column 2
+                table.item(row, 2).setBackground(white)
+                table.item(row, 2).setText("")
+                # column 3
+                table.cellWidget(row, 3).setStyleSheet("margin-left:auto; margin-right:auto;")
+                table.cellWidget(row, 3).setCheckState(Qt.Unchecked)
+
             # כאן לא נוגעים ב־UI – רק מודל
-            self.data_controller.update_sk_name(card_number, row, name_text)
 
         print(f"[class] SkLayout:\t [method] update_name\t[end] ")

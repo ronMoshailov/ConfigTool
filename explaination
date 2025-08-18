@@ -1,0 +1,16 @@
+#################
+נעילה של סיגנלים
+was = table.blockSignals(True)
+table.blockSignals(was)
+
+
+
+# ---------- QT ---------- #
+Qt.ItemIsSelectable → התא/אובייקט ניתן לבחירה עם העכבר או המקלדת
+Qt.ItemIsEnabled    → התא פעיל (לא אפור), כלומר אפשר לבחור אותו ולקבל ממנו אירועים.
+Qt.NoItemFlags      → אי אפשר לסמן, אי אפשר ללחוץ, רק טקסט מוצג
+Qt.Unchecked        →
+
+# ---------- QTableWidgetItem ---------- #
+כל אחד מהם יש לו דגלים כך שהוא יודע איזה דגל אומר איזה הרשאה או יכולת ואז אם הוא 0 או 1 הוא יודע אם להפעיל או לא
+it2.setFlags(it2.flags() & ~Qt.ItemIsEditable)
