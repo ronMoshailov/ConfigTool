@@ -1,8 +1,9 @@
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QSizePolicy, QComboBox, QApplication, QPushButton, QVBoxLayout, QHBoxLayout
 from PyQt5.QtWidgets import QSpacerItem
 
-from config.constants import ROW_SPACING, COLUMN_SPACING, BUTTON_WIDTH, BUTTON_HEIGHT
+from config.constants import ROW_SPACING, COLUMN_SPACING, BUTTON_WIDTH, BUTTON_HEIGHT, MIN_GREEN_IMAGE_PATH
 from config.special import create_window, set_blue_button_white_text_style, make_checkable, set_btn_disable, build_combo
 from config.debug import displayAllMoves
 
@@ -42,7 +43,7 @@ class MainWindow:
         btn3            = QPushButton("הפעל סלייב"  )
         btn_set_min     = QPushButton("הגדר מינימום")
         btn5            = QPushButton("הפעל מאסטר"  )
-        btn_matrix      = QPushButton("הגדר מטריצה" )
+        btn_matrix      = QPushButton("🔢 הגדר מטריצה 🔢" )
         btn7            = QPushButton("dx הפעל"     )
         btn_sk          = QPushButton("SK24 כרטיסי" )
         btn8            = QPushButton("הגדר פרמטרים")
@@ -50,7 +51,7 @@ class MainWindow:
         btn10           = QPushButton("IO24 כרטיסי" )
         debug_print_btn = QPushButton("הדפס הכל"    )
         btn11           = QPushButton("-----------" )
-        btn_detector    = QPushButton("גלאים"    )
+        btn_detector    = QPushButton("📶 גלאים 📶"    )
 
         btn_set_path    .clicked.connect(lambda: self.data_controller.   initialize_app(disable_btn_list)   )
         btn_set_moves   .clicked.connect(lambda: self.ui_controller.     show_set_move_layout()             )
@@ -59,6 +60,7 @@ class MainWindow:
         btn_sk          .clicked.connect(lambda: self.ui_controller.     show_sk_layout()                   )
         debug_print_btn .clicked.connect(lambda:                         displayAllMoves()                  )
 
+        btn_set_min.setIcon(QIcon(MIN_GREEN_IMAGE_PATH))
         # =============== combo =============== #
         combo_employee = QComboBox()
         # combo_authority = QComboBox()

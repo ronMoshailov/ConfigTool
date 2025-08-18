@@ -16,6 +16,8 @@ PEDESTRIAN_IMAGE_PATH           = os.path.join(PROJECT_DIR, "data", "icons", "pe
 BLINKER_IMAGE_PATH              = os.path.join(PROJECT_DIR, "data", "icons", "blinker.png")
 BLINKER_CONDITIONAL_IMAGE_PATH  = os.path.join(PROJECT_DIR, "data", "icons", "blinker conditional.png")
 
+MIN_GREEN_IMAGE_PATH            = os.path.join(PROJECT_DIR, "data", "icons", "min green.png")
+
 # =============== log colors =============== #
 RED = "\033[91m"
 YELLOW = "\033[93m"

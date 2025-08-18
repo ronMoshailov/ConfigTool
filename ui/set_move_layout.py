@@ -7,6 +7,7 @@ from config.constants import GREEN_IMAGE_PATH, GREEN_BLINKER_IMAGE_PATH, PEDESTR
     BLINKER_CONDITIONAL_IMAGE_PATH
 
 from config.special import clean_text
+from config.style import text_field_style
 from controllers.data_controller import DataController
 
 
@@ -45,24 +46,7 @@ class SetMoveLayout(QWidget):
         main_phase_textbox.setMinimumWidth(150)
         main_phase_textbox.setFixedHeight(32)  # שורה בגובה אחיד
 
-        main_phase_textbox.setStyleSheet("""
-            QLineEdit {
-                font-size: 32px;
-                padding: 6px 10px;
-                border: 2px solid #cccccc;
-                border-radius: 6px;
-                background-color: #fdfdfd;
-                selection-background-color: #3399ff;
-            }
-            QLineEdit:focus {
-                border: 2px solid #3399ff;       /* מסגרת כחולה בזמן פוקוס */
-                background-color: #ffffff;
-            }
-            QLineEdit:disabled {
-                background-color: #eeeeee;
-                color: #888888;
-            }
-        """)
+        main_phase_textbox.setStyleSheet(text_field_style)
 
         # =============== type move =============== #
         type_radio_layout = QHBoxLayout()

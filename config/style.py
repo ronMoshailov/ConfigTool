@@ -94,3 +94,24 @@ min_group_row_style = """
     border: 2px solid #1b4f72;
 }
 """
+
+text_field_style = """
+            QLineEdit {
+                font-size: 32px;
+                max-width: 50px;
+                max-height: 50px;
+                padding: 6px 10px;
+                border: 2px solid #cccccc;
+                border-radius: 6px;
+                background-color: #fdfdfd;
+                selection-background-color: #3399ff;
+            }
+            QLineEdit:focus {
+                border: 2px solid #3399ff;       /* מסגרת כחולה בזמן פוקוס */
+                background-color: #ffffff;
+            }
+            QLineEdit:disabled {
+                background-color: #eeeeee;
+                color: #888888;
+            }
+        """
