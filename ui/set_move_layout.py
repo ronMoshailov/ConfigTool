@@ -1,3 +1,4 @@
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QScrollArea
 from PyQt5.QtWidgets import QRadioButton, QButtonGroup
@@ -6,8 +7,8 @@ from config.constants import BUTTON_WIDTH, COLUMN_SPACING, BUTTON_HEIGHT
 from config.constants import GREEN_IMAGE_PATH, GREEN_BLINKER_IMAGE_PATH, PEDESTRIAN_IMAGE_PATH, BLINKER_IMAGE_PATH, \
     BLINKER_CONDITIONAL_IMAGE_PATH
 
-from config.special import clean_text
-from config.style import text_field_style
+from config.special import clean_text, set_blue_button_white_text_style
+from config.style import text_field_style, radio_tile_style, scroll_style
 from controllers.data_controller import DataController
 
 
@@ -47,7 +48,7 @@ class SetMoveLayout(QWidget):
         main_phase_textbox.setFixedHeight(32)  # שורה בגובה אחיד
 
         main_phase_textbox.setStyleSheet(text_field_style)
-
+        set_blue_button_white_text_style([run_button])
         # =============== type move =============== #
         type_radio_layout = QHBoxLayout()
 
@@ -139,8 +140,27 @@ class SetMoveLayout(QWidget):
         self.scroll_layout.addLayout(self.phase_rows[2])
         self.scroll_layout.addStretch()
 
+        self.scroll_area.setStyleSheet(scroll_style)
+        # מרווחים וספייסינג – עושים בקוד (QSS לא משפיע על layouts)
+        self.scroll_layout.setContentsMargins(12, 12, 12, 12)
+        self.scroll_layout.setSpacing(10)
+        for row in self.phase_rows:
+            row.setSpacing(10)
+
         # =============== layout =============== #
         main_layout = QVBoxLayout()
+
+        for rb in (
+                self.traffic_radio,
+                self.traffic_flashing_radio,
+                self.pedestrian_radio,
+                self.blinker_radio,
+                self.blinker_conditional_radio,
+                self.main_radio,
+                self.not_main_radio,
+        ):
+            rb.setStyleSheet(radio_tile_style)  # או radio_classic_style
+            rb.setCursor(Qt.PointingHandCursor)  # UX נעים
 
         # =============== create the layout =============== #
         main_layout.addLayout(row1)
@@ -193,16 +213,29 @@ class SetMoveLayout(QWidget):
             move_type = move.type
 
             # קבע את האינדקס של השורה לפי ה-type
-            if move_type in ["Traffic", "Traffic_Flashing"]:
+            if move_type == "Traffic":
                 row_idx = 0
+                icon = GREEN_IMAGE_PATH
+            elif move_type == "Traffic_Flashing":
+                row_idx = 0
+                icon = GREEN_BLINKER_IMAGE_PATH
             elif move_type == "Pedestrian":
                 row_idx = 1
-            elif move_type in ["Blinker", "Blinker_Conditional"]:
+                icon = PEDESTRIAN_IMAGE_PATH
+            elif move_type == "Blinker":
                 row_idx = 2
+                icon = BLINKER_IMAGE_PATH
+            elif move_type == "Blinker_Conditional":
+                row_idx = 2
+                icon = BLINKER_CONDITIONAL_IMAGE_PATH
             else:
-                continue  # אם ה-type לא תואם – דלג
-            # print(f"move name: {move.name}, move main: {move.is_main}")
-            label = QLabel(phase + ("⭐" if move.is_main is True else ""))
+                continue
+
+            label = QLabel()
+            phase_txt = phase + ("⭐" if move.is_main else "")
+            label.setText(f"{phase_txt} <img src='{icon}' width='10' height='10'/>")
+
+
             label.setFixedHeight(30)
 
             btn_remove = QPushButton("❌")
