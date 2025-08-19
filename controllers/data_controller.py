@@ -175,7 +175,7 @@ class DataController:
         :param move_name: name of the move.
         :return: None
         """
-        self.data_manager.remove_move(move_name)
+        return self.data_manager.remove_move(move_name)
 
     # --------------- general methods --------------- #
     def initialize_app(self, btn_list):

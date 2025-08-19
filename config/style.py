@@ -54,6 +54,19 @@ blue_button_white_text_style = """
                 }
             """
 
+dark_button_style = """
+    QPushButton {
+        min-width: 160px;
+        background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                          stop:0 #1e3c72, stop:0.5 #2a5298, stop:1 #00c6ff);
+        /* כהה מאוד למעלה (#1e3c72), כחול בינוני באמצע (#2a5298), טורקיז בהיר למטה (#00c6ff) */
+    }
+
+    QPushButton:hover {
+        background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                          stop:0 #162f5c, stop:0.5 #24447c, stop:1 #00a1d9);
+    }
+"""
 min_group_row_style = """
 /* הווידג'ט העוטף כל שורה */
 #minRowCard {
@@ -145,19 +158,11 @@ QRadioButton::indicator:disabled {
 """
 
 scroll_style = """
-/* הסרת מסגרת ותיאום רקע */
 QScrollArea {
-    border: none;
-    background: transparent;
-    min-height: 480px;
+    border: 1px solid #3498db;
+    border-radius: 5px;
 }
-QScrollArea::viewport {
-    background: #f6f8fa;              /* רקע עדין לאזור הגלילה */
-    border-radius: 8px;
-}
-QScrollArea::corner {
-    background: #f6f8fa;
-}
+
 
 /* סרגל גלילה אנכי */
 QScrollBar:vertical {
@@ -207,7 +212,7 @@ QScrollBar::add-page, QScrollBar::sub-page {
 
 /* רקע התוכן הפנימי */
 #scrollContent {
-    background: #ffffff;
+    background: #ff00ff;
     border: 1px solid #c8d1dc;
     border-radius: 8px;
 }
@@ -354,3 +359,55 @@ red_hover = """
 QTableWidget::item:hover {
     background: #ff0000;
 """
+
+gray_label_style = """
+                    QLabel {
+        background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                          stop:0 #fdfefe, stop:1 #ebedef);
+        color: #2c3e50;
+        border: 1px solid #d5d8dc;
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-size: 24px;
+        font-weight: bold;
+        min-width: 230px;
+    }
+
+    QLabel:hover {
+        background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                          stop:0 #f8f9f9, stop:1 #d6dbdf);
+        border: 1px solid #b2babb;
+    }
+"""
+
+
+scroll_label_style = """
+                QLabel {
+                    font-size: 36px;
+                    font-weight: bold;
+                    color: #2c3e50;
+                    padding: 4px 6px;
+                    border-radius: 6px;
+                    background: #ecf0f1;
+                    border: 1px solid #d0d7de;
+                    min-height: 60px;
+                }
+                QLabel:hover {
+                    background: #d6eaf8;
+                    border: 1px solid #3498db;
+                }
+            """
+
+btn_remove_style = """
+                QPushButton {
+                    border: 1px solid black;      /* עובי וצבע גבול */
+                    background-color: white;      /* צבע רקע */
+                }
+                QPushButton:hover {
+                    border: 1px solid #3498db;      /* עובי וצבע גבול */
+                    background-color: #f5f5f5;    /* רקע במעבר עכבר */
+                }
+                QPushButton:pressed {
+                    background-color: #e0e0e0;    /* רקע בלחיצה */
+                }
+            """
