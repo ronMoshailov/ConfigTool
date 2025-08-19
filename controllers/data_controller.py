@@ -11,9 +11,7 @@ class DataController:
     sk_manager = None
     _instance = None
 
-    # =========================================== #
-    #                  Construction               #
-    # =========================================== #
+    # --------------- Construction --------------- #
     def __new__(cls):
         """
         This method runs before __init__ when new instance is created.
@@ -32,9 +30,7 @@ class DataController:
         """
         pass
 
-    # =========================================== #
-    #                 add methods                 #
-    # =========================================== #
+    # --------------- add methods --------------- #
     def add_move(self, move_name: str, move_type: str, is_main: bool, min_green: str = "0"):
         """
         This method add new move.
@@ -53,10 +49,7 @@ class DataController:
         print(f"**** [class] DataController:\t [method] add_move\t[end] ")
         return True
 
-    # def add_sk(self):
-    # =========================================== #
-    #                 get methods                 #
-    # =========================================== #
+    # --------------- get methods --------------- #
     def get_all_moves(self):
         """
         This method returns all the moves.
@@ -93,9 +86,11 @@ class DataController:
                 return sk_manager.get_sk_channel_list()
         return None
 
-    # =========================================== #
-    #               update methods                #
-    # =========================================== #
+    def get_pervious_name(self, number_card: int, channel: int):
+        for sk in self.sk_manager:
+            if sk.number_card == number_card:
+                return sk.get_pervious_name(channel)
+    # --------------- update methods --------------- #
     def update_min_green(self, dictionary: dict[str, QLineEdit]):
         """
         This method updates the minimum green time of a move.
@@ -145,8 +140,8 @@ class DataController:
         for sk_manager in self.sk_manager:
             if sk_manager.number_card == card_number:
                 return sk_manager.update_sk_color(row)
-        return False
         print(f"**** [class] DataController:\t [method] update_sk_color\t[end] ")
+        return False
 
     def update_sk_name(self, card_number: int, row: int, new_name: str):
         """
@@ -163,9 +158,16 @@ class DataController:
                 sk_manager.update_sk_name(row, new_name)
         print(f"**** [class] DataController:\t [method] update_sk_name\t[end] ")
 
-    # =========================================== #
-    #               remove methods                #
-    # =========================================== #
+    def clear_channel(self, card_number: int, channel_num: int):
+        print(f"**** [class] DataController:\t [method] clear_channel\t[start] ")
+        for sk_manager in self.sk_manager:
+            if sk_manager.number_card == card_number:
+                sk_manager.update_sk_name(channel_num, "")
+                sk_manager.update_sk_color(channel_num, to_clear=True)
+                sk_manager.update_sk_comment(channel_num, to_clear=True)
+        print(f"**** [class] DataController:\t [method] clear_channel\t[end] ")
+
+    # --------------- remove methods --------------- #
     def remove_move(self, move_name):
         """
         This method removes a move.
@@ -175,9 +177,7 @@ class DataController:
         """
         self.data_manager.remove_move(move_name)
 
-    # =========================================== #
-    #               general methods               #
-    # =========================================== #
+    # --------------- general methods --------------- #
     def initialize_app(self, btn_list):
         """
         This method initialize the app.

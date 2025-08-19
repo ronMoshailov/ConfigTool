@@ -1,7 +1,7 @@
 from ui.matrix_window import Matrix
 from ui.min_green_layout import MinGreenLayout
 from ui.set_move_layout import SetMoveLayout
-from ui.sk_layout import SkLayout
+from ui.sk_panel import SkPanel
 
 
 class UIController:
@@ -27,7 +27,7 @@ class UIController:
         self.set_move_layout = SetMoveLayout()
         self.min_green_layout = MinGreenLayout()
         self.matrix_layout = Matrix()
-        self.sk_layout = SkLayout()
+        self.sk_layout = SkPanel()
 
 
     # =========================================== #

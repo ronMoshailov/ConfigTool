@@ -149,6 +149,7 @@ scroll_style = """
 QScrollArea {
     border: none;
     background: transparent;
+    min-height: 480px;
 }
 QScrollArea::viewport {
     background: #f6f8fa;              /* רקע עדין לאזור הגלילה */
@@ -210,4 +211,146 @@ QScrollBar::add-page, QScrollBar::sub-page {
     border: 1px solid #c8d1dc;
     border-radius: 8px;
 }
+"""
+
+phase_rows_style = """
+/* רקע של ה־ScrollArea נקי */
+QScrollArea {
+    border: none;
+    background: transparent;
+}
+QScrollArea > QWidget > QWidget {
+    background: transparent;
+}
+
+/* עטיפות שורות (כל שורה = קטגוריה) */
+#rowTraffic, #rowPedestrian, #rowBlinker {
+    background: #f8fafc;                 /* רקע עדין */
+    border: 1px solid #e2e8f0;           /* מסגרת דקה */
+    border-radius: 12px;
+    padding: 10px;
+    margin-bottom: 12px;
+}
+
+/* פס צבע מימין (ב־RTL זה נראה כמו "טאג" צבעוני) */
+#rowTraffic    { border-right: 6px solid #27ae60; }  /* ירוק - תנועה */
+#rowPedestrian { border-right: 6px solid #8e44ad; }  /* סגול - הולכי רגל */
+#rowBlinker    { border-right: 6px solid #e67e22; }  /* כתום - בלינקרים */
+
+/* כרטיס פריט (המופע) */
+QFrame#phaseCard {
+    background: #ffffff;
+    border: 1px solid #d0d7de;
+    border-radius: 10px;
+    padding: 8px;
+    margin: 4px;                          /* רווח קטן בין כרטיסים */
+    min-width: 140px;
+}
+QFrame#phaseCard:hover {
+    border: 1px solid #3498db;
+    box-shadow: 0px 0px 6px rgba(52,152,219,0.25);   /* לא כל theme תומך, יתעלם אם לא */
+}
+
+/* טקסט ואייקון בתוך הכרטיס */
+QFrame#phaseCard QLabel {
+    font-size: 14px;
+    color: #2c3e50;
+}
+
+/* כפתור מחיקה מינימליסטי */
+QFrame#phaseCard QPushButton {
+    border: none;
+    background: #ffebee;
+    min-width: 28px;
+    min-height: 28px;
+    border-radius: 6px;
+}
+QFrame#phaseCard QPushButton:hover {
+    background: #ffcdd2;
+}
+"""
+
+table_style = """
+/* טבלה כללית */
+QTableWidget {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    gridline-color: #e5e7eb;
+    selection-background-color: #dbeafe;   /* כחול עדין בבחירה */
+    selection-color: #111827;
+    alternate-background-color: #f9fafb;   /* שורות מתחלפות */
+}
+
+/* תאים */
+QTableWidget::item {
+    padding: 4px 6px;
+}
+QTableWidget::item:hover {
+    background: #c2eaff;
+}
+QTableWidget::item:selected {
+    background: #dbeafe;
+}
+
+/* כותרות (אופקי ואנכי) */
+QHeaderView::section {
+    background: #3498db;          /* כחול */
+    color: white;                 /* טקסט לבן */
+    font-weight: 600;
+    padding: 6px 10px;
+    border: 1px solid #e5e7eb;
+}
+QHeaderView::section:horizontal {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+QHeaderView::section:vertical {
+    /* נותן מראה של “טאגים” בצד */
+    border-radius: 0;             /* בלי עיגול בצד שמאל */
+}
+
+/* כפתור הפינה השמאלית-עליונה */
+QTableCornerButton::section {
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+}
+
+/* פסי גלילה מינימליסטיים */
+QScrollBar:vertical {
+    background: transparent;
+    width: 10px;
+    margin: 2px 2px 2px 0;
+}
+QScrollBar::handle:vertical {
+    background: #cbd5e1;
+    min-height: 24px;
+    border-radius: 6px;
+}
+QScrollBar::handle:vertical:hover {
+    background: #94a3b8;
+}
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical { height: 0; }
+
+QScrollBar:horizontal {
+    background: transparent;
+    height: 10px;
+    margin: 0 2px 2px 2px;
+}
+QScrollBar::handle:horizontal {
+    background: #cbd5e1;
+    min-width: 24px;
+    border-radius: 6px;
+}
+QScrollBar::handle:horizontal:hover {
+    background: #94a3b8;
+}
+QScrollBar::add-line:horizontal,
+QScrollBar::sub-line:horizontal { width: 0; }
+"""
+
+red_hover = """
+QTableWidget::item:hover {
+    background: #ff0000;
 """

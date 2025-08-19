@@ -1,7 +1,8 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QPushButton, QTableWidgetItem
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QPushButton, QTableWidgetItem, QAbstractItemView
 
+from config.style import table_style
 from controllers.data_controller import DataController
 
 
@@ -17,6 +18,9 @@ class Matrix(QWidget):
         self.changes = []  # כאן נשמור (move_out, move_in, value)
 
         self.tbl.itemChanged.connect(self.on_cell_changed)
+
+        self.tbl.setAlternatingRowColors(True)
+        self.tbl.setStyleSheet(table_style)
 
         layout = QVBoxLayout(self)
         layout.addWidget(self.tbl)
@@ -93,9 +97,13 @@ class Matrix(QWidget):
             if item is None:
                 item = QTableWidgetItem("")  # אפשר גם "—"
                 self.tbl.setItem(i, i, item)
+            item.setFlags(item.flags() & ~Qt.ItemIsEditable)
+            self.tbl.setFocusPolicy(Qt.NoFocus)  # לא נותן לטבלה בכלל לקבל focus
+            self.tbl.setSelectionMode(QAbstractItemView.NoSelection)  # לא מאפשר בחירה
 
             item.setBackground(QColor(220, 220, 220))  # אפור בהיר
             item.setTextAlignment(Qt.AlignCenter)
+
 
     def dark_Pedestrian(self):
         
@@ -106,13 +114,13 @@ class Matrix(QWidget):
             P_cols = [j for j in range(self.tbl.columnCount())
                       if self.tbl.horizontalHeaderItem(j).text().strip().lower().startswith('p')]
 
-        black = QColor(0,0,0)
+        # black = QColor(255, 0, 0)
         for i in P_rows:
             for j in P_cols:
                 item = self.tbl.item(i, j) or QTableWidgetItem("")
                 item.setFlags(item.flags() & ~Qt.ItemIsEditable)
                 self.tbl.setItem(i, j, item)
-                item.setBackground(black)
+                # item.setBackground(black)
 
     def on_cell_changed(self, item: QTableWidgetItem):
         # שמות הכותרות לשורה/עמודה

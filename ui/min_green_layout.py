@@ -5,8 +5,6 @@ from config.special import set_blue_button_white_text_style
 from controllers.data_controller import DataController
 from config.style import min_group_row_style
 
-from entities.toast import Toast
-
 
 class MinGreenLayout(QWidget):
     _instance = None
@@ -28,6 +26,7 @@ class MinGreenLayout(QWidget):
 
     def show_panel(self):
         print(f"min_green_layout:\tshow_panel\t[start] ")
+        clear_layout(self.col)
         all_moves = self.data_controller.get_all_moves()
         print("* starting to remove children")
         while self.col.count():
@@ -38,6 +37,7 @@ class MinGreenLayout(QWidget):
         dictinary = {}
 
         row = None
+        idx = None
         for i, move in enumerate(all_moves):
             if i % 4 == 0:
                 row = QHBoxLayout()
@@ -58,14 +58,16 @@ class MinGreenLayout(QWidget):
             card_layout.addWidget(textbox)
 
             row.addWidget(card)
+            idx = i % 4
 
+        if idx != 3:
+            row.addStretch()
         row = QHBoxLayout()
         row.setSpacing(8)
 
         btn = QPushButton("עדכן")
         btn.clicked.connect(lambda: self.data_controller.update_min_green(dictinary)
         )
-        QTimer.singleShot(500, lambda: Toast("הודעה נשלחה בהצלחה"))
 
         set_blue_button_white_text_style([btn])
         row.addWidget(btn)
@@ -77,6 +79,20 @@ class MinGreenLayout(QWidget):
         self.col.addStretch()
         self.show()
         print(f"min_green_layout:\tshow_panel\t[end]\n")
+
+def clear_layout(layout):
+    while layout.count():
+        item = layout.takeAt(0)
+        w = item.widget()
+        if w is not None:
+            w.deleteLater()
+            continue
+        child = item.layout()
+        if child is not None:
+            clear_layout(child)     # ניקוי רקורסיבי
+            child.deleteLater()
+            continue
+        # spacerItem – אין מה למחוק (יימחק עם ה־item)
 
 min_cards_style = """
 QFrame#minRowCard {

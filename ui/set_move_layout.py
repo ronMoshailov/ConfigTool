@@ -31,6 +31,7 @@ class SetMoveLayout(QWidget):
                 background-color: #e0e0e0;
                 border: 1px solid #aaaaaa;
                 border-radius: 5px;
+                min-width: 250px;
                 padding: 5px;
             }
         """
@@ -39,12 +40,17 @@ class SetMoveLayout(QWidget):
         move_type_label.setStyleSheet(label_style)
         is_main_label.setStyleSheet(label_style)
 
+        move_name_label.setAlignment(Qt.AlignCenter)  # יישור למרכז (אופקי + אנכי)
+        move_type_label.setAlignment(Qt.AlignCenter)  # יישור למרכז (אופקי + אנכי)
+        is_main_label.setAlignment(Qt.AlignCenter)  # יישור למרכז (אופקי + אנכי)
+
         # =============== textbox =============== #
         main_phase_textbox = QLineEdit()
+        main_phase_textbox.setAlignment(Qt.AlignRight)  # יישור טקסט לימין
 
         # =============== button =============== #
         run_button = QPushButton("הוסף")
-        main_phase_textbox.setMinimumWidth(150)
+        main_phase_textbox.setMaximumWidth(350)
         main_phase_textbox.setFixedHeight(32)  # שורה בגובה אחיד
 
         main_phase_textbox.setStyleSheet(text_field_style)
@@ -111,6 +117,7 @@ class SetMoveLayout(QWidget):
         row4 = QHBoxLayout()
         # row5 = QHBoxLayout()
 
+        row1.addStretch()
         row1.addWidget(main_phase_textbox)
         row1.addWidget(move_name_label)
 
@@ -176,6 +183,35 @@ class SetMoveLayout(QWidget):
         main_layout.addStretch()
 
         self.setLayout(main_layout)
+        self.setObjectName("setMoveCard")
+        self.setAttribute(Qt.WA_StyledBackground, True)  # חשוב לרקע מותאם סטייל
+        self.setStyleSheet("""
+            #setMoveCard {
+                background: qlineargradient(x1:0,y1:0,x2:1,y2:1, stop:0 #e3f2fd, stop:1 #bbdefb);
+                border: 2px solid #90caf9;
+                border-radius: 12px;
+                padding: 12px;   /* רווח פנימי נעים */
+            }
+
+            /* אל תתן רקע פנימי לרכיבים כדי שישבו על ה"קלף" */
+            QLabel {
+                font-size: 15px;
+                color: #333;
+                background: transparent;
+                border: none;
+            }
+            QLineEdit {
+                background: #ffffff;
+                border: 1px solid #cfd8dc;
+                border-radius: 6px;
+                padding: 4px 8px;
+            }
+            QPushButton {
+                background: #1976d2; color: #fff; border: none; border-radius: 8px; padding: 6px 12px;
+            }
+            QPushButton:hover { background: #1565c0; }
+            QPushButton:pressed { background: #0d47a1; }
+        """)
         self.hide()
 
         # =============== scroll rows =============== #
@@ -233,13 +269,41 @@ class SetMoveLayout(QWidget):
 
             label = QLabel()
             phase_txt = phase + ("⭐" if move.is_main else "")
-            label.setText(f"{phase_txt} <img src='{icon}' width='10' height='10'/>")
-
+            label.setText(f"{phase_txt} <img src='{icon}' width='25' height='25'/>")
+            label.setStyleSheet("""
+                QLabel {
+                    font-size: 36px;
+                    font-weight: bold;
+                    color: #2c3e50;
+                    padding: 4px 6px;
+                    border-radius: 6px;
+                    background: #ecf0f1;
+                    border: 1px solid #d0d7de;
+                    min-height: 60px;
+                }
+                QLabel:hover {
+                    background: #d6eaf8;
+                    border: 1px solid #3498db;
+                }
+            """)
 
             label.setFixedHeight(30)
 
             btn_remove = QPushButton("❌")
             btn_remove.setFixedSize(30, 30)
+            btn_remove.setStyleSheet("""
+                QPushButton {
+                    border: 1px solid black;      /* עובי וצבע גבול */
+                    border-radius: 60px;           /* פינות מעוגלות */
+                    background-color: white;      /* צבע רקע */
+                }
+                QPushButton:hover {
+                    background-color: #f5f5f5;    /* רקע במעבר עכבר */
+                }
+                QPushButton:pressed {
+                    background-color: #e0e0e0;    /* רקע בלחיצה */
+                }
+            """)
 
             btn_remove.clicked.connect(
                 lambda _=False, phase_clean=clean_text(phase):  # קיבוע הערך

@@ -99,6 +99,7 @@ class MainWindow:
 
         # =============== show window =============== #
         window.setLayout(main_layout)
+        window.setStyleSheet("background-color: #f4faff;")
         window.show()
         print("** main window was set successfully")
 
