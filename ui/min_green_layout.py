@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QSizePolicy
-from PyQt5.QtCore import QTimer
+from PyQt6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QSizePolicy
+from PyQt6.QtCore import QTimer
 
 from config.special import set_blue_button_white_text_style
 from controllers.data_controller import DataController

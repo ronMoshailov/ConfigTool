@@ -1,7 +1,7 @@
 import re
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QWidget
 
 from config.style import blue_button_white_text_style, combo_style
 from entities.log import Log

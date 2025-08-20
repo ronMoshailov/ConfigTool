@@ -1,4 +1,4 @@
-from PyQt5.QtGui import QColor
+from PyQt6.QtGui import QColor
 
 # QColor - רק הצבע עצמו.
 # QBrush - צבע + איך ממלאים איתו (מלא, חצי שקוף, פסים, תמונה וכו’).

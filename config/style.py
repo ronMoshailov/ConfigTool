@@ -30,9 +30,9 @@ blue_button_white_text_style = """
                     border-radius: 10px;
                     padding: 0px;
                     font-weight: bold;
-                    font-size: 24px;
-                    min-width: 230px;
-                    min-height: 50px;
+                    font-size: 18px;
+                    min-width: 50px;
+                    min-height: 36px;
                 }
 
                 QPushButton:hover {

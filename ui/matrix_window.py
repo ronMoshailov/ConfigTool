@@ -1,6 +1,6 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QPushButton, QTableWidgetItem, QAbstractItemView
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QColor
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QPushButton, QTableWidgetItem, QAbstractItemView
 
 from config.style import table_style
 from controllers.data_controller import DataController

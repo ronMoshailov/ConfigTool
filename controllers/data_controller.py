@@ -1,6 +1,6 @@
 import logging
 
-from PyQt5.QtWidgets import QLineEdit
+from PyQt6.QtWidgets import QLineEdit
 
 from managers.paths_manager import PathsManager
 from managers.data_manager import DataManager
@@ -48,6 +48,12 @@ class DataController:
             return False
         print(f"**** [class] DataController:\t [method] add_move\t[end] ")
         return True
+
+    def add_sk(self):
+        card_num = len(self.sk_manager) + 1
+        new_sk = SkManager(card_num)
+        new_sk.initialize_channels()
+        self.sk_manager.append(new_sk)
 
     # --------------- get methods --------------- #
     def get_all_moves(self):
@@ -176,6 +182,11 @@ class DataController:
         :return: None
         """
         return self.data_manager.remove_move(move_name)
+
+    def remove_sk(self, number_card):
+        for sk_manager in self.sk_manager:
+            if sk_manager.number_card == number_card:
+                self.sk_manager.remove(sk_manager)
 
     # --------------- general methods --------------- #
     def initialize_app(self, btn_list):

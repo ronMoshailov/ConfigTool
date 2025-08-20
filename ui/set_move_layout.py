@@ -1,9 +1,8 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QScrollArea
-from PyQt5.QtWidgets import QRadioButton, QButtonGroup
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QScrollArea
+from PyQt6.QtWidgets import QRadioButton, QButtonGroup
 
-from config.constants import BUTTON_WIDTH, COLUMN_SPACING, BUTTON_HEIGHT
 from config.constants import GREEN_IMAGE_PATH, GREEN_BLINKER_IMAGE_PATH, PEDESTRIAN_IMAGE_PATH, BLINKER_IMAGE_PATH, \
     BLINKER_CONDITIONAL_IMAGE_PATH
 
@@ -35,13 +34,13 @@ class SetMoveLayout(QWidget):
         label_list[2].setStyleSheet(gray_label_style)
 
         # center the text
-        label_list[0].setAlignment(Qt.AlignCenter)
-        label_list[1].setAlignment(Qt.AlignCenter)
-        label_list[2].setAlignment(Qt.AlignCenter)
+        # label_list[0].setAlignment(Qt.AlignCenter)
+        # label_list[1].setAlignment(Qt.AlignCenter)
+        # label_list[2].setAlignment(Qt.AlignCenter)
 
         # =============== textbox =============== #
         main_phase_textbox = QLineEdit()                    # create textbox
-        main_phase_textbox.setAlignment(Qt.AlignRight)      # center the text
+        # main_phase_textbox.setAlignment(Qt.AlignRight)      # center the text
         main_phase_textbox.setMaximumWidth(350)             # set min-width
         main_phase_textbox.setFixedHeight(32)               # set fixed height
         main_phase_textbox.setStyleSheet(text_field_style)  # set style
@@ -164,7 +163,7 @@ class SetMoveLayout(QWidget):
                 self.not_main_radio,
         ):
             rb.setStyleSheet(radio_tile_style)
-            rb.setCursor(Qt.PointingHandCursor)
+            # rb.setCursor(Qt.PointingHandCursor)
 
         # =============== create the layout =============== #
         main_layout.addLayout(row1)

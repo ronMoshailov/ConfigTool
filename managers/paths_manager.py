@@ -1,6 +1,6 @@
 import os
 
-from PyQt5.QtWidgets import QFileDialog
+from PyQt6.QtWidgets import QFileDialog
 
 from entities.log import Log
 

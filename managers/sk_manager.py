@@ -14,13 +14,11 @@ class SkManager:
         self.number_card = number_card
         self.sk_channel_list = []
 
-    # =========================================== #
-    #                 add methods                 #
-    # =========================================== #
 
-    # =========================================== #
-    #                  get methods                #
-    # =========================================== #
+    # --------------- add methods ---------------
+
+
+    # --------------- get methods ---------------
     def get_sk_channel_list(self):
         """
         This method return a list of sk channel.
@@ -95,6 +93,8 @@ class SkManager:
     # =========================================== #
     #               remove methods                #
     # =========================================== #
+    def remove(self):
+        pass
 
     # =========================================== #
     #                general methods              #
