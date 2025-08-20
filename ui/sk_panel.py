@@ -57,7 +57,7 @@ class SkPanel(QWidget):
         # כפתור לדוגמה (הוספת SK)
         self.btn_add = QPushButton("הוסף SK", self)
         self.btn_add.clicked.connect(self.add_sk)
-        self.root.addWidget(self.btn_add, 0, Qt.AlignRight)
+        self.root.addWidget(self.btn_add, 0, Qt.AlignmentFlag.AlignRight)
 
         self.hide()
 
@@ -76,7 +76,7 @@ class SkPanel(QWidget):
         num_cards = self.data_controller.get_sk_count()
         for i in range(1, num_cards + 1):
             card_widget = self.init_table(i)
-            card_widget.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+            card_widget.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
             self.tables_layout.addWidget(card_widget)
 
         self.tables_layout.addStretch(1)
@@ -86,7 +86,7 @@ class SkPanel(QWidget):
     # -------- update handlers -------- #
     def update_comment(self, row_number, state, card_number, table):
         if table.cellWidget(row_number, 1).currentText() == "-":
-            table.cellWidget(row_number, 3).setCheckState(Qt.Unchecked)
+            table.cellWidget(row_number, 3).setCheckState(Qt.CheckState.Unchecked)
             return False
 
         was = table.blockSignals(True)
@@ -100,7 +100,7 @@ class SkPanel(QWidget):
         green = QBrush(QColor(180, 255, 180))
         white = QBrush(QColor(255, 255, 255))
 
-        if state == Qt.Checked:
+        if state == Qt.CheckState.Checked:
             # col 0
             (table.item(row_number, 0) or QTableWidgetItem()).setBackground(green)
             # col 1
@@ -163,7 +163,7 @@ class SkPanel(QWidget):
                 (table.item(row, 2) or QTableWidgetItem()).setBackground(white)
                 table.item(row, 2).setText("")
                 table.cellWidget(row, 3).setStyleSheet("margin-left:auto; margin-right:auto;")
-                table.cellWidget(row, 3).setCheckState(Qt.Unchecked)
+                table.cellWidget(row, 3).setCheckState(Qt.CheckState.Unchecked)
 
         return True
 
@@ -173,7 +173,7 @@ class SkPanel(QWidget):
         column_layout = QVBoxLayout(wrap)
 
         title = QLabel(f"SK_{card_number}", wrap)
-        title.setAlignment(Qt.AlignCenter)
+        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         column_layout.addWidget(title)
         title.setStyleSheet("""
             QLabel {
@@ -193,8 +193,8 @@ class SkPanel(QWidget):
         """)
 
         tbl = QTableWidget(24, 4, wrap)
-        tbl.setSelectionMode(QAbstractItemView.NoSelection)
-        tbl.setFocusPolicy(Qt.NoFocus)
+        tbl.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)
+        tbl.setFocusPolicy(Qt.FocusPolicy.NoFocus)
 
         was_tbl = tbl.blockSignals(True)
         self._create_table(tbl, card_number)
@@ -234,9 +234,9 @@ class SkPanel(QWidget):
         for r in range(24):
             # col 0 (display)
             col_0 = QTableWidgetItem(str(r + 1))
-            col_0.setFlags(Qt.NoItemFlags)
+            col_0.setFlags(Qt.ItemFlag.NoItemFlags)
             col_0.setBackground(gray)
-            col_0.setTextAlignment(Qt.AlignCenter)
+            col_0.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
             tbl.setItem(r, 0, col_0)
 
             # col 1 (combo)
@@ -247,8 +247,8 @@ class SkPanel(QWidget):
 
             # col 2 (color)
             col_2 = QTableWidgetItem("")
-            col_2.setTextAlignment(Qt.AlignCenter)
-            col_2.setFlags(col_2.flags() & ~Qt.ItemIsEditable)
+            col_2.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+            col_2.setFlags(col_2.flags() & ~Qt.ItemFlag.ItemIsEditable)
             tbl.setItem(r, 2, col_2)
 
             # col 3 (check box)
@@ -271,7 +271,7 @@ class SkPanel(QWidget):
             # col 3 (check box)
             it3 = tbl.cellWidget(row, 3)
             was = it3.blockSignals(True)
-            it3.setCheckState(Qt.Checked if is_commented else Qt.Unchecked)
+            it3.setCheckState(Qt.CheckState.Checked if is_commented else Qt.CheckState.Unchecked)
             it3.blockSignals(was)
 
             # col 2 (color)

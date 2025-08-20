@@ -76,7 +76,7 @@ class Matrix(QWidget):
                 continue
 
             item = QTableWidgetItem(str(cell.wait_time))
-            item.setTextAlignment(Qt.AlignCenter)
+            item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
             self.tbl.setItem(i, j, item)
 
         for row_name, col_name, val in self.changes:
@@ -86,8 +86,8 @@ class Matrix(QWidget):
                 continue
             item = self.tbl.item(i, j) or QTableWidgetItem()
             self.tbl.setItem(i, j, item)
-            item.setData(Qt.DisplayRole, int(val) if str(val).isdigit() else str(val))
-            item.setTextAlignment(Qt.AlignCenter)
+            item.setData(Qt.ItemDataRole.FDisplayRole, int(val) if str(val).isdigit() else str(val))
+            item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
 
     def shade_diagonal(self):
         
@@ -97,12 +97,12 @@ class Matrix(QWidget):
             if item is None:
                 item = QTableWidgetItem("")  # אפשר גם "—"
                 self.tbl.setItem(i, i, item)
-            item.setFlags(item.flags() & ~Qt.ItemIsEditable)
-            self.tbl.setFocusPolicy(Qt.NoFocus)  # לא נותן לטבלה בכלל לקבל focus
-            self.tbl.setSelectionMode(QAbstractItemView.NoSelection)  # לא מאפשר בחירה
+            item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
+            self.tbl.setFocusPolicy(Qt.FocusPolicy.NoFocus)  # לא נותן לטבלה בכלל לקבל focus
+            self.tbl.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)  # לא מאפשר בחירה
 
             item.setBackground(QColor(220, 220, 220))  # אפור בהיר
-            item.setTextAlignment(Qt.AlignCenter)
+            item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
 
 
     def dark_Pedestrian(self):
@@ -118,7 +118,7 @@ class Matrix(QWidget):
         for i in P_rows:
             for j in P_cols:
                 item = self.tbl.item(i, j) or QTableWidgetItem("")
-                item.setFlags(item.flags() & ~Qt.ItemIsEditable)
+                item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
                 self.tbl.setItem(i, j, item)
                 # item.setBackground(black)
 

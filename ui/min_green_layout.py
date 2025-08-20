@@ -25,7 +25,7 @@ class MinGreenLayout(QWidget):
     # =============== scroll rows =============== #
     def _placeholder(self):
         ph = QWidget()
-        ph.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        ph.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         ph.setMinimumHeight(1)
         ph.setStyleSheet("background: transparent; border: none;")
         return ph
@@ -64,7 +64,7 @@ class MinGreenLayout(QWidget):
             card = QFrame()
             card.setStyleSheet(min_cards_style)
             card.setObjectName("minRowCard")
-            card.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)  # חשוב!
+            card.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
 
             card_layout = QHBoxLayout(card)
             card_layout.setContentsMargins(8, 8, 8, 8)

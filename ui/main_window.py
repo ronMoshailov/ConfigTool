@@ -42,12 +42,11 @@ class MainWindow(QMainWindow):
         ]
 
         buttons[1]    .clicked.connect(lambda: self.data_controller.initialize_app([buttons[0]] + buttons[2:]))
+        buttons[3]   .clicked.connect(lambda: self.ui_controller.show_set_move_layout())
+        buttons[5]   .clicked.connect(lambda: self.ui_controller.show_min_green_layout())
+        buttons[7]   .clicked.connect(lambda: self.ui_controller.show_matrix_layout())
+        buttons[9]   .clicked.connect(lambda: self.ui_controller.show_sk_layout())
         buttons[13]   .clicked.connect(lambda: displayAllMoves())
-
-        # btn_set_moves   .clicked.connect(lambda: self.ui_controller.     show_set_move_layout()             )
-        # btn_set_min     .clicked.connect(lambda: self.ui_controller.     show_min_green_layout()            )
-        # btn_matrix      .clicked.connect(lambda: self.ui_controller.     show_matrix_layout()               )
-        # btn_sk          .clicked.connect(lambda: self.ui_controller.     show_sk_layout()                   )
 
         # create grid
         grid.addWidget(name_edit, 0, 0, 1, 2) # row_num, col_num, how many rows use, how many columns to use
@@ -62,17 +61,18 @@ class MainWindow(QMainWindow):
         scroll.setWidget(btn_container)
         scroll.setStyleSheet("background-color: #F2F2FF; border-radius: 10px;")
         scroll.setFixedWidth(400)  # תבחר רוחב שמתאים לכל הטקסט בכפתורים
-        root_layout.addWidget(scroll, 2)  # במקום 0 – זה יתן לו פי 2 גמישות מהריבוע השמאלי
 
         # צרף ללייאאוט הראשי
         root_layout.addWidget(left_panel, 1)   # תן לפאנל השמאלי לגדול
         root_layout.addWidget(scroll, 0)  # עמודת כפתורים קבועה יחסית
 
         # =============== add layouts =============== #
-        # root_layout.addWidget(self.ui_controller.get_set_move_layout(), 20)
-        # root_layout.addWidget(self.ui_controller.get_min_green_layout(), 20)
-        # root_layout.addWidget(self.ui_controller.get_matrix_layout(), 20)
-        # root_layout.addWidget(self.ui_controller.get_sk_layout(), 20)
+        root_layout.addWidget(self.ui_controller.get_set_move_layout(), 20)
+        root_layout.addWidget(self.ui_controller.get_min_green_layout(), 20)
+        root_layout.addWidget(self.ui_controller.get_matrix_layout(), 20)
+        root_layout.addWidget(self.ui_controller.get_sk_layout(), 20)
+        root_layout.addWidget(scroll, 2)  # במקום 0 – זה יתן לו פי 2 גמישות מהריבוע השמאלי
+
         grid.setContentsMargins(16, 16, 16, 16)
         grid.setHorizontalSpacing(12)
         grid.setVerticalSpacing(12)
@@ -82,7 +82,6 @@ class MainWindow(QMainWindow):
 
         rows = (len(buttons) + 1) // 2 + 1  # +1 בגלל השורה של name_edit
         grid.setRowStretch(rows, 1)  # “רווח גמיש” אחרי השורה האחרונה
-
         scroll.setWidgetResizable(True)
 
         set_btn_disable([buttons[0]] + buttons[2:])                                     # Disable buttons
