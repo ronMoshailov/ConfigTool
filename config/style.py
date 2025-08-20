@@ -388,7 +388,7 @@ scroll_label_style = """
                     color: #2c3e50;
                     padding: 4px 6px;
                     border-radius: 6px;
-                    background: #ecf0f1;
+                    background: #cceeff;
                     border: 1px solid #d0d7de;
                     min-height: 60px;
                 }

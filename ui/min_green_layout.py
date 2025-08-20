@@ -1,9 +1,9 @@
-from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame
+from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QSizePolicy
 from PyQt5.QtCore import QTimer
 
 from config.special import set_blue_button_white_text_style
 from controllers.data_controller import DataController
-from config.style import min_group_row_style
+from config.style import min_group_row_style, dark_button_style
 
 
 class MinGreenLayout(QWidget):
@@ -23,6 +23,12 @@ class MinGreenLayout(QWidget):
 
 
     # =============== scroll rows =============== #
+    def _placeholder(self):
+        ph = QWidget()
+        ph.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        ph.setMinimumHeight(1)
+        ph.setStyleSheet("background: transparent; border: none;")
+        return ph
 
     def show_panel(self):
         print(f"min_green_layout:\tshow_panel\t[start] ")
@@ -37,13 +43,20 @@ class MinGreenLayout(QWidget):
         dictinary = {}
 
         row = None
-        idx = None
         for i, move in enumerate(all_moves):
+            # בכל פתיחת שורה חדשה
             if i % 4 == 0:
+                # אם יש שורה קודמת לא מלאה – השלם ל-4
+                if row is not None and items_in_row < 4:
+                    for _ in range(4 - items_in_row):
+                        row.addWidget(self._placeholder(), 1)
+
                 row = QHBoxLayout()
                 row.setSpacing(8)
                 self.col.addLayout(row)
+                items_in_row = 0
 
+            # כרטיס
             label = QLabel(move.name)
             textbox = QLineEdit("" if move.min_green is None else str(move.min_green))
             dictinary[move.name] = textbox
@@ -51,34 +64,42 @@ class MinGreenLayout(QWidget):
             card = QFrame()
             card.setStyleSheet(min_cards_style)
             card.setObjectName("minRowCard")
+            card.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)  # חשוב!
+
             card_layout = QHBoxLayout(card)
             card_layout.setContentsMargins(8, 8, 8, 8)
             card_layout.setSpacing(6)
             card_layout.addWidget(label)
             card_layout.addWidget(textbox)
 
-            row.addWidget(card)
-            idx = i % 4
+            # כל פריט בשורה עם stretch=1 → בדיוק רבע רוחב
+            row.addWidget(card, 1)
+            items_in_row += 1
 
-        if idx != 3:
-            row.addStretch()
-        row = QHBoxLayout()
-        row.setSpacing(8)
+        # השלם את השורה האחרונה אם לא מלאה
+        if row is not None and items_in_row < 4:
+            for _ in range(4 - items_in_row):
+                row.addWidget(self._placeholder(), 1)
 
+        # --- שורת כפתור "עדכן" ---
+        btn_row = QHBoxLayout()
+        btn_row.setSpacing(8)
         btn = QPushButton("עדכן")
-        btn.clicked.connect(lambda: self.data_controller.update_min_green(dictinary)
-        )
-
+        btn.clicked.connect(lambda: self.data_controller.update_min_green(dictinary))
         set_blue_button_white_text_style([btn])
-        row.addWidget(btn)
+        btn_row.addStretch()
+        btn_row.addWidget(btn)
+        btn_row.addStretch()
+
         container = QWidget()
-        container.setLayout(row)
+        container.setLayout(btn_row)
         container.setStyleSheet(min_group_row_style)
         self.col.addWidget(container)
 
         self.col.addStretch()
         self.show()
-        print(f"min_green_layout:\tshow_panel\t[end]\n")
+        print("min_green_layout:\tshow_panel\t[end]\n")
+
 
 def clear_layout(layout):
     while layout.count():
