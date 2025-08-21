@@ -29,6 +29,7 @@ class DataManager:
         # self.e_detectors = []
         # self.inter_stages = []
         self.MatrixCells = []
+        print("** data manager was set successfully")
 
     # =========================================== #
     #                 add methods                 #

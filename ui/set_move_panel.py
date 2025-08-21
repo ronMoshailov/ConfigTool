@@ -6,44 +6,184 @@ from PyQt6.QtWidgets import QRadioButton, QButtonGroup
 from config.constants import GREEN_IMAGE_PATH, GREEN_BLINKER_IMAGE_PATH, PEDESTRIAN_IMAGE_PATH, BLINKER_IMAGE_PATH, \
     BLINKER_CONDITIONAL_IMAGE_PATH
 
-from config.special import clean_text, set_blue_button_white_text_style
-from config.style import text_field_style, radio_tile_style, scroll_style, gray_label_style, scroll_label_style, \
-    btn_remove_style, blue_button_white_text_style, dark_button_style
+from config.special import clean_text
+from config.style import blue_button_white_text_style, dark_button_style
 from controllers.data_controller import DataController
 from entities.log import Log
 
 
-class SetMoveLayout(QWidget):
+class SetMovePanel(QWidget):
 
     def __init__(self):
         super().__init__()
 
+        self.setObjectName("mainRoot")
+
         self.data_controller = DataController()
+
+        # =============== layouts =============== #
+        root_layout = QVBoxLayout(self)     # root layout
+        row1 = QHBoxLayout()                #
+        type_radio_layout = QHBoxLayout()   # type radio layout
+        main_radio_layout = QHBoxLayout()   # main radio layout
+        row4 = QHBoxLayout()                #
+
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True) # ask from the engine style of Qt to color the background of the widget (QWidget not always active this)
+
+
+
+
+
+
+        # =============== style =============== #
+        # labels
+        gray_label_style = """
+            #mainRoot { 
+                background-color: #F2F2FF;  border-radius: 10px; 
+                }
+        
+            QLabel {
+                background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #fdfefe, stop:1 #ebedef);
+                color: #2c3e50;
+                border: 1px solid #d5d8dc;
+                border-radius: 8px;
+                padding: 8px 12px;
+                font-size: 24px;
+                font-weight: bold;
+                min-width: 170px;
+                }
+
+            QLabel:hover {
+                background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #f8f9f9, stop:1 #d6dbdf);
+                border: 1px solid #b2babb;
+                }
+        """
+        text_field_style = """
+                    QLineEdit {
+                        font-size: 32px;
+                        max-height: 50px;
+                        padding: 6px 10px;
+                        border: 2px solid #cccccc;
+                        border-radius: 6px;
+                        background-color: #fdfdfd;
+                        selection-background-color: #3399ff;
+                    }
+                    QLineEdit:focus {
+                        border: 2px solid #3399ff;       /* מסגרת כחולה בזמן פוקוס */
+                        background-color: #ffffff;
+                    }
+                    QLineEdit:disabled {
+                        background-color: #eeeeee;
+                        color: #888888;
+                    }
+                """
+        radio_tile_style = """
+        QRadioButton {
+            qproperty-iconSize: 22px 22px;   /* אם יש גם אייקון */
+            spacing: 8px;                    /* רווח בין הבולט/אייקון לטקסט */
+            font-weight: bold;
+            font-size: 16px;
+            color: #2c3e50;
+        }
+
+        QRadioButton::indicator {
+            width: 18px; height: 18px;
+            border-radius: 9px;
+            border: 2px solid #2471a3;
+            background: #ffffff;
+            margin: 0 6px;
+        }
+        QRadioButton::indicator:hover {
+            border: 2px solid #1b4f72;
+        }
+        QRadioButton::indicator:checked {
+            background: #000000;
+            border: 2px solid #4060b9;
+        }
+        QRadioButton::indicator:disabled {
+            background: #e5e7eb;
+            border: 2px solid #a6acaf;
+        }
+        """
+        scroll_style = """
+        QScrollArea {
+            border: 1px solid #3498db;
+            border-radius: 25px;
+            padding: 10px;
+            background-color: #4f57ff;
+        }
+
+
+        /* סרגל גלילה אנכי */
+        QScrollBar:vertical {
+            width: 10px;
+            margin: 4px 4px 4px 2px;           /* top right bottom left */
+            background: transparent;
+        }
+        QScrollBar::handle:vertical {
+            background: qlineargradient(x1:0,y1:0,x2:0,y2:1,
+                                        stop:0 #5dade2, stop:1 #2e86c1);
+            border: 1px solid #2471a3;
+            border-radius: 5px;
+            min-height: 24px;
+        }
+        QScrollBar::handle:vertical:hover {
+            background: qlineargradient(x1:0,y1:0,x2:0,y2:1,
+                                        stop:0 #5499c7, stop:1 #21618c);
+        }
+
+        /* סרגל גלילה אופקי */
+        QScrollBar:horizontal {
+            height: 10px;
+            margin: 2px 4px 4px 4px;
+            background: transparent;
+        }
+        QScrollBar::handle:horizontal {
+            background: qlineargradient(x1:0,y1:0,x2:1,y2:0,
+                                        stop:0 #5dade2, stop:1 #2e86c1);
+            border: 1px solid #2471a3;
+            border-radius: 5px;
+            min-width: 24px;
+        }
+        QScrollBar::handle:horizontal:hover {
+            background: qlineargradient(x1:0,y1:0,x2:1,y2:0,
+                                        stop:0 #5499c7, stop:1 #21618c);
+        }
+
+        /* הסתרת כפתורי החיצים של הסקרולבר */
+        QScrollBar::add-line, QScrollBar::sub-line {
+            width: 0px; height: 0px;
+            background: none;
+            border: none;
+        }
+        QScrollBar::add-page, QScrollBar::sub-page {
+            background: transparent;
+        }
+
+        /* רקע התוכן הפנימי */
+        #scrollContent {
+            background: #0000ff;
+            border: 1px solid #c8d1dc;
+            border-radius: 8px;
+        }
+        """
 
         # =============== labels =============== #
         #                      index 0             index 1              index 2
         label_list = [  QLabel("שם המופע"), QLabel("סוג המופע"), QLabel("מופע ראשי")]
 
-        label_list[0] = QLabel("שם המופע")
-        label_list[1] = QLabel("סוג המופע")
-        label_list[2] = QLabel("מופע ראשי")
-
         # set style
-        label_list[0].setStyleSheet(gray_label_style)
-        label_list[1].setStyleSheet(gray_label_style)
-        label_list[2].setStyleSheet(gray_label_style)
+        self.setStyleSheet(gray_label_style + text_field_style + radio_tile_style + scroll_style)
 
         # center the text
-        # label_list[0].setAlignment(Qt.AlignCenter)
-        # label_list[1].setAlignment(Qt.AlignCenter)
-        # label_list[2].setAlignment(Qt.AlignCenter)
+        for lbl in label_list:
+            lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)  # both H & V
 
         # =============== textbox =============== #
-        main_phase_textbox = QLineEdit()                    # create textbox
-        # main_phase_textbox.setAlignment(Qt.AlignRight)      # center the text
-        main_phase_textbox.setMaximumWidth(350)             # set min-width
-        main_phase_textbox.setFixedHeight(32)               # set fixed height
-        main_phase_textbox.setStyleSheet(text_field_style)  # set style
+        main_phase_textbox = QLineEdit()                                # create textbox
+        main_phase_textbox.setAlignment(Qt.AlignmentFlag.AlignRight)    # center the text
+        main_phase_textbox.setMaximumWidth(350)                         # set max-width
+        main_phase_textbox.setFixedHeight(32)                           # set fixed height
 
         # =============== button =============== #
         run_button = QPushButton("הוסף")                # create button
@@ -51,7 +191,6 @@ class SetMoveLayout(QWidget):
         run_button.clicked.connect(lambda: self.add_move(main_phase_textbox.text()))
 
         # =============== type move =============== #
-        type_radio_layout = QHBoxLayout()                       # create horizontal layout
 
         self.traffic_radio = QRadioButton()                     # create radio button
         self.traffic_radio.setIcon(QIcon(GREEN_IMAGE_PATH))     # set icon
@@ -90,7 +229,6 @@ class SetMoveLayout(QWidget):
         type_radio_layout.addWidget(self.blinker_conditional_radio)
 
         # ============== is main ============== #
-        main_radio_layout = QHBoxLayout() # create layout
 
         # radio button
         self.main_radio = QRadioButton("כן")
@@ -110,20 +248,14 @@ class SetMoveLayout(QWidget):
         main_radio_layout.addSpacing(30)
 
         # =============== rows =============== #
-        row1 = QHBoxLayout()
-        row2 = QHBoxLayout()
-        row3 = QHBoxLayout()
-        row4 = QHBoxLayout()
 
         row1.addStretch()
         row1.addWidget(main_phase_textbox)
         row1.addWidget(label_list[0])
 
-        row2.addLayout(type_radio_layout)
-        row2.addWidget(label_list[1])
+        type_radio_layout.addWidget(label_list[1])
 
-        row3.addLayout(main_radio_layout)
-        row3.addWidget(label_list[2])
+        main_radio_layout.addWidget(label_list[2])
 
         row4.addStretch()
         row4.addWidget(run_button)
@@ -144,40 +276,26 @@ class SetMoveLayout(QWidget):
         self.scroll_layout.addLayout(self.phase_rows[1])    # add row 2 to the layout
         self.scroll_layout.addLayout(self.phase_rows[2])    # add row 3 to the layout
         self.scroll_layout.addStretch()                     # move all up
-        self.scroll_area.setStyleSheet(scroll_style)        # set style to scroll bar
+        # self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True) # ask from the engine style of Qt to color the background of the widget (QWidget not always active this)
 
         for row in self.phase_rows: # add space between each element
             row.setSpacing(40)      # add space between each element
 
         # =============== layout =============== #
-        main_layout = QVBoxLayout()
-
-        # add style to each radio button
-        for rb in (
-                self.traffic_radio,
-                self.traffic_flashing_radio,
-                self.pedestrian_radio,
-                self.blinker_radio,
-                self.blinker_conditional_radio,
-                self.main_radio,
-                self.not_main_radio,
-        ):
-            rb.setStyleSheet(radio_tile_style)
-            # rb.setCursor(Qt.PointingHandCursor)
 
         # =============== create the layout =============== #
-        main_layout.addLayout(row1)
-        main_layout.addSpacing(30)
-        main_layout.addLayout(row2)
-        main_layout.addSpacing(30)
-        main_layout.addLayout(row3)
-        main_layout.addSpacing(30)
-        main_layout.addLayout(row4)
+        root_layout.addLayout(row1)
+        root_layout.addSpacing(30)
+        root_layout.addLayout(type_radio_layout)
+        root_layout.addSpacing(30)
+        root_layout.addLayout(main_radio_layout)
+        root_layout.addSpacing(30)
+        root_layout.addLayout(row4)
 
-        main_layout.addSpacing(50)
-        main_layout.addWidget(self.scroll_area)
+        root_layout.addSpacing(50)
+        root_layout.addWidget(self.scroll_area)
 
-        self.setLayout(main_layout)
+        self.setLayout(root_layout)
         self.hide()
 
         # =============== scroll rows =============== #
@@ -198,6 +316,36 @@ class SetMoveLayout(QWidget):
         :return: None
         """
         moves_list = self.data_controller.get_all_moves() # get all moves
+
+        scroll_label_style = """
+                        QLabel {
+                            font-size: 36px;
+                            font-weight: bold;
+                            color: #2c3e50;
+                            padding: 4px 6px;
+                            border-radius: 6px;
+                            background: #cceeff;
+                            border: 1px solid #d0d7de;
+                            min-height: 60px;
+                        }
+                        QLabel:hover {
+                            background: #d6eaf8;
+                            border: 1px solid #3498db;
+                        }
+                    """
+        btn_remove_style = """
+                        QPushButton {
+                            border: 1px solid black;      /* עובי וצבע גבול */
+                            background-color: white;      /* צבע רקע */
+                        }
+                        QPushButton:hover {
+                            border: 1px solid #3498db;      /* עובי וצבע גבול */
+                            background-color: #f5f5f5;    /* רקע במעבר עכבר */
+                        }
+                        QPushButton:pressed {
+                            background-color: #e0e0e0;    /* רקע בלחיצה */
+                        }
+                    """
 
         # delete the existing rows
         for row in self.phase_rows:

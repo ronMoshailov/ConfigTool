@@ -12,85 +12,136 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("Config Tool")
 
+        root = QWidget()
+        self.setCentralWidget(root)  # --- central root ---
+
+        scroll = QScrollArea(root)
+
+        # --- controllers --- #
         self.data_controller = DataController()
         self.ui_controller = UIController()
 
-        # --- central root --- #
-        root = QWidget()
-        self.setCentralWidget(root)
-        root_layout = QHBoxLayout(root)
 
-        # --- right panel with grid (scrollable) ---
-        btn_container = QWidget(root)
-        btn_grid = QGridLayout(btn_container)
 
-        # components
-        name_edit = QLineEdit()
-        name_edit.setPlaceholderText("שם")
-        name_edit.setStyleSheet("background-color: white; border-radius: 10px; min-height: 30px; font-weight: bold; font-size: 18px;")
+        # --- widgets --- #
+        # set_move_panel      = self.ui_controller.get_set_move_layout()
+        # min_green_panel   = self.ui_controller.get_min_green_layout()
+        # matrix_panel      = self.ui_controller.get_matrix_layout()
+        # sk_panel          = self.ui_controller.get_sk_layout()
 
-        buttons = [ QPushButton("צומת חדש")     ,  QPushButton("הגדר נתיב"),
-                    QPushButton("הפעל סלייב")   ,  QPushButton("🚦ניהול מופעים🚦"),
-                    QPushButton("הפעל מאסטר")   ,  QPushButton("הגדר מינימום"),
-                    QPushButton("הגדר פרמטרים") ,  QPushButton("הגדר מטריצה"),
-                    QPushButton("הפעל סלייב")   ,  QPushButton("SK24 כרטיסי"),
-                    QPushButton("dx הפעל")      ,  QPushButton("IO24 כרטיסי"),
-                    QPushButton("הגדר מעברים")  ,  QPushButton("הדפס הכל"),
+        btn_container       = QWidget(scroll)
+        name_edit           = QLineEdit(btn_container)
+        buttons = [
+            QPushButton("צומת חדש"      , btn_container)  ,  QPushButton("הגדר נתיב"           , btn_container),
+            QPushButton("הפעל סלייב"    , btn_container)  ,  QPushButton("🚦ניהול מופעים🚦"    , btn_container),
+            QPushButton("הפעל מאסטר"    , btn_container)  ,  QPushButton("הגדר מינימום"        , btn_container),
+            QPushButton("הגדר פרמטרים"  , btn_container)  ,  QPushButton("הגדר מטריצה"         , btn_container),
+            QPushButton("הפעל סלייב"    , btn_container)  ,  QPushButton("SK24 כרטיסי"         , btn_container),
+            QPushButton("dx הפעל"       , btn_container)  ,  QPushButton("IO24 כרטיסי"         , btn_container),
+            QPushButton("הגדר מעברים"   , btn_container)  ,  QPushButton("הדפס הכל"            , btn_container),
         ]
 
-      # buttons[0]       checkAble
-        buttons[1]      .clicked.connect(lambda: self.data_controller.initialize_app([buttons[0]] + buttons[2:]))
-      # buttons[2]       checkAble
-        buttons[3]      .clicked.connect(lambda: self.ui_controller.show_set_move_layout())
-      # buttons[4]       checkAble
-        buttons[5]      .clicked.connect(lambda: self.ui_controller.show_min_green_layout())
-      # buttons[6]       TODO
-        buttons[7]      .clicked.connect(lambda: self.ui_controller.show_matrix_layout())
-      # buttons[8]       checkAble
-        buttons[9]      .clicked.connect(lambda: self.ui_controller.show_sk_layout())
-      # buttons[10]      checkAble
-      # buttons[11]      TODO
-      # buttons[12]      TODO
-        buttons[13]     .clicked.connect(lambda: displayAllMoves())
+        # --- layout --- #
+        root_layout     = QHBoxLayout(root)
+        btn_grid_layout = QGridLayout(btn_container)
 
-        # create grid
-        btn_grid.addWidget(name_edit, 0, 0, 1, 2) # row_num, col_num, how many rows use, how many columns to use
-        for i, btn in enumerate(buttons, start=1):
-            r = (i - 1) // 2 + 1
-            c = (i - 1) % 2
-            btn_grid.addWidget(btn, r, c)
+        # --- style --- #
+        btn_container_style = """ 
 
-        # גלילה אם יש המון כפתורים
-        scroll = QScrollArea(root)
+        /* text box */
+        QLineEdit{
+            background-color: white; 
+            border-radius: 10px; 
+            min-height: 30px; 
+            font-weight: bold; 
+            font-size: 18px;
+        }
+        """
+        root_style = """
+            background-color: #D4D6FF;
+        """
 
-        scroll.setWidget(btn_container)
-        scroll.setStyleSheet("background-color: #F2F2FF; border-radius: 10px;")
-        scroll.setFixedWidth(400)  # תבחר רוחב שמתאים לכל הטקסט בכפתורים
-
-        # צרף ללייאאוט הראשי
-        root_layout.addWidget(scroll, 0)  # עמודת כפתורים קבועה יחסית
+        # --- root settings --- #
 
         # =============== add layouts =============== #
-        root_layout.addWidget(self.ui_controller.get_set_move_layout(), 20)
-        root_layout.addWidget(self.ui_controller.get_min_green_layout(), 20)
-        root_layout.addWidget(self.ui_controller.get_matrix_layout(), 20)
-        root_layout.addWidget(self.ui_controller.get_sk_layout(), 20)
+        # root_layout.addWidget(set_move_panel    , 20)
+        # root_layout.addWidget(min_green_panel   , 20)
+        # root_layout.addWidget(matrix_panel      , 20)
+        # root_layout.addWidget(sk_panel          , 20)
         root_layout.addSpacerItem(QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum))
         root_layout.addWidget(scroll)
 
-        btn_grid.setContentsMargins(16, 16, 16, 16)
-        btn_grid.setHorizontalSpacing(12)
-        btn_grid.setVerticalSpacing(12)
 
+
+        # --- btn_grid_layout settings --- #
+        btn_grid_layout.addWidget(name_edit, 0, 0, 1, 2) # add the textBox (component, row_num, col_num, how many rows use, how many columns to use)
+        for i, btn in enumerate(buttons, start=1):
+            r = (i - 1) // 2 + 1
+            c = (i - 1) % 2
+            btn_grid_layout.addWidget(btn, r, c)
+        btn_grid_layout.setContentsMargins(16, 16, 16, 16)
+        btn_grid_layout.setHorizontalSpacing(12)
+        btn_grid_layout.setVerticalSpacing(12)
         rows = (len(buttons) + 1) // 2 + 1  # +1 בגלל השורה של name_edit
-        btn_grid.setRowStretch(rows, 1)  # “רווח גמיש” אחרי השורה האחרונה
+        btn_grid_layout.setRowStretch(rows, 1)  # “רווח גמיש” אחרי השורה האחרונה
+
+        # --- active buttons --- #
+        # buttons[0]       checkAble
+        # buttons[1].clicked.connect(lambda: self.data_controller.initialize_app([buttons[0]] + buttons[2:]))
+        # buttons[2]       checkAble
+        buttons[3].clicked.connect(lambda: self.ui_controller.show_set_move_layout())
+        # buttons[4]       checkAble
+        buttons[5].clicked.connect(lambda: self.ui_controller.show_min_green_layout())
+        # buttons[6]       TODO
+        buttons[7].clicked.connect(lambda: self.ui_controller.show_matrix_layout())
+        # buttons[8]       checkAble
+        buttons[9].clicked.connect(lambda: self.ui_controller.show_sk_layout())
+        # buttons[10]      checkAble
+        # buttons[11]      TODO
+        # buttons[12]      TODO
+        buttons[13].clicked.connect(lambda: displayAllMoves())
+
+        # --- right panel with grid (scrollable) ---
+        btn_container.setStyleSheet(btn_container_style)
+
+        # components
+        name_edit.setPlaceholderText("שם")
+
+        # scroll settings
+        scroll.setWidget(btn_container)
+        scroll.setStyleSheet("background-color: #F2F2FF; border-radius: 10px;")
+        scroll.setFixedWidth(400)  # תבחר רוחב שמתאים לכל הטקסט בכפתורים
         scroll.setWidgetResizable(True)
 
+        # special methods
         set_btn_disable([buttons[0]] + buttons[2:])                                     # Disable buttons
         make_checkable([buttons[0], buttons[2], buttons[4], buttons[8], buttons[10]])   # make button checkable
         set_blue_button_white_text_style(buttons)                                       # set style on buttons
 
         # =============== show window =============== #
-        self.setStyleSheet("background-color: #D4D6FF;")
+        self.setStyleSheet(root_style)
         print("** main window was set successfully")
 
+        # --- parent flow --- #
+        # QWidget [root]
+        # ├── QWidget [set_move_panel]
+        # ├── QWidget [min_green_panel]
+        # ├── QWidget [matrix_panel]
+        # ├── QWidget [sk_panel]
+        # └── QScrollArea [scroll]
+        #       └── QWidget [btn_container]
+        #               ├── QLineEdit [name_edit]
+        #               ├── QPushButton ["צומת חדש"]
+        #               ├── QPushButton ["הגדר נתיב"]
+        #               ├── QPushButton ["הפעל סלייב"]
+        #               ├── QPushButton ["🚦ניהול מופעים🚦"]
+        #               ├── QPushButton ["הפעל מאסטר"]
+        #               ├── QPushButton ["הגדר מינימום"]
+        #               ├── QPushButton ["הגדר פרמטרים"]
+        #               ├── QPushButton ["הגדר מטריצה"]
+        #               ├── QPushButton ["הפעל סלייב"]
+        #               ├── QPushButton ["SK24 כרטיסי"]
+        #               ├── QPushButton ["dx הפעל"]
+        #               ├── QPushButton ["IO24 כרטיסי"]
+        #               ├── QPushButton ["הגדר מעברים"]
+        #               └── QPushButton ["הדפס הכל"]
