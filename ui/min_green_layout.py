@@ -6,15 +6,16 @@ from config.style import min_group_row_style
 
 
 class MinGreenLayout(QWidget):
-    _instance = None
-
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-        return cls._instance
+    # _instance = None
+    #
+    # def __new__(cls):
+    #     if cls._instance is None:
+    #         cls._instance = super().__new__(cls)
+    #     return cls._instance
 
     def __init__(self):
-        super().__init__()
+        print("B")
+        super().__init__() # it row make error "Process finished with exit code -1073741571 (0xC00000FD)"
         print("A")
         self.data_controller = DataController()
         self.col = QVBoxLayout()
@@ -86,7 +87,6 @@ class MinGreenLayout(QWidget):
         btn_row.setSpacing(8)
         btn = QPushButton("עדכן")
         btn.clicked.connect(lambda: self.data_controller.update_min_green(dictinary))
-        set_blue_button_white_text_style([btn])
         btn_row.addStretch()
         btn_row.addWidget(btn)
         btn_row.addStretch()
