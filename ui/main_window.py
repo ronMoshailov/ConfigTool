@@ -1,6 +1,6 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QPushButton, QHBoxLayout, QMainWindow, QLineEdit, QWidget, QGridLayout, QScrollArea, \
-    QSpacerItem, QSizePolicy
+    QSpacerItem, QSizePolicy, QFrame
 
 from config.special import make_checkable, set_btn_disable
 from config.debug import displayAllMoves
@@ -21,17 +21,22 @@ class MainWindow(QMainWindow):
         # --- style --- #
         root_style = """
         QMainWindow{
-            background-color: #D4D6FF;        
+            background-color: #c9e2fd;        
         }
 
-QWidget#ScrollViewport {
-    background-color: #ff0000;
-}
-
+        #ScrollViewport {
+            background-color: #c9e2fd;
+            
+        }
+        
+        QScrollArea {
+            background-color: #ecf0f1;
+            border: none;
+        }
 
         QWidget#BtnContainer {
-            background-color: #02F2FF;
-            border-radius: 10px;
+            background-color: #91a3f3;
+            border-radius: 30px;
         }
         QLineEdit{
             background-color: white; 
@@ -40,53 +45,69 @@ QWidget#ScrollViewport {
             font-weight: bold; 
             font-size: 18px;
         }
+        
+        /* --- QPushButton --- */
+        QPushButton {
+            background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                              stop:0 #5dade2, stop:1 #2e86c1);
+            color: white;
+            border: 2px solid #2471a3;
+            border-radius: 10px;
+            padding: 0px;
+            font-weight: bold;
+            font-size: 18px;
+            min-width: 150px;
+            min-height: 36px;
+        }
 
-                        QPushButton {
-                    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                                      stop:0 #5dade2, stop:1 #2e86c1);
-                    color: white;
-                    border: 2px solid #2471a3;
-                    border-radius: 10px;
-                    padding: 0px;
-                    font-weight: bold;
-                    font-size: 18px;
-                    min-width: 50px;
-                    min-height: 36px;
-                }
+        QPushButton:hover {
+            background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                              stop:0 #5499c7, stop:1 #21618c);
+            border: 2px solid #1b4f72;
+        }
 
-                QPushButton:hover {
-                    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                                      stop:0 #5499c7, stop:1 #21618c);
-                    border: 2px solid #1b4f72;
-                }
+        QPushButton:checked {
+            background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                              stop:0 #58d68d, stop:1 #28b463);
+            border: 2px solid #239b56;
+        }
 
-                QPushButton:checked {
-                    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                                      stop:0 #58d68d, stop:1 #28b463);
-                    border: 2px solid #239b56;
-                }
-
-                QPushButton:disabled {
-                    background-color: #d5d8dc;
-                    border: 2px solid #a6acaf;
-                    color: #7f8c8d;
-                }
+        QPushButton:disabled {
+            background-color: #d5d8dc;
+            border: 2px solid #a6acaf;
+            color: #7f8c8d;
+        }
+        
+        #movePanel{
+            background-color: #F2F2FF;  
+            border-radius: 10px; 
+        }
         """
 
         # =============== widgets =============== #
         root = QWidget()
 
         set_move_panel = self.ui_controller.get_set_move_layout()
+        set_move_panel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)  # horizontal - give
 
         min_green_panel = self.ui_controller.get_min_green_layout()
+        min_green_panel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)  # horizontal - give
 
         matrix_panel = self.ui_controller.get_matrix_layout()
+        matrix_panel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)  # horizontal - give
 
         sk_panel = self.ui_controller.get_sk_layout()
+        sk_panel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)  # horizontal - give
 
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
-        scroll.setFixedWidth(400)
+        scroll.setMaximumWidth(420) #  default width his half screen
+        scroll.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Expanding)  # horizontal - give
+
+        viewport = scroll.viewport()
+        viewport.setObjectName("ScrollViewport")
+        viewport.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)  # חייב!
+        viewport.setStyleSheet(root_style)  # עוקף כללים גלובליים
 
         name_edit = QLineEdit()
         name_edit.setPlaceholderText("שם")
@@ -104,6 +125,7 @@ QWidget#ScrollViewport {
             QPushButton("dx הפעל"), QPushButton("IO24 כרטיסי"),
             QPushButton("הגדר מעברים"), QPushButton("הדפס הכל"),
         ]
+
         # buttons[0]       checkAble
         buttons[1].clicked.connect(lambda: self.data_controller.initialize_app([buttons[0]] + buttons[2:]))
         # buttons[2]       checkAble
@@ -119,10 +141,6 @@ QWidget#ScrollViewport {
         # buttons[12]      TODO
         buttons[13].clicked.connect(lambda: displayAllMoves())
 
-        viewport = scroll.viewport()
-        viewport.setObjectName("ScrollViewport")
-        viewport.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
-
         # =============== layouts =============== #
         root_layout = QHBoxLayout()
 
@@ -134,7 +152,7 @@ QWidget#ScrollViewport {
         btn_grid_layout.setRowStretch(rows, 1)  # “רווח גמיש” אחרי השורה האחרונה
 
         # =============== widgets to layout =============== #
-        root_layout.addSpacerItem(QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum))
+        root_layout.addSpacerItem(QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum))
         root_layout.addWidget(set_move_panel, 20)
         root_layout.addWidget(min_green_panel, 20)
         root_layout.addWidget(matrix_panel, 20)
@@ -144,6 +162,7 @@ QWidget#ScrollViewport {
 
         # scroll.setLayout(btn_grid_layout)
         scroll.setWidget(btn_container)
+        scroll.setFrameShape(QFrame.Shape.NoFrame)
 
         btn_container.setLayout(btn_grid_layout)
         scroll.viewport().setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)

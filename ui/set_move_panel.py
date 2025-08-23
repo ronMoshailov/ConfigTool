@@ -17,7 +17,7 @@ class SetMovePanel(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.setObjectName("mainRoot")
+        self.setObjectName("movePanel")
 
         self.data_controller = DataController()
 
@@ -38,9 +38,7 @@ class SetMovePanel(QWidget):
         # =============== style =============== #
         # labels
         gray_label_style = """
-            #mainRoot { 
-                background-color: #F2F2FF;  border-radius: 10px; 
-                }
+
         
             QLabel {
                 background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #fdfefe, stop:1 #ebedef);
