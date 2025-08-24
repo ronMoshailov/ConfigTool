@@ -35,9 +35,8 @@ if __name__ == "__main__":
 #
 # Expanding – ישמח לגדול עד אין סוף (כל עוד ה־layout נותן).
 
-
-
-
+################
+# QLayoutItem - A QLayoutItem represents an item in a layout, which can be a widget, a spacer, or a nested layout.
 
 
 

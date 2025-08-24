@@ -54,19 +54,6 @@ blue_button_white_text_style = """
                 }
             """
 
-dark_button_style = """
-    QPushButton {
-        min-width: 160px;
-        background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                          stop:0 #1e3c72, stop:0.5 #2a5298, stop:1 #00c6ff);
-        /* כהה מאוד למעלה (#1e3c72), כחול בינוני באמצע (#2a5298), טורקיז בהיר למטה (#00c6ff) */
-    }
-
-    QPushButton:hover {
-        background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                          stop:0 #162f5c, stop:0.5 #24447c, stop:1 #00a1d9);
-    }
-"""
 min_group_row_style = """
 /* הווידג'ט העוטף כל שורה */
 #minRowCard {
@@ -246,11 +233,6 @@ QScrollBar::handle:horizontal:hover {
 }
 QScrollBar::add-line:horizontal,
 QScrollBar::sub-line:horizontal { width: 0; }
-"""
-
-red_hover = """
-QTableWidget::item:hover {
-    background: #ff0000;
 """
 
 

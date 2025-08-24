@@ -21,22 +21,31 @@ class MainWindow(QMainWindow):
         # --- style --- #
         root_style = """
         QMainWindow{
-            background-color: #c9e2fd;        
+            background: qlineargradient(
+            x1:0, y1:0, x2:0, y2:1,
+            stop:1 #e6f2fe,
+            stop:0 #cce0ff
+        );
+        
         }
 
         #ScrollViewport {
-            background-color: #c9e2fd;
-            
+            background: qlineargradient(
+                x1:0, y1:0, x2:0, y2:1,
+                stop:1 #e6f2fe,
+                stop:0 #cce0ff
+            );
         }
         
-        QScrollArea {
-            background-color: #ecf0f1;
-            border: none;
-        }
 
         QWidget#BtnContainer {
-            background-color: #91a3f3;
-            border-radius: 30px;
+            background: qlineargradient(
+                x1:0, y1:0, x2:1, y2:1,
+                stop:1 #d6c4fd,
+                stop:0 #7ea1ff
+            );
+            border-radius: 20px;
+            border: 1px solid #793ff8;
         }
         QLineEdit{
             background-color: white; 
@@ -78,15 +87,12 @@ class MainWindow(QMainWindow):
             color: #7f8c8d;
         }
         
-        #movePanel{
-            background-color: #F2F2FF;  
-            border-radius: 10px; 
-        }
         """
 
         # =============== widgets =============== #
         root = QWidget()
 
+        # =============== panels =============== #
         set_move_panel = self.ui_controller.get_set_move_layout()
         set_move_panel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)  # horizontal - give
 
@@ -106,7 +112,7 @@ class MainWindow(QMainWindow):
 
         viewport = scroll.viewport()
         viewport.setObjectName("ScrollViewport")
-        viewport.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)  # חייב!
+        # viewport.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)  # חייב!
         viewport.setStyleSheet(root_style)  # עוקף כללים גלובליים
 
         name_edit = QLineEdit()
@@ -152,11 +158,11 @@ class MainWindow(QMainWindow):
         btn_grid_layout.setRowStretch(rows, 1)  # “רווח גמיש” אחרי השורה האחרונה
 
         # =============== widgets to layout =============== #
-        root_layout.addSpacerItem(QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum))
         root_layout.addWidget(set_move_panel, 20)
         root_layout.addWidget(min_green_panel, 20)
         root_layout.addWidget(matrix_panel, 20)
         root_layout.addWidget(sk_panel, 20)
+        root_layout.addSpacerItem(QSpacerItem(10, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum))
         root_layout.addWidget(scroll)
         root.setLayout(root_layout)
 

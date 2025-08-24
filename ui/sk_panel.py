@@ -164,7 +164,6 @@ class SkPanel(QWidget):
                 table.item(row, 2).setText("")
                 table.cellWidget(row, 3).setStyleSheet("margin-left:auto; margin-right:auto;")
                 table.cellWidget(row, 3).setCheckState(Qt.CheckState.Unchecked)
-
         return True
 
     # -------- table build/fill -------- #
