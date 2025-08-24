@@ -26,7 +26,7 @@ class SetMovePanel(QWidget):
             border-radius: 20px;
             border: 1px solid #1a98ff;
             background: qlineargradient(
-                x1:0, y1:0, x2:1, y2:1,
+                x1:0, y1:0, x2:0, y2:1,
                 stop:0   #75c1ff,
                 stop:1   #d7e4f9
             );
@@ -149,7 +149,7 @@ class SetMovePanel(QWidget):
             padding: 10px;
             border: 1px solid #005aa3;
             border-radius: 25px;
-            background: qlineargradient(x1:0,y1:0,x2:1,y2:1, stop:0 #0087f5, stop:1 #d7e9f4);
+            background: qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #0087f5, stop:1 #d7e9f4);
         }
 
         QLabel#scroll_label {
