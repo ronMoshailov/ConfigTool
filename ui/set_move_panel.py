@@ -27,8 +27,8 @@ class SetMovePanel(QWidget):
             border: 1px solid #1a98ff;
             background: qlineargradient(
                 x1:0, y1:0, x2:0, y2:1,
-                stop:0   #75c1ff,
-                stop:1   #d7e4f9
+                stop:0   #94cfff,
+                stop:1   #f0f8ff
             );
         }
 
@@ -146,10 +146,11 @@ class SetMovePanel(QWidget):
         }
 
         #scrollContent {
-            padding: 10px;
-            border: 1px solid #005aa3;
-            border-radius: 25px;
-            background: qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #0087f5, stop:1 #d7e9f4);
+            background: transparent;
+            /* border-top: 1px solid #005aa3; */
+            /* border-radius: 25px; */
+            /* border-radius: 10px; */
+            /* background: qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #0087f5, stop:1 #eff6fb); */
         }
 
         QLabel#scroll_label {
@@ -168,7 +169,8 @@ class SetMovePanel(QWidget):
         
         QPushButton#btn_remove_move {
             border: 1px solid black;      /* עובי וצבע גבול */
-            background-color: white;      /* צבע רקע */
+            background-color: transparent;      /* צבע רקע */
+            border: None;
             max-width: 10px;
         }
         QPushButton#btn_remove_move:hover {
@@ -224,9 +226,9 @@ class SetMovePanel(QWidget):
         self.scroll_layout.addLayout(self.phase_rows[2])    # add row 3 to the layout
         self.scroll_layout.addStretch()                     # move all up
 
-
-        for row in self.phase_rows: # add space between each element
-            row.setSpacing(40)      # add space between each element
+        #
+        # for row in self.phase_rows: # add space between each element
+        #     row.setSpacing(40)      # add space between each element
 
         # =============== create the layout =============== #
         root_layout.addLayout(name_layout)
@@ -238,6 +240,8 @@ class SetMovePanel(QWidget):
         root_layout.addLayout(btn_layout)
         root_layout.addSpacing(50)
         root_layout.addWidget(self.scroll_area)
+
+        # root_layout.setContentsMargins(0, 0, 0, 0)  # left, top, right, bottom
 
         self.setLayout(root_layout)
         self.hide()
@@ -295,9 +299,9 @@ class SetMovePanel(QWidget):
                 continue
 
             label = QLabel()
-            move_txt = phase + ("⭐" if move.is_main else "")
-            label.setText(f"{move_txt} <img src='{icon}' width='20' height='25'/>")
+            label.setText(f"{phase} <img src='{icon}' width='16' height='20'/> {"⭐" if move.is_main else ""}")
             label.setObjectName("scroll_label")
+            label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             label.setFixedHeight(30)
 
             btn_remove = QPushButton("❌")
@@ -375,6 +379,7 @@ class SetMovePanel(QWidget):
         layout.addStretch()
         layout.addWidget(self.main_phase_textbox)
         layout.addWidget(label)
+        layout.setContentsMargins(0, 40, 40, 0)  # left, top, right, bottom
 
     def _init_type_radio(self):
         self.traffic_radio = QRadioButton()  # create radio button
@@ -417,6 +422,7 @@ class SetMovePanel(QWidget):
         label.setObjectName("gray_label")
         label.setAlignment(Qt.AlignmentFlag.AlignCenter)  # center the text (both H & V)
         type_layout.addWidget(label)
+        type_layout.setContentsMargins(0, 0, 40, 0)  # left, top, right, bottom
 
     def _init_main_radio(self):
         self.main_radio = QRadioButton("כן")
@@ -441,6 +447,7 @@ class SetMovePanel(QWidget):
         label.setObjectName("gray_label")
         label.setAlignment(Qt.AlignmentFlag.AlignCenter)  # center the text (both H & V)
         layout.addWidget(label)
+        layout.setContentsMargins(0, 0, 40, 0)  # left, top, right, bottom
 
     def _build_button_layout(self, layout):
 
@@ -450,6 +457,7 @@ class SetMovePanel(QWidget):
 
         layout.addStretch()
         layout.addWidget(run_button)
+        layout.setContentsMargins(0, 0, 40, 0)  # left, top, right, bottom
 
 
 

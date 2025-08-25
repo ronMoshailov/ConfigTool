@@ -173,8 +173,7 @@ class MainWindow(QMainWindow):
         btn_container.setLayout(btn_grid_layout)
         scroll.viewport().setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
 
-        btn_grid_layout.addWidget(name_edit, 0, 0, 1,
-                                  2)  # add the textBox (component, row_num, col_num, how many rows use, how many columns to use)
+        btn_grid_layout.addWidget(name_edit, 0, 0, 1, 2)  # add the textBox (component, row_num, col_num, how many rows use, how many columns to use)
         for i, btn in enumerate(buttons, start=1):
             r = (i - 1) // 2 + 1
             c = (i - 1) % 2

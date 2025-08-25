@@ -106,6 +106,9 @@ class DataController:
         """
         print(f"**** [class] DataController:\t [method] update_min_green\t[start] ")
         for key, value in dictionary.items():
+            if value.text() == "":
+                Log.error(f"The move {key} is empty")
+                return False
             value = value.text()
             if isinstance(value, str):
                 value = int(value)

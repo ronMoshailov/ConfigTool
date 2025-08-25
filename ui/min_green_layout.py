@@ -1,143 +1,152 @@
-from PyQt6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QSizePolicy
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QIntValidator
+from PyQt6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QSizePolicy, \
+    QGridLayout
 
-from config.special import set_blue_button_white_text_style
 from controllers.data_controller import DataController
-from config.style import min_group_row_style
 
 
 class MinGreenLayout(QWidget):
-    # _instance = None
-    #
-    # def __new__(cls):
-    #     if cls._instance is None:
-    #         cls._instance = super().__new__(cls)
-    #     return cls._instance
 
     def __init__(self):
-        print("B")
-        super().__init__() # it row make error "Process finished with exit code -1073741571 (0xC00000FD)"
-        print("A")
+        super().__init__()
+        self.btn_grid_layout = QGridLayout()
+        self.btn_grid_layout.setHorizontalSpacing(36)
+        self.btn_grid_layout.setVerticalSpacing(36)
+
+        # =============== controllers =============== #
         self.data_controller = DataController()
-        self.col = QVBoxLayout()
-        self.setLayout(self.col)
+
+        # =============== style =============== #
+        root_style = """
+QWidget#root {
+    border: 1px solid #04c83b;   /* כחול עדין */
+    border-radius: 20px; 
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1, 
+        stop:0 #e1fde7,   /* תכלת בהיר */
+        stop:1 #eef2ff    /* סגול-אפור רך */
+    );
+}
+
+QFrame#card {
+    background: #fdfdfd; /* אפור-לבן – שונה מהרקע */
+    border: 1px solid #d1d5db;
+    border-radius: 14px;
+    padding: 0px 22px;
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.06);
+    transition: all 0.25s ease-in-out;
+}
+QFrame#card:hover {
+    border: 1px solid #2861ff;   /* סגול */
+    background: #faf5ff;         /* נותן הדגשה עדינה */
+}
+
+QFrame#card QLabel {
+    color: #111827;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    padding: 5px 12px;
+}
+
+QFrame#card QLineEdit {
+    background: #f9fafb;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 5px 12px;
+    font-size: 18px;
+}
+QFrame#card QLineEdit:focus {
+    border: 1px solid #3b82f6;
+    background: #ffffff;
+}
+QFrame#card QLineEdit[readOnly="true"] {
+    background: #fddfdd;
+    color: #9ca3af;
+}
+
+
+        """
+
+        self.setObjectName("root")
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+
+        self.setStyleSheet(root_style)
+        self.setLayout(self.btn_grid_layout)
         self.hide()
 
-
-    # =============== scroll rows =============== #
-    def _placeholder(self):
-        ph = QWidget()
-        ph.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
-        ph.setMinimumHeight(1)
-        ph.setStyleSheet("background: transparent; border: none;")
-        return ph
-
+    # =============== methods =============== #
     def show_panel(self):
-        print(f"min_green_layout:\tshow_panel\t[start] ")
-        clear_layout(self.col)
+        # get data
         all_moves = self.data_controller.get_all_moves()
-        print("* starting to remove children")
-        while self.col.count():
-            item = self.col.takeAt(0)  # get the first QLayoutItem of the layout
-            widget = item.widget()  # get the widget
-            if widget:  #
-                widget.deleteLater()
-        dictinary = {}
+        min_green_dict = {}
 
-        row = None
+        cards_in_row = 7
+
+        # clear grid
+        while self.btn_grid_layout.count():             # how many 'QLayoutItem' exist
+            item = self.btn_grid_layout.takeAt(0)       # get the first 'QLayoutItem' (disconnect from parent, make independent but alive)
+            if item.widget():                           # get the widget (if not exist return None)
+                item.widget().deleteLater()             # remove the widget when if possible (let him finish if he in the middle of process)
+
         for i, move in enumerate(all_moves):
-            # בכל פתיחת שורה חדשה
-            if i % 4 == 0:
-                # אם יש שורה קודמת לא מלאה – השלם ל-4
-                if row is not None and items_in_row < 4:
-                    for _ in range(4 - items_in_row):
-                        row.addWidget(self._placeholder(), 1)
+            # get number row and number column
+            row_num = i // cards_in_row
+            col_num = i % cards_in_row
 
-                row = QHBoxLayout()
-                row.setSpacing(8)
-                self.col.addLayout(row)
-                items_in_row = 0
-
-            # כרטיס
+            # create components
             label = QLabel(move.name)
+            label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
             textbox = QLineEdit("" if move.min_green is None else str(move.min_green))
-            dictinary[move.name] = textbox
+            textbox.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            textbox.setValidator(QIntValidator(0, 99))
+            if move.name.startswith("B"):
+                textbox.setReadOnly(True)
 
+            # init dictionary
+            min_green_dict[move.name] = textbox
+
+            # create QFrame
             card = QFrame()
-            card.setStyleSheet(min_cards_style)
-            card.setObjectName("minRowCard")
+            card.setObjectName("card")
             card.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+            card.setMaximumHeight(100)
 
-            card_layout = QHBoxLayout(card)
-            card_layout.setContentsMargins(8, 8, 8, 8)
-            card_layout.setSpacing(6)
-            card_layout.addWidget(label)
-            card_layout.addWidget(textbox)
+            # create vertical layout
+            vertical_layout = QVBoxLayout()
+            vertical_layout.addWidget(label)
+            vertical_layout.addWidget(textbox)
+            vertical_layout.setContentsMargins(0, 0, 0, 18)  # left, top, right, bottom
 
-            # כל פריט בשורה עם stretch=1 → בדיוק רבע רוחב
-            row.addWidget(card, 1)
-            items_in_row += 1
+            # set layout
+            card.setLayout(vertical_layout)
 
-        # השלם את השורה האחרונה אם לא מלאה
-        if row is not None and items_in_row < 4:
-            for _ in range(4 - items_in_row):
-                row.addWidget(self._placeholder(), 1)
+            # and QFrame to the gird
+            self.btn_grid_layout.addWidget(card, row_num, col_num)
 
-        # --- שורת כפתור "עדכן" ---
+        #
+        self.btn_grid_layout.setRowStretch(self.btn_grid_layout.rowCount(), 1)
+        self.btn_grid_layout.setContentsMargins(40, 40, 40, 40)
+        self.btn_grid_layout.addLayout(self._create_btn_layout(min_green_dict), self.btn_grid_layout.rowCount() + 1, 0, 1, cards_in_row)  # add the textBox (component, row_num, col_num, how many rows use, how many columns to use)
+        self.show()
+
+    # =============== inner methods =============== #
+    def _create_btn_layout(self, min_green_dict):
+        """
+        This method create and initialize the layout of the button
+
+        :param min_green_dict: dictionary for the changed
+        :return:
+        """
         btn_row = QHBoxLayout()
         btn_row.setSpacing(8)
         btn = QPushButton("עדכן")
-        btn.clicked.connect(lambda: self.data_controller.update_min_green(dictinary))
+        btn.clicked.connect(lambda: self.data_controller.update_min_green(min_green_dict))
         btn_row.addStretch()
         btn_row.addWidget(btn)
         btn_row.addStretch()
-
-        container = QWidget()
-        container.setLayout(btn_row)
-        container.setStyleSheet(min_group_row_style)
-        self.col.addWidget(container)
-
-        self.col.addStretch()
-        self.show()
-        print("min_green_layout:\tshow_panel\t[end]\n")
+        return btn_row
 
 
-def clear_layout(layout):
-    while layout.count():
-        item = layout.takeAt(0)
-        w = item.widget()
-        if w is not None:
-            w.deleteLater()
-            continue
-        child = item.layout()
-        if child is not None:
-            clear_layout(child)     # ניקוי רקורסיבי
-            child.deleteLater()
-            continue
-        # spacerItem – אין מה למחוק (יימחק עם ה־item)
-
-min_cards_style = """
-QFrame#minRowCard {
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-radius: 10px;
-}
-QFrame#minRowCard:hover {
-    background: #f9fbff;
-    border-color: #8aa4c1;
-}
-QFrame#minRowCard QLabel {
-    color: #243447;
-    font-size: 14px;
-    font-weight: 600;
-}
-QFrame#minRowCard QLineEdit {
-    background: #f8fafc;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    padding: 4px 8px;
-    min-height: 26px;
-}
-QFrame#minRowCard QLineEdit:focus {
-    border-color: #3b82f6;
-}
-"""
