@@ -7,7 +7,6 @@ from config.constants import GREEN_IMAGE_PATH, GREEN_BLINKER_IMAGE_PATH, PEDESTR
     BLINKER_CONDITIONAL_IMAGE_PATH
 
 from config.special import clean_text
-from config.style import blue_button_white_text_style
 from controllers.data_controller import DataController
 from entities.log import Log
 
@@ -118,6 +117,10 @@ class SetMovePanel(QWidget):
             background: qlineargradient(x1:0,y1:0,x2:0,y2:1,
                                         stop:0 #5499c7, stop:1 #21618c);
         }
+        QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+            height: 0; /* remove the scrollbar buttons */
+        } 
+
 
         QScrollBar:horizontal {
             height: 10px;
