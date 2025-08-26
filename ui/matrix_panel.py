@@ -1,11 +1,15 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QColor
+from PyQt6.QtGui import QColor, QFont
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QPushButton, QTableWidgetItem, QAbstractItemView
 
 from controllers.data_controller import DataController
 
 
 class MatrixPanel(QWidget):
+    """
+    Main application window for the Config Tool.
+    Holds all panels (set move, min green, matrix, SK, navigator) in a single layout.
+    """
     def __init__(self):
         super().__init__()
 
@@ -141,6 +145,10 @@ class MatrixPanel(QWidget):
         all_cells = self.data_controller.get_all_matrix_cells()
         self.tbl.clearContents()
 
+        font = QFont()
+        font.setFamily("Arial")  # משפחת גופן
+        font.setPointSize(14)  # גודל
+        font.setBold(True)  # מודגש
 
         row_idx = {}  # key - value of header, value - index of the header
         for i in range(self.length):
@@ -162,6 +170,7 @@ class MatrixPanel(QWidget):
                 continue
 
             item = QTableWidgetItem(str(cell.wait_time))
+            item.setFont(font)
             item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
             self.tbl.setItem(i, j, item)
 
@@ -172,12 +181,10 @@ class MatrixPanel(QWidget):
                 continue
             item = self.tbl.item(i, j) or QTableWidgetItem()
             self.tbl.setItem(i, j, item)
-            item.setData(Qt.ItemDataRole.FDisplayRole, int(val) if str(val).isdigit() else str(val))
+            item.setData(Qt.ItemDataRole.DisplayRole, int(val) if str(val).isdigit() else str(val))
             item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
 
     def shade_diagonal(self):
-        
-
         for i in range(self.length):  # תאורה כשאינדקס שורה == אינדקס עמודה
             item = self.tbl.item(i, i)
             if item is None:
@@ -221,6 +228,14 @@ class MatrixPanel(QWidget):
         except ValueError:
             val = text
 
+        item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+        # יצירת פונט חדש
+        font = QFont()
+        font.setFamily("Arial")  # משפחת גופן
+        font.setPointSize(14)  # גודל
+        font.setBold(True)  # מודגש
+
+        item.setFont(font)
         # שמירת השינוי
         self.changes.append((row_name, col_name, val))
         print(f"row: {row_name:<5}, col: {col_name:<5}, value: {val}")

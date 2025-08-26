@@ -1,5 +1,5 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QIcon
+from PyQt6.QtGui import QIcon, QIntValidator
 from PyQt6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QScrollArea, \
     QSizePolicy
 from PyQt6.QtWidgets import QRadioButton, QButtonGroup
@@ -13,11 +13,15 @@ from entities.log import Log
 
 
 class SetMovePanel(QWidget):
+    """
+        A panel widget that allows adding and removing move buttons.
+    """
 
     def __init__(self):
+        """
+            Initialize the main window, create controllers, panels, and layout.
+        """
         super().__init__()
-
-        self.setObjectName("movePanel")
 
         # =============== style =============== #
         root_style = """
@@ -25,76 +29,72 @@ class SetMovePanel(QWidget):
         #movePanel{
             border-radius: 20px;
             border: 1px solid #1a98ff;
-            background: qlineargradient(
-                x1:0, y1:0, x2:0, y2:1,
-                stop:0   #94cfff,
-                stop:1   #f0f8ff
-            );
+            background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0   #94cfff, stop:1   #f0f8ff);
         }
 
         /* ********************************* gray label ********************************* */
-            QLabel#gray_label {
-                background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #fdfefe, stop:1 #ebedef);
-                color: #2c3e50;
-                border: 1px solid #d5d8dc;
-                border-radius: 8px;
-                padding: 8px 12px;
-                font-size: 24px;
-                font-weight: bold;
-                min-width: 170px;
-            }
+        QLabel#gray_label {
+            background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #fdfefe, stop:1 #ebedef);
+            color: #2c3e50;
+            border: 1px solid #d5d8dc;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 24px;
+            font-weight: bold;
+            min-width: 170px;
+        }
 
-            QLabel#gray_label:hover {
-                background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #f8f9f9, stop:1 #d6dbdf);
-                border: 1px solid #b2babb;
-            }
+        QLabel#gray_label:hover {
+            background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #f8f9f9, stop:1 #d6dbdf);
+            border: 1px solid #b2babb;
+        }
             
         /* ********************************* text field ********************************* */
-                QLineEdit#text_box {
-                    font-size: 32px;
-                    max-height: 50px;
-                    padding: 6px 10px;
-                    border: 2px solid #cccccc;
-                    border-radius: 6px;
-                    background-color: #fdfdfd;
-                    selection-background-color: #3399ff;
-                }
-                QLineEdit#text_box:focus {
-                    border: 2px solid #3399ff;       /* מסגרת כחולה בזמן פוקוס */
-                    background-color: #ffffff;
-                }
-                QLineEdit#text_box:disabled {
-                    background-color: #eeeeee;
-                    color: #888888;
-                }
+        QLineEdit#text_box {
+            font-size: 32px;
+            max-height: 50px;
+            padding: 6px 10px;
+            border: 2px solid #cccccc;
+            border-radius: 6px;
+            background: #fdfdfd;
+            selection-background: #3399ff;
+        }
+        QLineEdit#text_box:focus {
+            border: 2px solid #3399ff;       /* מסגרת כחולה בזמן פוקוס */
+            background: #ffffff;
+        }
+        QLineEdit#text_box:disabled {
+            background: #eeeeee;
+            color: #888888;
+        }
 
         /* ********************************* Radio Button ********************************* */
-                QRadioButton {
-                    qproperty-iconSize: 22px 22px;   /* אם יש גם אייקון */
-                    spacing: 8px;                    /* רווח בין הבולט/אייקון לטקסט */
-                    font-weight: bold;
-                    font-size: 16px;
-                    color: #2c3e50;
-                }
-        
-                QRadioButton::indicator {
-                    width: 18px; height: 18px;
-                    border-radius: 9px;
-                    border: 2px solid #2471a3;
-                    background: #ffffff;
-                    margin: 0 6px;
-                }
-                QRadioButton::indicator:hover {
-                    border: 2px solid #1b4f72;
-                }
-                QRadioButton::indicator:checked {
-                    background: #000000;
-                    border: 2px solid #4060b9;
-                }
-                QRadioButton::indicator:disabled {
-                    background: #e5e7eb;
-                    border: 2px solid #a6acaf;
-                }
+        QRadioButton {
+            qproperty-iconSize: 22px 22px;   /* אם יש גם אייקון */
+            spacing: 8px;                    /* רווח בין הבולט/אייקון לטקסט */
+            font-weight: bold;
+            font-size: 16px;
+            color: #2c3e50;
+        }
+
+        QRadioButton::indicator {
+            width: 18px; height: 18px;
+            border-radius: 9px;
+            border: 2px solid #2471a3;
+            background: #ffffff;
+            margin: 0 6px;
+        }
+        QRadioButton::indicator:hover {
+            border: 2px solid #1b4f72;
+        }
+        QRadioButton::indicator:checked {
+            background: #000000;
+            border: 2px solid #4060b9;
+        }
+        QRadioButton::indicator:disabled {
+            background: #e5e7eb;
+            border: 2px solid #a6acaf;
+        }
 
         /* ********************************* scroll ********************************* */
         QScrollArea {
@@ -108,15 +108,13 @@ class SetMovePanel(QWidget):
             background: transparent;
         }
         QScrollBar::handle:vertical {
-            background: qlineargradient(x1:0,y1:0,x2:0,y2:1,
-                                        stop:0 #5dade2, stop:1 #2e86c1);
+            background: qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #5dade2, stop:1 #2e86c1);
             border: 1px solid #2471a3;
             border-radius: 5px;
             min-height: 24px;
         }
         QScrollBar::handle:vertical:hover {
-            background: qlineargradient(x1:0,y1:0,x2:0,y2:1,
-                                        stop:0 #5499c7, stop:1 #21618c);
+            background: qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #5499c7, stop:1 #21618c);
         }
         QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
             height: 0; /* remove the scrollbar buttons */
@@ -129,8 +127,7 @@ class SetMovePanel(QWidget):
             background: transparent;
         }
         QScrollBar::handle:horizontal {
-            background: qlineargradient(x1:0,y1:0,x2:1,y2:0,
-                                        stop:0 #5dade2, stop:1 #2e86c1);
+            background: qlineargradient(x1:0,y1:0,x2:1,y2:0, stop:0 #5dade2, stop:1 #2e86c1);
             border: 1px solid #2471a3;
             border-radius: 5px;
             min-width: 24px;
@@ -173,18 +170,46 @@ class SetMovePanel(QWidget):
         }
         
         QPushButton#btn_remove_move {
-            border: 1px solid black;      /* עובי וצבע גבול */
-            background-color: transparent;      /* צבע רקע */
+            background: transparent;
             border: None;
             
         }
         
         QPushButton#btn_remove_move:hover {
             border: 1px solid #3498db;      /* עובי וצבע גבול */
-            background-color: #f5f5f5;    /* רקע במעבר עכבר */
+            background: #f5f5f5;    /* רקע במעבר עכבר */
         }
         QPushButton#btn_remove_move:pressed {
-            background-color: #e0e0e0;    /* רקע בלחיצה */
+            background: #e0e0e0;    /* רקע בלחיצה */
+        }
+        
+        /* ********************************* QPushButton ********************************* */
+        QPushButton#add_button {
+            background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #5dade2, stop:1 #2e86c1);
+            color: white;
+            border: 2px solid #2471a3;
+            border-radius: 10px;
+            padding: 0px;
+            font-weight: bold;
+            font-size: 18px;
+            min-width: 150px;
+            min-height: 36px;
+        }
+
+        QPushButton#add_button:hover {
+            background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #5499c7, stop:1 #21618c);
+            border: 2px solid #1b4f72;
+        }
+
+        QPushButton#add_button:checked {
+            background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #58d68d, stop:1 #28b463);
+            border: 2px solid #239b56;
+        }
+
+        QPushButton#add_button:disabled {
+            background: #d5d8dc;
+            border: 2px solid #a6acaf;
+            color: #7f8c8d;
         }
         """
 
@@ -209,10 +234,6 @@ class SetMovePanel(QWidget):
 
         self._build_button_layout(btn_layout)
 
-        # =============== style =============== #
-        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True) # ask from the engine style of Qt to color the background of the widget (QWidget not always active this)
-        self.setStyleSheet(root_style)
-
         # =============== scroll =============== #
         self.scroll_area = QScrollArea()            # create the container of the scroll bar. (get only widget)
         self.scroll_area.setWidgetResizable(True)   # it's needed and I don't know why and I don't even want to know, without this the scroll area size is like 0x0, fk chatGPT just confusing me
@@ -232,9 +253,8 @@ class SetMovePanel(QWidget):
         self.scroll_layout.addLayout(self.phase_rows[2])    # add row 3 to the layout
         self.scroll_layout.addStretch()                     # move all up
 
-        #
-        # for row in self.phase_rows: # add space between each element
-        #     row.setSpacing(40)      # add space between each element
+        for row in self.phase_rows: # add space between each element
+            row.setSpacing(10)      # add space between each element
 
         # =============== create the layout =============== #
         root_layout.addLayout(name_layout)
@@ -247,8 +267,10 @@ class SetMovePanel(QWidget):
         root_layout.addSpacing(50)
         root_layout.addWidget(self.scroll_area)
 
-        # root_layout.setContentsMargins(0, 0, 0, 0)  # left, top, right, bottom
-
+        # =============== self =============== #
+        self.setObjectName("movePanel")
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True) # ask from the engine style of Qt to color the background of the widget (QWidget not always active this)
+        self.setStyleSheet(root_style)
         self.setLayout(root_layout)
         self.hide()
 
@@ -273,7 +295,6 @@ class SetMovePanel(QWidget):
 
         # remove all widgets
         for row in self.phase_rows:
-
             # Warning: 'row.takeAt(0)' remove from first item in the 'row' list, I added just widgets so I just remove them, it someone will add in the future any layout they will be removed from 'row' but still exist in Qt and because it belong to Qt the garbage collector will not remove them
             while row.count():          # return how many 'QLayoutItem' exist in the list of 'QLayoutItem'
                 item = row.takeAt(0)    # get the first QLayoutItem of the layout 'row' and remove him from the list of the 'QLayoutItem'
@@ -281,6 +302,7 @@ class SetMovePanel(QWidget):
                 if widget:  #
                     widget.deleteLater() # remove widget (when widget remove -> all his layouts and children removed also), safer not remove now so he will be removed safely later by Qt
 
+        # build the rows
         for move in moves_list:
             phase = move.name
             move_type = move.type
@@ -304,35 +326,36 @@ class SetMovePanel(QWidget):
                 Log.warning(f"Move type '{move_type}' is not supported.")
                 continue
 
+            # label
             label = QLabel()
-            label.setText(f"{phase} <img src='{icon}' width='16' height='20'/> {"⭐" if move.is_main else ""}")
+            label.setText(f"{phase} <img src='{icon}' width='25' height='25'/> {"⭐" if move.is_main else ""}")
             label.setObjectName("scroll_label")
             label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             label.setFixedHeight(30)
 
+            # remove button
             btn_remove = QPushButton("❌")
             btn_remove.setFixedSize(18, 18)
-            btn_remove.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
             btn_remove.setObjectName("btn_remove_move")
             btn_remove.setCursor(Qt.CursorShape.PointingHandCursor)
             btn_remove.clicked.connect(lambda _=False, phase_clean=clean_text(phase): self._remove_move(phase_clean))
 
+            # vertical layout
             item_layout = QVBoxLayout()
             item_layout.addWidget(label)
             item_layout.addWidget(btn_remove)
-            item_layout.setContentsMargins(0, 0, 0, 0)
-            item_layout.setSpacing(2)
-            item_layout.addWidget(label, 0, Qt.AlignmentFlag.AlignCenter)
 
+            # container for the vertical layout
             container = QFrame()
             container.setLayout(item_layout)
 
+            # add the container to the row
             self.phase_rows[row_idx].addWidget(container)
-        self.phase_rows[0].addStretch() # move the row left
-        self.phase_rows[1].addStretch() # move the row left
-        self.phase_rows[2].addStretch() # move the row left
 
-
+        # move the rows left
+        self.phase_rows[0].addStretch()
+        self.phase_rows[1].addStretch()
+        self.phase_rows[2].addStretch()
 
     # =============== inner methods =============== #
     def _remove_move(self, move_name):
@@ -344,7 +367,7 @@ class SetMovePanel(QWidget):
         """
         if self.data_controller.remove_move(move_name):
             self._show_scroll_bar()
-            Log.success("Removed successfully!")
+            Log.success("Removed successfully!")   # continue here!!!!!
 
     def _add_move(self, name):
 
@@ -387,6 +410,7 @@ class SetMovePanel(QWidget):
         self.main_phase_textbox.setAlignment(Qt.AlignmentFlag.AlignRight)    # center the text
         self.main_phase_textbox.setMaximumWidth(350)                         # set max-width
         self.main_phase_textbox.setFixedHeight(32)                           # set fixed height
+        self.main_phase_textbox.setValidator(QIntValidator(0, 99))
 
         layout.addStretch()
         layout.addWidget(self.main_phase_textbox)
@@ -464,7 +488,7 @@ class SetMovePanel(QWidget):
     def _build_button_layout(self, layout):
 
         run_button = QPushButton("הוסף")                # create button
-        # run_button.setStyleSheet(blue_button_white_text_style)
+        run_button.setObjectName("add_button")
         run_button.clicked.connect(lambda: self._add_move(self.main_phase_textbox.text()))
 
         layout.addStretch()

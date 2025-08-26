@@ -16,6 +16,11 @@ class UIController:
         """
         if cls._instance is None:                                       # checks if there is an instance of the class
             cls._instance = super(UIController, cls).__new__(cls)       # create new instance and store him in _instance before __init__
+            cls.set_move_layout = SetMovePanel()
+            cls.min_green_layout = MinGreenLayout()
+            cls.matrix_layout = MatrixPanel()
+            cls.sk_layout = SkPanel()
+
             print("** UI controller was set successfully")
         return cls._instance                                            # return _instance
 
@@ -23,11 +28,7 @@ class UIController:
         """
         This method runs when the object initialized.
         """
-        self.set_move_layout = SetMovePanel()
-        self.min_green_layout = MinGreenLayout()
-        self.matrix_layout = MatrixPanel()
-        self.sk_layout = SkPanel()
-
+        pass
 
     # =========================================== #
     #                 add methods                 #
@@ -68,7 +69,6 @@ class UIController:
         :return: Returns the 'sk' layout.
         """
         return self.sk_layout
-
 
     # =========================================== #
     #               update methods                #

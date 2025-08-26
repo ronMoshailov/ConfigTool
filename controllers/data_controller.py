@@ -21,6 +21,7 @@ class DataController:
             cls.data_manager = DataManager()
             cls.path_manager = PathsManager()
             cls.sk_manager = []
+            cls.log_textbox = None
             print("** data controller was set successfully")
         return cls._instance  # return _instance
 
@@ -28,7 +29,7 @@ class DataController:
         """
         This method runs when the object initialized.
         """
-        pass
+        self.log_textbox = None
 
     # --------------- add methods --------------- #
     def add_move(self, move_name: str, move_type: str, is_main: bool, min_green: str = "0"):
@@ -107,7 +108,7 @@ class DataController:
         print(f"**** [class] DataController:\t [method] update_min_green\t[start] ")
         for key, value in dictionary.items():
             if value.text() == "":
-                Log.error(f"The move {key} is empty")
+                self.write_log(f"The move {key} is empty", "r")
                 return False
             value = value.text()
             if isinstance(value, str):
@@ -272,13 +273,20 @@ class DataController:
         print(f"Found {card_num - 1} sk cards")
         print(f"**** [class] DataController:\t [method] set_sk_list\t[end] ")
 
-    # =========================================== #
-    #                class methods                #
-    # =========================================== #
+    def set_log_textbox(self, textbox):
+        self.log_textbox = textbox
 
+    def write_log(self, text, color):
+        self.log_textbox.clear()  # מנקה
+        self.log_textbox.setPlaceholderText("ברוכה הבאה...")  # טקסט אפור ברקע
 
-
-    # =========================================== #
-    #                static methods               #
-    # =========================================== #
+        if color == "r":
+            self.log_textbox.setStyleSheet("color: red")
+            self.log_textbox.setText(text)
+        if color == "g":
+            self.log_textbox.setStyleSheet("color: green")
+            self.log_textbox.setText(text)
+        if color == "y":
+            self.log_textbox.setStyleSheet("color: yellow")
+            self.log_textbox.setText(text)
 
