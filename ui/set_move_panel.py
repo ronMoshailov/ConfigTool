@@ -1,6 +1,7 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
-from PyQt6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QScrollArea
+from PyQt6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QScrollArea, \
+    QSizePolicy
 from PyQt6.QtWidgets import QRadioButton, QButtonGroup
 
 from config.constants import GREEN_IMAGE_PATH, GREEN_BLINKER_IMAGE_PATH, PEDESTRIAN_IMAGE_PATH, BLINKER_IMAGE_PATH, \
@@ -165,6 +166,7 @@ class SetMovePanel(QWidget):
             background: white;
             border: 1px solid #4559a1;
             min-height: 60px;
+            min-width: 150px;
         }
         QLabel#scroll_label:hover {
             background: #d6eaf8;
@@ -174,8 +176,9 @@ class SetMovePanel(QWidget):
             border: 1px solid black;      /* עובי וצבע גבול */
             background-color: transparent;      /* צבע רקע */
             border: None;
-            max-width: 10px;
+            
         }
+        
         QPushButton#btn_remove_move:hover {
             border: 1px solid #3498db;      /* עובי וצבע גבול */
             background-color: #f5f5f5;    /* רקע במעבר עכבר */
@@ -308,12 +311,18 @@ class SetMovePanel(QWidget):
             label.setFixedHeight(30)
 
             btn_remove = QPushButton("❌")
+            btn_remove.setFixedSize(18, 18)
+            btn_remove.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
             btn_remove.setObjectName("btn_remove_move")
+            btn_remove.setCursor(Qt.CursorShape.PointingHandCursor)
             btn_remove.clicked.connect(lambda _=False, phase_clean=clean_text(phase): self._remove_move(phase_clean))
 
             item_layout = QVBoxLayout()
             item_layout.addWidget(label)
             item_layout.addWidget(btn_remove)
+            item_layout.setContentsMargins(0, 0, 0, 0)
+            item_layout.setSpacing(2)
+            item_layout.addWidget(label, 0, Qt.AlignmentFlag.AlignCenter)
 
             container = QFrame()
             container.setLayout(item_layout)
