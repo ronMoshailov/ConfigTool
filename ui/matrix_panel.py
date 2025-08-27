@@ -128,7 +128,7 @@ class MatrixPanel(QWidget):
         # get all data
         all_moves           = self.data_controller.get_all_moves()
         all_moves_names     = [m.name for m in all_moves if not m.name.startswith("B")]
-        self.moves_length         = len(all_moves_names)
+        self.moves_length   = len(all_moves_names)
 
         # Set matrix
         self.tbl.setRowCount(self.moves_length)                       # set how many rows the table will have
@@ -138,7 +138,7 @@ class MatrixPanel(QWidget):
         self.tbl.verticalHeader().setDefaultSectionSize(50)     # set height of each row
         self.tbl.blockSignals(True)         # block signals
         self.set_values()                   # set values from DB
-        self.disable_pedestrian()              # disable pedestrian cells
+        self.disable_pedestrian()           # disable pedestrian cells
         self.shade_diagonal()               # shade diagonal
         self.tbl.blockSignals(False)        # release signals
         self.tbl.setFocusPolicy(Qt.FocusPolicy.NoFocus)                         # disable the focus
@@ -222,9 +222,12 @@ class MatrixPanel(QWidget):
         row_name = self.tbl.verticalHeaderItem(row_idx).text().strip()      # get row header name
         col_name = self.tbl.horizontalHeaderItem(col_idx).text().strip()    # get column header name
 
-        val = (item.text() or "").strip()
-        if val != "":
-            val = int(val)
+        val = item.text().strip()
+
+        if val == "" or not val.isdigit():
+            item.setText("")
+            self.data_controller.write_log("Only numbers are allowed", "r")
+            return False
 
         # create font
         font = QFont()
@@ -236,8 +239,8 @@ class MatrixPanel(QWidget):
         item.setFont(font)                                  # set font
         item.setTextAlignment(Qt.AlignmentFlag.AlignCenter) # set text in the center
         self.tbl.blockSignals(False)                        # release signals
-
-        self.changes.append((row_name, col_name, val))                  # save changes
+        self.changes.append((row_name, col_name, val))      # save changes
+        return True
 
     def _update_changes(self):
         if self.data_controller.update_matrix(self.changes):

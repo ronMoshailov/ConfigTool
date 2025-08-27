@@ -198,9 +198,13 @@ class DataController:
         return False
 
     def remove_sk(self, number_card):
-        for sk_manager in self.sk_manager:
+        for i, sk_manager in enumerate(self.sk_manager):
             if sk_manager.number_card == number_card:
-                self.sk_manager.remove(sk_manager)
+                del self.sk_manager[i]
+                for j in range(i, len(self.sk_manager)):
+                    self.sk_manager[j].number_card -= 1
+                return True
+        return False
 
     # --------------- general methods --------------- #
     def initialize_app(self, btn_list):

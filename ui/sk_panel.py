@@ -8,6 +8,7 @@ from PyQt6.QtWidgets import (
 
 from config.colors import gray_color, light_green_color
 from controllers.data_controller import DataController
+from entities.DoubleClickButton import DoubleClickButton
 from entities.log import Log
 
 class SkPanel(QWidget):
@@ -39,8 +40,39 @@ class SkPanel(QWidget):
                 margin-left:auto; 
                 margin-right:auto;
             }
+            /* ********************************* QPushButton ********************************* */
+            QPushButton#remove_button {
+                background-color: #e74c3c;       /* אדום */
+                color: white;                    /* טקסט לבן */
+                border: none;                    /* בלי גבול */
+                border-radius: 12px;             /* פינות מעוגלות */
+                padding: 6px 14px;               /* ריווח פנימי */
+                font-size: 14px;                 /* גודל טקסט */
+                font-weight: bold;               /* טקסט מודגש */
+            }
+            QPushButton#remove_button:hover {
+                background-color: #c0392b;       /* אדום כהה יותר ב-hover */
+            }
+            QPushButton#remove_button:pressed {
+                background-color: #a93226;       /* עוד כהה יותר בלחיצה */
+            }
             
-            
+            QPushButton#add_button {
+                background-color: #27ae60;       /* ירוק */
+                color: white;                    /* טקסט לבן */
+                border: none;                    /* בלי גבול */
+                border-radius: 12px;             /* פינות מעוגלות */
+                padding: 6px 14px;               /* ריווח פנימי */
+                font-size: 14px;                 /* גודל טקסט */
+                font-weight: bold;               /* טקסט מודגש */
+            }
+            QPushButton#add_button:hover {
+                background-color: #1e8449;       /* ירוק כהה יותר ב-hover */
+            }
+            QPushButton#add_button:pressed {
+                background-color: #196f3d;       /* עוד כהה יותר בלחיצה */
+            }
+
         """
 
         # =============== widget =============== #
@@ -48,6 +80,7 @@ class SkPanel(QWidget):
 
         self.btn_add = QPushButton("הוסף SK")
         self.btn_add.clicked.connect(self._add_sk)
+        self.btn_add.setObjectName("add_button")
 
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
@@ -186,6 +219,18 @@ class SkPanel(QWidget):
                 table.cellWidget(row, 3).setCheckState(Qt.CheckState.Unchecked)
         return True
 
+    # --------------- remove methods --------------- #
+    def _remove_sk(self, card_number):
+        if self.data_controller.get_sk_count() == 1:
+            self.data_controller.write_log("you can't have 0 sk cards", "r")
+            return False
+        if self.data_controller.remove_sk(card_number):
+            self.data_controller.write_log("remove sk succeeded", "g")
+            self._refresh_tables()
+            return True
+        self.data_controller.write_log("remove sk failed", "r")
+        return False
+
     # --------------- general methods --------------- #
     def show_panel(self):
         self._refresh_tables()
@@ -235,10 +280,20 @@ class SkPanel(QWidget):
         tbl.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)
         tbl.setFocusPolicy(Qt.FocusPolicy.NoFocus)
 
+        # btn_remove = DoubleClickButton("מחק SK")
+        # btn_remove.doubleClicked.connect(lambda _, c=card_number: self._remove_sk(c))
+        # btn_remove.setObjectName("remove_button")
+
+        btn_remove = QPushButton("מחק SK")
+        btn_remove.clicked.connect(lambda _, card_num = card_number: self._remove_sk(card_num))
+        btn_remove.setObjectName("remove_button")
+
         # set layout
         column_layout = QVBoxLayout()
         column_layout.addWidget(title)
         column_layout.addWidget(tbl)
+        column_layout.addSpacing(10)
+        column_layout.addWidget(btn_remove)
 
         #
         wrap.setLayout(column_layout)
@@ -347,3 +402,4 @@ class SkPanel(QWidget):
             # col 0 (display)
             if is_commented:
                 tbl.item(row, 0).setBackground(green_bg)
+

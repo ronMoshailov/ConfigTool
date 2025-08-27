@@ -86,7 +86,7 @@ class NavigatorPanel(QWidget):
         self.log_textbox = QLineEdit()
         self.log_textbox.setEnabled(False)
         self.log_textbox.setReadOnly(True)
-        self.log_textbox.setAlignment(Qt.AlignmentFlag.AlignRight)
+        self.log_textbox.setAlignment(Qt.AlignmentFlag.AlignLeft)
 
         # =============== grid =============== #
         # widget
@@ -159,4 +159,5 @@ class NavigatorPanel(QWidget):
         make_checkable([buttons[0], buttons[2], buttons[4], buttons[8], buttons[10]])  # make button checkable
 
         return buttons
+
 
