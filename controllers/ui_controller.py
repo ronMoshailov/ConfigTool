@@ -125,5 +125,5 @@ class UIController:
         self.min_green_layout.hide()
         self.set_move_layout.hide()
         self.matrix_layout.hide()
-        self.sk_layout.show_layout()
+        self.sk_layout.show_panel()
 

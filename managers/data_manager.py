@@ -167,12 +167,25 @@ class DataManager:
         Log.error("Error: The move is not exist")
         return False
 
+    def update_matrix(self, changes_list):
+        is_found = False
+
+        for row_name, col_name, value in changes_list:
+            for cell in self.MatrixCells:
+                if row_name == cell.move_out and col_name == cell.move_in:
+                    cell.wait_time = value
+                    is_found = True
+                    break
+            if not is_found:
+                self.MatrixCells.append(MatrixCell(row_name, col_name, value))
+            is_found = False
+
     # =========================================== #
     #               remove methods                #
     # =========================================== #
     def remove_move(self, move_name):
         """
-        This method remove the move.
+        This method remove the move from the DB.
 
         :param move_name: name of the move
         :return: True if success, False otherwise
@@ -181,7 +194,6 @@ class DataManager:
         if target:
             perv = target.name
             self.moves.remove(target)
-            Log.success(f"{perv} has been removed successfully")
             return True
         return False
 
@@ -211,3 +223,4 @@ class DataManager:
             if move.name == move_name:
                 return True
         return False
+

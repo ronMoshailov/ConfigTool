@@ -1,5 +1,3 @@
-import logging
-
 from PyQt6.QtWidgets import QLineEdit
 
 from managers.paths_manager import PathsManager
@@ -29,8 +27,7 @@ class DataController:
         """
         This method runs when the object initialized.
         """
-        self.log_textbox = None
-
+        pass
     # --------------- add methods --------------- #
     def add_move(self, move_name: str, move_type: str, is_main: bool, min_green: str = "0"):
         """
@@ -121,6 +118,13 @@ class DataController:
         print(f"**** [class] DataController:\t [method] update_min_green\t[end] ")
         return True
 
+    def update_matrix(self, changes_list):
+        if self.data_manager.update_matrix(changes_list):
+            self.write_log("Matrix Updated", "g")
+            return True
+        self.write_log("update failed", "r")
+        return False
+
     def update_sk_comment(self, card_number: int, channel: int):
         """
         This method control the comment statement in sk channel.
@@ -162,11 +166,11 @@ class DataController:
         :param new_name: new name to set
         :return: None
         """
-        print(f"**** [class] DataController:\t [method] update_sk_name\t[start] ")
         for sk_manager in self.sk_manager:
             if sk_manager.number_card == card_number:
                 sk_manager.update_sk_name(row, new_name)
-        print(f"**** [class] DataController:\t [method] update_sk_name\t[end] ")
+                return True
+        return False
 
     def clear_channel(self, card_number: int, channel_num: int):
         print(f"**** [class] DataController:\t [method] clear_channel\t[start] ")
@@ -185,7 +189,13 @@ class DataController:
         :param move_name: name of the move.
         :return: None
         """
-        return self.data_manager.remove_move(move_name)
+        if self.data_manager.remove_move(move_name):
+            msg = f"{move_name} has been removed successfully"
+            self.write_log(msg, "r")
+            return True
+        msg = f"{move_name} has not been removed"
+        self.write_log(msg, "r")
+        return False
 
     def remove_sk(self, number_card):
         for sk_manager in self.sk_manager:
