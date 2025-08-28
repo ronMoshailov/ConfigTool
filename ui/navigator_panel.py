@@ -136,8 +136,8 @@ class NavigatorPanel(QWidget):
             QPushButton("הגדר פרמטרים"), QPushButton("הגדר מטריצה"),
             QPushButton("-----------"), QPushButton("SK24 כרטיסי"),
             QPushButton("dx הפעל"), QPushButton("IO24 כרטיסי"),
-            QPushButton("-----------"), QPushButton("גלאים"),
-            QPushButton("הגדר מעברים"), QPushButton("הדפס הכל"),
+            QPushButton("הדפס הכל"), QPushButton("גלאים"),
+            QPushButton("הגדר מעברים"), QPushButton("לו\"ז"),
         ]
 
         # buttons[0]       checkAble
@@ -152,10 +152,10 @@ class NavigatorPanel(QWidget):
         buttons[9].clicked.connect(lambda: self.ui_controller.show_sk_layout())
         # buttons[10]      checkAble
         # buttons[11]      TODO
-        # buttons[12]      TODO
+        buttons[12].clicked.connect(lambda: displayAllMoves())
         buttons[13].clicked.connect(lambda: self.ui_controller.show_detector_panel())
         # buttons[14]      TODO
-        buttons[15].clicked.connect(lambda: displayAllMoves())
+        buttons[15].clicked.connect(lambda: self.ui_controller.show_schedule_panel())
 
         # =============== special methods =============== #
         set_btn_disable([buttons[0]] + buttons[2:])  # Disable buttons

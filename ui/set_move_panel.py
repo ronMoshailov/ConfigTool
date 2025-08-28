@@ -410,7 +410,6 @@ class SetMovePanel(QWidget):
         self.main_phase_textbox.setAlignment(Qt.AlignmentFlag.AlignRight)    # center the text
         self.main_phase_textbox.setMaximumWidth(350)                         # set max-width
         self.main_phase_textbox.setFixedHeight(32)                           # set fixed height
-        self.main_phase_textbox.setValidator(QIntValidator(0, 99))
 
         layout.addStretch()
         layout.addWidget(self.main_phase_textbox)
