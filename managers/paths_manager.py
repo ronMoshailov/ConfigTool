@@ -46,6 +46,14 @@ class PathsManager:
         """
         return self.path_init
 
+    def get_path_tk1(self):
+        """
+        This method returns the path of 'Tk1.java'.
+
+        :return: None
+        """
+        return self.path_tk1
+
     # =========================================== #
     #               update methods                #
     # =========================================== #

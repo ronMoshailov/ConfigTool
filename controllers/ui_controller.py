@@ -1,3 +1,4 @@
+from ui.detector_panel import DetectorPanel
 from ui.matrix_panel import MatrixPanel
 from ui.min_green_panel import MinGreenLayout
 from ui.set_move_panel import SetMovePanel
@@ -20,6 +21,7 @@ class UIController:
             cls.min_green_layout = MinGreenLayout()
             cls.matrix_layout = MatrixPanel()
             cls.sk_layout = SkPanel()
+            cls.detector_panel = DetectorPanel()
 
             print("** UI controller was set successfully")
         return cls._instance                                            # return _instance
@@ -70,6 +72,14 @@ class UIController:
         """
         return self.sk_layout
 
+    def get_detector_panel(self):
+        """
+        This method returns the 'sk' layout.
+
+        :return: Returns the 'sk' layout.
+        """
+        return self.detector_panel
+
     # =========================================== #
     #               update methods                #
     # =========================================== #
@@ -92,6 +102,7 @@ class UIController:
         self.matrix_layout.hide()
         self.min_green_layout.hide()
         self.sk_layout.hide()
+        self.detector_panel.hide()
         self.set_move_layout.show_panel()
 
     def show_min_green_layout(self):
@@ -103,6 +114,7 @@ class UIController:
         self.matrix_layout.hide()
         self.set_move_layout.hide()
         self.sk_layout.hide()
+        self.detector_panel.hide()
         self.min_green_layout.show_panel()
 
     def show_matrix_layout(self):
@@ -114,6 +126,7 @@ class UIController:
         self.min_green_layout.hide()
         self.set_move_layout.hide()
         self.sk_layout.hide()
+        self.detector_panel.hide()
         self.matrix_layout.show_panel()
 
     def show_sk_layout(self):
@@ -125,5 +138,18 @@ class UIController:
         self.min_green_layout.hide()
         self.set_move_layout.hide()
         self.matrix_layout.hide()
+        self.detector_panel.hide()
         self.sk_layout.show_panel()
+
+    def show_detector_panel(self):
+        """
+        This method shows the 'sk' layout.
+
+        :return: None
+        """
+        self.min_green_layout.hide()
+        self.set_move_layout.hide()
+        self.matrix_layout.hide()
+        self.sk_layout.hide()
+        self.detector_panel.show_panel()
 

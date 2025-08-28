@@ -31,3 +31,9 @@ def displayAllMoves():
             # print(f"name: {channel.name:<5}, color: {channel.color:<10}, channel: {channel.channel:<5}, is_comment: {channel.is_comment}")
             if channel.name != "":
                 print(f"name: {channel.name:<5}, color: {channel.color:<10}, channel: {channel.channel:<5}, is_comment: {channel.is_comment}")
+
+    # print all sk channels
+    print("\nall detectors:")
+    detectors_list = data_controller.get_all_detectors()
+    for detector in detectors_list:
+        print(f"name: {detector.name:<5}, type: {detector.type:<10}, extension unit: {detector.ext_unit if detector.ext_unit is not None else "None":<5}")

@@ -44,6 +44,9 @@ class MainWindow(QMainWindow):
         sk_panel = self.ui_controller.get_sk_layout()
         sk_panel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
+        detector_panel = self.ui_controller.get_detector_panel()
+        detector_panel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+
         navigator_panel = NavigatorPanel()
         self.data_controller.set_log_textbox(navigator_panel.log_textbox)   # tell the data controller where to write comments
 
@@ -54,6 +57,7 @@ class MainWindow(QMainWindow):
         root_layout.addWidget(min_green_panel, 70)
         root_layout.addWidget(matrix_panel, 70)
         root_layout.addWidget(sk_panel, 70)
+        root_layout.addWidget(detector_panel, 70)
         root_layout.addStretch(1)
         root_layout.addWidget(navigator_panel, 20)
         root.setLayout(root_layout)

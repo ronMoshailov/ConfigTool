@@ -36,3 +36,4 @@ sk_pattern = re.compile(
             r'\s*(\d+)\s*,'  # 5) המספר הבא (בין שני הפסיקים) → group(5)
         )
 
+detectors_pattern = re.compile(r'^(?!\s*//)\s*public\s+(DEDetector|DDetector|EDetector|TPDetector|QDetector)\s+([^;]+);')

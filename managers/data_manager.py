@@ -1,6 +1,7 @@
 import re
 
-from config.patterns import move_pattern, matrix_pattern
+from config.patterns import move_pattern, matrix_pattern, detectors_pattern
+from entities.detector import Detector
 from entities.log import Log
 from entities.matrix import MatrixCell
 from entities.signal_group import SignalGroup
@@ -25,8 +26,7 @@ class DataManager:
         This method runs when the object initialized.
         """
         self.moves = []
-        # self.d_detectors = []
-        # self.e_detectors = []
+        self.detectors = []
         # self.inter_stages = []
         self.MatrixCells = []
         print("** data manager was set successfully")
@@ -109,6 +109,28 @@ class DataManager:
 
         print(f"** [class] DataManager:\t [method] init_matrix\t[end] ")
 
+    def init_detectors(self, path):
+        """
+        This method extracts detector declarations from InitTk1.java.
+
+        :param path: path to "InitTk1.java"
+        :return: None
+        """
+        pattern = detectors_pattern
+
+        with open(path, "r", encoding="utf-8") as f:
+            for line in f:
+                matches = pattern.findall(line)
+                for detector_type, instances in matches:
+                    variables = [v.strip() for v in instances.split(",")]
+                    for name in variables:
+                        self.detectors.append(Detector(name, detector_type))
+
+    def add_detector(self, detector_name, move_type, ext_time):
+        self.detectors.append(Detector(detector_name, move_type, ext_time))
+        return True
+
+
     # =========================================== #
     #                 get methods                 #
     # =========================================== #
@@ -146,6 +168,9 @@ class DataManager:
         :return: list of all matrix cells.
         """
         return self.MatrixCells
+
+    def get_all_detectors(self):
+        return self.detectors
 
     # =========================================== #
     #               update methods                #
@@ -194,6 +219,13 @@ class DataManager:
         if target:
             perv = target.name
             self.moves.remove(target)
+            return True
+        return False
+
+    def remove_detector(self, detector_name):
+        target = next((d for d in self.detectors if d.name == detector_name), None)
+        if target:
+            self.detectors.remove(target)
             return True
         return False
 

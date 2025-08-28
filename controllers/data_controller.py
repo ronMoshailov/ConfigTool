@@ -53,6 +53,15 @@ class DataController:
         new_sk.initialize_channels()
         self.sk_manager.append(new_sk)
 
+    def add_detector(self, detector_name, move_type, ext_time):
+        for detector in self.data_manager.get_all_detectors():
+            if detector.name == detector_name:
+                self.write_log("Detector already exists", "r")
+                return False
+        return self.data_manager.add_detector(detector_name, move_type, ext_time)
+
+
+
     # --------------- get methods --------------- #
     def get_all_moves(self):
         """
@@ -94,6 +103,10 @@ class DataController:
         for sk in self.sk_manager:
             if sk.number_card == number_card:
                 return sk.get_pervious_name(channel)
+
+    def get_all_detectors(self):
+        return self.data_manager.get_all_detectors()
+
     # --------------- update methods --------------- #
     def update_min_green(self, dictionary: dict[str, QLineEdit]):
         """
@@ -206,6 +219,16 @@ class DataController:
                 return True
         return False
 
+    def remove_detector(self, detector_name):
+        if self.data_manager.remove_detector(detector_name):
+            msg = f"{detector_name} has been removed successfully"
+            self.write_log(msg, "r")
+            return True
+        msg = f"{detector_name} has not been removed"
+        self.write_log(msg, "r")
+        return False
+
+
     # --------------- general methods --------------- #
     def initialize_app(self, btn_list):
         """
@@ -226,6 +249,7 @@ class DataController:
         # scan for moves
         self.data_manager.init_moves(self.path_manager.get_path_init_tk1())
         self.data_manager.init_matrix(self.path_manager.get_path_init_tk1())
+        self.data_manager.init_detectors(self.path_manager.get_path_tk1())
         print(f"self.sk_manager: {self.sk_manager}")
         self.set_sk_list(self.path_manager.get_path_init())
         for sk in self.sk_manager:
@@ -303,4 +327,6 @@ class DataController:
         if color == "y":
             self.log_textbox.setStyleSheet("color: yellow")
             self.log_textbox.setText(text)
+
+
 
