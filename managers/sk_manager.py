@@ -106,7 +106,7 @@ class SkManager:
         :param path: path of the file that holds the sk channel list
         :return: None
         """
-        print(f"** [class] SkManager:\t [method] initialize_sk\t[start] ")
+        # print(f"** [class] SkManager:\t [method] initialize_sk\t[start] ")
         pattern = sk_pattern
 
         with open(path, 'r', encoding='utf-8') as file:
@@ -125,7 +125,7 @@ class SkManager:
                     if card == self.number_card:
                         self.sk_channel_list.append(SkChannel(name, color, channel, is_commented))
         self.initialize_channels()
-        print(f"** [class] SkManager:\t [method] initialize_sk\t[end] ")
+        # print(f"** [class] SkManager:\t [method] initialize_sk\t[end] ")
 
 
     def initialize_channels(self):

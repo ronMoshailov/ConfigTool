@@ -2,6 +2,7 @@ from PyQt6.QtWidgets import QLineEdit
 
 from managers.paths_manager import PathsManager
 from managers.data_manager import DataManager
+from managers.schedule_manager import ScheduleManager
 from managers.sk_manager import SkManager
 from entities.log import Log
 
@@ -19,6 +20,7 @@ class DataController:
             cls.data_manager = DataManager()
             cls.path_manager = PathsManager()
             cls.sk_manager = []
+            cls.schedule_manager = []
             cls.log_textbox = None
             print("** data controller was set successfully")
         return cls._instance  # return _instance
@@ -237,7 +239,8 @@ class DataController:
         :param btn_list: list of button to enable after the initialization.
         :return: None
         """
-        print(f"**** [class] DataController:\t [method] initialize_app\t[start] ")
+        # print(f"**** [class] DataController:\t [method] initialize_app\t[start] ")
+
         # set new paths
         if self.path_manager.scan_set_paths() is False:
             Log.error(f"Error: The path initialization failed")
@@ -254,6 +257,9 @@ class DataController:
         self.set_sk_list(self.path_manager.get_path_init())
         for sk in self.sk_manager:
             sk.initialize_sk(self.path_manager.get_path_init())
+        self.set_schedule_list()
+        for schedule in self.schedule_manager:
+            schedule.initialize_schedule(self.path_manager.get_path_init_tk1())
 
         # enable buttons
         for btn in btn_list:
@@ -299,7 +305,7 @@ class DataController:
         :param path: path to 'init.java'.
         :return: None
         """
-        print(f"**** [class] DataController:\t [method] set_sk_list\t[start] ")
+        # print(f"**** [class] DataController:\t [method] set_sk_list\t[start] ")
         card_num = 1
         with open(path, 'r', encoding='utf-8') as file:
             for line in file:
@@ -308,8 +314,8 @@ class DataController:
 
                     self.sk_manager.append(SkManager(card_num))
                     card_num = card_num + 1
-        print(f"Found {card_num - 1} sk cards")
-        print(f"**** [class] DataController:\t [method] set_sk_list\t[end] ")
+        # print(f"Found {card_num - 1} sk cards")
+        # print(f"**** [class] DataController:\t [method] set_sk_list\t[end] ")
 
     def set_log_textbox(self, textbox):
         self.log_textbox = textbox
@@ -327,6 +333,17 @@ class DataController:
         if color == "y":
             self.log_textbox.setStyleSheet("color: yellow")
             self.log_textbox.setText(text)
+
+    def set_schedule_list(self):
+        tables_count = 7
+
+        for i in range (1, tables_count + 1):
+            self.schedule_manager.append(ScheduleManager(i))
+
+
+    def get_schedule_list(self, idx):
+        return self.schedule_manager[idx].get_schedule_list()
+
 
 
 
