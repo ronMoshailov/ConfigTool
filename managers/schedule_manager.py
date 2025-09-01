@@ -18,15 +18,16 @@ class ScheduleManager:
 
 
     # --------------- update methods --------------- #
-
+    def update_schedule(self, all_schedules):
+        self.schedule_list.clear()
+        for schedule in all_schedules:
+            self.schedule_list.append(Schedule(schedule[0], schedule[1], schedule[2]))
 
     # --------------- remove methods --------------- #
     def remove_schedule_row(self, number_row):
         self.schedule_list.pop(number_row)
 
-
     # --------------- general methods --------------- #
-
     def initialize_schedule(self, path):
         pattern = schedule_pattern
 

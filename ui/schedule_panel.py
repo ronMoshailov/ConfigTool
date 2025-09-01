@@ -13,8 +13,15 @@ class SchedulePanel(QWidget):
         self.data_controller = DataController()
 
         # =============== layout =============== #
+        self.main_layout = QVBoxLayout()
         self.root_layout = QHBoxLayout()
-        self.setLayout(self.root_layout)
+
+        self.main_layout.addLayout(self.root_layout)
+        self.setLayout(self.main_layout)
+
+        # =============== ****** =============== #
+        self.table_list = []
+        self.btn_add = QPushButton("עדכן")
 
         # =============== style =============== #
         root_style = """
@@ -141,6 +148,11 @@ class SchedulePanel(QWidget):
         self.show_panel()
 
     # --------------- update methods --------------- #
+    def _update(self):
+        if not self._check_time():
+            return False
+        self.data_controller.update_schedule(self.table_list)
+        return True
 
     # --------------- remove methods --------------- #
     def _remove(self, table_num, table, btn):
@@ -160,9 +172,14 @@ class SchedulePanel(QWidget):
         """
         # clear the table
         self.clear_root_layout()
+        self.table_list.clear()
 
+        self.btn_add.clicked.connect(self._update)
+        # self.btn_add.setObjectName("add_button")
+        self.main_layout.addWidget(self.btn_add)
         for idx in range (0, 7):
             schedule_column, table = self._init_schedule_column(idx + 1)    # create schedule_column
+            self.table_list.append(table)
             self._fill_table(idx, table)                                    # fill table with values
             self.root_layout.addWidget(schedule_column, stretch=1)          # add schedule_column to layout
         self.show()                                                         # show panel
@@ -269,3 +286,26 @@ class SchedulePanel(QWidget):
         tbl.setColumnWidth(1, 45)  # עמודה 1 ברוחב 60px
         tbl.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
         return tbl
+
+    def _check_time(self):
+        prev = None
+        current = None
+
+        for idx, table in enumerate (self.table_list):
+            prev = None
+            current = None
+            row_count = table.rowCount()
+            for row in range(row_count):
+                prev = current
+                current = table.cellWidget(row, 1).time()
+                if prev is None:
+                    continue
+                if current is None:
+                    continue
+                if current <= prev:
+                    self.data_controller.write_log(f"in table number {idx + 1} there is a problem with the time", "r")
+                    return False
+        self.data_controller.write_log(f"עודכן", "g")
+        return True
+
+

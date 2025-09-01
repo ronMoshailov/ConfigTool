@@ -29,11 +29,10 @@ class DataManager:
         self.detectors = []
         # self.inter_stages = []
         self.MatrixCells = []
+        self.images = []
         print("** data manager was set successfully")
 
-    # =========================================== #
-    #                 add methods                 #
-    # =========================================== #
+    # --------------- add methods --------------- #
     def add_move(self, move_name, move_type, is_main, min_green = "0"):
         """
         This method add new move.
@@ -131,9 +130,7 @@ class DataManager:
         return True
 
 
-    # =========================================== #
-    #                 get methods                 #
-    # =========================================== #
+    # --------------- get methods --------------- #
     def get_all_moves(self):
         """
         This method return all the moves sorted combined.
@@ -172,9 +169,7 @@ class DataManager:
     def get_all_detectors(self):
         return self.detectors
 
-    # =========================================== #
-    #               update methods                #
-    # =========================================== #
+    # --------------- update methods --------------- #
     def update_min_green(self, name: str, value: int):
         """
         This method update the minimum green.
@@ -205,9 +200,7 @@ class DataManager:
                 self.MatrixCells.append(MatrixCell(row_name, col_name, value))
             is_found = False
 
-    # =========================================== #
-    #               remove methods                #
-    # =========================================== #
+    # --------------- remove methods --------------- #
     def remove_move(self, move_name):
         """
         This method remove the move from the DB.
@@ -229,9 +222,7 @@ class DataManager:
             return True
         return False
 
-    # =========================================== #
-    #               general methods               #
-    # =========================================== #
+    # --------------- general methods --------------- #
     def reset(self):
         """
         This method reset all fields

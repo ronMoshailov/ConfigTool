@@ -354,6 +354,27 @@ class DataController:
     def get_schedule_list(self, idx):
         return self.schedule_manager[idx].get_schedule_list()
 
+    def update_schedule(self, table_list):
+        all_schedules = []
+
+        for idx, manager in enumerate (self.schedule_manager):
+            tbl = table_list[idx]
+
+            for row in range(tbl.rowCount()):
+
+                time_edit = tbl.cellWidget(row, 1)  # עמודה 0 = QTimeEdit
+                combo_prog = tbl.cellWidget(row, 2)  # עמודה 1 = QComboBox
+
+                hour = time_edit.time().hour()
+                minute = time_edit.time().minute()
+                program_num = int(combo_prog.currentText())
+
+                all_schedules.append((hour, minute, program_num))
+
+            manager.update_schedule(all_schedules)
+            all_schedules.clear()
+
+
 
 
 
