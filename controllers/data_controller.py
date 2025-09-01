@@ -62,6 +62,11 @@ class DataController:
                 return False
         return self.data_manager.add_detector(detector_name, move_type, ext_time)
 
+    def add_schedule_row(self, table_num):
+        for manager in self.schedule_manager:
+            if manager.table_num == table_num:
+                manager.add_schedule()
+        pass
 
 
     # --------------- get methods --------------- #
@@ -230,7 +235,12 @@ class DataController:
         self.write_log(msg, "r")
         return False
 
-
+    def remove_schedule_row(self, table_num, number_row):
+        for manager in self.schedule_manager:
+            if manager.table_num == table_num:
+                manager.remove_schedule_row(number_row)
+                return True
+        return False
     # --------------- general methods --------------- #
     def initialize_app(self, btn_list):
         """
@@ -343,6 +353,8 @@ class DataController:
 
     def get_schedule_list(self, idx):
         return self.schedule_manager[idx].get_schedule_list()
+
+
 
 
 

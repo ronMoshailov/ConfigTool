@@ -9,7 +9,8 @@ class ScheduleManager:
         self.schedule_list = []
 
     # --------------- add methods --------------- #
-
+    def add_schedule(self):
+        self.schedule_list.append(Schedule(0, 0, 1))
 
     # --------------- get methods --------------- #
     def get_schedule_list(self):
@@ -20,6 +21,8 @@ class ScheduleManager:
 
 
     # --------------- remove methods --------------- #
+    def remove_schedule_row(self, number_row):
+        self.schedule_list.pop(number_row)
 
 
     # --------------- general methods --------------- #
