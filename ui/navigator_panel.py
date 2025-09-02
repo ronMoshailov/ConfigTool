@@ -151,20 +151,26 @@ class NavigatorPanel(QWidget):
         buttons[3].clicked.connect(lambda: self.ui_controller.show_set_move_layout())
         # buttons[4]       checkAble
         buttons[5].clicked.connect(lambda: self.ui_controller.show_min_green_layout())
-        # buttons[6]       TODO
+            # buttons[6]
         buttons[7].clicked.connect(lambda: self.ui_controller.show_matrix_layout())
-        # buttons[8]       checkAble
+            # buttons[8]
         buttons[9].clicked.connect(lambda: self.ui_controller.show_sk_layout())
-        # buttons[10]      checkAble
-        # buttons[11]      TODO
-        # buttons[12]
+            # buttons[10]
+        # buttons[11]      TODO: IO24
+            # buttons[12]
         buttons[13].clicked.connect(lambda: self.ui_controller.show_detector_panel())
-        # buttons[14]      TODO
+            # buttons[14]
         buttons[15].clicked.connect(lambda: self.ui_controller.show_schedule_panel())
-        # buttons[16]      TODO
+            # buttons[16]
         buttons[17].clicked.connect(lambda: self.ui_controller.show_image_panel())
-
+            # buttons[18]
+            # buttons[19]
+            # buttons[20]
+            # buttons[21]
+            # buttons[22]
+            # buttons[23]
         buttons[24].clicked.connect(lambda: displayAllMoves())
+        # buttons[25]      TODO: parameters
 
         # =============== special methods =============== #
         set_btn_disable([buttons[0]] + buttons[2:])  # Disable buttons
