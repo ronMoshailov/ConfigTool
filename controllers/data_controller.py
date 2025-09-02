@@ -114,6 +114,13 @@ class DataController:
     def get_all_detectors(self):
         return self.data_manager.get_all_detectors()
 
+    def get_all_images(self):
+        return self.data_manager.get_all_images()
+
+    def get_image_count(self):
+        return self.data_manager.get_image_count()
+
+
     # --------------- update methods --------------- #
     def update_min_green(self, dictionary: dict[str, QLineEdit]):
         """
@@ -201,6 +208,7 @@ class DataController:
                 sk_manager.update_sk_comment(channel_num, to_clear=True)
         print(f"**** [class] DataController:\t [method] clear_channel\t[end] ")
 
+
     # --------------- remove methods --------------- #
     def remove_move(self, move_name):
         """
@@ -241,6 +249,8 @@ class DataController:
                 manager.remove_schedule_row(number_row)
                 return True
         return False
+
+
     # --------------- general methods --------------- #
     def initialize_app(self, btn_list):
         """
@@ -270,6 +280,7 @@ class DataController:
         self.set_schedule_list()
         for schedule in self.schedule_manager:
             schedule.initialize_schedule(self.path_manager.get_path_init_tk1())
+        self.data_manager.init_images(self.path_manager.get_path_init_tk1())
 
         # enable buttons
         for btn in btn_list:
@@ -350,7 +361,6 @@ class DataController:
         for i in range (1, tables_count + 1):
             self.schedule_manager.append(ScheduleManager(i))
 
-
     def get_schedule_list(self, idx):
         return self.schedule_manager[idx].get_schedule_list()
 
@@ -373,6 +383,10 @@ class DataController:
 
             manager.update_schedule(all_schedules)
             all_schedules.clear()
+
+    def update_images(self, table_dict):
+        self.data_manager.update_images(table_dict)
+
 
 
 

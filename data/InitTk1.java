@@ -294,7 +294,8 @@ public class InitTk1 extends InitTk {
 		//                                   |             |     | len  | sp | Police     | list
 		tk.PhEQA       = new PhaseEQA     (tk, "PhaseEQA"  , 11  ,    3 ,  1 , true       , new Move[] {tk.k1, tk.k2, tk.pc, tk.pd, tk.Bc});
 		tk.PhB         = new PhaseB       (tk, "PhaseB"    , 20  ,    7 ,  2 , true       , new Move[] {tk.k3, tk.pa});
-		                                                   
+		tk.PhC         = new PhaseC       (tk, "PhaseC"    , 20  ,    7 ,  2 , true       , new Move[] {tk.k2, tk.pb});
+
 		//interstages                                      
 		//                               node| name        | len | stage out | stage in
 		tk.PhueEQA_B   = new PhueEQA_B    (tk, "PhueEQA_B" ,  99 , tk.PhEQA  , tk.PhB     );

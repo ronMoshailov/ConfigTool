@@ -130,15 +130,19 @@ class NavigatorPanel(QWidget):
 
     def _init_buttons(self):
         buttons = [
-            QPushButton("צומת חדש"), QPushButton("הגדר נתיב"),
-            QPushButton("הפעל סלייב"), QPushButton("🚦ניהול מופעים🚦"),
-            QPushButton("הפעל מאסטר"), QPushButton("הגדר מינימום"),
-            QPushButton("הגדר פרמטרים"), QPushButton("הגדר מטריצה"),
-            QPushButton("-----------"), QPushButton("SK24 כרטיסי"),
-            QPushButton("dx הפעל"), QPushButton("IO24 כרטיסי"),
-            QPushButton("הדפס הכל"), QPushButton("גלאים"),
-            QPushButton("-----------"), QPushButton("לו\"ז"),
-            QPushButton("מעברים"), QPushButton("תמונות"),
+            QPushButton("צומת חדש"), QPushButton("הגדר נתיב"),                # 0, 1
+            QPushButton("הפעל סלייב"), QPushButton("מופעים"),                 # 2, 3
+            QPushButton("הפעל מאסטר"), QPushButton("מינימום"),                # 4, 5
+            QPushButton("dx הפעל"), QPushButton("מטריצה"),                    # 6, 7
+            QPushButton("-----------"), QPushButton("SK24"),                  # 8, 9
+            QPushButton("-----------"), QPushButton("IO24"),                  # 10, 11
+            QPushButton("-----------"), QPushButton("גלאים"),                 # 12, 13
+            QPushButton("-----------"), QPushButton("לו\"ז"),                 # 14, 15
+            QPushButton("-----------"), QPushButton("תמונות"),                # 16, 17
+            QPushButton("-----------"), QPushButton("-----------"),           # 18, 19
+            QPushButton("-----------"), QPushButton("-----------"),           # 20, 21
+            QPushButton("-----------"), QPushButton("-----------"),           # 22, 23
+            QPushButton("הדפס הכל"), QPushButton("הגדר פרמטרים"),             # 24, 25
         ]
 
         # buttons[0]       checkAble
@@ -153,16 +157,18 @@ class NavigatorPanel(QWidget):
         buttons[9].clicked.connect(lambda: self.ui_controller.show_sk_layout())
         # buttons[10]      checkAble
         # buttons[11]      TODO
-        buttons[12].clicked.connect(lambda: displayAllMoves())
+        # buttons[12]
         buttons[13].clicked.connect(lambda: self.ui_controller.show_detector_panel())
         # buttons[14]      TODO
         buttons[15].clicked.connect(lambda: self.ui_controller.show_schedule_panel())
         # buttons[16]      TODO
-        # buttons[17].clicked.connect(lambda: self.ui_controller.show_schedule_panel())
+        buttons[17].clicked.connect(lambda: self.ui_controller.show_image_panel())
+
+        buttons[24].clicked.connect(lambda: displayAllMoves())
 
         # =============== special methods =============== #
         set_btn_disable([buttons[0]] + buttons[2:])  # Disable buttons
-        make_checkable([buttons[0], buttons[2], buttons[4], buttons[8], buttons[10]])  # make button checkable
+        make_checkable([buttons[0], buttons[2], buttons[4], buttons[6]])  # make button checkable
 
         return buttons
 

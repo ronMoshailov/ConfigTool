@@ -53,6 +53,9 @@ class MainWindow(QMainWindow):
         schedule_panel = self.ui_controller.get_schedule_panel()
         schedule_panel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
+        image_panel = self.ui_controller.get_image_panel()
+        image_panel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+
         # =============== layouts =============== #
         root_layout = QHBoxLayout()
 
@@ -62,6 +65,7 @@ class MainWindow(QMainWindow):
         root_layout.addWidget(sk_panel, 70)
         root_layout.addWidget(detector_panel, 70)
         root_layout.addWidget(schedule_panel, 70)
+        root_layout.addWidget(image_panel, 70)
         root_layout.addStretch(1)
         root_layout.addWidget(navigator_panel, 20)
         root.setLayout(root_layout)

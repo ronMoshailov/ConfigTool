@@ -44,3 +44,5 @@ schedule_pattern = re.compile(
     r'(?:([a-zA-Z_]\w*)\.initProgWunsch\(\s*(\d{1,2})\s*,\s*(\d{2})\s*,\s*tk\.p(\d{2})\s*\);)'
 )
 
+image_pattern = re.compile(r'Phase([A-Za-z0-9_]+)\s*\([^)]*?new\s+Move\[\]\s*\{([^}]*)\}')
+

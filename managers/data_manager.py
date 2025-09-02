@@ -1,7 +1,8 @@
 import re
 
-from config.patterns import move_pattern, matrix_pattern, detectors_pattern
+from config.patterns import move_pattern, matrix_pattern, detectors_pattern, image_pattern
 from entities.detector import Detector
+from entities.image import Image
 from entities.log import Log
 from entities.matrix import MatrixCell
 from entities.signal_group import SignalGroup
@@ -169,6 +170,13 @@ class DataManager:
     def get_all_detectors(self):
         return self.detectors
 
+    def get_all_images(self):
+        return self.images
+
+    def get_image_count(self):
+        return len(self.images)
+
+
     # --------------- update methods --------------- #
     def update_min_green(self, name: str, value: int):
         """
@@ -246,4 +254,47 @@ class DataManager:
             if move.name == move_name:
                 return True
         return False
+
+    def init_images(self, path):
+        pattern = image_pattern
+
+        with open(path, "r", encoding="utf-8") as f:
+            for line in f:
+                m = pattern.search(line)
+                if m:
+                    name = m.group(1)
+                    moves = [re.sub(r'^tk\.', '', item.strip()) for item in m.group(2).split(",")]
+                    all_moves = self.get_all_moves()
+                    collection = []
+
+                    for move in all_moves:
+                        if move.name in moves:
+                            collection.append(move)
+                    self.images.append(Image(name, collection))
+
+    def update_images(self, table_dict):
+        for image_name, table in table_dict.items():
+            checked_moves = []
+            for row_num in range(table.rowCount()):
+                move_name = table.cellWidget(row_num, 0).text()
+                checkbox = table.cellWidget(row_num, 1)
+                if checkbox.isChecked():
+                    move = self._get_move_by_name(move_name)
+                    if move:
+                        checked_moves.append(move)
+
+            is_found = False
+
+            for image in self.images:
+                if image.image_name == image_name:
+                    image.move_list = checked_moves
+                    is_found = True
+            if not is_found:
+                self.images.append(Image(image_name, checked_moves))
+
+    def _get_move_by_name(self, name):
+        for move in self.moves:
+            if move.name == name:
+                return move
+        return None
 

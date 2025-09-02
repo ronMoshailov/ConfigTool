@@ -38,7 +38,7 @@ def displayAllMoves():
     for detector in detectors_list:
         print(f"name: {detector.name:<5}, type: {detector.type:<10}, extension unit: {detector.ext_unit if detector.ext_unit is not None else "None":<5}")
 
-    # print all sk channels
+    # print all schedule
     print("\nschedule:")
     schedule_manager = data_controller.schedule_manager
     for manager in schedule_manager:
@@ -46,4 +46,10 @@ def displayAllMoves():
         for item in manager.schedule_list:
             print(f"hour: {item.hour:<5}, minute: {item.minute:<5}, program_num: {item.program_num:<5}")
 
-
+    # print all images
+    print("\nimages:")
+    image_list = data_controller.data_manager.images
+    for img in image_list:
+        print(f" ---- image: {img.image_name} ---- ")
+        for move in img.move_list:
+            print(f"name: {move.name:<5}")
