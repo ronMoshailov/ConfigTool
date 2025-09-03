@@ -3,7 +3,7 @@ from ui.image_panel import ImagePanel
 from ui.matrix_panel import MatrixPanel
 from ui.min_green_panel import MinGreenLayout
 from ui.schedule_panel import SchedulePanel
-from ui.set_move_panel import SetMovePanel
+from ui.move_panel import MovePanel
 from ui.sk_panel import SkPanel
 
 
@@ -19,7 +19,7 @@ class UIController:
         """
         if cls._instance is None:                                       # checks if there is an instance of the class
             cls._instance = super(UIController, cls).__new__(cls)       # create new instance and store him in _instance before __init__
-            cls.set_move_layout = SetMovePanel()
+            cls.set_move_layout = MovePanel()
             cls.min_green_layout = MinGreenLayout()
             cls.matrix_layout = MatrixPanel()
             cls.sk_layout = SkPanel()

@@ -1,146 +1,49 @@
 from PyQt6.QtCore import Qt, QTime
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QSizePolicy, QTableWidget, QLabel, QComboBox, \
-    QAbstractItemView, QTimeEdit, QAbstractSpinBox, QHeaderView, QPushButton
+from PyQt6.QtGui import QFont
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTableWidget, QLabel, QComboBox, \
+    QAbstractItemView, QTimeEdit, QAbstractSpinBox, QHeaderView, QPushButton, QCheckBox
 
+from config.style import schedule_panel_style
 from controllers.data_controller import DataController
-from entities.DoubleClickButton import DoubleClickButton
 
 class SchedulePanel(QWidget):
 
     def __init__(self):
         super().__init__()
-        # =============== controllers =============== #
+        # =============== Controllers =============== #
         self.data_controller = DataController()
 
-        # =============== layout =============== #
-        self.main_layout = QVBoxLayout()
-        self.root_layout = QHBoxLayout()
-
-        self.main_layout.addLayout(self.root_layout)
-        self.setLayout(self.main_layout)
-
-        # =============== ****** =============== #
-        self.table_list = []
+        # =============== QPushButton =============== #
         self.btn_add = QPushButton("עדכן")
+        self.btn_add.setObjectName("update_button")
 
-        # =============== style =============== #
-        root_style = """
-        /* ********************************* panel ********************************* */
-        #schedulePanel {
-            border-radius: 20px;
-            border: 1px solid #1a98ff;
-            background: qlineargradient(
-                x1:0, y1:0, x2:0, y2:1,
-                stop:0 #94cfff,
-                stop:1 #f0f8ff
-            );
-        }
-        
-        /* ********************************* column wrap ********************************* */
-        #column_wrap {
-            border-radius: 15px;
-            border: 1px solid #0077d7;
-            background: qlineargradient(
-                x1:0, y1:0, x2:0, y2:1,
-                stop:0 #cce7ff,
-                stop:1 #ffffff
-            );
-            padding: 6px;
-        }
-        
-        /* ********************************* title ********************************* */
-        QLabel#title {
-            font-size: 20px;
-            font-weight: bold;
-            color: #2c3e50;
-            padding: 6px 10px;
-            border-radius: 10px;
-            background: qlineargradient(
-                x1:0, y1:0, x2:0, y2:1,
-                stop:0 #d2e1ff,
-                stop:1 #f0f8ff
-            );
-            border: 1px solid #1a98ff;
-        }
-        QLabel#title:hover {
-            background: qlineargradient(
-                x1:0, y1:0, x2:0, y2:1,
-                stop:0 #eaf2ff,
-                stop:1 #ffffff
-            );
-            border: 1px solid #3498db;
-        }
-        
-        /* ********************************* table ********************************* */
-        QTableWidget#tbl {
-            border: 1px solid #a6c8ff;
-            border-radius: 8px;
-            gridline-color: #d0e6ff;
-            background: #ffffff;
-            selection-background-color: #cce0ff;
-            selection-color: #2c3e50;
-        }
-        QHeaderView::section {
-            background: #d6eaff;
-            border: 1px solid #a6c8ff;
-            padding: 4px;
-            font-weight: bold;
-            color: #2c3e50;
-        }
-        
-        /* ********************************* buttons ********************************* */
-        QPushButton#remove_button {
-            background-color: #e74c3c;   /* אדום */
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 2px 6px;
-            font-size: 28px;
-        }
-        QPushButton#remove_button:hover {
-            background-color: #c0392b;
-        }
-        
-        QPushButton {
-            background-color: #1a98ff;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 6px 10px;
-            font-size: 14px;
-        }
-        QPushButton:hover {
-            background-color: #0077d7;
-        }
-        
-        /* ********************************* editors ********************************* */
-        QTimeEdit#edit_time {
-            border: 1px solid #a6c8ff;
-            border-radius: 6px;
-            padding: 2px 4px;
-            background: #f9fcff;
-            selection-background-color: #1a98ff;
-        }
-        
-        QComboBox#combo_num_prog {
-            border: 1px solid #a6c8ff;
-            border-radius: 6px;
-            padding: 2px 6px;
-            background: #ffffff;
-        }
-        QComboBox#combo_num_prog::drop-down {
-            border-left: 1px solid #a6c8ff;
-        }
-        QComboBox#combo_num_prog QAbstractItemView {
-            border: 1px solid #a6c8ff;
-            selection-background-color: #cce0ff;
-            background: #ffffff;
-        }
-        """
-        self.setObjectName("schedulePanel")
-        self.setStyleSheet(root_style)
-        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+        # =============== CheckBox =============== #
+        self.check_box = QCheckBox("ראשון עד חמישי")
+
+        # =============== Button Layout =============== #
+        self.bottom_layout = QHBoxLayout()
+        self.bottom_layout.addWidget(self.check_box, alignment=Qt.AlignmentFlag.AlignCenter)
+        self.bottom_layout.addWidget(self.btn_add)
+
+        # =============== Some Layout =============== #
+        self.schedule_layout = QHBoxLayout()
+
+        # =============== Root Layout =============== #
+        self.root_layout = QVBoxLayout()
+        self.root_layout.addLayout(self.schedule_layout)
+        self.root_layout.addLayout(self.bottom_layout)
+
+        # =============== Data =============== #
+        self.table_list = []
+        self.add_row_btn_list = []
+
+        # =============== Self =============== #
+        self.setLayout(self.root_layout)
         self.hide()
+
+        # =============== Style =============== #
+
+        self._set_finishers()
 
     # --------------- add methods --------------- #
     def _add(self, table_num):
@@ -151,7 +54,8 @@ class SchedulePanel(QWidget):
     def _update(self):
         if not self._check_time():
             return False
-        self.data_controller.update_schedule(self.table_list)
+        self.data_controller.update_schedule(self.table_list, self.check_box.isChecked())
+        self.show_panel()
         return True
 
     # --------------- remove methods --------------- #
@@ -171,23 +75,23 @@ class SchedulePanel(QWidget):
         :return: None
         """
         # clear the table
-        self.clear_root_layout()
+        self.clear_some_layout()
         self.table_list.clear()
+        self.add_row_btn_list.clear()
 
-        self.btn_add.clicked.connect(self._update)
         # self.btn_add.setObjectName("add_button")
-        self.main_layout.addWidget(self.btn_add)
         for idx in range (0, 7):
-            schedule_column, table = self._init_schedule_column(idx + 1)    # create schedule_column
+            schedule_column, table = self._initialize_schedule_column(idx + 1)      # create schedule_column
             self.table_list.append(table)
-            self._fill_table(idx, table)                                    # fill table with values
-            self.root_layout.addWidget(schedule_column, stretch=1)          # add schedule_column to layout
-        self.show()                                                         # show panel
+            self._fill_table(idx, table)                                            # fill table with values
+            self.schedule_layout.addWidget(schedule_column, stretch=1)              # add schedule_column to layout
+        self._enable_mon_thu()
+        self.show()                                                                 # show panel
 
 
-    def _init_schedule_column(self, table_num: int):
+    def _initialize_schedule_column(self, table_num: int):
         """
-        This method initialize (no values) column that contain the elements.
+        This method initialize column that contain the elements (no values of the elements).
 
         :param table_num: number of the table
         :return: column widget, table widget
@@ -203,34 +107,33 @@ class SchedulePanel(QWidget):
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # set table
-        tbl = self._init_table()
+        tbl = self._create_table()
 
         #  button
-        btn_add = QPushButton("+")
+        btn_add = QPushButton("הוסף שורה")
+        self.add_row_btn_list.append(btn_add)
         btn_add.clicked.connect(lambda: self._add(table_num))
+        btn_add.setProperty("class", "add_row_button")
 
         # set layout
         column_layout = QVBoxLayout()
         column_layout.addWidget(title)
         column_layout.addWidget(tbl)
-        column_layout.addWidget(btn_add)
+        column_layout.addWidget(btn_add, alignment=Qt.AlignmentFlag.AlignHCenter)
 
         # set root
         wrap.setLayout(column_layout)
 
-        # create and fill the table
-        # was_tbl = tbl.blockSignals(True)
-        # tbl.blockSignals(was_tbl)               # release signals
         return wrap, tbl
 
-    def clear_root_layout(self):
+    def clear_some_layout(self):
         """
         Clear the root layout.
 
         :return: None
         """
-        while self.root_layout.count():  # as long a 'QLayoutItem' exist in 'tables_layout'
-            it = self.root_layout.takeAt(0)  # disconnect the first 'QLayoutItem' (can be just another layout)
+        while self.schedule_layout.count():  # as long a 'QLayoutItem' exist in 'tables_layout'
+            it = self.schedule_layout.takeAt(0)  # disconnect the first 'QLayoutItem' (can be just another layout)
             w = it.widget()
             if w:
                 w.deleteLater()
@@ -249,9 +152,12 @@ class SchedulePanel(QWidget):
             row = table.rowCount() # get the number row that empty
             table.insertRow(row)   # add new row in the end
 
+            font = QFont("Roboto")
+
             btn_remove = QPushButton("x")
             btn_remove.setObjectName("remove_button")
-            btn_remove.clicked.connect(lambda row_num=row, tbl_num=table_num, btn=btn_remove: self._remove(tbl_num + 1, table, btn))
+            btn_remove.clicked.connect(lambda tbl_num=table_num, btn=btn_remove: self._remove(tbl_num + 1, table, btn))
+            btn_remove.setFont(font)
 
             time_edit = QTimeEdit()
             time_edit.setObjectName("edit_time")
@@ -259,18 +165,21 @@ class SchedulePanel(QWidget):
             time_edit.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.NoButtons)
             time_edit.setTime(QTime(schedule.hour, schedule.minute))
 
+            time_edit.setFont(font)
+
             combo_num_prog = QComboBox()
             combo_num_prog.setObjectName("combo_num_prog")
             combo_num_prog.addItems([str(i) for i in range(1, 33)])
             combo_num_prog.setCurrentText(str(schedule.program_num))
+            combo_num_prog.setFont(font)
 
             table.setCellWidget(row, 0, btn_remove)
             table.setCellWidget(row, 1, time_edit)
             table.setCellWidget(row, 2, combo_num_prog)
 
-    def _init_table(self):
+    def _create_table(self):
         """
-        Initialize the table with no values
+        Create the table with no values
 
         :return: Table QTableWidget
         """
@@ -283,29 +192,58 @@ class SchedulePanel(QWidget):
         tbl.verticalHeader().setVisible(False)
         tbl.setHorizontalHeaderLabels(["", "שעה", "מס' תוכנית"])
         tbl.setColumnWidth(0, 10)  # עמודה 0 ברוחב 60px
-        tbl.setColumnWidth(1, 45)  # עמודה 1 ברוחב 60px
+        tbl.setColumnWidth(1, 65)  # עמודה 1 ברוחב 60px
         tbl.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
         return tbl
+
+    def _enable_mon_thu(self):
+        for table in self.table_list[1:5]:
+            table.setDisabled(self.check_box.isChecked())
+
+        for btn in self.add_row_btn_list[1:5]:
+            btn.setDisabled(self.check_box.isChecked())
 
     def _check_time(self):
         prev = None
         current = None
 
+        # for each table
         for idx, table in enumerate (self.table_list):
+            # reset
             prev = None
             current = None
             row_count = table.rowCount()
+
+            # for each row in table
             for row in range(row_count):
                 prev = current
                 current = table.cellWidget(row, 1).time()
+
+                # if first iteration
                 if prev is None:
                     continue
+
+                # if last iteration
                 if current is None:
                     continue
+
+                # compare
                 if current <= prev:
                     self.data_controller.write_log(f"in table number {idx + 1} there is a problem with the time", "r")
                     return False
         self.data_controller.write_log(f"עודכן", "g")
         return True
+
+    def _set_finishers(self):
+
+        self.btn_add.clicked.connect(self._update)
+
+        self.check_box.setObjectName("check_box")
+        self.check_box.clicked.connect(lambda: self._enable_mon_thu())
+        self.check_box.setChecked(True)
+
+        self.setObjectName("schedulePanel")
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+        self.setStyleSheet(schedule_panel_style)
 
 

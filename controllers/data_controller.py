@@ -1,3 +1,4 @@
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QLineEdit
 
 from managers.paths_manager import PathsManager
@@ -346,14 +347,15 @@ class DataController:
         self.log_textbox.setPlaceholderText("ברוכה הבאה...")  # טקסט אפור ברקע
 
         if color == "r":
-            self.log_textbox.setStyleSheet("color: red")
+            self.log_textbox.setStyleSheet("background-color: red; color: white")
             self.log_textbox.setText(text)
         if color == "g":
-            self.log_textbox.setStyleSheet("color: green")
+            self.log_textbox.setStyleSheet("background-color: green; color: white")
             self.log_textbox.setText(text)
         if color == "y":
-            self.log_textbox.setStyleSheet("color: yellow")
+            self.log_textbox.setStyleSheet("background-color: yellow; color: white")
             self.log_textbox.setText(text)
+        self.log_textbox.setAlignment(Qt.AlignmentFlag.AlignLeft)
 
     def set_schedule_list(self):
         tables_count = 7
@@ -364,11 +366,14 @@ class DataController:
     def get_schedule_list(self, idx):
         return self.schedule_manager[idx].get_schedule_list()
 
-    def update_schedule(self, table_list):
+    def update_schedule(self, table_list, is_repeat):
         all_schedules = []
 
         for idx, manager in enumerate (self.schedule_manager):
-            tbl = table_list[idx]
+            if is_repeat and idx in range(1, 5):
+                tbl = table_list[0]
+            else:
+                tbl = table_list[idx]
 
             for row in range(tbl.rowCount()):
 

@@ -3,6 +3,7 @@ from PyQt6.QtGui import QIntValidator
 from PyQt6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QSizePolicy, \
     QGridLayout
 
+from config.style import min_green_panel_style
 from controllers.data_controller import DataController
 
 
@@ -10,85 +11,28 @@ class MinGreenLayout(QWidget):
 
     def __init__(self):
         super().__init__()
-        self.btn_grid_layout = QGridLayout()
-        self.btn_grid_layout.setHorizontalSpacing(36)
-        self.btn_grid_layout.setVerticalSpacing(36)
-
         # =============== controllers =============== #
         self.data_controller = DataController()
 
-        # =============== style =============== #
-        root_style = """
-QWidget#root {
-    border: 1px solid #04c83b;   /* כחול עדין */
-    border-radius: 20px; 
-    background-color: qlineargradient(
-        x1:0, y1:0, x2:0, y2:1, 
-        stop:0 #e1fde7,   /* תכלת בהיר */
-        stop:1 #eef2ff    /* סגול-אפור רך */
-    );
-}
+        # =============== Grid Layout =============== #
+        self.root_layout = QGridLayout()
 
-QFrame#card {
-    background: #fdfdfd; /* אפור-לבן – שונה מהרקע */
-    border: 1px solid #d1d5db;
-    border-radius: 14px;
-    padding: 0px 22px;
-    box-shadow: 0px 2px 6px rgba(0,0,0,0.06);
-    transition: all 0.25s ease-in-out;
-}
-QFrame#card:hover {
-    border: 1px solid #2861ff;   /* סגול */
-    background: #faf5ff;         /* נותן הדגשה עדינה */
-}
-
-QFrame#card QLabel {
-    color: #111827;
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 6px;
-    padding: 5px 12px;
-}
-
-QFrame#card QLineEdit {
-    background: #f9fafb;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    padding: 5px 12px;
-    font-size: 18px;
-}
-QFrame#card QLineEdit:focus {
-    border: 1px solid #3b82f6;
-    background: #ffffff;
-}
-QFrame#card QLineEdit[readOnly="true"] {
-    background: #fddfdd;
-    color: #9ca3af;
-}
-
-
-        """
-
-        self.setObjectName("root")
-        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
-
-        self.setStyleSheet(root_style)
-        self.setLayout(self.btn_grid_layout)
+        # =============== Self =============== #
+        self.setLayout(self.root_layout)
         self.hide()
+
+        # =============== Style =============== #
+        self._set_style()
 
     # =============== methods =============== #
     def show_panel(self):
-        # get data
+        # Data
         all_moves = self.data_controller.get_all_moves()
         min_green_dict = {}
-
         cards_in_row = 7
 
         # clear grid
-        while self.btn_grid_layout.count():             # how many 'QLayoutItem' exist
-            item = self.btn_grid_layout.takeAt(0)       # get the first 'QLayoutItem' (disconnect from parent, make independent but alive)
-            if item.widget():                           # get the widget (if not exist return None)
-                item.widget().deleteLater()             # remove the widget when if possible (let him finish if he in the middle of process)
+        self._clear_grid()
 
         for i, move in enumerate(all_moves):
             # get number row and number column
@@ -124,12 +68,12 @@ QFrame#card QLineEdit[readOnly="true"] {
             card.setLayout(vertical_layout)
 
             # and QFrame to the gird
-            self.btn_grid_layout.addWidget(card, row_num, col_num)
+            self.root_layout.addWidget(card, row_num, col_num)
 
         #
-        self.btn_grid_layout.setRowStretch(self.btn_grid_layout.rowCount(), 1)
-        self.btn_grid_layout.setContentsMargins(40, 40, 40, 40)
-        self.btn_grid_layout.addLayout(self._create_btn_layout(min_green_dict), self.btn_grid_layout.rowCount() + 1, 0, 1, cards_in_row)  # add the textBox (component, row_num, col_num, how many rows use, how many columns to use)
+        self.root_layout.setRowStretch(self.root_layout.rowCount(), 1)
+        self.root_layout.setContentsMargins(40, 40, 40, 40)
+        self.root_layout.addLayout(self._create_btn_layout(min_green_dict), self.root_layout.rowCount() + 1, 0, 1, cards_in_row)  # add the textBox (component, row_num, col_num, how many rows use, how many columns to use)
         self.show()
 
     # =============== inner methods =============== #
@@ -150,3 +94,21 @@ QFrame#card QLineEdit[readOnly="true"] {
         return btn_row
 
 
+
+    def _clear_grid(self):
+        while self.root_layout.count():             # how many 'QLayoutItem' exist
+            item = self.root_layout.takeAt(0)       # get the first 'QLayoutItem' (disconnect from parent, make independent but alive)
+            if item.widget():                           # get the widget (if not exist return None)
+                item.widget().deleteLater()             # remove the widget when if possible (let him finish if he in the middle of process)
+
+
+
+    def _set_style(self):
+        self.root_layout.setHorizontalSpacing(36)
+        self.root_layout.setVerticalSpacing(36)
+
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+
+        self.setObjectName("root")
+
+        self.setStyleSheet(min_green_panel_style)

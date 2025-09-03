@@ -1,8 +1,11 @@
+import math
+
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QGridLayout, QPushButton, QLineEdit, QVBoxLayout
 
 from config.debug import displayAllMoves
 from config.special import make_checkable, set_btn_disable
+from config.style import navigator_panel_style
 from controllers.data_controller import DataController
 from controllers.ui_controller import UIController
 
@@ -13,169 +16,156 @@ class NavigatorPanel(QWidget):
     """
 
     def __init__(self):
-        """
-            Initialize the main window, create controllers, panels, and layout.
-        """
         super().__init__()
 
-        # --- style --- #
+        # =============== Controller =============== #
         self.data_controller = DataController()
         self.ui_controller = UIController()
 
-        root_style = """
-            /* ********************************* root ********************************* */
-            #RootPanel {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #7ea1ff, stop:1 #d6c4fd);
-                border: 1px solid #793ff8;
-                border-radius: 20px;
-            }
-            
-            /* ********************************* Button container ********************************* */
-            QWidget#BtnContainer {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #7ea1ff, stop:1 #b069f1);
-                border-radius: 20px;
-            }
-
-            /* ********************************* QLineEdit ********************************* */
-            QLineEdit{
-                background-color: white; 
-                border-radius: 10px; 
-                min-height: 30px; 
-                font-weight: bold; 
-                font-size: 18px;
-            }
-        
-            /* ********************************* QPushButton ********************************* */
-            QPushButton {
-                background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #5dade2, stop:1 #2e86c1);
-                color: white;
-                border: 2px solid #2471a3;
-                border-radius: 10px;
-                padding: 0px;
-                font-weight: bold;
-                font-size: 18px;
-                min-width: 150px;
-                min-height: 36px;
-            }
-
-            QPushButton:hover {
-                background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #5499c7, stop:1 #21618c);
-                border: 2px solid #1b4f72;
-            }
-    
-            QPushButton:checked {
-                background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #58d68d, stop:1 #28b463);
-                border: 2px solid #239b56;
-            }
-
-            QPushButton:disabled {
-                background-color: #d5d8dc;
-                border: 2px solid #a6acaf;
-                color: #7f8c8d;
-            }
-        """
-
         # =============== QLineEdit =============== #
-        name_edit = QLineEdit()
-        name_edit.setPlaceholderText("שם")
-
-        # =============== buttons =============== #
-        buttons = self._init_buttons()
-
-        # =============== textbox =============== #
+        self.name_textbox = QLineEdit()
         self.log_textbox = QLineEdit()
-        self.log_textbox.setEnabled(False)
-        self.log_textbox.setReadOnly(True)
-        self.log_textbox.setAlignment(Qt.AlignmentFlag.AlignLeft)
 
-        # =============== grid =============== #
-        # widget
-        grid_container = QWidget()
-        grid_container.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
-        grid_container.setObjectName("BtnContainer")
+        # =============== QPushButton =============== #
+        self.buttons_list = self._initialize_buttons()
 
-        # layout
-        grid_layout = QGridLayout()
-        grid_layout.setContentsMargins(16, 16, 16, 16)
-        grid_layout.setHorizontalSpacing(12)
-        grid_layout.setVerticalSpacing(12)
+        # =============== Grid Layout =============== #
+        self.grid_layout = self._build_grid_layout()
 
-        # create the grid layout
-        rows = (len(buttons) + 1) // 2 + 1              # +1 before the 'name_edit'
-        grid_layout.addWidget(name_edit, 0, 0, 1, 2)    # add the textBox (component, row_num, col_num, how many rows use, how many columns to use)
-        grid_layout.setRowStretch(rows, 1)       # add space after the buttons
+        # =============== Grid QWidget =============== #
+        self.grid_container = QWidget()
+        self.grid_container.setLayout(self.grid_layout)
 
-        # add buttons to the grid
-        for i, btn in enumerate(buttons, start=1):
-            r = (i - 1) // 2 + 1
-            c = (i - 1) % 2
-            grid_layout.addWidget(btn, r, c)
-
-        # add the layout to widget
-        grid_container.setLayout(grid_layout)
-
-        # =============== root layout =============== #
+        # =============== Root Layout =============== #
         root_layout = QVBoxLayout()
-        root_layout.addWidget(grid_container)
+        root_layout.addWidget(self.grid_container)
         root_layout.addWidget(self.log_textbox)
 
-        # =============== root =============== #
+        # =============== Self =============== #
         self.setLayout(root_layout)
-        self.setMaximumWidth(420)
-        self.setMinimumWidth(300)
-        self.setObjectName("RootPanel")
-        self.setStyleSheet(root_style)
-        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
 
+        # =============== Style =============== #
+        self._set_style()
 
-    def _init_buttons(self):
+    def _initialize_buttons(self):
+        # =============== create buttons =============== #
+        new_node_btn = QPushButton("צומת חדש")                  #  0
+        set_paths_btn = QPushButton("הגדר נתיב")                #  1
+        active_slave_btn = QPushButton("הפעל סלייב")            #  2
+        display_move_panel_btn = QPushButton("מופעים")          #  3
+        active_master_btn = QPushButton("הפעל מאסטר")           #  4
+        display_min_green_panel_btn = QPushButton("מינימום")    #  5
+        active_dx_btn = QPushButton("dx הפעל")                  #  6
+        display_matrix_panel_btn = QPushButton("מטריצה")        #  7
+        a_btn = QPushButton("-----------")                      #  8
+        b_btn = QPushButton("SK24")                             #  9
+        c_btn = QPushButton("-----------")                      # 10
+        d_btn = QPushButton("IO24")                             # 11
+        e_btn = QPushButton("-----------")                      # 12
+        f_btn = QPushButton("גלאים")                            # 13
+        g_btn = QPushButton("-----------")                      # 14
+        h_btn = QPushButton("לו\"ז")                            # 15
+        i_btn = QPushButton("-----------")                      # 16
+        j_btn = QPushButton("תמונות")                           # 17
+        k_btn = QPushButton("-----------")                      # 18
+        l_btn = QPushButton("-----------")                      # 19
+        m_btn = QPushButton("-----------")                      # 20
+        n_btn = QPushButton("-----------")                      # 21
+        o_btn = QPushButton("-----------")                      # 22
+        p_btn = QPushButton("-----------")                      # 23
+        display_all_btn = QPushButton("הדפס הכל")               # 24
+        r_btn = QPushButton("הגדר פרמטרים")                     # 25
+
+        # =============== create button list =============== #
         buttons = [
-            QPushButton("צומת חדש"), QPushButton("הגדר נתיב"),                # 0, 1
-            QPushButton("הפעל סלייב"), QPushButton("מופעים"),                 # 2, 3
-            QPushButton("הפעל מאסטר"), QPushButton("מינימום"),                # 4, 5
-            QPushButton("dx הפעל"), QPushButton("מטריצה"),                    # 6, 7
-            QPushButton("-----------"), QPushButton("SK24"),                  # 8, 9
-            QPushButton("-----------"), QPushButton("IO24"),                  # 10, 11
-            QPushButton("-----------"), QPushButton("גלאים"),                 # 12, 13
-            QPushButton("-----------"), QPushButton("לו\"ז"),                 # 14, 15
-            QPushButton("-----------"), QPushButton("תמונות"),                # 16, 17
-            QPushButton("-----------"), QPushButton("-----------"),           # 18, 19
-            QPushButton("-----------"), QPushButton("-----------"),           # 20, 21
-            QPushButton("-----------"), QPushButton("-----------"),           # 22, 23
-            QPushButton("הדפס הכל"), QPushButton("הגדר פרמטרים"),             # 24, 25
+            new_node_btn,                    #  0
+            set_paths_btn,                   #  1
+            active_slave_btn,                #  2
+            display_move_panel_btn,          #  3
+            active_master_btn,               #  4
+            display_min_green_panel_btn,     #  5
+            active_dx_btn,                   #  6
+            display_matrix_panel_btn,        #  7
+            a_btn,                           #  8
+            b_btn,                           #  9
+            c_btn,                           # 10
+            d_btn,                           # 11
+            e_btn,                           # 12
+            f_btn,                           # 13
+            g_btn,                           # 14
+            h_btn,                           # 15
+            i_btn,                           # 16
+            j_btn,                           # 17
+            k_btn,                           # 18
+            l_btn,                           # 19
+            m_btn,                           # 20
+            n_btn,                           # 21
+            o_btn,                           # 22
+            p_btn,                           # 23
+            display_all_btn,                 # 24
+            r_btn                            # 25
         ]
 
-        # buttons[0]       checkAble
+        # =============== connect listener =============== #
         buttons[1].clicked.connect(lambda: self.data_controller.initialize_app([buttons[0]] + buttons[2:]))
-        # buttons[2]       checkAble
         buttons[3].clicked.connect(lambda: self.ui_controller.show_set_move_layout())
-        # buttons[4]       checkAble
         buttons[5].clicked.connect(lambda: self.ui_controller.show_min_green_layout())
-            # buttons[6]
         buttons[7].clicked.connect(lambda: self.ui_controller.show_matrix_layout())
-            # buttons[8]
         buttons[9].clicked.connect(lambda: self.ui_controller.show_sk_layout())
-            # buttons[10]
-        # buttons[11]      TODO: IO24
-            # buttons[12]
         buttons[13].clicked.connect(lambda: self.ui_controller.show_detector_panel())
-            # buttons[14]
         buttons[15].clicked.connect(lambda: self.ui_controller.show_schedule_panel())
-            # buttons[16]
         buttons[17].clicked.connect(lambda: self.ui_controller.show_image_panel())
-            # buttons[18]
-            # buttons[19]
-            # buttons[20]
-            # buttons[21]
-            # buttons[22]
-            # buttons[23]
         buttons[24].clicked.connect(lambda: displayAllMoves())
-        # buttons[25]      TODO: parameters
 
         # =============== special methods =============== #
-        set_btn_disable([buttons[0]] + buttons[2:])  # Disable buttons
-        make_checkable([buttons[0], buttons[2], buttons[4], buttons[6]])  # make button checkable
+        set_btn_disable([buttons[0]] + buttons[2:])                         # Disable buttons
+        make_checkable([buttons[0], buttons[2], buttons[4], buttons[6]])    # make checkable
 
         return buttons
 
+    def _build_grid_layout(self):
+        grid_layout = QGridLayout()
+
+        # calc how many rows needed
+        rows_num = math.ceil(len(self.buttons_list)/2)      # rows for buttons
+        rows_num += 1                                       # row for 'textbox'
+
+        # add 'textbox' to grid_layout
+        grid_layout.addWidget(self.name_textbox, 0, 0, 1, 2)      # add the textBox (component, row_num, col_num, how many rows use, how many columns to use)
+
+        # add buttons to grid_layout
+        for i, btn in enumerate(self.buttons_list, start=0):
+            r = i // 2 + 1
+            c = i % 2
+            grid_layout.addWidget(btn, r, c)
+
+        # add space after the buttons
+        grid_layout.setRowStretch(rows_num, 1)
+
+        return grid_layout
+
+    def _set_style(self):
+        self.name_textbox.setPlaceholderText("שם")
+        self.name_textbox.setObjectName("name_textbox")
+
+        self.log_textbox.setEnabled(False)
+        self.log_textbox.setReadOnly(True)
+        self.log_textbox.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        self.log_textbox.setObjectName("log_textbox")
+
+        for btn in self.buttons_list:
+            btn.setProperty("class", "navigator_button")
+
+        self.grid_layout.setContentsMargins(16, 16, 16, 16)
+        self.grid_layout.setHorizontalSpacing(12)
+        self.grid_layout.setVerticalSpacing(12)
+
+        self.grid_container.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+        self.grid_container.setObjectName("btn_container")
+
+        self.setMaximumWidth(420)
+        self.setMinimumWidth(300)
+        self.setObjectName("root_panel")
+        self.setStyleSheet(navigator_panel_style)
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
 
