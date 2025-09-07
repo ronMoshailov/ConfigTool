@@ -36,58 +36,37 @@ class SkManager:
     # =========================================== #
     #               update methods                #
     # =========================================== #
-    def update_sk_comment(self, channel: str, to_clear: bool = False):
+    def update_sk_comment(self, channel: str, status, to_clear: bool = False):
         """
         This method update the comment state of sk channel.
 
         :param channel: sk channel to change
         :return: None
         """
-        print(f"[class] SkManager:\t [method] update_sk_comment\t[start] ")
         for sk_channel in self.sk_channel_list:
-            if sk_channel.channel == int(channel):
+            if sk_channel.channel == int(channel) + 1:
                 if to_clear:
                     sk_channel.is_comment = False
-                    print(f"[class] SkManager:\t [method] update_sk_comment\t[end] ")
                     return True
-                sk_channel.is_comment = not sk_channel.is_comment
-                print(f"[class] SkManager:\t [method] update_sk_comment\t[end] ")
+                sk_channel.is_comment = status
                 return True
-        print(f"[class] SkManager:\t [method] update_sk_comment\t[end] ")
         return False
 
-    def update_sk_color(self, row: int, to_clear: bool = False):
-        print(f"[class] SkManager:\t [method] update_sk_color\t[start] ")
+    def update_sk_color(self, row: int, color: str, to_clear: bool = False):
         if to_clear:
             self.sk_channel_list[row].color = ""
-            print(f"[class] SkManager:\t [method] update_sk_color\t[end] ")
             return True
-        cur_color = self.sk_channel_list[row].color
-        if cur_color == "hwRed200":
-            self.sk_channel_list[row].color = "hwAmber200"
-            print(f"[class] SkManager:\t [method] update_sk_color\t[end] ")
-            return True
-        elif cur_color == "hwAmber200":
-            self.sk_channel_list[row].color = "hwGreen200"
-            print(f"[class] SkManager:\t [method] update_sk_color\t[end] ")
-            return True
-        elif cur_color == "hwGreen200":
-            self.sk_channel_list[row].color = "hwRed200"
-            print(f"[class] SkManager:\t [method] update_sk_color\t[end] ")
-            return True
-        elif cur_color == "":
-            self.sk_channel_list[row].color = "hwRed200"
-            print(f"[class] SkManager:\t [method] update_sk_color\t[end] ")
-            return True
-        else:
-            Log.error("The color is not 'hwRed20' or 'hwAmber200' or 'hwGreen200'")
-            return False
 
+        if color == "🔴":
+            self.sk_channel_list[row].color = "hwRed200"
+        elif color == "🟡":
+            self.sk_channel_list[row].color = "hwAmber200"
+        elif color == "🟢":
+            self.sk_channel_list[row].color = "hwGreen200"
+        return True
 
     def update_sk_name(self, row: int, new_name: str):
-        print(f"[class] SkManager:\t [method] update_sk_name\t[start] ")
         self.sk_channel_list[row].name = new_name
-        print(f"[class] SkManager:\t [method] update_sk_name\t[end] ")
 
 
     # =========================================== #

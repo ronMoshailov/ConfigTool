@@ -1,15 +1,14 @@
 from PyQt6.QtCore import Qt, QSignalBlocker
-from PyQt6.QtGui import QBrush, QColor
+from PyQt6.QtGui import QBrush
 from PyQt6.QtWidgets import (
-    QWidget, QScrollArea, QVBoxLayout, QHBoxLayout, QSizePolicy,
+    QWidget, QScrollArea, QVBoxLayout, QHBoxLayout,
     QTableWidget, QLabel, QPushButton, QTableWidgetItem, QComboBox,
     QCheckBox, QAbstractItemView
 )
 
-from config.colors import gray_color, light_green_color
+from config.colors import gray_color, light_green_color, white_color
+from config.style import sk_panel_style
 from controllers.data_controller import DataController
-from entities.DoubleClickButton import DoubleClickButton
-from entities.log import Log
 
 class SkPanel(QWidget):
 
@@ -17,63 +16,7 @@ class SkPanel(QWidget):
         super().__init__()
         # =============== controllers =============== #
         self.data_controller = DataController()
-
-        # =============== style =============== #
-        root_style = """
-        /* ********************************* title ********************************* */
-        QLabel#title {
-                font-size: 36px;
-                font-weight: bold;
-                color: #2c3e50;
-                padding: 4px 6px;
-                border-radius: 6px;
-                background: #d2e1ff;
-                border: 1px solid #d0d7de;
-                min-height: 60px;
-            }
-            QLabel#title:hover {
-                background: #d6eaf8;
-                border: 1px solid #3498db;
-            }
-            /* ********************************* QCheckBox ********************************* */
-            QCheckBox#checkbox_comment{
-                margin-left:auto; 
-                margin-right:auto;
-            }
-            /* ********************************* QPushButton ********************************* */
-            QPushButton#remove_button {
-                background-color: #e74c3c;       /* אדום */
-                color: white;                    /* טקסט לבן */
-                border: none;                    /* בלי גבול */
-                border-radius: 12px;             /* פינות מעוגלות */
-                padding: 6px 14px;               /* ריווח פנימי */
-                font-size: 14px;                 /* גודל טקסט */
-                font-weight: bold;               /* טקסט מודגש */
-            }
-            QPushButton#remove_button:hover {
-                background-color: #c0392b;       /* אדום כהה יותר ב-hover */
-            }
-            QPushButton#remove_button:pressed {
-                background-color: #a93226;       /* עוד כהה יותר בלחיצה */
-            }
-            
-            QPushButton#add_button {
-                background-color: #27ae60;       /* ירוק */
-                color: white;                    /* טקסט לבן */
-                border: none;                    /* בלי גבול */
-                border-radius: 12px;             /* פינות מעוגלות */
-                padding: 6px 14px;               /* ריווח פנימי */
-                font-size: 14px;                 /* גודל טקסט */
-                font-weight: bold;               /* טקסט מודגש */
-            }
-            QPushButton#add_button:hover {
-                background-color: #1e8449;       /* ירוק כהה יותר ב-hover */
-            }
-            QPushButton#add_button:pressed {
-                background-color: #196f3d;       /* עוד כהה יותר בלחיצה */
-            }
-
-        """
+        self.tables_list = []
 
         # =============== widget =============== #
         scroll_container = QWidget()
@@ -82,11 +25,20 @@ class SkPanel(QWidget):
         self.btn_add.clicked.connect(self._add_sk)
         self.btn_add.setObjectName("add_button")
 
+        self.btn_update = QPushButton("עדכן")
+        self.btn_update.clicked.connect(self._update_data)
+        self.btn_update.setObjectName("update_button")
+
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
 
         # =============== layout =============== #
         root_layout = QVBoxLayout()
+
+        button_layout = QHBoxLayout()
+        button_layout.addStretch()
+        button_layout.addWidget(self.btn_update)
+        button_layout.addWidget(self.btn_add)
 
         self.tables_layout = QHBoxLayout()
         self.tables_layout.setContentsMargins(0, 0, 0, 0)
@@ -94,14 +46,14 @@ class SkPanel(QWidget):
 
         # =============== connect between layout and widgets =============== #
         root_layout.addWidget(scroll_area)
-        root_layout.addWidget(self.btn_add, 0, Qt.AlignmentFlag.AlignRight)
+        root_layout.addLayout(button_layout)
 
         scroll_area.setWidget(scroll_container)
         scroll_container.setLayout(self.tables_layout)
 
         # =============== self =============== #
         self.setLayout(root_layout)
-        self.setStyleSheet(root_style)
+        self.setStyleSheet(sk_panel_style)
         self.hide()
 
 
@@ -116,9 +68,10 @@ class SkPanel(QWidget):
         self._refresh_tables()
 
     # --------------- update methods --------------- #
-    def _update_comment(self, table, card_number, row_number, state):
+    def _update_comment(self, table, row_number, state):
         """
-        This method update the comment in DB and if succeeded color the row.
+        This method manage the logic of the comment checkbox.
+        Color the row and check if the row can be in comment.
 
         :param table: The table.
         :param card_number: number of the SK card.
@@ -131,43 +84,28 @@ class SkPanel(QWidget):
             table.cellWidget(row_number, 3).setCheckState(Qt.CheckState.Unchecked)
             return False
 
-        was = table.blockSignals(True) # block signals
+        gray_brush = QBrush(gray_color)
+        light_green_brush = QBrush(light_green_color)
+        white_brush = QBrush(white_color)
 
-        is_success = self.data_controller.update_sk_comment(card_number, row_number + 1) #
-        if not is_success:
-            self.data_controller.write_log("The change of the comment state didn't succeed","r")
-            table.blockSignals(was)     # release signal
-            return False
-
-        self.data_controller.write_log("The change of the comment succeeded","g")
-
-        gray = QBrush(QColor(230, 230, 230))
-        green = QBrush(QColor(180, 255, 180))
-        white = QBrush(QColor(255, 255, 255))
-
+        # color the rows
         if Qt.CheckState(state) == Qt.CheckState.Checked:
             # col 0
-            (table.item(row_number, 0) or QTableWidgetItem()).setBackground(green)
+            (table.item(row_number, 0) or QTableWidgetItem()).setBackground(light_green_brush)
             # col 1
-            table.cellWidget(row_number, 1).setStyleSheet(
-                f"QComboBox {{ background-color: rgb({green.color().red()},{green.color().green()},{green.color().blue()}); }}"
-            )
+            table.cellWidget(row_number, 1).setStyleSheet(f"QComboBox {{ background-color: rgb({light_green_brush.color().red()},{light_green_brush.color().green()},{light_green_brush.color().blue()}); }}")
             # col 2
-            (table.item(row_number, 2) or QTableWidgetItem()).setBackground(green)
+            (table.item(row_number, 2) or QTableWidgetItem()).setBackground(light_green_brush)
         else:
             # col 0
-            (table.item(row_number, 0) or QTableWidgetItem()).setBackground(gray)
+            (table.item(row_number, 0) or QTableWidgetItem()).setBackground(gray_brush)
             # col 1
-            table.cellWidget(row_number, 1).setStyleSheet(
-                f"QComboBox {{ background-color: rgb({white.color().red()},{white.color().green()},{white.color().blue()}); }}"
-            )
+            table.cellWidget(row_number, 1).setStyleSheet(f"QComboBox {{ background-color: rgb({white_brush.color().red()},{white_brush.color().green()},{white_brush.color().blue()}); }}")
             # col 2
-            (table.item(row_number, 2) or QTableWidgetItem()).setBackground(white)
-
-        table.blockSignals(was)
+            (table.item(row_number, 2) or QTableWidgetItem()).setBackground(white_brush)
         return True
 
-    def _update_color(self, table: QTableWidget, card_number: int, row: int, col: int):
+    def _update_color(self, table: QTableWidget, row: int, col: int, fix_color = False):
         if col != 2:
             return False
 
@@ -181,42 +119,97 @@ class SkPanel(QWidget):
                 return False
 
         cur = item.text()
-        nxt_color = {"🔴": "🟡", "🟡": "🟢", "🟢": "🔴", "": "🔴"}.get(cur, "🔴")
 
-        if self.data_controller.update_sk_color(card_number, row):
-            self.data_controller.write_log("update color succeeded", "g")
-            item.setText(nxt_color)
-            return True
-        self.data_controller.write_log("update color failed in the controller", "r")
-        return False
+        if move_name.startswith("k"):
+            if fix_color:
+                return True
+            nxt_color = {"🔴": "🟡", "🟡": "🟢", "🟢": "🔴", "": "🔴"}.get(cur, "🔴")
+        elif move_name.startswith("p"):
+            if fix_color:
+                if cur == "🟡":
+                    item.setText("🔴")
+                return True
+            nxt_color = {"🔴": "🟢", "🟢": "🔴", "": "🔴"}.get(cur, "🔴")
+        elif move_name.startswith("B"):
+            if fix_color:
+                item.setText("🟡")
+                return True
+            nxt_color = {"🟡": "🟡"}.get(cur, "🟡")
 
-    def _update_name(self, table: QTableWidget, card_number: int, row: int, col: int):
+        item.setText(nxt_color)
+
+
+    def _update_data(self):
+        if self._is_names_valid() and self._is_color_valid():
+            for idx, table in enumerate(self.tables_list):     # for each table
+                for row_num in range(24):                       # for each row in table
+                    # save name
+                    move_name = table.cellWidget(row_num, 1).currentText()
+
+                    # save color
+                    color = table.item(row_num, 2).text()
+
+                    # save comment
+                    status = table.cellWidget(row_num, 3).isChecked()
+
+                    self.data_controller.update_sk_name(idx + 1, row_num, move_name)
+                    self.data_controller.update_sk_color(idx + 1, row_num, color)
+                    self.data_controller.update_sk_comment(idx + 1, row_num, status)
+
+                    # if self.data_controller.update_sk_color(table_num, row_num):
+                    #     return True
+                    # else:
+                    #     return False
+            pass
+            # self.data_controller.update_sk()
+            # return True
+        return None
+        # return False
+
+        #-# update comment #-#
+        # was = table.blockSignals(True) # block signals
+        #
+        # is_success = self.data_controller.update_sk_comment(card_number, row_number + 1) #
+        # if not is_success:
+        #     self.data_controller.write_log("The change of the comment state didn't succeed","r")
+        #     table.blockSignals(was)     # release signal
+        #     return False
+
+        # self.data_controller.write_log("The change of the comment succeeded","g")
+
+        #-# update name #-#
+        # if not self.data_controller.update_sk_name(card_number, row, move_name):
+        #     self.data_controller.write_log("update name failed in the controller", "r")
+        #     return False
+
+        #-# update color #-#
+        # if self.data_controller.update_sk_color(card_number, row):
+        #     self.data_controller.write_log("update color succeeded", "g")
+        #     item.setText(nxt_color)
+        #     return True
+        # self.data_controller.write_log("update color failed in the controller", "r")
+        # return False
+
+    def _update_name(self, table: QTableWidget, row: int, col: int):
         combo = table.cellWidget(row, col)
         move_name = combo.currentText()
 
-        white = QBrush(QColor(255, 255, 255))
-        gray = QBrush(QColor(230, 230, 230))
+        white = QBrush(white_color)
+        gray = QBrush(gray_color)
 
         with QSignalBlocker(combo), QSignalBlocker(table):
             move_name = "" if move_name == "-" else move_name
 
-            if not self.data_controller.update_sk_name(card_number, row, move_name):
-                self.data_controller.write_log("update name failed in the controller", "r")
-                return False
-
-            if not self.data_controller.update_sk_color(card_number, row):
-                self.data_controller.write_log("update color after name failed in the controller", "r")
-                return False
-
+            # clear the row
             if move_name == "":
                 (table.item(row, 0) or QTableWidgetItem()).setBackground(gray)
-                table.cellWidget(row, 1).setStyleSheet(
-                    f"QComboBox {{ background-color: rgb({white.color().red()},{white.color().green()},{white.color().blue()}); }}"
-                )
+                table.cellWidget(row, 1).setStyleSheet(f"QComboBox {{ background-color: rgb({white.color().red()},{white.color().green()},{white.color().blue()}); }}")
                 (table.item(row, 2) or QTableWidgetItem()).setBackground(white)
                 table.item(row, 2).setText("")
                 table.cellWidget(row, 3).setStyleSheet("margin-left:auto; margin-right:auto;")
                 table.cellWidget(row, 3).setCheckState(Qt.CheckState.Unchecked)
+            else:
+                self._update_color(table, row, 2, True)
         return True
 
     # --------------- remove methods --------------- #
@@ -280,6 +273,8 @@ class SkPanel(QWidget):
         tbl.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)
         tbl.setFocusPolicy(Qt.FocusPolicy.NoFocus)
 
+        self.tables_list.append(tbl)
+
         # btn_remove = DoubleClickButton("מחק SK")
         # btn_remove.doubleClicked.connect(lambda _, c=card_number: self._remove_sk(c))
         # btn_remove.setObjectName("remove_button")
@@ -307,10 +302,10 @@ class SkPanel(QWidget):
         # col 1 (name) changes (add signal)
         for row_number in range(24):
             combo = tbl.cellWidget(row_number, 1)
-            combo.currentTextChanged.connect(lambda _text, row_num = row_number: self._update_name(tbl, card_number, row_num, 1))
+            combo.currentTextChanged.connect(lambda _text, row_num = row_number: self._update_name(tbl, row_num, 1))
 
         # col 2 (color) click (add signal)
-        tbl.cellClicked.connect(lambda row_num, col_num: self._update_color(tbl, card_number, row_num, col_num))
+        tbl.cellClicked.connect(lambda row_num, col_num: self._update_color(tbl, row_num, col_num))
 
         return wrap
 
@@ -361,7 +356,7 @@ class SkPanel(QWidget):
             col_3.setChecked(False)
             col_3.setObjectName("checkbox_comment")
             tbl.setCellWidget(r, 3, col_3)
-            col_3.stateChanged.connect(lambda state, row=r: self._update_comment(tbl, card_number, row, state))
+            col_3.stateChanged.connect(lambda state, row=r: self._update_comment(tbl, row, state))
 
     def _fill_table(self, tbl: QTableWidget, card_number: int):
         """
@@ -402,4 +397,64 @@ class SkPanel(QWidget):
             # col 0 (display)
             if is_commented:
                 tbl.item(row, 0).setBackground(green_bg)
+
+    # --------------- validation methods --------------- #
+    def _is_names_valid(self):
+        """
+        This method check if names has exactly the count instances he needs.
+
+        :return: True if succeed, False otherwise
+        """
+        dict_count = {}
+
+        for table in self.tables_list:
+            for row_number in range(24):
+                move_name = table.cellWidget(row_number, 1).currentText()
+                if move_name != "-":
+                    if move_name in dict_count:
+                        dict_count[move_name] += 1
+                    else:
+                        dict_count[move_name] = 1
+
+        for key, val in dict_count.items():
+            if key.startswith("k"):
+                if val != 3:
+                    self.data_controller.write_log(f"Move '{key}' is not valid ({val})", "r")
+                    return False
+            elif key.startswith("p"):
+                if val != 2:
+                    self.data_controller.write_log(f"Move '{key}' is not valid ({val})", "r")
+                    return False
+            elif key.startswith("B"):
+                if val != 1:
+                    self.data_controller.write_log(f"Move '{key}' is not valid ({val})", "r")
+                    return False
+        return True
+
+    def _is_color_valid(self):
+        """
+        This method check if color has exactly the count instances he needs.
+        :return:
+        """
+        dict_count = {}
+
+        for table in self.tables_list:
+            for row_number in range(24):
+                move_name = table.cellWidget(row_number, 1).currentText()
+                move_color = table.item(row_number, 2).text()
+                if move_name != "-":
+                    if move_name in dict_count:
+                        if move_color in dict_count[move_name]:
+                            self.data_controller.write_log(f"Move '{move_name}' has invalid ({move_color}) count", "r")
+                            return False
+                        dict_count[move_name].append(move_color)
+                    else:
+                        dict_count[move_name] = []
+                        dict_count[move_name].append(move_color)
+
+        return True
+
+
+
+
 

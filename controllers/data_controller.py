@@ -42,12 +42,11 @@ class DataController:
         :param min_green:
         :return: True is success, otherwise False.
         """
-        print(f"**** [class] DataController:\t [method] add_move\t[start] ")
         if not self.is_move_valid(move_name, move_type):
             return False
         if not self.data_manager.add_move(move_name, move_type, is_main, min_green):
+            self.write_log("The move already exist", "r")
             return False
-        print(f"**** [class] DataController:\t [method] add_move\t[end] ")
         return True
 
     def add_sk(self):
@@ -153,36 +152,33 @@ class DataController:
         self.write_log("update failed", "r")
         return False
 
-    def update_sk_comment(self, card_number: int, channel: int):
+    def update_sk_comment(self, card_number: int, channel: int, status):
         """
         This method control the comment statement in sk channel.
 
         :param card_number: number of the sk card
         :param channel: channel of in the sk card
+        :param status: status
         :return: None
         """
-        print(f"**** [class] DataController:\t [method] update_sk_comment\t[start] ")
         for sk_manager in self.sk_manager:
             if sk_manager.number_card == card_number:
-                if sk_manager.update_sk_comment(channel):
-                    print(f"**** [class] DataController:\t [method] update_sk_comment\t[end] ")
+                if sk_manager.update_sk_comment(channel, status):
                     return True
-        print(f"**** [class] DataController:\t [method] update_sk_comment\t[end] ")
         return False
 
-    def update_sk_color(self, card_number: int, row: int):
+    def update_sk_color(self, card_number: int, row: int, color: str):
         """
         This method control the color statement in sk channel.
 
+        :param color: 🔴/🟡/🟢
         :param card_number: number of the sk card
         :param row: channel of in the sk card
         :return: None
         """
-        print(f"**** [class] DataController:\t [method] update_sk_color\t[start] ")
         for sk_manager in self.sk_manager:
             if sk_manager.number_card == card_number:
-                return sk_manager.update_sk_color(row)
-        print(f"**** [class] DataController:\t [method] update_sk_color\t[end] ")
+                return sk_manager.update_sk_color(row, color)
         return False
 
     def update_sk_name(self, card_number: int, row: int, new_name: str):
@@ -251,6 +247,9 @@ class DataController:
                 return True
         return False
 
+    def clear_log(self):
+        self.log_textbox.clear()
+        self.log_textbox.setStyleSheet("background-color: white; color: black")
 
     # --------------- general methods --------------- #
     def initialize_app(self, btn_list):
@@ -308,15 +307,15 @@ class DataController:
         """
         if move_type == "Traffic" or move_type == "Traffic_Flashing":
             if not move_name.startswith("k") or not move_name[1:].isdigit():
-                Log.error(f"Error: Invalid name. name: {move_name}, type: {move_type}")
+                self.write_log(f"Invalid name for traffic \'{move_name}\'", "r")
                 return False
         elif move_type == "Pedestrian":
             if not move_name.startswith("p") or not move_name[1:].isalpha():
-                Log.error(f"Error: Invalid name. name: {move_name}, type: {move_type}")
+                self.write_log(f"Invalid name for pedestrian \'{move_name}\'", "r")
                 return False
         elif move_type == "Blinker" or move_type == "Blinker_Conditional":
             if not move_name.startswith("B") or not move_name[1:].isalpha():
-                Log.error(f"Error: Invalid name. name: {move_name}, type: {move_type}")
+                self.write_log(f"Invalid name for blinker \'{move_name}\'", "r")
                 return False
         return True
 
@@ -341,10 +340,10 @@ class DataController:
 
     def set_log_textbox(self, textbox):
         self.log_textbox = textbox
+        self.log_textbox.setPlaceholderText("ברוכה הבאה...")
 
     def write_log(self, text, color):
         self.log_textbox.clear()  # מנקה
-        self.log_textbox.setPlaceholderText("ברוכה הבאה...")  # טקסט אפור ברקע
 
         if color == "r":
             self.log_textbox.setStyleSheet("background-color: red; color: white")
@@ -391,6 +390,11 @@ class DataController:
 
     def update_images(self, table_dict):
         self.data_manager.update_images(table_dict)
+
+    def remove_image(self, image_name):
+        self.data_manager.remove_images(image_name)
+
+
 
 
 

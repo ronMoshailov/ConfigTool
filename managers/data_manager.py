@@ -44,14 +44,10 @@ class DataManager:
         :param min_green: minimum green time
         :return: True if success, False otherwise
         """
-        print(f"** [class] DataManager:\t [method] add_move\t[start] ")
         if self.is_move_exist(move_name):
-            Log.error("Error: The move already exist")
-            print(f"** [class] DataManager:\t [method] add_move\t[end] ")
             return False
         new_move = SignalGroup(move_name, move_type, is_main, min_green)
         self.moves.append(new_move)
-        print(f"** [class] DataManager:\t [method] add_move\t[end] ")
         return True
 
     def init_moves(self, path):
@@ -208,6 +204,7 @@ class DataManager:
                 self.MatrixCells.append(MatrixCell(row_name, col_name, value))
             is_found = False
 
+        return True
     # --------------- remove methods --------------- #
     def remove_move(self, move_name):
         """
@@ -297,4 +294,12 @@ class DataManager:
             if move.name == name:
                 return move
         return None
+
+    def remove_images(self, image_name):
+        for image in self.images:
+            if image.image_name == image_name:
+                self.images.remove(image)
+                return True
+        return False
+
 

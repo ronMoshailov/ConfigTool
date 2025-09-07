@@ -24,17 +24,29 @@ class NavigatorPanel(QWidget):
 
         # =============== QLineEdit =============== #
         self.name_textbox = QLineEdit()
+        self.name_textbox.setPlaceholderText("שם")
+        self.name_textbox.setObjectName("name_textbox")
+
         self.log_textbox = QLineEdit()
+        self.log_textbox.setEnabled(False)
+        self.log_textbox.setReadOnly(True)
+        self.log_textbox.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        self.log_textbox.setObjectName("log_textbox")
 
         # =============== QPushButton =============== #
         self.buttons_list = self._initialize_buttons()
 
         # =============== Grid Layout =============== #
         self.grid_layout = self._build_grid_layout()
+        self.grid_layout.setContentsMargins(16, 16, 16, 16)
+        self.grid_layout.setHorizontalSpacing(12)
+        self.grid_layout.setVerticalSpacing(12)
 
         # =============== Grid QWidget =============== #
         self.grid_container = QWidget()
         self.grid_container.setLayout(self.grid_layout)
+        self.grid_container.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+        self.grid_container.setObjectName("btn_container")
 
         # =============== Root Layout =============== #
         root_layout = QVBoxLayout()
@@ -45,7 +57,11 @@ class NavigatorPanel(QWidget):
         self.setLayout(root_layout)
 
         # =============== Style =============== #
-        self._set_style()
+        self.setMaximumWidth(420)
+        self.setMinimumWidth(300)
+        self.setObjectName("root_panel")
+        self.setStyleSheet(navigator_panel_style)
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
 
     def _initialize_buttons(self):
         # =============== create buttons =============== #
@@ -121,6 +137,10 @@ class NavigatorPanel(QWidget):
         set_btn_disable([buttons[0]] + buttons[2:])                         # Disable buttons
         make_checkable([buttons[0], buttons[2], buttons[4], buttons[6]])    # make checkable
 
+        # =============== set class =============== #
+        for btn in buttons:
+            btn.setProperty("class", "navigator_button")
+
         return buttons
 
     def _build_grid_layout(self):
@@ -144,28 +164,5 @@ class NavigatorPanel(QWidget):
 
         return grid_layout
 
-    def _set_style(self):
-        self.name_textbox.setPlaceholderText("שם")
-        self.name_textbox.setObjectName("name_textbox")
 
-        self.log_textbox.setEnabled(False)
-        self.log_textbox.setReadOnly(True)
-        self.log_textbox.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        self.log_textbox.setObjectName("log_textbox")
-
-        for btn in self.buttons_list:
-            btn.setProperty("class", "navigator_button")
-
-        self.grid_layout.setContentsMargins(16, 16, 16, 16)
-        self.grid_layout.setHorizontalSpacing(12)
-        self.grid_layout.setVerticalSpacing(12)
-
-        self.grid_container.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
-        self.grid_container.setObjectName("btn_container")
-
-        self.setMaximumWidth(420)
-        self.setMinimumWidth(300)
-        self.setObjectName("root_panel")
-        self.setStyleSheet(navigator_panel_style)
-        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
 

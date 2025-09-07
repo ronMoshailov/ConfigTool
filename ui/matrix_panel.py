@@ -20,13 +20,25 @@ class MatrixPanel(QWidget):
 
         # =============== Table =============== #
         self.tbl = QTableWidget(self)
+        self.tbl.itemChanged.connect(self.on_cell_changed)  # fire a function in every change on the table (by the code and the user)
+        self.tbl.setAlternatingRowColors(True)              # allows every even row to be colored in different color
+        self.tbl.setFocusPolicy(Qt.FocusPolicy.NoFocus)                         # disable the focus
+        self.tbl.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)  # disable the choosing
+        self.tbl.verticalHeader().setDefaultSectionSize(50)     # set height of each row
 
         # =============== Button =============== #
         self.btn = QPushButton("עדכן", self)
+        self.btn.setObjectName("update_button")
+        self.btn.clicked.connect(self._update_changes)
 
         # =============== Data =============== #
         self.changes = []                                   # save the changes with the format (move_out, move_in, value)
         self.moves_length = None
+
+        self.font = QFont()
+        self.font.setFamily("Arial")
+        self.font.setPointSize(14)
+        self.font.setBold(True)
 
         # =============== Root Layout =============== #
         root_layout = QVBoxLayout()
@@ -35,10 +47,9 @@ class MatrixPanel(QWidget):
 
         # =============== self =============== #
         self.setLayout(root_layout)
+        self.setStyleSheet(matrix_panel_style)
         self.hide()
 
-        # =============== Style =============== #
-        self._set_finishers()
 
     def show_panel(self):
         # get all data
@@ -60,14 +71,8 @@ class MatrixPanel(QWidget):
 
     def set_values(self):
         # initialize
-        row_idx = {}  # the key is the value of the header and the value is the index of the header (header_value, header_index)
+        row_idx = {}  # key - value of header, value - index of the header
         col_idx = {}  # key - value of header, value - index of the header
-
-        # set font
-        font = QFont()
-        font.setFamily("Arial")
-        font.setPointSize(14)
-        font.setBold(True)
 
         all_cells = self.data_controller.get_all_matrix_cells() # get all matrix cells
         self.tbl.clearContents()                                # clear the cells (not removing them)
@@ -88,7 +93,7 @@ class MatrixPanel(QWidget):
 
             # fill the cell with 'QTableWidgetItem' that holds the 'wait_time'
             item = QTableWidgetItem(str(cell.wait_time))
-            item.setFont(font)
+            item.setFont(self.font)
             item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
             self.tbl.setItem(i, j, item)
 
@@ -99,7 +104,7 @@ class MatrixPanel(QWidget):
             if i is None or j is None:
                 continue
             item = self.tbl.item(i, j) or QTableWidgetItem()    # get the 'QTableWidgetItem' or create new one if not exist
-            item.setFont(font)
+            item.setFont(self.font)
             item.setData(Qt.ItemDataRole.DisplayRole, int(val)) # set value to cell
             item.setTextAlignment(Qt.AlignmentFlag.AlignCenter) # center the text
             self.tbl.setItem(i, j, item)                        # set the cell in the table
@@ -110,7 +115,7 @@ class MatrixPanel(QWidget):
             if item is None:
                 item = QTableWidgetItem()
                 self.tbl.setItem(i, i, item)
-            item.setText("—")                                           # set text
+            item.setText("—")
             item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)   # make it not editable
             item.setBackground(QColor(220, 220, 220))                   # light gray
             item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)         # center the text
@@ -142,30 +147,23 @@ class MatrixPanel(QWidget):
             self.data_controller.write_log("Only numbers are allowed", "r")
             return False
 
-        # create font
-        font = QFont()
-        font.setFamily("Arial")
-        font.setPointSize(14)
-        font.setBold(True)
-
         self.tbl.blockSignals(True)                         # block signals
-        item.setFont(font)                                  # set font
+        item.setFont(self.font)                             # set font
         item.setTextAlignment(Qt.AlignmentFlag.AlignCenter) # set text in the center
         self.tbl.blockSignals(False)                        # release signals
-        self.changes.append((row_name, col_name, val))      # save changes
+
+        # override or add
+        for i, (r, c, v) in enumerate(self.changes):
+            if r == row_name and c == col_name:
+                self.changes[i] = (r, c, val)
+                break
+        else:
+            self.changes.append((row_name, col_name, val))
+
         return True
 
     def _update_changes(self):
         if self.data_controller.update_matrix(self.changes):
-            self.changes = []
+            self.changes.clear()
 
-    def _set_finishers(self):
-        self.tbl.itemChanged.connect(self.on_cell_changed)  # fire a function in every change on the table (by the code and the user)
-        self.tbl.setAlternatingRowColors(True)              # allows every even row to be colored in different color
-        self.tbl.setStyleSheet(matrix_panel_style)                 #
 
-        self.btn.clicked.connect(self._update_changes)
-
-        self.tbl.setFocusPolicy(Qt.FocusPolicy.NoFocus)                         # disable the focus
-        self.tbl.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)  # disable the choosing
-        self.tbl.verticalHeader().setDefaultSectionSize(50)     # set height of each row

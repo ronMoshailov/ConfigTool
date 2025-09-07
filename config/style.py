@@ -400,58 +400,84 @@ move_panel_style =  """
         """
 
 min_green_panel_style = """
-QWidget#root {
-    border: 1px solid #04c83b;   /* כחול עדין */
-    border-radius: 20px; 
-    background-color: qlineargradient(
-        x1:0, y1:0, x2:0, y2:1, 
-        stop:0 #e1fde7,   /* תכלת בהיר */
-        stop:1 #eef2ff    /* סגול-אפור רך */
-    );
-}
-
-QFrame#card {
-    background: #fdfdfd; /* אפור-לבן – שונה מהרקע */
-    border: 1px solid #d1d5db;
-    border-radius: 14px;
-    padding: 0px 22px;
-    box-shadow: 0px 2px 6px rgba(0,0,0,0.06);
-    transition: all 0.25s ease-in-out;
-}
-QFrame#card:hover {
-    border: 1px solid #2861ff;   /* סגול */
-    background: #faf5ff;         /* נותן הדגשה עדינה */
-}
-
-QFrame#card QLabel {
-    color: #111827;
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 6px;
-    padding: 5px 12px;
-}
-
-QFrame#card QLineEdit {
-    background: #f9fafb;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    padding: 5px 12px;
-    font-size: 18px;
-}
-QFrame#card QLineEdit:focus {
-    border: 1px solid #3b82f6;
-    background: #ffffff;
-}
-QFrame#card QLineEdit[readOnly="true"] {
-    background: #fddfdd;
-    color: #9ca3af;
-}
-
-
+        /* ********************************* QWidget ********************************* */
+        QWidget#root {
+            border: 1px solid #04c83b;   /* כחול עדין */
+            border-radius: 20px; 
+            background-color: qlineargradient(
+                x1:0, y1:0, x2:0, y2:1, 
+                stop:0 #e1fde7,   /* תכלת בהיר */
+                stop:1 #eef2ff    /* סגול-אפור רך */
+            );
+        }
+        
+        /* ********************************* QFrame ********************************* */
+        QFrame#card {
+            background: #fdfdfd; /* אפור-לבן – שונה מהרקע */
+            border: 1px solid #d1d5db;
+            border-radius: 14px;
+            padding: 0px 22px;
+            box-shadow: 0px 2px 6px rgba(0,0,0,0.06);
+            transition: all 0.25s ease-in-out;
+        }
+        QFrame#card:hover {
+            border: 1px solid #2861ff;   /* סגול */
+            background: #faf5ff;         /* נותן הדגשה עדינה */
+        }
+        
+        /* ********************************* QFrame -> QLabel ********************************* */
+        QFrame#card QLabel {
+            color: #111827;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            padding: 5px 12px;
+        }
+        
+        /* ********************************* QFrame -> QLineEdit ********************************* */
+        QFrame#card QLineEdit {
+            background: #f9fafb;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 5px 12px;
+            font-size: 18px;
+        }
+        QFrame#card QLineEdit:focus {
+            border: 1px solid #3b82f6;
+            background: #ffffff;
+        }
+        QFrame#card QLineEdit[readOnly="true"] {
+            background: #fddfdd;
+            color: #9ca3af;
+        }
+        
+        /* ********************************* QPushButton ********************************* */
+        QPushButton#update_button {
+            background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #4CAF50, stop:1 #388E3C);
+            color: white;
+            border: 2px solid #2e7d32;
+            border-radius: 15px;
+            padding: 6px 12px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        
+        QPushButton#update_button:hover {
+            background-color: qlineargradient(
+                x1:0, y1:0, x2:0, y2:1,
+                stop:0 #66BB6A,   /* ירוק יותר בהיר */
+                stop:1 #43A047
+            );
+        }
+        
+        QPushButton#update_button:pressed {
+            background-color: #2e7d32;
+            border: 2px solid #1b5e20;
+        }
         """
 
 matrix_panel_style = """
-        /* טבלה כללית */
+        /* ********************************* QTableWidget ********************************* */
         QTableWidget {
             background: #ffffff;
             border: 1px solid #e5e7eb;
@@ -467,6 +493,7 @@ matrix_panel_style = """
             background: #c2eaff;
         }
 
+        /* ********************************* QHeaderView ********************************* */
         /* כותרות (אופקי ואנכי) */
         QHeaderView::section {
             background: #3498db;
@@ -484,6 +511,7 @@ matrix_panel_style = """
             background: #2563eb;   /* כחול כהה יותר */
         }
 
+        /* ********************************* QScrollBar ********************************* */
         /* פסי גלילה מינימליסטיים */
         QScrollBar:vertical {
             width: 10px;
@@ -526,6 +554,30 @@ matrix_panel_style = """
         /* remove the scrollbar buttons */
         QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal { 
             width: 0; 
+        }
+        
+        /* ********************************* QPushButton ********************************* */
+        QPushButton#update_button {
+            background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #4CAF50, stop:1 #388E3C);
+            color: white;
+            border: 2px solid #2e7d32;
+            border-radius: 15px;
+            padding: 6px 12px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        
+        QPushButton#update_button:hover {
+            background-color: qlineargradient(
+                x1:0, y1:0, x2:0, y2:1,
+                stop:0 #66BB6A,   /* ירוק יותר בהיר */
+                stop:1 #43A047
+            );
+        }
+        
+        QPushButton#update_button:pressed {
+            background-color: #2e7d32;
+            border: 2px solid #1b5e20;
         }
         """
 
@@ -744,6 +796,7 @@ schedule_panel_style = """
             border: 1px solid #0077d7;
             background: qlineargradient( x1:0, y1:0, x2:0, y2:1, stop:0 #cce7ff, stop:1 #ffffff );
             padding: 6px;
+
         }
         
         /* ********************************* title ********************************* */
@@ -895,3 +948,240 @@ schedule_panel_style = """
         }
         """
 
+sk_panel_style = """
+/* ********************************* title ********************************* */
+QLabel#title {
+        font-size: 36px;
+        font-weight: bold;
+        color: #2c3e50;
+        padding: 4px 6px;
+        border-radius: 6px;
+        background: #d2e1ff;
+        border: 1px solid #d0d7de;
+        min-height: 60px;
+    }
+    QLabel#title:hover {
+        background: #d6eaf8;
+        border: 1px solid #3498db;
+    }
+    /* ********************************* QCheckBox ********************************* */
+    QCheckBox#checkbox_comment{
+        margin-left:auto; 
+        margin-right:auto;
+    }
+    /* ********************************* QPushButton ********************************* */
+    QPushButton#remove_button {
+        background-color: #e74c3c;       /* אדום */
+        color: white;                    /* טקסט לבן */
+        border: none;                    /* בלי גבול */
+        border-radius: 12px;             /* פינות מעוגלות */
+        padding: 6px 14px;               /* ריווח פנימי */
+        font-size: 14px;                 /* גודל טקסט */
+        font-weight: bold;               /* טקסט מודגש */
+    }
+    QPushButton#remove_button:hover {
+        background-color: #c0392b;       /* אדום כהה יותר ב-hover */
+    }
+    QPushButton#remove_button:pressed {
+        background-color: #a93226;       /* עוד כהה יותר בלחיצה */
+    }
+
+    QPushButton#add_button {
+        background-color: #27ae60;       /* ירוק */
+        color: white;                    /* טקסט לבן */
+        border: none;                    /* בלי גבול */
+        border-radius: 12px;             /* פינות מעוגלות */
+        padding: 6px 14px;               /* ריווח פנימי */
+        font-size: 14px;                 /* גודל טקסט */
+        font-weight: bold;               /* טקסט מודגש */
+    }
+    QPushButton#add_button:hover {
+        background-color: #1e8449;       /* ירוק כהה יותר ב-hover */
+    }
+    QPushButton#add_button:pressed {
+        background-color: #196f3d;       /* עוד כהה יותר בלחיצה */
+    }
+
+    QPushButton#update_button {
+        background-color: #29add6;       /* ירוק */
+        color: white;                    /* טקסט לבן */
+        border: none;                    /* בלי גבול */
+        border-radius: 12px;             /* פינות מעוגלות */
+        padding: 6px 14px;               /* ריווח פנימי */
+        font-size: 14px;                 /* גודל טקסט */
+        font-weight: bold;               /* טקסט מודגש */
+    }
+    QPushButton#update_button:hover {
+        background-color: #218cad;       /* ירוק כהה יותר ב-hover */
+    }
+    QPushButton#update_button:pressed {
+        background-color: #1a6d86;       /* עוד כהה יותר בלחיצה */
+    }
+
+"""
+
+image_panel_style = """
+        /* ********************************* panel ********************************* */
+        #imagePanel {
+            border-radius: 20px;
+            border: 1px solid #1a98ff;
+            background: qlineargradient(
+                x1:0, y1:0, x2:0, y2:1,
+                stop:0 #751de2,
+                stop:1 #5e9ff3
+            );
+        }
+
+        /* ********************************* scroll content ********************************* */
+        #scrollContent {
+            background: transparent;
+            padding: 10px;
+            border-radius: 20px;
+        }
+
+        /* ********************************* column wrap ********************************* */
+        #column_wrap {
+            border-radius: 15px;
+            border: 1px solid #0077d7;
+            background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                        stop:0 #eaf4ff,
+                                        stop:1 #ffffff);
+            padding: 8px;
+            margin: 6px;
+        }
+
+        /* ********************************* title ********************************* */
+        QLabel#title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            padding: 6px 10px;
+            border-radius: 10px;
+            background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                        stop:0 #d2e1ff,
+                                        stop:1 #f0f8ff);
+            border: 1px solid #1a98ff;
+        }
+        QLabel#title:hover {
+            background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                        stop:0 #eaf2ff,
+                                        stop:1 #ffffff);
+            border: 1px solid #3498db;
+        }
+
+        /* ********************************* table ********************************* */
+        QTableWidget#tbl {
+            border: 1px solid #a6c8ff;
+            border-radius: 8px;
+            gridline-color: #cdddf5;
+            background-color: #ffffff;
+        }
+
+        QHeaderView::section {
+            background: #d6eaff;
+            border: 1px solid #a6c8ff;
+            padding: 4px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        QHeaderView::section:hover {
+            background: #ecf5ff;
+        }
+
+        /* ********************************* buttons ********************************* */
+        QPushButton#add_button {
+            background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                              stop:0 #9aff57,
+                                              stop:1 #5ccb15);
+            border: 1px solid #3a8f22;
+            border-radius: 18px;
+            padding: 6px 12px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        QPushButton#add_button:hover {
+            background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                              stop:0 #7cd63e,
+                                              stop:1 #3f8f1a);
+            color: white;
+        }
+        
+        QPushButton#update_button {
+            background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                              stop:0 #27d6f7,
+                                              stop:1 #068faa);
+            border: 1px solid #3a8f22;
+            border-radius: 18px;
+            padding: 6px 12px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        QPushButton#update_button:hover {
+            background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                              stop:0 #40b9da,
+                                              stop:1 #1f73ba);
+            color: white;
+        }
+
+        QPushButton#remove_button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 14px;
+            padding: 4px 8px;
+            font-size: 16px;
+        }
+        QPushButton#remove_button:hover {
+            background-color: #c0392b;
+        }
+
+        QPushButton#add_button {
+            background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                              stop:0 #76ff03,
+                                              stop:1 #5ccb15);
+            border: 1px solid #00467e;
+            border-radius: 16px;
+            padding: 6px 10px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        QPushButton#add_button:hover {
+            background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                              stop:0 #5fd000,
+                                              stop:1 #2a662d);
+            color: white;
+        }
+
+        /* ********************************* line edit ********************************* */
+        QLineEdit {
+            border: 1px solid #a6c8ff;
+            border-radius: 6px;
+            padding: 4px 8px;
+            background: #ffffff;
+            font-size: 16px;
+            text-align: right;
+        }
+        QLineEdit:focus {
+            border: 1px solid #1a98ff;
+            background: #f9fcff;
+        }
+
+        /* ********************************* checkbox ********************************* */
+        QCheckBox#checkbox_comment::indicator {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            border: 2px solid #7ea1ff;
+            background: #ffffff;
+        }
+        QCheckBox#checkbox_comment::indicator:hover {
+            border: 2px solid #1a98ff;
+        }
+        QCheckBox#checkbox_comment::indicator:checked {
+            background-color: #0077d8;
+            border: 2px solid #0077d8;
+        }
+"""
