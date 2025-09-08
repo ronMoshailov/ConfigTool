@@ -7,14 +7,6 @@ from config.style import blue_button_white_text_style, combo_style
 from entities.log import Log
 
 
-def clean_text(text):
-    """
-    Clear non digits or non characters.
-
-    :param text: text to clean
-    :return: the cleaned text
-    """
-    return re.sub(r'[^A-Za-z0-9א-ת]', '', text)
 
 
 def create_window(app, title = None):
@@ -46,24 +38,7 @@ def set_blue_button_white_text_style(btn_list):
         btn.setStyleSheet(blue_button_white_text_style)
 
 
-def make_checkable(btn_list):
-    """
-    This method make buttons checkable.
 
-    :return: None
-    """
-    for btn in btn_list:
-        btn.setCheckable(True)
-
-
-def set_btn_disable(btn_list):
-    """
-    This method make all the buttons that need to disable at the beginning.
-
-    :return:None
-    """
-    for btn in btn_list:
-        btn.setDisabled(True)
 
 
 def build_combo(combo, item_list):

@@ -1185,3 +1185,11 @@ image_panel_style = """
             border: 2px solid #0077d8;
         }
 """
+
+program_panel_style = """
+        /* ********************************* QLabel ********************************* */
+        QLabel#title{
+            border: 1px solid black;
+        }
+        
+        """

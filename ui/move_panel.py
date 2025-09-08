@@ -1,3 +1,5 @@
+import re
+
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QScrollArea
@@ -6,7 +8,6 @@ from PyQt6.QtWidgets import QRadioButton, QButtonGroup
 from config.constants import GREEN_IMAGE_PATH, GREEN_BLINKER_IMAGE_PATH, PEDESTRIAN_IMAGE_PATH, BLINKER_IMAGE_PATH, \
     BLINKER_CONDITIONAL_IMAGE_PATH
 
-from config.special import clean_text
 from config.style import move_panel_style
 from controllers.data_controller import DataController
 from entities.log import Log
@@ -16,6 +17,7 @@ class MovePanel(QWidget):
     """
         A panel widget that allows adding and removing move buttons.
     """
+
 
     def __init__(self):
         super().__init__()
@@ -199,7 +201,7 @@ class MovePanel(QWidget):
             btn_remove.setFixedSize(18, 18)
             btn_remove.setObjectName("btn_remove_move")
             btn_remove.setCursor(Qt.CursorShape.PointingHandCursor)
-            btn_remove.clicked.connect(lambda _=False, phase_clean=clean_text(phase): self._remove_move(phase_clean))
+            btn_remove.clicked.connect(lambda _=False, phase_clean=self._clean_text(phase): self._remove_move(phase_clean))
 
             # =============== Layout =============== #
             card_layout = QVBoxLayout()
@@ -328,3 +330,12 @@ class MovePanel(QWidget):
         self.btn_layout.addStretch()
         self.btn_layout.addWidget(run_button)
         self.btn_layout.setContentsMargins(0, 0, 40, 0)  # left, top, right, bottom
+
+    def _clean_text(self, text):
+        """
+        Clear non digits or non characters.
+
+        :param text: text to clean
+        :return: the cleaned text
+        """
+        return re.sub(r'[^A-Za-z0-9א-ת]', '', text)

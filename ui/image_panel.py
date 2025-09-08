@@ -43,7 +43,8 @@ class ImagePanel(QWidget):
         # =============== QLineEdit =============== #
         self.edit_add = QLineEdit()
         self.edit_add.setFixedWidth(200)
-        self.edit_add.setPlaceholderText("שם מופע")
+        self.edit_add.setPlaceholderText("שם התמונה")
+        self.edit_add.Alignment = Qt.AlignmentFlag.AlignRight
 
         self.btn_layout.addStretch()
         self.btn_layout.addWidget(self.edit_add)
@@ -146,7 +147,9 @@ class ImagePanel(QWidget):
 
         # table
         table = self._init_table()
+
         self._build_table(table, all_moves)
+
         if first_show:
             self._fill_table(table, image.move_list)
 
@@ -154,8 +157,6 @@ class ImagePanel(QWidget):
             self.table_dict[image.image_name] = table
         else:
             self.table_dict[image] = table
-
-
 
         # # button
         remove_button = QPushButton("מחק")
@@ -182,6 +183,11 @@ class ImagePanel(QWidget):
                 w.deleteLater()
 
     def _init_table(self):
+        """
+        Create table and config the table.
+
+        :return: QTableWidget
+        """
         tbl = QTableWidget(0, 2)
         tbl.setObjectName("tbl")
         tbl.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)
@@ -208,15 +214,22 @@ class ImagePanel(QWidget):
             table.setCellWidget(row_num, 1, check_box)
 
     def _fill_table(self, table, all_moves):
-            row_num = table.rowCount()  # לוקח את מספר השורות הקיים
+        """
+        This method fill the table with all moves and values.
 
-            for i in range (row_num):
-                move_name = table.cellWidget(i, 0).text()
-                checkbox = table.cellWidget(i, 1)
+        :param table: The table to be filled
+        :param all_moves: All moves that belong to the image(table)
+        :return: None
+        """
+        row_num = table.rowCount()  # לוקח את מספר השורות הקיים
 
-                for move in all_moves:
-                    if move.name == move_name:
-                        checkbox.setChecked(True)
+        for i in range (row_num):
+            move_name = table.cellWidget(i, 0).text()
+            checkbox = table.cellWidget(i, 1)
+
+            for move in all_moves:
+                if move.name == move_name:
+                    checkbox.setChecked(True)
 
 
 

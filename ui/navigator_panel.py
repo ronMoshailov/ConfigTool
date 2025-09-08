@@ -4,7 +4,6 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QGridLayout, QPushButton, QLineEdit, QVBoxLayout
 
 from config.debug import displayAllMoves
-from config.special import make_checkable, set_btn_disable
 from config.style import navigator_panel_style
 from controllers.data_controller import DataController
 from controllers.ui_controller import UIController
@@ -84,7 +83,7 @@ class NavigatorPanel(QWidget):
         i_btn = QPushButton("-----------")                      # 16
         j_btn = QPushButton("תמונות")                           # 17
         k_btn = QPushButton("-----------")                      # 18
-        l_btn = QPushButton("-----------")                      # 19
+        l_btn = QPushButton("מעברים")                           # 19
         m_btn = QPushButton("-----------")                      # 20
         n_btn = QPushButton("-----------")                      # 21
         o_btn = QPushButton("-----------")                      # 22
@@ -131,11 +130,12 @@ class NavigatorPanel(QWidget):
         buttons[13].clicked.connect(lambda: self.ui_controller.show_detector_panel())
         buttons[15].clicked.connect(lambda: self.ui_controller.show_schedule_panel())
         buttons[17].clicked.connect(lambda: self.ui_controller.show_image_panel())
+        buttons[19].clicked.connect(lambda: self.ui_controller.show_program_panel())
         buttons[24].clicked.connect(lambda: displayAllMoves())
 
         # =============== special methods =============== #
-        set_btn_disable([buttons[0]] + buttons[2:])                         # Disable buttons
-        make_checkable([buttons[0], buttons[2], buttons[4], buttons[6]])    # make checkable
+        self._set_btn_disable([buttons[0]] + buttons[2:])                         # Disable buttons
+        self._make_checkable([buttons[0], buttons[2], buttons[4], buttons[6]])    # make checkable
 
         # =============== set class =============== #
         for btn in buttons:
@@ -164,5 +164,21 @@ class NavigatorPanel(QWidget):
 
         return grid_layout
 
+    def _make_checkable(self, btn_list):
+        """
+        This method make buttons checkable.
 
+        :return: None
+        """
+        for btn in btn_list:
+            btn.setCheckable(True)
+
+    def _set_btn_disable(self, btn_list):
+        """
+        This method make all the buttons that need to disable at the beginning.
+
+        :return:None
+        """
+        for btn in btn_list:
+            btn.setDisabled(True)
 

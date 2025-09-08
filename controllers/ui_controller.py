@@ -2,6 +2,7 @@ from ui.detector_panel import DetectorPanel
 from ui.image_panel import ImagePanel
 from ui.matrix_panel import MatrixPanel
 from ui.min_green_panel import MinGreenLayout
+from ui.program_panel import ProgramPanel
 from ui.schedule_panel import SchedulePanel
 from ui.move_panel import MovePanel
 from ui.sk_panel import SkPanel
@@ -26,6 +27,7 @@ class UIController:
             cls.detector_panel = DetectorPanel()
             cls.schedule_panel = SchedulePanel()
             cls.image_panel = ImagePanel()
+            cls.program_panel = ProgramPanel()
 
             print("** UI controller was set successfully")
         return cls._instance                                            # return _instance
@@ -100,6 +102,9 @@ class UIController:
         """
         return self.image_panel
 
+    def get_program_panel(self):
+        return self.program_panel
+
     # =========================================== #
     #               update methods                #
     # =========================================== #
@@ -125,6 +130,7 @@ class UIController:
         self.detector_panel.hide()
         self.schedule_panel.hide()
         self.image_panel.hide()
+        self.program_panel.hide()
         self.set_move_layout.show_panel()
 
     def show_min_green_layout(self):
@@ -139,6 +145,7 @@ class UIController:
         self.detector_panel.hide()
         self.schedule_panel.hide()
         self.image_panel.hide()
+        self.program_panel.hide()
         self.min_green_layout.show_panel()
 
     def show_matrix_layout(self):
@@ -153,6 +160,7 @@ class UIController:
         self.detector_panel.hide()
         self.schedule_panel.hide()
         self.image_panel.hide()
+        self.program_panel.hide()
         self.matrix_layout.show_panel()
 
     def show_sk_layout(self):
@@ -167,6 +175,7 @@ class UIController:
         self.detector_panel.hide()
         self.schedule_panel.hide()
         self.image_panel.hide()
+        self.program_panel.hide()
         self.sk_layout.show_panel()
 
     def show_detector_panel(self):
@@ -181,6 +190,7 @@ class UIController:
         self.sk_layout.hide()
         self.schedule_panel.hide()
         self.image_panel.hide()
+        self.program_panel.hide()
         self.detector_panel.show_panel()
 
     def show_schedule_panel(self):
@@ -190,6 +200,7 @@ class UIController:
         self.sk_layout.hide()
         self.detector_panel.hide()
         self.image_panel.hide()
+        self.program_panel.hide()
         self.schedule_panel.show_panel()
 
     def show_image_panel(self):
@@ -199,4 +210,16 @@ class UIController:
         self.sk_layout.hide()
         self.detector_panel.hide()
         self.schedule_panel.hide()
+        self.program_panel.hide()
         self.image_panel.show_panel()
+
+    def show_program_panel(self):
+        self.min_green_layout.hide()
+        self.set_move_layout.hide()
+        self.matrix_layout.hide()
+        self.sk_layout.hide()
+        self.detector_panel.hide()
+        self.schedule_panel.hide()
+        self.image_panel.hide()
+        self.program_panel.show_panel()
+
