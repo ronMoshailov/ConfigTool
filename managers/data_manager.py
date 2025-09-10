@@ -1,6 +1,6 @@
 import re
 
-from config.patterns import move_pattern, matrix_pattern, detectors_pattern, image_pattern
+from config.patterns import move_pattern, matrix_pattern, detectors_pattern, image_pattern, settings_pattern
 from entities.detector import Detector
 from entities.image import Image
 from entities.log import Log
@@ -31,6 +31,16 @@ class DataManager:
         # self.inter_stages = []
         self.MatrixCells = []
         self.images = []
+
+        # Settings
+        self.anlagenName        = None
+        self.tk1Name            = None
+        self.version            = None
+        self.lastVersionDate    = None
+        self.lastVersionAuthor  = None
+        # self.date               = None
+        self.first_time_ext     = None
+
         print("** data manager was set successfully")
 
     # --------------- add methods --------------- #
@@ -57,7 +67,6 @@ class DataManager:
         :param path: path to "InitTk1.java'
         :return: None
         """
-        print(f"** [class] DataManager:\t [method] init_moves\t[start] ")
         pattern = move_pattern
 
         with open(path, 'r', encoding='utf-8') as file:
@@ -72,7 +81,6 @@ class DataManager:
                     self.moves.append(new_move)
         if len(self.moves) == 0:
             Log.warning(f"Warning: Moves not found")
-        print(f"** [class] DataManager:\t [method] init_moves\t[end] ")
 
     def init_matrix(self, path):
         """
@@ -81,7 +89,6 @@ class DataManager:
         :param path: path to "InitTk1.java'
         :return: None
         """
-        print(f"** [class] DataManager:\t [method] init_matrix\t[start] ")
         pattern = matrix_pattern
 
         with open(path, "r", encoding="utf-8") as f:
@@ -103,7 +110,6 @@ class DataManager:
         if len(self.MatrixCells) == 0:
             Log.warning(f"Warning: Matrix cells not found")
 
-        print(f"** [class] DataManager:\t [method] init_matrix\t[end] ")
 
     def init_detectors(self, path):
         """
@@ -126,6 +132,35 @@ class DataManager:
         self.detectors.append(Detector(detector_name, move_type, ext_time))
         return True
 
+    def init_settings(self, path):
+        pattern = settings_pattern
+        with open(path, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        for match in pattern.finditer(content):
+            gd = match.groupdict()
+            for key, value in gd.items():
+                if not value:  # מדלג על None או ריק
+                    continue
+
+                if key == "anlagenName":
+                    self.anlagenName = value
+                elif key == "tk1Name":
+                    self.tk1Name = value
+                elif key == "version":
+                    self.version = value
+                elif key == "lastVersion":
+                    m = re.match(r'(?P<date>\d{2}/\d{2}/\d{4})\s*-\s*(?P<author>.+)', value)
+                    if m:
+                        self.lastVersionDate = m.group("date")
+                        self.lastVersionAuthor = m.group("author")
+                elif key == "tk1Arg":
+                    self.first_time_ext = value
+
+    def add_detector(self, detector_name, move_type, ext_time):
+        self.detectors.append(Detector(detector_name, move_type, ext_time))
+        return True
+
 
     # --------------- get methods --------------- #
     def get_all_moves(self):
@@ -134,7 +169,6 @@ class DataManager:
 
         :return: list of all moves
         """
-        print(f"** [class] DataManager:\t [method] get_all_moves\t[start] ")
         self.moves = sorted(self.moves, key=lambda m: m.name)
         sorted_moves = []
 
@@ -152,7 +186,6 @@ class DataManager:
             else:
                 Log.error("Error: There is a move with name that not start with 'k', 'p', 'B'")
 
-        print(f"** [class] DataManager:\t [method] get_all_moves\t[end] ")
         return traffic_moves + pedestrian_moves + blinker_moves
 
     def get_all_matrix_cells(self):

@@ -1193,3 +1193,72 @@ program_panel_style = """
         }
         
         """
+
+settings_panel_style = """
+        /* ********************************* QLabel ********************************* */
+        #SettingsPanel{
+            border-radius: 20px;
+            border: 1px solid #561151;
+            background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0   #f4c8f1, stop:1   #8c1c84);
+        }
+
+        QPushButton[class="settings_button"] {
+            background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #5dade2, stop:1 #2e86c1);
+            color: white;
+            border: 2px solid #2471a3;
+            border-radius: 10px;
+            padding: 0px;
+            font-weight: bold;
+            font-size: 18px;
+            min-width: 150px;
+            min-height: 36px;
+        }
+        
+        QPushButton[class="settings_button"]:hover {
+            background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                              stop:0 #5499c7, stop:1 #21618c);
+            border: 2px solid #1b4f72;
+        }
+
+        QPushButton[class="settings_button"]:checked {
+            background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                              stop:0 #58d68d, stop:1 #28b463);
+            border: 2px solid #239b56;
+        }
+
+        QPushButton[class="settings_button"]:disabled {
+            background-color: #d5d8dc;
+            border: 2px solid #a6acaf;
+            color: #7f8c8d;
+        }
+                
+        QLabel {
+            background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #fdfefe, stop:1 #ebedef);
+            color: #2c3e50;
+            border: 1px solid #d5d8dc;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 24px;
+            font-weight: bold;
+            min-width: 220px;
+        }
+
+        QLabel:hover {
+            background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #f8f9f9, stop:1 #d6dbdf);
+            border: 1px solid #b2babb;
+        }
+        
+        QLineEdit{
+            background-color: white; 
+            border-radius: 10px; 
+            min-height: 50px; 
+            font-weight: bold; 
+            font-size: 18px;
+            max-width: 400px;
+        }
+
+
+
+                
+
+        """

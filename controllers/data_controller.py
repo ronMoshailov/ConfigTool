@@ -281,7 +281,7 @@ class DataController:
         for schedule in self.schedule_manager:
             schedule.initialize_schedule(self.path_manager.get_path_init_tk1())
         self.data_manager.init_images(self.path_manager.get_path_init_tk1())
-
+        self.data_manager.init_settings(self.path_manager.get_path_init())
         # enable buttons
         for btn in btn_list:
             btn.setDisabled(False)

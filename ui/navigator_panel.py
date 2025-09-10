@@ -22,9 +22,9 @@ class NavigatorPanel(QWidget):
         self.ui_controller = UIController()
 
         # =============== QLineEdit =============== #
-        self.name_textbox = QLineEdit()
-        self.name_textbox.setPlaceholderText("שם")
-        self.name_textbox.setObjectName("name_textbox")
+        # self.name_textbox = QLineEdit()
+        # self.name_textbox.setPlaceholderText("שם")
+        # self.name_textbox.setObjectName("name_textbox")
 
         self.log_textbox = QLineEdit()
         self.log_textbox.setEnabled(False)
@@ -64,13 +64,13 @@ class NavigatorPanel(QWidget):
 
     def _initialize_buttons(self):
         # =============== create buttons =============== #
-        new_node_btn = QPushButton("צומת חדש")                  #  0
+        new_node_btn = QPushButton("הגדרות")                    #  0
         set_paths_btn = QPushButton("הגדר נתיב")                #  1
-        active_slave_btn = QPushButton("הפעל סלייב")            #  2
+        active_slave_btn = QPushButton("-----------")           #  2
         display_move_panel_btn = QPushButton("מופעים")          #  3
-        active_master_btn = QPushButton("הפעל מאסטר")           #  4
+        active_master_btn = QPushButton("-----------")          #  4
         display_min_green_panel_btn = QPushButton("מינימום")    #  5
-        active_dx_btn = QPushButton("dx הפעל")                  #  6
+        active_dx_btn = QPushButton("-----------")              #  6
         display_matrix_panel_btn = QPushButton("מטריצה")        #  7
         a_btn = QPushButton("-----------")                      #  8
         b_btn = QPushButton("SK24")                             #  9
@@ -122,11 +122,12 @@ class NavigatorPanel(QWidget):
         ]
 
         # =============== connect listener =============== #
-        buttons[1].clicked.connect(lambda: self.data_controller.initialize_app([buttons[0]] + buttons[2:]))
-        buttons[3].clicked.connect(lambda: self.ui_controller.show_set_move_layout())
-        buttons[5].clicked.connect(lambda: self.ui_controller.show_min_green_layout())
-        buttons[7].clicked.connect(lambda: self.ui_controller.show_matrix_layout())
-        buttons[9].clicked.connect(lambda: self.ui_controller.show_sk_layout())
+        buttons[ 0].clicked.connect(lambda: self.ui_controller.show_settings_panel())
+        buttons[ 1].clicked.connect(lambda: self.data_controller.initialize_app([buttons[0]] + buttons[2:]))
+        buttons[ 3].clicked.connect(lambda: self.ui_controller.show_set_move_layout())
+        buttons[ 5].clicked.connect(lambda: self.ui_controller.show_min_green_layout())
+        buttons[ 7].clicked.connect(lambda: self.ui_controller.show_matrix_layout())
+        buttons[ 9].clicked.connect(lambda: self.ui_controller.show_sk_layout())
         buttons[13].clicked.connect(lambda: self.ui_controller.show_detector_panel())
         buttons[15].clicked.connect(lambda: self.ui_controller.show_schedule_panel())
         buttons[17].clicked.connect(lambda: self.ui_controller.show_image_panel())
@@ -135,7 +136,6 @@ class NavigatorPanel(QWidget):
 
         # =============== special methods =============== #
         self._set_btn_disable([buttons[0]] + buttons[2:])                         # Disable buttons
-        self._make_checkable([buttons[0], buttons[2], buttons[4], buttons[6]])    # make checkable
 
         # =============== set class =============== #
         for btn in buttons:
@@ -151,11 +151,11 @@ class NavigatorPanel(QWidget):
         rows_num += 1                                       # row for 'textbox'
 
         # add 'textbox' to grid_layout
-        grid_layout.addWidget(self.name_textbox, 0, 0, 1, 2)      # add the textBox (component, row_num, col_num, how many rows use, how many columns to use)
+        # grid_layout.addWidget(self.name_textbox, 0, 0, 1, 2)      # add the textBox (component, row_num, col_num, how many rows use, how many columns to use)
 
         # add buttons to grid_layout
         for i, btn in enumerate(self.buttons_list, start=0):
-            r = i // 2 + 1
+            r = i // 2
             c = i % 2
             grid_layout.addWidget(btn, r, c)
 
@@ -163,15 +163,6 @@ class NavigatorPanel(QWidget):
         grid_layout.setRowStretch(rows_num, 1)
 
         return grid_layout
-
-    def _make_checkable(self, btn_list):
-        """
-        This method make buttons checkable.
-
-        :return: None
-        """
-        for btn in btn_list:
-            btn.setCheckable(True)
 
     def _set_btn_disable(self, btn_list):
         """
