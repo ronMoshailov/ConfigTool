@@ -1,7 +1,7 @@
 import math
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QWidget, QGridLayout, QPushButton, QLineEdit, QVBoxLayout
+from PyQt6.QtWidgets import QWidget, QGridLayout, QPushButton, QLineEdit, QVBoxLayout, QSizePolicy, QSpacerItem
 
 from config.debug import displayAllMoves
 from config.style import navigator_panel_style
@@ -65,7 +65,9 @@ class NavigatorPanel(QWidget):
     def _initialize_buttons(self):
         # =============== create buttons =============== #
         new_node_btn = QPushButton("הגדרות")                    #  0
+        new_node_btn.setObjectName("MainButton")
         set_paths_btn = QPushButton("הגדר נתיב")                #  1
+        set_paths_btn.setObjectName("MainButton")
         active_slave_btn = QPushButton("-----------")           #  2
         display_move_panel_btn = QPushButton("מופעים")          #  3
         active_master_btn = QPushButton("-----------")          #  4
@@ -158,6 +160,9 @@ class NavigatorPanel(QWidget):
             r = i // 2
             c = i % 2
             grid_layout.addWidget(btn, r, c)
+
+        spacer = QSpacerItem(0, 60, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+        grid_layout.addItem(spacer, 0, 0, 1, 2)  # שם את זה בשורה "1" כדי שידחוף את השורה הבאה למטה
 
         # add space after the buttons
         grid_layout.setRowStretch(rows_num, 1)

@@ -198,16 +198,35 @@ navigator_panel_style =  """
                 border: 2px solid #1b4f72;
             }
     
-            QPushButton[class="navigator_button"]:checked {
-                background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #58d68d, stop:1 #28b463);
-                border: 2px solid #239b56;
-            }
-
             QPushButton[class="navigator_button"]:disabled {
                 background-color: #d5d8dc;
                 border: 2px solid #a6acaf;
                 color: #7f8c8d;
             }
+            
+            QPushButton#MainButton {
+                background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #E2925D, stop:1 #C1692E);
+                color: white;
+                border: 2px solid #2471a3;
+                border-radius: 10px;
+                padding: 0px;
+                font-weight: bold;
+                font-size: 18px;
+                min-width: 150px;
+                min-height: 36px;
+            }
+
+            QPushButton#MainButton:hover {
+                background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #C78254, stop:1 #8C4C21);
+                border: 2px solid #1b4f72;
+            }
+    
+            QPushButton#MainButton:disabled {
+                background-color: #d5d8dc;
+                border: 2px solid #a6acaf;
+                color: #7f8c8d;
+            }
+
         """
 
 move_panel_style =  """
@@ -1188,11 +1207,82 @@ image_panel_style = """
 
 program_panel_style = """
         /* ********************************* QLabel ********************************* */
-        QLabel#title{
-            border: 1px solid black;
+        QLabel#title {
+            border: 1px solid #a0c4ff;
+            color: #003366;
+            font-weight: bold;
         }
-        
-        """
+
+        /* ********************************* QWidget ********************************* */
+        QWidget#root {
+            border: 1px solid #90caf9;
+            border-radius: 20px; 
+            background-color: qlineargradient(
+                x1:0, y1:0, x2:0, y2:1, 
+                stop:0 #ffffff,    /* לבן */
+                stop:1 #fff5d8     /* תכלת בהיר */
+            );
+        }
+
+        /* ********************************* QPushButton ********************************* */
+        QPushButton {
+            background-color: #64b5f6;   /* כחול פסטל */
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 4px 8px;
+            min-width: 24px;
+        }
+        QPushButton:hover {
+            background-color: #42a5f5;   /* hover – כחול קצת כהה יותר */
+        }
+        QPushButton:pressed {
+            background-color: #1e88e5;   /* pressed – כחול עמוק */
+        }
+
+        /* ********************************* QCheckBox ********************************* */
+        QCheckBox::indicator {
+            width: 16px;
+            height: 16px;
+        }
+        QCheckBox::indicator:unchecked {
+            border: 2px solid #90caf9;
+            background: white;
+            border-radius: 4px;
+        }
+        QCheckBox::indicator:checked {
+            border: 2px solid #42a5f5;
+            background: #64b5f6;
+            border-radius: 4px;
+        }
+        /* ********************************* QLabel ********************************* */
+        QLabel{
+            font-weight: bold;
+        }
+
+        /* ********************************* QComboBox ********************************* */
+        QComboBox {
+            background-color: #ffffff;
+            border: 1px solid #90caf9;
+            border-radius: 6px;
+            padding: 4px;
+            min-width: 80px;
+        }
+        QComboBox:hover {
+            border: 1px solid #42a5f5;
+        }
+        QComboBox::drop-down {
+            border-left: 1px solid #90caf9;
+            width: 20px;
+        }
+        QComboBox::down-arrow {
+            image: none;
+            border: none;
+            background: #64b5f6;
+        }
+"""
 
 settings_panel_style = """
         /* ********************************* QLabel ********************************* */

@@ -14,15 +14,20 @@ class ProgramPanel(QWidget):
         self.program_info_list = []
         empty_page = QWidget()
 
+        # =============== QStackedWidget =============== #
         self.scene_stack = QStackedWidget()   # מיכל לכל הסצנות
         self.scene_stack.addWidget(empty_page)
+
         self.program_info_list.append(self.scene_stack)
-        self.program_info_list.append(ProgramInfo(prog_num=0, scene=empty_page, cycle_time=0))
+        self.program_info_list.append(ProgramInfo(prog_num=0, prog_scene=empty_page, cycle_time=0))
 
         # =============== QLabel =============== #
         title = QLabel("מעברים")
         title.setObjectName("title")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        # =============== QPushButton =============== #
+        btn = QPushButton("עדכן")
 
         # =============== QComboBox =============== #
         self.combo = QComboBox()
@@ -46,9 +51,12 @@ class ProgramPanel(QWidget):
         root_layout.addLayout(settings_layout)
         root_layout.addLayout(active_prog_layout)
         root_layout.addWidget(self.scene_stack)   # מחזיק את כל ה־scenes
+        root_layout.addWidget(btn)
 
         # =============== Self =============== #
         self.setLayout(root_layout)
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+        self.setObjectName("root")
         self.setStyleSheet(program_panel_style)
         self.hide()
 
@@ -58,19 +66,22 @@ class ProgramPanel(QWidget):
 
     def _create_active_prog_layout(self):
         horizontal_layout = QHBoxLayout()
+        horizontal_layout.addStretch()
 
-        for i in range(32):
+        for i in range(1, 33):
             vertical_layout = QVBoxLayout()
             label = QLabel()
-            label.setText(str(i + 1))
+            label.setText(str(i))
+            label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             checkbox = QCheckBox()
             checkbox.setChecked(False)
             vertical_layout.addWidget(label)
             vertical_layout.addWidget(checkbox)
             horizontal_layout.addLayout(vertical_layout)
 
-            checkbox.stateChanged.connect(lambda state, num=i + 1: self._update_checkbox(state, num))
+            checkbox.stateChanged.connect(lambda state, num=i: self._update_checkbox(state, num))
 
+        horizontal_layout.addStretch()
         return horizontal_layout
 
     def _create_settings_layout(self):
@@ -105,11 +116,11 @@ class ProgramPanel(QWidget):
             self.combo.insertItem(insert_index, text)
 
             # create and add scene
-            scene = ProgramScene()
-            self.program_info_list.append(ProgramInfo(prog_num=num, scene=scene, cycle_time=0))
+            prog_scene = ProgramScene()
+            self.program_info_list.append(ProgramInfo(prog_num=num, prog_scene=prog_scene, cycle_time=0))
 
             # add scene to stack
-            self.scene_stack.addWidget(scene)
+            self.scene_stack.addWidget(prog_scene)
         else:
             index = self.combo.findText(text)
             self.combo.removeItem(index)
@@ -117,11 +128,14 @@ class ProgramPanel(QWidget):
     def _on_combo_changed(self, text):
         if text == "-":
             self.scene_stack.setCurrentIndex(0)  # מציג רק את הסצנה הזאת
-            return None
+            return
         else:
-            for item in self.program_info_list:
+            for idx, item in enumerate (self.program_info_list):
+                if idx == 0:
+                    continue
                 if item.prog_num == int(text):
-                    self.scene_stack.setCurrentWidget(item.scene)  # מציג רק את הסצנה הזאת
+                    self.scene_stack.setCurrentWidget(item.prog_scene)  # מציג רק את הסצנה הזאת
+                    item.prog_scene._show_panel()
                     break
 
 

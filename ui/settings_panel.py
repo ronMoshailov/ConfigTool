@@ -27,9 +27,11 @@ class SettingsPanel(QWidget):
 
         # =============== QPushButton =============== #
         master_btn      = QPushButton("מאסטר")
+        master_btn.clicked.connect(lambda: self.change_state(slave_btn))
         master_btn.setProperty("class", "settings_button")
 
         slave_btn       = QPushButton("סלייב")
+        slave_btn.clicked.connect(lambda: self.change_state(master_btn))
         slave_btn.setProperty("class", "settings_button")
 
         dx_btn          = QPushButton("dx")
@@ -143,86 +145,10 @@ class SettingsPanel(QWidget):
         for btn in btn_list:
             btn.setCheckable(True)
 
-    #     # =============== Self =============== #
-    #     self.setLayout(self.root_layout)
-    #
-    #     self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
-    #     self.setObjectName("root")
-    #     self.setStyleSheet(min_green_panel_style)
-    #
-    #
-    #
-    # # =============== methods =============== #
-    # def show_panel(self):
-    #     # =============== Data =============== #
-    #     all_moves = self.data_controller.get_all_moves()
-    #     min_green_dict = {}
-    #     cards_in_row = 7
-    #
-    #     # =============== Clear grid =============== #
-    #     self._clear_layout()
-    #
-    #     # =============== Build grid =============== #
-    #     for i, move in enumerate(all_moves):
-    #         row_num = i // cards_in_row
-    #         col_num = i % cards_in_row
-    #
-    #         # =============== QLabel =============== #
-    #         label = QLabel(move.name)
-    #         label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-    #
-    #         # =============== QLineEdit =============== #
-    #         textbox = QLineEdit("" if move.min_green is None else str(move.min_green))
-    #         textbox.setAlignment(Qt.AlignmentFlag.AlignCenter)
-    #         textbox.setValidator(QIntValidator(0, 99))
-    #         if move.name.startswith("B"):
-    #             textbox.setReadOnly(True)
-    #
-    #         # =============== Add to dictionary =============== #
-    #         min_green_dict[move.name] = textbox
-    #
-    #         # =============== Vertical layout =============== #
-    #         vertical_layout = QVBoxLayout()
-    #         vertical_layout.addWidget(label)
-    #         vertical_layout.addWidget(textbox)
-    #         vertical_layout.setContentsMargins(0, 0, 0, 18)  # left, top, right, bottom
-    #
-    #         # =============== QFrame =============== #
-    #         card = QFrame()
-    #         card.setObjectName("card")
-    #         card.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
-    #         card.setMaximumHeight(100)
-    #         card.setLayout(vertical_layout)
-    #
-    #         # =============== Add to layout =============== #
-    #         self.root_layout.addWidget(card, row_num, col_num)
-    #
-    #     btn = QPushButton("עדכן")
-    #     btn.setCursor(Qt.CursorShape.PointingHandCursor)
-    #     btn.setObjectName("update_button")
-    #     btn.clicked.connect(lambda: self.data_controller.update_min_green(min_green_dict))
-    #
-    #     # =============== Add to layout =============== #
-    #     self.root_layout.setRowStretch(self.root_layout.rowCount(), 1)
-    #     self.root_layout.addWidget(btn, self.root_layout.rowCount(), 0, 1, cards_in_row)  # add the textBox (component, row_num, col_num, how many rows use, how many columns to use)
-    #     self.show()
-    #
-    # # =============== inner methods =============== #
-    # def _clear_layout(self, layout=None):
-    #     """
-    #     Recursively clear all widgets and layouts inside a given layout.
-    #     If no layout is provided, clear the root_layout.
-    #     """
-    #     if layout is None:
-    #         layout = self.root_layout
-    #
-    #     while layout.count():
-    #         item = layout.takeAt(0)
-    #
-    #         if item.widget():
-    #             item.widget().deleteLater()
-    #         elif item.layout():
-    #             self._clear_layout(item.layout())
-    #
-    #     if layout is not self.root_layout:
-    #         layout.deleteLater()
+    def change_state(self, btn):
+        selected_btn = self.sender()  # מחזיר את ה־QPushButton שירה את הסיגנל
+
+        if selected_btn.isChecked():
+            btn.setDisabled(True)
+        else:
+            btn.setDisabled(False)

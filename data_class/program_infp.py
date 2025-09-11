@@ -4,5 +4,5 @@ from dataclasses import dataclass
 @dataclass
 class ProgramInfo:
     prog_num: int
-    scene: object
+    prog_scene: object
     cycle_time: int
