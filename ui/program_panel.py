@@ -116,7 +116,7 @@ class ProgramPanel(QWidget):
             self.combo.insertItem(insert_index, text)
 
             # create and add scene
-            prog_scene = ProgramScene()
+            prog_scene = ProgramScene(self.textbox)
             self.program_info_list.append(ProgramInfo(prog_num=num, prog_scene=prog_scene, cycle_time=0))
 
             # add scene to stack

@@ -163,8 +163,19 @@ class ImagePanel(QWidget):
         remove_button.setObjectName("remove_button")
         remove_button.clicked.connect(lambda _, w=wrap: self._remove_wrap(w))
 
+        # skeleton
+        textbox = QLineEdit()
+        textbox.setText(str(image.skeleton))
+
+        label = QLabel("שלד")
+
+        skeleton_layout = QVBoxLayout()
+        skeleton_layout.addWidget(label)
+        skeleton_layout.addWidget(textbox)
+
         wrap_layout.addWidget(title)
         wrap_layout.addWidget(table)
+        wrap_layout.addLayout(skeleton_layout)
         wrap_layout.addWidget(remove_button)
 
         return wrap

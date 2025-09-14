@@ -9,9 +9,12 @@ from entities.timeline_block import TimelineBlock
 
 
 class ProgramScene(QWidget):
-    def __init__(self):
+    pixel_unit = 10
+
+    def __init__(self, cycle_time):
         super().__init__()
         self.data_controller = DataController()
+        self.cycle_time = cycle_time
 
         self.scene = QGraphicsScene()
         self.view = QGraphicsView(self.scene)
@@ -23,7 +26,7 @@ class ProgramScene(QWidget):
 
     def _draw_moves(self):
         row_height = 40
-        self.scene.setSceneRect(0, 0, 1500, row_height * len(self.all_moves))
+        self.scene.setSceneRect(0, 0, 150 * self.pixel_unit, row_height * len(self.all_moves))
 
         self.row_programs = {}  # key=row_y, value=ProgramBlock
 
@@ -34,7 +37,7 @@ class ProgramScene(QWidget):
             y_center = y + row_height / 2
 
             # draw line
-            self.scene.addLine(0, y, 1500, y, QPen(black_color, 1))
+            self.scene.addLine(0, y, 150 * self.pixel_unit, y, QPen(black_color, 1))
 
             # draw move name
             text_item = self.scene.addText(self.all_moves[i].name)
@@ -44,7 +47,7 @@ class ProgramScene(QWidget):
             btn = QPushButton("+")
             btn.clicked.connect(lambda _, row_y=y: self.add_program(row_y))
 
-            proxy = QGraphicsProxyWidget() # bridge between QWidget אם QGraphicsScene
+            proxy = QGraphicsProxyWidget()  # bridge between QWidget אם QGraphicsScene
             proxy.setWidget(btn)
             proxy.setPos(0, y_center - 12)  # ממקמים בתוך ה־Scene # -↑  +↓
             self.scene.addItem(proxy)
@@ -65,15 +68,16 @@ class ProgramScene(QWidget):
         #
         self._draw_moves()
 
+
     def add_program(self, row_y):
         """יוצר Program חדש בשורה בגובה row_y"""
         rect = QRectF(150, row_y + 10, 150, 20)  # איפה לשים את המלבן
-        program_item = TimelineBlock(rect)
+        program_item = TimelineBlock(rect, self.cycle_time)
         self.scene.addItem(program_item)
 
     def toggle_program(self, row_y, checked):
         if checked:
-            rect = QRectF(0, row_y, 300, 20) # x, y, width, height
+            rect = QRectF(150, row_y + 10, int(self.cycle_time.toPlainText()) * self.pixel_unit, 20)  # x, y, width, height
             program_item = TimelineBlock(rect)
             self.scene.addItem(program_item)
             self.row_programs[row_y] = program_item
