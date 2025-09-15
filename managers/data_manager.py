@@ -6,29 +6,21 @@ from entities.image import Image
 from entities.log import Log
 from entities.matrix import MatrixCell
 from entities.signal_group import SignalGroup
+from pathlib import Path
 
 class DataManager:
     _instance = None
 
-    # =========================================== #
-    #                Construction                 #
-    # =========================================== #
+    # --------------- Construction --------------- #
     def __new__(cls):
-        """
-        This method runs before __init__ when new instance is created.
-        """
         if cls._instance is None:
             cls._instance = super(DataManager, cls).__new__(cls)    # create new instance and store him in _instance before __init__
             cls._instance.__init__()                                # run _init
         return cls._instance                                        # return _instance
 
     def __init__(self):
-        """
-        This method runs when the object initialized.
-        """
         self.moves = []
         self.detectors = []
-        # self.inter_stages = []
         self.MatrixCells = []
         self.images = []
 
@@ -38,10 +30,8 @@ class DataManager:
         self.version            = None
         self.lastVersionDate    = None
         self.lastVersionAuthor  = None
-        # self.date               = None
         self.first_time_ext     = None
 
-        print("** data manager was set successfully")
 
     # --------------- add methods --------------- #
     def add_move(self, move_name, move_type, is_main, min_green = "0"):
@@ -127,6 +117,41 @@ class DataManager:
                     variables = [v.strip() for v in instances.split(",")]
                     for name in variables:
                         self.detectors.append(Detector(name, detector_type))
+
+    def init_phue(self, path_list):
+        class_pattern = re.compile(r"public\s+class\s+Phue([A-Za-z0-9]+)_([A-Za-z0-9]+)")
+        sg_pattern = re.compile(r"_tk\.(\w+)\.setSg\s*\(Zustand\.(ROT|GRUEN)\s*,\s*(\d+)\s*\)")
+        results = []
+
+        for path in path_list:
+            path = Path(path)
+            with open(path, "r", encoding="utf-8") as f:
+                content = f.read()
+
+            # find image_out and image_in
+            class_match = class_pattern.search(content)
+            if not class_match:
+                continue
+            img_out, img_in = class_match.groups()
+
+            # find turn of and turn off moves
+            actions = []
+            for m in sg_pattern.finditer(content):
+                move, state, time = m.groups()
+                action = {"move": move, "state": "on" if state == "GRUEN" else "off", "time": int(time)}
+                actions.append(action)
+
+            # --- שמירת תוצאה
+            results.append(
+                {
+                    "file": path.name,
+                    "outgoing": img_out,
+                    "incoming": img_in,
+                    "actions": actions,
+                }
+            )
+
+        return results
 
     def add_detector(self, detector_name, move_type, ext_time):
         self.detectors.append(Detector(detector_name, move_type, ext_time))
@@ -303,8 +328,10 @@ class DataManager:
                     self.images.append(Image(name, collection))
 
     def update_images(self, table_dict):
+        # collect the moves that belong to the image
         for image_name, table in table_dict.items():
             checked_moves = []
+            skeleton_time = int(table.skeleton_textbox.text())
             for row_num in range(table.rowCount()):
                 move_name = table.cellWidget(row_num, 0).text()
                 checkbox = table.cellWidget(row_num, 1)
@@ -318,6 +345,7 @@ class DataManager:
             for image in self.images:
                 if image.image_name == image_name:
                     image.move_list = checked_moves
+                    image.skeleton = skeleton_time
                     is_found = True
             if not is_found:
                 self.images.append(Image(image_name, checked_moves))
@@ -334,6 +362,7 @@ class DataManager:
                 self.images.remove(image)
                 return True
         return False
+
 
 
 

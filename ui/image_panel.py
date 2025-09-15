@@ -178,6 +178,9 @@ class ImagePanel(QWidget):
         wrap_layout.addLayout(skeleton_layout)
         wrap_layout.addWidget(remove_button)
 
+        # attribute
+        table.skeleton_textbox = textbox
+
         return wrap
         # self.table_dict[image.image_name] = table
 

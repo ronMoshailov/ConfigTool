@@ -282,6 +282,10 @@ class DataController:
             schedule.initialize_schedule(self.path_manager.get_path_init_tk1())
         self.data_manager.init_images(self.path_manager.get_path_init_tk1())
         self.data_manager.init_settings(self.path_manager.get_path_init())
+
+        # scan for phue
+        self.data_manager.init_phue(self.path_manager.get_phue_list())
+
         # enable buttons
         for btn in btn_list:
             btn.setDisabled(False)

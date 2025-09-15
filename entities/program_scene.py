@@ -13,13 +13,19 @@ class ProgramScene(QWidget):
 
     def __init__(self, cycle_time):
         super().__init__()
+        # =============== Data =============== #
         self.data_controller = DataController()
         self.cycle_time = cycle_time
+        self.dict_timeline_block = {}
 
+        # =============== QGraphicsScene =============== #
         self.scene = QGraphicsScene()
+
+        # =============== QGraphicsView =============== #
         self.view = QGraphicsView(self.scene)
         self.view.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop) # שה־scene מתחיל מהקצה השמאלי למעלה
 
+        # =============== Layout =============== #
         layout = QVBoxLayout()
         layout.addWidget(self.view)
         self.setLayout(layout)
@@ -63,16 +69,22 @@ class ProgramScene(QWidget):
 
     def _show_panel(self):
         self.all_moves = self.data_controller.get_all_moves()
-        self.all_images = self.data_controller.get_all_images()
+        # self.all_images = self.data_controller.get_all_images()
 
         #
         self._draw_moves()
 
 
     def add_program(self, row_y):
-        """יוצר Program חדש בשורה בגובה row_y"""
-        rect = QRectF(150, row_y + 10, 150, 20)  # איפה לשים את המלבן
+        """
+        Create new QRectF in the same height.
+
+        :param row_y: height of row
+        :return: None
+        """
+        rect = QRectF(150, row_y + 10, 150, 20)  # x, y, width, height
         program_item = TimelineBlock(rect, self.cycle_time)
+        # self.dict_timeline_block[] = rect
         self.scene.addItem(program_item)
 
     def toggle_program(self, row_y, checked):

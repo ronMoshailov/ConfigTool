@@ -8,9 +8,7 @@ from entities.log import Log
 class PathsManager:
     _instance = None
 
-    # =========================================== #
-    #                Construction                 #
-    # =========================================== #
+    # --------------- Construction --------------- #
     def __new__(cls):
         if cls._instance is None:                                       # checks if there is an instance of the class
             cls._instance = super(PathsManager, cls).__new__(cls)       # create new instance and store him in _instance before __init__
@@ -22,49 +20,30 @@ class PathsManager:
         self.path_init = None
         self.path_tk1 = None
         self.path_init_tk1 = None
+        self.phue_list = []
 
-    # =========================================== #
-    #                 add methods                 #
-    # =========================================== #
+    # --------------- add methods --------------- #
 
-    # =========================================== #
-    #                  get methods                #
-    # =========================================== #
+    # --------------- get methods --------------- #
+
     def get_path_init_tk1(self):
-        """
-        This method returns the path of 'initTK1.java'.
-
-        :return: None
-        """
         return self.path_init_tk1
 
     def get_path_init(self):
-        """
-        This method returns the path of 'init.java'.
-
-        :return: None
-        """
         return self.path_init
 
     def get_path_tk1(self):
-        """
-        This method returns the path of 'Tk1.java'.
-
-        :return: None
-        """
         return self.path_tk1
 
-    # =========================================== #
-    #               update methods                #
-    # =========================================== #
+    def get_phue_list(self):
+        return self.phue_list
 
-    # =========================================== #
-    #               remove methods                #
-    # =========================================== #
+    # --------------- update methods --------------- #
 
-    # =========================================== #
-    #                general methods              #
-    # =========================================== #
+    # --------------- remove methods --------------- #
+
+    # --------------- general methods --------------- #
+
     def scan_set_paths(self):
         """
         This method set the paths of for all the files that needed.
@@ -92,6 +71,8 @@ class PathsManager:
                 elif file.lower() == "inittk1.java" and init_tk1_found is False:
                     self.path_init_tk1 = os.path.join(root, file)
                     init_tk1_found = True
+                elif file.lower().startswith("phue"):
+                    self.phue_list.append(os.path.join(root, file))
 
         if not init_found:
             Log.warning(f"Warning: init.java wasn't found")

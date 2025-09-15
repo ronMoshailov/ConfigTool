@@ -51,5 +51,6 @@ def displayAllMoves():
     image_list = data_controller.data_manager.images
     for img in image_list:
         print(f" ---- image: {img.image_name} ---- ")
+        print(f"skeleton: {img.skeleton}")
         for move in img.move_list:
             print(f"name: {move.name:<5}")

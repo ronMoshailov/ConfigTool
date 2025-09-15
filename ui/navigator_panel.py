@@ -68,7 +68,7 @@ class NavigatorPanel(QWidget):
         new_node_btn.setObjectName("MainButton")
         set_paths_btn = QPushButton("הגדר נתיב")                #  1
         set_paths_btn.setObjectName("MainButton")
-        active_slave_btn = QPushButton("-----------")           #  2
+        active_slave_btn = QPushButton("מעברים")                #  2
         display_move_panel_btn = QPushButton("מופעים")          #  3
         active_master_btn = QPushButton("-----------")          #  4
         display_min_green_panel_btn = QPushButton("מינימום")    #  5
@@ -85,7 +85,7 @@ class NavigatorPanel(QWidget):
         i_btn = QPushButton("-----------")                      # 16
         j_btn = QPushButton("תמונות")                           # 17
         k_btn = QPushButton("-----------")                      # 18
-        l_btn = QPushButton("מעברים")                           # 19
+        l_btn = QPushButton("תוכניות")                          # 19
         m_btn = QPushButton("-----------")                      # 20
         n_btn = QPushButton("-----------")                      # 21
         o_btn = QPushButton("-----------")                      # 22
@@ -126,6 +126,7 @@ class NavigatorPanel(QWidget):
         # =============== connect listener =============== #
         buttons[ 0].clicked.connect(lambda: self.ui_controller.show_settings_panel())
         buttons[ 1].clicked.connect(lambda: self.data_controller.initialize_app([buttons[0]] + buttons[2:]))
+        buttons[ 2].clicked.connect(lambda: self.ui_controller.show_inter_stage_panel())
         buttons[ 3].clicked.connect(lambda: self.ui_controller.show_set_move_layout())
         buttons[ 5].clicked.connect(lambda: self.ui_controller.show_min_green_layout())
         buttons[ 7].clicked.connect(lambda: self.ui_controller.show_matrix_layout())
