@@ -1352,3 +1352,150 @@ settings_panel_style = """
                 
 
         """
+
+inter_stage_panel_style = """
+/* ********************************* QWidget root ********************************* */
+QWidget#root {
+    border-radius: 20px;
+    border: 1px solid #1a98ff;
+    background: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #e6f2ff,
+        stop:1 #f9fcff
+    );
+}
+
+QWidget#scroll_area{
+    border: 1px solid black;
+
+}
+/* ********************************* title ********************************* */
+QLabel#title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #2c3e50;
+    padding: 6px 12px;
+    border-radius: 12px;
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #d2e1ff, stop:1 #f0f8ff);
+    border: 1px solid #1a98ff;
+}
+QLabel#title:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #eaf2ff, stop:1 #ffffff);
+    border: 1px solid #3498db;
+}
+
+/* ********************************* QTableWidget ********************************* */
+QTableWidget {
+    border: 1px solid #a6c8ff;
+    border-radius: 12px;
+    gridline-color: #ddd;
+    font-size: 14px;
+    selection-background-color: #cceeff;
+    alternate-background-color: #f5faff;
+}
+QTableWidget::item {
+    padding: 6px;
+}
+QTableCornerButton::section {
+    background-color: transparent;
+    border: none;
+}
+QHeaderView::section {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #d6eaff, stop:1 #ffffff);
+    border: 1px solid #a6c8ff;
+    padding: 6px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+QHeaderView::section:hover {
+    background: #ecf5ff;
+}
+
+/* ********************************* QPushButton ********************************* */
+QPushButton#remove_button {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #ff6b6b, stop:1 #e74c3c);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    padding: 6px 16px;
+    font-size: 18px;
+    font-weight: bold;
+}
+QPushButton#remove_button:hover {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #e74c3c, stop:1 #c0392b);
+}
+QPushButton#remove_button:pressed {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #c0392b, stop:1 #a93226);
+}
+
+QPushButton#add_button {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #76ff03, stop:1 #4caf50);
+    border: 1px solid #1a98ff;
+    border-radius: 16px;
+    padding: 6px 16px;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+}
+QPushButton#add_button:hover {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #5fd000, stop:1 #338237);
+}
+
+QPushButton#update_button {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #6ee96e, stop:1 #4caf50);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 20px;
+    font-weight: bold;
+}
+QPushButton#update_button:hover {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #5fba63, stop:1 #338237);
+}
+
+/* ********************************* QComboBox ********************************* */
+QComboBox {
+    border: 1px solid #a6c8ff;
+    border-radius: 8px;
+    padding: 4px 6px;
+    font-size: 14px;
+    background-color: #ffffff;
+}
+QComboBox::drop-down {
+    border-left: 1px solid #a6c8ff;
+}
+QComboBox QAbstractItemView {
+    border: 1px solid #a6c8ff;
+    selection-background-color: #cceeff;
+    selection-color: #1f3b4d;
+    background-color: #ffffff;
+}
+
+/* ********************************* QCheckBox ********************************* */
+QCheckBox {
+    spacing: 8px;
+    font-size: 16px;
+    color: #2c3e50;
+}
+QCheckBox::indicator {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 2px solid #7ea1ff;
+    background: #ffffff;
+}
+QCheckBox::indicator:hover {
+    border: 2px solid #1a98ff;
+}
+QCheckBox::indicator:checked {
+    background-color: #0077d8;
+    border: 2px solid #0077d8;
+}
+
+/* ********************************* QScrollArea ********************************* */
+QScrollArea {
+    border: none;
+    background-color: transparent;
+}
+"""

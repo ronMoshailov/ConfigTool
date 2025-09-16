@@ -1,7 +1,7 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIntValidator
 from PyQt6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QSizePolicy, \
-    QGridLayout
+    QGridLayout, QMessageBox
 
 from config.style import min_green_panel_style
 from controllers.data_controller import DataController
@@ -33,7 +33,7 @@ class MinGreenLayout(QWidget):
     def show_panel(self):
         # =============== Data =============== #
         all_moves = self.data_controller.get_all_moves()
-        min_green_dict = {}
+        self.min_green_dict = {}
         cards_in_row = 7
 
         # =============== Clear grid =============== #
@@ -56,7 +56,7 @@ class MinGreenLayout(QWidget):
                 textbox.setReadOnly(True)
 
             # =============== Add to dictionary =============== #
-            min_green_dict[move.name] = textbox
+            self.min_green_dict[move.name] = textbox
 
             # =============== Vertical layout =============== #
             vertical_layout = QVBoxLayout()
@@ -77,7 +77,7 @@ class MinGreenLayout(QWidget):
         btn = QPushButton("עדכן")
         btn.setCursor(Qt.CursorShape.PointingHandCursor)
         btn.setObjectName("update_button")
-        btn.clicked.connect(lambda: self.data_controller.update_min_green(min_green_dict))
+        btn.clicked.connect(self._update)
 
         # =============== Add to layout =============== #
         self.root_layout.setRowStretch(self.root_layout.rowCount(), 1)
@@ -103,3 +103,10 @@ class MinGreenLayout(QWidget):
 
         if layout is not self.root_layout:
             layout.deleteLater()
+
+    def _update(self):
+        if self.data_controller.update_min_green(self.min_green_dict):
+            QMessageBox.information(self, "מינימום ירוק", "כל הזמני מינימום ירוק עודכנו בהצלחה")
+            return
+        QMessageBox.information(self, "מינימום ירוק", "העדכון נכשלה")
+

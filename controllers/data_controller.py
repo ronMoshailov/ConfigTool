@@ -1,5 +1,5 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QLineEdit
+from PyQt6.QtWidgets import QLineEdit, QMessageBox
 
 from managers.paths_manager import PathsManager
 from managers.data_manager import DataManager
@@ -120,6 +120,8 @@ class DataController:
     def get_image_count(self):
         return self.data_manager.get_image_count()
 
+    def get_all_inter_stages(self):
+        return self.data_manager.get_all_inter_stages()
 
     # --------------- update methods --------------- #
     def update_min_green(self, dictionary: dict[str, QLineEdit]):
@@ -129,7 +131,6 @@ class DataController:
         :param dictionary: dictionary that told as key the move name and in value the textBox
         :return: True is success, otherwise False.
         """
-        print(f"**** [class] DataController:\t [method] update_min_green\t[start] ")
         for key, value in dictionary.items():
             if value.text() == "":
                 self.write_log(f"The move {key} is empty", "r")
@@ -137,12 +138,10 @@ class DataController:
             value = value.text()
             if isinstance(value, str):
                 value = int(value)
-                # Log.warning(f"Warning: The value was string but converted to int")
             if value < 0:
                 Log.error(f"Error: The value of '{key} is negative ({value})")
                 continue
             self.data_manager.update_min_green(key, value)
-        print(f"**** [class] DataController:\t [method] update_min_green\t[end] ")
         return True
 
     def update_matrix(self, changes_list):

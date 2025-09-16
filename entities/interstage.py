@@ -1,6 +1,6 @@
 
 class InterStage:
-    def __init__(self, move_in, move_out, transitions):
-        image_in    = move_in
-        image_out   = move_out
-        transitions = []
+    def __init__(self, move_out, move_in, transitions=None):
+        self.image_out   = move_out
+        self.image_in    = move_in
+        self.transitions = []

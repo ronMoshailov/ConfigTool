@@ -1,6 +1,6 @@
-class transition:
+class Transition:
     def __init__(self, move, state, duration):
-        move = move
-        state = state
-        duration = duration
+        self.move = move
+        self.state = state
+        self.duration = duration
 

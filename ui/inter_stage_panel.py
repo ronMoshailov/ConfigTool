@@ -1,74 +1,10 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QWidget, QComboBox, QTextEdit, QLabel, QCheckBox, QHBoxLayout, QVBoxLayout, QPushButton, \
-    QStackedWidget, QLineEdit, QFrame
-from click import clear
+from PyQt6.QtWidgets import QWidget, QComboBox, QLabel, QCheckBox, QHBoxLayout, QVBoxLayout, QPushButton, QFrame, \
+    QTableWidget, QAbstractItemView, QScrollArea, QTableWidgetItem
 
+from config.style import inter_stage_panel_style
 from controllers.data_controller import DataController
-from data_class.program_info import ProgramInfo
-from entities.program_scene import ProgramScene
-from config.style import program_panel_style
 
-
-def _create_top_layout():
-    layout = QHBoxLayout()
-
-    btn = QPushButton("הוסף")
-
-    move_out_layout = QVBoxLayout()
-    move_out_label = QLabel("מופע יוצא")
-    move_out_combo = QComboBox()
-    move_out_layout.addWidget(move_out_label)
-    move_out_layout.addWidget(move_out_combo)
-
-    move_in_layout = QVBoxLayout()
-    move_in_label = QLabel("מופע נכנס")
-    move_in_combo = QComboBox()
-    move_in_layout.addWidget(move_in_label)
-    move_in_layout.addWidget(move_in_combo)
-
-    layout.addStretch()
-    layout.addWidget(btn)
-    layout.addLayout(move_out_layout)
-    layout.addLayout(move_in_layout)
-
-    return layout
-
-
-def _create_combo_layout():
-    layout = QHBoxLayout()
-
-    # move in
-    move_in_layout = QVBoxLayout()
-    move_in_label = QLabel("מופע נכנס")
-    move_in_combo = QComboBox()
-
-    move_in_layout.addWidget(move_in_label)
-    move_in_layout.addWidget(move_in_combo)
-
-
-    # move out
-    move_out_layout = QVBoxLayout()
-    move_out_label = QLabel("מופע יוצא")
-    move_out_combo = QComboBox()
-
-    move_out_layout.addWidget(move_out_label)
-    move_out_layout.addWidget(move_out_combo)
-
-    # clear
-    clear_layout = QVBoxLayout()
-    clear_label = QLabel("נקה מופעים")
-    clear_checkbox = QCheckBox()
-
-    clear_layout.addWidget(clear_label)
-    clear_layout.addWidget(clear_checkbox)
-
-    #
-    layout.addStretch()
-    layout.addLayout(clear_layout)
-    layout.addLayout(move_in_layout)
-    layout.addLayout(move_out_layout)
-
-    return layout
 
 class InterStagePanel(QWidget):
     """
@@ -79,17 +15,29 @@ class InterStagePanel(QWidget):
 
         # =============== Data =============== #
         self.data_controller = DataController()
+        self.table_wrap_list = []
 
         line = QFrame()
         line.setFrameShape(QFrame.Shape.HLine)  # קו אופקי
-        # line.setFrameShadow(QFrame.Shadow.Sunken)  # מראה "שקוע"
         line.setStyleSheet("background-color: black;")
         line.setFixedHeight(1)  # עובי הקו
 
         # =============== Layout =============== #
-        top_layout = _create_top_layout()
-        combo_layout = _create_combo_layout()
+        top_layout          = self._create_top_layout()
+        combo_layout        = self._create_combo_layout()
         root_layout         = QVBoxLayout()
+        self.tables_layout  = QHBoxLayout()
+
+        # =============== Scroll =============== #
+        self.scroll_area = QScrollArea()        # create the container of the scroll bar. (get only widget)
+        self.scroll_area.setObjectName("scroll_area")   #
+        self.scroll_area.setWidgetResizable(True)   # it's needed and I don't know why and I don't even want to know, without this the scroll area size is like 0x0, fk chatGPT just confusing me
+
+        self.scroll_content = QWidget()         # create the widget that will be in the layout.
+        self.scroll_content.setObjectName("scrollContent")   #
+
+        self.scroll_area.setWidget(self.scroll_content)   # set 'scroll_area' as father of 'scroll_content'
+        self.scroll_content.setLayout(self.tables_layout) # set the widget as the father of the layout
 
         # =============== QPushButton =============== #
         btn = QPushButton("עדכן")
@@ -97,128 +45,180 @@ class InterStagePanel(QWidget):
         root_layout.addLayout(top_layout)
         root_layout.addWidget(line)
         root_layout.addLayout(combo_layout)
-        root_layout.addStretch()
+        root_layout.addWidget(self.scroll_area)
         root_layout.addWidget(btn)
 
         # # =============== Self =============== #
         self.setLayout(root_layout)
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.setObjectName("root")
-        # self.setStyleSheet(program_panel_style)
+        self.setStyleSheet(inter_stage_panel_style)
         self.hide()
 
     def show_panel(self):
-        # self.scene._show_panel()
+        # reset
+        self._reset()
+
+        # data
+        all_images = self.data_controller.get_all_images()
+        all_inter_stages = self.data_controller.get_all_inter_stages()
+
+        # fill the combos with values
+        self.move_out_combo_top.addItems(["-"] + [image.image_name for image in all_images])
+        self.move_in_combo_top.addItems(["-"] + [image.image_name for image in all_images])
+
+        self.move_out_combo_center.addItems(["-"] + [image.image_name for image in all_images])
+        self.move_in_combo_center.addItems(["-"] + [image.image_name for image in all_images])
+
+        # create the tables
+        out_in_images = [(inter_stage.image_out, inter_stage.image_in, inter_stage.transitions) for inter_stage in all_inter_stages]
+
+        for img_out, img_in, transition in out_in_images:
+            wrap = self._init_table(img_out, img_in, transition)
+            self.table_wrap_list.append(wrap)
+            self.tables_layout.addWidget(wrap)
         self.show()
     #
-    # def _create_checkbox_prog_layout(self):
-    #     """
-    #     This method build horizontal layout of the checkboxes on the top.
-    #
-    #     :return: The layout of the checkboxes on the top.
-    #     """
-    #     horizontal_layout = QHBoxLayout()
-    #     horizontal_layout.addStretch()
-    #
-    #     for i in range(1, 33):
-    #         vertical_layout = QVBoxLayout()
-    #         label = QLabel()
-    #         label.setText(str(i))
-    #         label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-    #         checkbox = QCheckBox()
-    #         checkbox.setChecked(False)
-    #         vertical_layout.addWidget(label)
-    #         vertical_layout.addWidget(checkbox)
-    #         horizontal_layout.addLayout(vertical_layout)
-    #
-    #         checkbox.stateChanged.connect(lambda state, num=i: self._update_checkbox(state, num))
-    #
-    #     horizontal_layout.addStretch()
-    #     return horizontal_layout
-    #
-    # def _create_settings_layout(self):
-    #     """
-    #     This method build horizontal layout of the settings on the top.
-    #
-    #     :return: The layout of the settings.
-    #     """
-    #     # =============== QLabel =============== #
-    #     prog_num_label = QLabel("תוכנית")
-    #     cycle_tile_label = QLabel("זמן מחזור")
-    #
-    #     # =============== QPushButton =============== #
-    #     buttons_layout = QHBoxLayout()
-    #
-    #     # =============== QPushButton =============== #
-    #     buttons_layout.addStretch()
-    #     buttons_layout.addWidget(self.cycle_textbox)
-    #     buttons_layout.addSpacing(10)
-    #     buttons_layout.addWidget(cycle_tile_label)
-    #     buttons_layout.addSpacing(100)
-    #     buttons_layout.addWidget(self.combo)
-    #     buttons_layout.addSpacing(10)
-    #     buttons_layout.addWidget(prog_num_label)
-    #     return buttons_layout
-    #
-    # def _update_checkbox(self, state, num):
-    #     """
-    #     This method is called when the checkbox is changed and update the combobox.
-    #
-    #     :param state: current state of the checkbox.
-    #     :param num: number of the checkbox.
-    #     :return: None
-    #     """
-    #     text = str(num)
-    #
-    #     # if checked (need to add)
-    #     if state == Qt.CheckState.Checked.value:   # אם סומן
-    #         insert_index = 1    # מתחילים אחרי '-'
-    #
-    #         # search the right index in combo to insert
-    #         while insert_index < self.combo.count() and int(self.combo.itemText(insert_index)) < num:
-    #             insert_index += 1
-    #         self.combo.insertItem(insert_index, text)
-    #
-    #         # create and add scene
-    #         is_exist = False
-    #
-    #         # check if for the option is there any scene
-    #         for idx, scene in enumerate(self.program_info_list):
-    #             if scene.prog_num == num:
-    #                 is_exist = True
-    #
-    #         # if not found create and add the scene
-    #         if not is_exist:
-    #             prog_scene = ProgramScene(self.cycle_textbox)
-    #             self.program_info_list.append(ProgramInfo(prog_num=num, prog_scene=prog_scene, cycle_time=0))
-    #
-    #             # add scene to stack
-    #             self.scene_stack.addWidget(prog_scene)
-    #     else:
-    #         # find and remove the option from the combo
-    #         index = self.combo.findText(text)
-    #         self.combo.removeItem(index)
-    #
-    # def _on_combo_changed(self, text):
-    #     """
-    #     This method is called when the combo box is changed.
-    #
-    #     :param text: The value of the combo box.
-    #     :return: None
-    #     """
-    #     if text == "-":
-    #         # if the chosen option is the first
-    #         self.scene_stack.setCurrentIndex(0)
-    #         return
-    #     else:
-    #         for idx, item in enumerate (self.program_info_list):
-    #             if idx == 0:
-    #                 # The first element is 'empty_widget' so 'item.prog_scene' crush
-    #                 continue
-    #             if item.prog_num == int(text):
-    #                 self.scene_stack.setCurrentWidget(item.prog_scene)  # show this scene
-    #                 item.prog_scene._show_panel()
-    #                 break
+
+    def _create_top_layout(self):
+
+        layout = QHBoxLayout()
+
+        btn = QPushButton("הוסף")
+
+        move_out_layout = QVBoxLayout()
+        move_out_label = QLabel("מופע יוצא")
+        self.move_out_combo_top = QComboBox()
+        move_out_layout.addWidget(move_out_label)
+        move_out_layout.addWidget(self.move_out_combo_top)
+
+        move_in_layout = QVBoxLayout()
+        move_in_label = QLabel("מופע נכנס")
+        self.move_in_combo_top = QComboBox()
+        move_in_layout.addWidget(move_in_label)
+        move_in_layout.addWidget(self.move_in_combo_top)
+
+        layout.addStretch()
+        layout.addWidget(btn)
+        layout.addLayout(move_out_layout)
+        layout.addLayout(move_in_layout)
+
+        return layout
+
+    def _create_combo_layout(self):
+        layout = QHBoxLayout()
+
+        # move in
+        move_in_layout = QVBoxLayout()
+        move_in_label = QLabel("מופע נכנס")
+        self.move_in_combo_center = QComboBox()
+        self.move_in_combo_center.currentTextChanged.connect(self._filter)
+        move_in_layout.addWidget(move_in_label)
+        move_in_layout.addWidget(self.move_in_combo_center)
+
+        # move out
+        move_out_layout = QVBoxLayout()
+        move_out_label = QLabel("מופע יוצא")
+        self.move_out_combo_center = QComboBox()
+        self.move_out_combo_center.currentTextChanged.connect(self._filter)
+
+        move_out_layout.addWidget(move_out_label)
+        move_out_layout.addWidget(self.move_out_combo_center)
+
+        #
+        layout.addStretch()
+        layout.addLayout(move_in_layout)
+        layout.addLayout(move_out_layout)
+
+        return layout
+
+    def _init_table(self, img_out, img_in, transitions):
+        """
+        This method initialize the widget of the table (title, table with values and signals)
+
+        :param card_number: number of the SK card
+        :return: QTableWidget object that holds everything
+        """
+        # widget that holds title and table
+        wrap = QWidget()
+
+        # set title
+        title = QLabel(f"{img_out} → {img_in}")
+        title.setObjectName("title")
+        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        # set table
+        tbl = QTableWidget(len(transitions), 3, wrap)
+        tbl.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)
+        tbl.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        tbl.setMinimumWidth(300)
+        # הוספת כותרות לעמודות (לא חובה, אבל נוח)
+        tbl.setHorizontalHeaderLabels(["Move", "State", "Duration"])
+        # tbl.verticalHeader().setVisible(False)
+
+        for row, transition in enumerate(transitions):
+            tbl.setItem(row, 0, QTableWidgetItem(str(transition.move)))
+            tbl.setItem(row, 1, QTableWidgetItem(str(transition.state)))
+            tbl.setItem(row, 2, QTableWidgetItem(str(transition.duration)))
+
+        btn_remove = QPushButton("מחק SK")
+        # btn_remove.clicked.connect(lambda _, card_num = card_number: self._remove_sk(card_num))
+        btn_remove.setObjectName("remove_button")
+
+        # set layout
+        column_layout = QVBoxLayout()
+        column_layout.addWidget(title)
+        column_layout.addWidget(tbl)
+        column_layout.addSpacing(10)
+        column_layout.addWidget(btn_remove)
+
+        wrap.setLayout(column_layout)
+
+        wrap.img_out = img_out
+        wrap.img_in = img_in
+
+        return wrap
+
+    def _filter(self):
+        move_in = self.move_in_combo_center.currentText()
+        move_out = self.move_out_combo_center.currentText()
+
+        for wrap in self.table_wrap_list:
+            wrap.hide()
+
+            show_wrap = True
+            if move_out != "-" and wrap.img_out != move_out:
+                show_wrap = False
+            if move_in != "-" and wrap.img_in != move_in:
+                show_wrap = False
+
+            if show_wrap:
+                wrap.show()
+
+    def _reset(self):
+        #
+        self.move_out_combo_top.blockSignals(True)
+        self.move_in_combo_top.blockSignals(True)
+        self.move_out_combo_center.blockSignals(True)
+        self.move_in_combo_center.blockSignals(True)
+
+        #
+        self.move_out_combo_top.clear()
+        self.move_in_combo_top.clear()
+
+        self.move_out_combo_center.clear()
+        self.move_in_combo_center.clear()
+
+        #
+        self.move_out_combo_top.blockSignals(False)
+        self.move_in_combo_top.blockSignals(False)
+        self.move_out_combo_center.blockSignals(False)
+        self.move_in_combo_center.blockSignals(False)
+
+        #
+        for table in self.table_wrap_list:
+            table.deleteLater()
+
 
 
 

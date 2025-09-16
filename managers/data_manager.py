@@ -3,10 +3,14 @@ import re
 from config.patterns import move_pattern, matrix_pattern, detectors_pattern, image_pattern, settings_pattern
 from entities.detector import Detector
 from entities.image import Image
+from entities.interstage import InterStage
 from entities.log import Log
 from entities.matrix import MatrixCell
 from entities.signal_group import SignalGroup
 from pathlib import Path
+
+from entities.transition import Transition
+
 
 class DataManager:
     _instance = None
@@ -23,6 +27,7 @@ class DataManager:
         self.detectors = []
         self.MatrixCells = []
         self.images = []
+        self.inter_stage = []
 
         # Settings
         self.anlagenName        = None
@@ -121,7 +126,6 @@ class DataManager:
     def init_phue(self, path_list):
         class_pattern = re.compile(r"public\s+class\s+Phue([A-Za-z0-9]+)_([A-Za-z0-9]+)")
         sg_pattern = re.compile(r"_tk\.(\w+)\.setSg\s*\(Zustand\.(ROT|GRUEN)\s*,\s*(\d+)\s*\)")
-        results = []
 
         for path in path_list:
             path = Path(path)
@@ -133,25 +137,13 @@ class DataManager:
             if not class_match:
                 continue
             img_out, img_in = class_match.groups()
+            new_interstage = InterStage(img_out, img_in)
 
             # find turn of and turn off moves
-            actions = []
             for m in sg_pattern.finditer(content):
                 move, state, time = m.groups()
-                action = {"move": move, "state": "on" if state == "GRUEN" else "off", "time": int(time)}
-                actions.append(action)
-
-            # --- שמירת תוצאה
-            results.append(
-                {
-                    "file": path.name,
-                    "outgoing": img_out,
-                    "incoming": img_in,
-                    "actions": actions,
-                }
-            )
-
-        return results
+                new_interstage.transitions.append(Transition(move, state, time))
+            self.inter_stage.append(new_interstage)
 
     def add_detector(self, detector_name, move_type, ext_time):
         self.detectors.append(Detector(detector_name, move_type, ext_time))
@@ -230,6 +222,8 @@ class DataManager:
     def get_image_count(self):
         return len(self.images)
 
+    def get_all_inter_stages(self):
+        return self.inter_stage
 
     # --------------- update methods --------------- #
     def update_min_green(self, name: str, value: int):
@@ -362,6 +356,7 @@ class DataManager:
                 self.images.remove(image)
                 return True
         return False
+
 
 
 

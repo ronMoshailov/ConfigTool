@@ -54,3 +54,12 @@ def displayAllMoves():
         print(f"skeleton: {img.skeleton}")
         for move in img.move_list:
             print(f"name: {move.name:<5}")
+
+    # print all inter stages
+    print("\nimages:")
+    inter_stage_list = data_controller.data_manager.inter_stage
+    for inter_stage in inter_stage_list:
+        print(f" ---- {inter_stage.image_out} → {inter_stage.image_in} ---- ")
+        for transition in inter_stage.transitions:
+            print(f"move: {transition.move:<5} state: {transition.state:<5} duration: {transition.duration:<5}")
+
