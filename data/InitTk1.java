@@ -46,11 +46,44 @@ public class InitTk1 extends InitTk {
 		tk.pd     =  new Move(   tk    , "_d"   , MoveType.Pedestrian         ,      8 ,   0 , true ); 
 		tk.pe     =  new Move(   tk    , "_e"   , MoveType.Pedestrian         ,      8 ,   0 , true );
 		tk.pf     =  new Move(   tk    , "_f"   , MoveType.Pedestrian         ,      8 ,   0 , true );
+		tk.pg     =  new Move(   tk    , "_e"   , MoveType.Pedestrian         ,      8 ,   0 , true );
+		tk.pj     =  new Move(   tk    , "_f"   , MoveType.Pedestrian         ,      8 ,   0 , true );
+		tk.pk     =  new Move(   tk    , "_e"   , MoveType.Pedestrian         ,      8 ,   0 , true );
+		tk.pl     =  new Move(   tk    , "_f"   , MoveType.Pedestrian         ,      8 ,   0 , true );
+		tk.pz     =  new Move(   tk    , "_e"   , MoveType.Pedestrian         ,      8 ,   0 , true );
+		tk.px     =  new Move(   tk    , "_f"   , MoveType.Pedestrian         ,      8 ,   0 , true );
+		tk.pv     =  new Move(   tk    , "_e"   , MoveType.Pedestrian         ,      8 ,   0 , true );
+		tk.pn     =  new Move(   tk    , "_f"   , MoveType.Pedestrian         ,      8 ,   0 , true );
+		tk.pm     =  new Move(   tk    , "_e"   , MoveType.Pedestrian         ,      8 ,   0 , true );
+		tk.pq     =  new Move(   tk    , "_f"   , MoveType.Pedestrian         ,      8 ,   0 , true );
+
+		tk.pq     =  new Move(   tk    , "_e"   , MoveType.Pedestrian         ,      8 ,   0 , true );
+		tk.pw     =  new Move(   tk    , "_f"   , MoveType.Pedestrian         ,      8 ,   0 , true );
+		tk.pr     =  new Move(   tk    , "_e"   , MoveType.Pedestrian         ,      8 ,   0 , true );
+		tk.pt     =  new Move(   tk    , "_f"   , MoveType.Pedestrian         ,      8 ,   0 , true );
+		tk.py     =  new Move(   tk    , "_e"   , MoveType.Pedestrian         ,      8 ,   0 , true );
+		tk.pu     =  new Move(   tk    , "_f"   , MoveType.Pedestrian         ,      8 ,   0 , true );
+		tk.pi     =  new Move(   tk    , "_e"   , MoveType.Pedestrian         ,      8 ,   0 , true );
+		tk.po     =  new Move(   tk    , "_f"   , MoveType.Pedestrian         ,      8 ,   0 , true );
+		tk.pp     =  new Move(   tk    , "_f"   , MoveType.Pedestrian         ,      8 ,   0 , true );
 
 		tk.Ba     =  new Move(   tk    , "_Ba"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
 		tk.Bb     =  new Move(   tk    , "_Bb"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
 		tk.Bc     =  new Move(   tk    , "_Bc"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
 		tk.Bd     =  new Move(   tk    , "_Bd"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
+        tk.Be     =  new Move(   tk    , "_Ba"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
+		tk.Bf     =  new Move(   tk    , "_Bb"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
+		tk.Bg     =  new Move(   tk    , "_Bc"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
+		tk.Bh     =  new Move(   tk    , "_Bd"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
+		tk.Bi     =  new Move(   tk    , "_Ba"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
+		tk.Bj     =  new Move(   tk    , "_Bb"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
+		tk.Bk     =  new Move(   tk    , "_Bc"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
+		tk.Bl     =  new Move(   tk    , "_Bd"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
+		tk.Bm     =  new Move(   tk    , "_Ba"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
+		tk.Bn     =  new Move(   tk    , "_Bb"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
+		tk.Bo     =  new Move(   tk    , "_Bc"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
+		tk.Bp     =  new Move(   tk    , "_Bd"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
+
 	}
 
 	//INTERGREEN MATRIX

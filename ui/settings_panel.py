@@ -1,9 +1,7 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QIntValidator
-from PyQt6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QSizePolicy, \
-    QGridLayout
+from PyQt6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout
 
-from config.style import min_green_panel_style, settings_panel_style
+from config.style import settings_panel_style
 from controllers.data_controller import DataController
 
 

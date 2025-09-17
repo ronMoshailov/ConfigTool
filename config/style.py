@@ -157,6 +157,12 @@ QFrame#phaseCard QPushButton:hover {
 
 
 # ========== panel style ========== #
+main_window_style = """
+        QMainWindow {
+            background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #cce0ff, stop:1 #e6f2fe);
+        }
+        """
+
 navigator_panel_style =  """
             /* ********************************* root ********************************* */
             QWidget#root_panel {
@@ -429,7 +435,17 @@ min_green_panel_style = """
                 stop:1 #eef2ff    /* סגול-אפור רך */
             );
         }
+
+        QWidget#container_widget{
+            background: transparent;
+            border-radius: 20px;
+        }
         
+        QWidget#scroll_area{
+            background: transparent;
+            border-radius: 20px;
+        }
+
         /* ********************************* QFrame ********************************* */
         QFrame#card {
             background: #fdfdfd; /* אפור-לבן – שונה מהרקע */
@@ -1360,89 +1376,95 @@ QWidget#root {
     border: 1px solid #1a98ff;
     background: qlineargradient(
         x1:0, y1:0, x2:0, y2:1,
-        stop:0 #e6f2ff,
-        stop:1 #f9fcff
+        stop:0 #c1e8ff,  /* טורקיז בהיר */
+        stop:1 #eef9ff   /* טורקיז-לבן עדין */
     );
 }
 
-QWidget#scroll_area{
-    border: 1px solid black;
-
+/* Scroll Area */
+QWidget#scroll_area {
+    border: 1px solid #167682;
+    border-radius: 12px;
 }
-/* ********************************* title ********************************* */
+
+/* ********************************* Title ********************************* */
 QLabel#title {
     font-size: 28px;
     font-weight: bold;
     color: #2c3e50;
     padding: 6px 12px;
     border-radius: 12px;
-    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #d2e1ff, stop:1 #f0f8ff);
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop:0 #d2e1ff, stop:1 #f0f8ff);
     border: 1px solid #1a98ff;
 }
 QLabel#title:hover {
-    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #eaf2ff, stop:1 #ffffff);
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop:0 #eaf2ff, stop:1 #ffffff);
     border: 1px solid #3498db;
 }
 
 /* ********************************* QTableWidget ********************************* */
 QTableWidget {
     border: 1px solid #a6c8ff;
-    border-radius: 12px;
-    gridline-color: #ddd;
+    gridline-color: #dce6f1;
     font-size: 14px;
     selection-background-color: #cceeff;
     alternate-background-color: #f5faff;
 }
-QTableWidget::item {
-    padding: 6px;
-}
-QTableCornerButton::section {
-    background-color: transparent;
-    border: none;
-}
 QHeaderView::section {
-    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #d6eaff, stop:1 #ffffff);
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop:0 #d6eaff, stop:1 #ffffff);
     border: 1px solid #a6c8ff;
     padding: 6px;
     font-weight: bold;
     color: #2c3e50;
 }
 QHeaderView::section:hover {
-    background: #ecf5ff;
+    background-color: #ecf5ff;
 }
 
 /* ********************************* QPushButton ********************************* */
-QPushButton#remove_button {
-    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #ff6b6b, stop:1 #e74c3c);
+QPushButton#add_button {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                      stop:0 #00bfa5, stop:1 #26c6da); /* טורקיז חי וזורח */
     color: white;
     border: none;
     border-radius: 16px;
-    padding: 6px 16px;
     font-size: 18px;
     font-weight: bold;
-}
-QPushButton#remove_button:hover {
-    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #e74c3c, stop:1 #c0392b);
-}
-QPushButton#remove_button:pressed {
-    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #c0392b, stop:1 #a93226);
+    padding: 6px 16px;
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
 }
 
-QPushButton#add_button {
-    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #76ff03, stop:1 #4caf50);
+QPushButton#add_button:hover {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                      stop:0 #26c6da, stop:1 #00bfa5); /* הפוך לגרדיאנט */
+    box-shadow: 0px 6px 8px rgba(0,0,0,0.15);
+}
+
+QPushButton#add_button:pressed {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                      stop:0 #009688, stop:1 #00acc1); /* צבעים כהים יותר ללחיצה */
+    box-shadow: none;
+}
+
+QPushButton#remove_button {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                      stop:0 #76ff03, stop:1 #4caf50);
     border: 1px solid #1a98ff;
-    border-radius: 16px;
-    padding: 6px 16px;
     font-size: 18px;
     font-weight: bold;
     color: white;
 }
-QPushButton#add_button:hover {
-    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #5fd000, stop:1 #338237);
+QPushButton#remove_button:hover {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                      stop:0 #5fd000, stop:1 #338237);
 }
 
 QPushButton#update_button {
-    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #6ee96e, stop:1 #4caf50);
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                      stop:0 #6ee96e, stop:1 #4caf50);
     color: white;
     border: none;
     border-radius: 20px;
@@ -1451,7 +1473,8 @@ QPushButton#update_button {
     font-weight: bold;
 }
 QPushButton#update_button:hover {
-    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #5fba63, stop:1 #338237);
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                      stop:0 #5fba63, stop:1 #338237);
 }
 
 /* ********************************* QComboBox ********************************* */
@@ -1498,4 +1521,5 @@ QScrollArea {
     border: none;
     background-color: transparent;
 }
+
 """

@@ -1,6 +1,7 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QLineEdit, QMessageBox
+from PyQt6.QtWidgets import QLineEdit
 
+from config.special import is_move_valid
 from managers.paths_manager import PathsManager
 from managers.data_manager import DataManager
 from managers.schedule_manager import ScheduleManager
@@ -16,38 +17,48 @@ class DataController:
         """
         This method runs before __init__ when new instance is created.
         """
-        if cls._instance is None:  # checks if there is an instance of the class
-            cls._instance = super().__new__(cls)  # create new instance and store him in _instance before __init__
+        if cls._instance is None:                   # checks if there is an instance of the class
+            cls._instance = super().__new__(cls)    # create new instance and store him in _instance before __init__
             cls.data_manager = DataManager()
             cls.path_manager = PathsManager()
             cls.sk_manager = []
             cls.schedule_manager = []
             cls.log_textbox = None
-            print("** data controller was set successfully")
-        return cls._instance  # return _instance
+        return cls._instance
 
-    def __init__(self):
-        """
-        This method runs when the object initialized.
-        """
-        pass
     # --------------- add methods --------------- #
-    def add_move(self, move_name: str, move_type: str, is_main: bool, min_green: str = "0"):
-        """
-        This method add new move.
+    def add_move(self, move_name: str, move_type: str, is_main: bool):
+        # check if the name is valid for the type
+        success, message = is_move_valid(move_name, move_type)
+        if not success:
+            return False, message
 
-        :param move_name: name of the move.
-        :param move_type: type of move.
-        :param is_main: value to indicate if the move is main or not.
-        :param min_green:
-        :return: True is success, otherwise False.
-        """
-        if not self.is_move_valid(move_name, move_type):
-            return False
-        if not self.data_manager.add_move(move_name, move_type, is_main, min_green):
-            self.write_log("The move already exist", "r")
-            return False
-        return True
+        # add move
+        success, message = self.data_manager.add_move(move_name, move_type, is_main)
+        if not success:
+            return False, message
+
+        return True, ""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def add_sk(self):
         card_num = len(self.sk_manager) + 1
@@ -213,13 +224,7 @@ class DataController:
         :param move_name: name of the move.
         :return: None
         """
-        if self.data_manager.remove_move(move_name):
-            msg = f"{move_name} has been removed successfully"
-            self.write_log(msg, "r")
-            return True
-        msg = f"{move_name} has not been removed"
-        self.write_log(msg, "r")
-        return False
+        return self.data_manager.remove_move(move_name)
 
     def remove_sk(self, number_card):
         for i, sk_manager in enumerate(self.sk_manager):
@@ -245,10 +250,6 @@ class DataController:
                 manager.remove_schedule_row(number_row)
                 return True
         return False
-
-    def clear_log(self):
-        self.log_textbox.clear()
-        self.log_textbox.setStyleSheet("background-color: white; color: black")
 
     # --------------- general methods --------------- #
     def initialize_app(self, btn_list):
@@ -300,27 +301,6 @@ class DataController:
         self.sk_manager = []
         print(f"**** [class] DataController:\t [method] reset\t[end] ")
 
-    def is_move_valid(self, move_name, move_type):
-        """
-        This method checks if the move is valid.
-
-        :param move_name: name of the move.
-        :param move_type: type of the move.
-        :return: Ture if the move is valid else False.
-        """
-        if move_type == "Traffic" or move_type == "Traffic_Flashing":
-            if not move_name.startswith("k") or not move_name[1:].isdigit():
-                self.write_log(f"Invalid name for traffic \'{move_name}\'", "r")
-                return False
-        elif move_type == "Pedestrian":
-            if not move_name.startswith("p") or not move_name[1:].isalpha():
-                self.write_log(f"Invalid name for pedestrian \'{move_name}\'", "r")
-                return False
-        elif move_type == "Blinker" or move_type == "Blinker_Conditional":
-            if not move_name.startswith("B") or not move_name[1:].isalpha():
-                self.write_log(f"Invalid name for blinker \'{move_name}\'", "r")
-                return False
-        return True
 
     def set_sk_list(self, path):
         """
@@ -396,6 +376,14 @@ class DataController:
 
     def remove_image(self, image_name):
         self.data_manager.remove_images(image_name)
+
+    def add_inter_stage(self, move_out, move_in):
+        return self.data_manager.add_inter_stage(move_out, move_in)
+
+    def update_inter_stage(self, table_wrap_list):
+        self.data_manager.update_inter_stage(table_wrap_list)
+
+
 
 
 

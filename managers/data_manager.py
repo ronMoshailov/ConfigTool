@@ -23,6 +23,7 @@ class DataManager:
         return cls._instance                                        # return _instance
 
     def __init__(self):
+        # Data
         self.moves = []
         self.detectors = []
         self.MatrixCells = []
@@ -39,21 +40,43 @@ class DataManager:
 
 
     # --------------- add methods --------------- #
-    def add_move(self, move_name, move_type, is_main, min_green = "0"):
-        """
-        This method add new move.
+    def add_move(self, move_name, move_type, is_main):
+        # check if move already exist in DB
+        if self._get_move_by_name(move_name):
+            return False, f"המופע {move_name} כבר קיים במערכת"
 
-        :param move_name: name of move
-        :param move_type: type of move
-        :param is_main: True if the move is main, False otherwise
-        :param min_green: minimum green time
-        :return: True if success, False otherwise
-        """
-        if self.is_move_exist(move_name):
-            return False
-        new_move = SignalGroup(move_name, move_type, is_main, min_green)
+        # create move
+        new_move = SignalGroup(move_name, move_type, is_main)
+
+        # add move
         self.moves.append(new_move)
-        return True
+        return True, ""
+
+
+
+
+
+
+    # --------------- general methods --------------- #
+    def _get_move_by_name(self, name):
+        for move in self.moves:
+            if move.name == name:
+                return move
+        return None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def init_moves(self, path):
         """
@@ -178,6 +201,14 @@ class DataManager:
         self.detectors.append(Detector(detector_name, move_type, ext_time))
         return True
 
+    def add_inter_stage(self, move_out, move_in):
+        for stage in self.inter_stage:
+            if stage.image_out == move_out and stage.image_in == move_in:
+                return False
+
+        new_inter_stage = InterStage(move_out, move_in)
+        self.inter_stage.append(new_inter_stage)
+        return True
 
     # --------------- get methods --------------- #
     def get_all_moves(self):
@@ -267,10 +298,10 @@ class DataManager:
         """
         target = next((m for m in self.moves if m.name == move_name), None)
         if target:
-            perv = target.name
             self.moves.remove(target)
-            return True
-        return False
+            return True, f"המופע {move_name} נמחק בהצלחה"
+        return False, f"לא נמחק מאיזשהי סיבה בקוד"
+
 
     def remove_detector(self, detector_name):
         target = next((d for d in self.detectors if d.name == detector_name), None)
@@ -291,18 +322,6 @@ class DataManager:
         # self.e_detectors = []
         # self.inter_stages = []
         self.MatrixCells = []
-
-    def is_move_exist(self, move_name: str):
-        """
-        This method check if the move exists.
-
-        :param move_name: name of the move
-        :return: True if exists, False otherwise
-        """
-        for move in self.moves:
-            if move.name == move_name:
-                return True
-        return False
 
     def init_images(self, path):
         pattern = image_pattern
@@ -344,11 +363,6 @@ class DataManager:
             if not is_found:
                 self.images.append(Image(image_name, checked_moves))
 
-    def _get_move_by_name(self, name):
-        for move in self.moves:
-            if move.name == name:
-                return move
-        return None
 
     def remove_images(self, image_name):
         for image in self.images:
@@ -357,6 +371,35 @@ class DataManager:
                 return True
         return False
 
+    def update_inter_stage(self, table_wrap_list):
+
+        self.inter_stage.clear()
+
+        for wrap in table_wrap_list:
+            img_out = wrap.img_out
+            img_in = wrap.img_in
+            tbl = wrap.table
+
+            new_inter_stage = InterStage(img_out, img_in)
+
+            # find the instance
+            for row in range(tbl.rowCount()):
+                # עמודה 0 (ComboBox)
+                combo_widget = tbl.cellWidget(row, 0)
+                value0 = combo_widget.currentText()
+
+                # עמודה 1 (color)
+                item1 = tbl.item(row, 1)
+                value1 = item1.text()
+
+                value1 = "ROT" if value1 == "🔴" else "GRUEN"
+                # עמודה 2 (duration)
+                item2 = tbl.item(row, 2)
+                value2 = item2.text()
+
+                new_inter_stage.transitions.append(Transition(value0, value1, value2))
+
+            self.inter_stage.append(new_inter_stage)
 
 
 

@@ -1,6 +1,6 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QComboBox, QLabel, QCheckBox, QHBoxLayout, QVBoxLayout, QPushButton, QFrame, \
-    QTableWidget, QAbstractItemView, QScrollArea, QTableWidgetItem
+    QTableWidget, QAbstractItemView, QScrollArea, QTableWidgetItem, QHeaderView, QMessageBox
 
 from config.style import inter_stage_panel_style
 from controllers.data_controller import DataController
@@ -17,6 +17,7 @@ class InterStagePanel(QWidget):
         self.data_controller = DataController()
         self.table_wrap_list = []
 
+        # =============== QFrame =============== #
         line = QFrame()
         line.setFrameShape(QFrame.Shape.HLine)  # קו אופקי
         line.setStyleSheet("background-color: black;")
@@ -41,7 +42,11 @@ class InterStagePanel(QWidget):
 
         # =============== QPushButton =============== #
         btn = QPushButton("עדכן")
+        btn.clicked.connect(lambda _: self.data_controller.update_inter_stage(self.table_wrap_list))
+        btn.setObjectName("update_button")
+#        btn_remove.setObjectName("remove_button")
 
+        # =============== Root Layout =============== #
         root_layout.addLayout(top_layout)
         root_layout.addWidget(line)
         root_layout.addLayout(combo_layout)
@@ -85,6 +90,8 @@ class InterStagePanel(QWidget):
         layout = QHBoxLayout()
 
         btn = QPushButton("הוסף")
+        btn.clicked.connect(self._add_inter_stage)
+        btn.setObjectName("add_button")
 
         move_out_layout = QVBoxLayout()
         move_out_label = QLabel("מופע יוצא")
@@ -100,8 +107,8 @@ class InterStagePanel(QWidget):
 
         layout.addStretch()
         layout.addWidget(btn)
-        layout.addLayout(move_out_layout)
         layout.addLayout(move_in_layout)
+        layout.addLayout(move_out_layout)
 
         return layout
 
@@ -148,21 +155,44 @@ class InterStagePanel(QWidget):
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # set table
-        tbl = QTableWidget(len(transitions), 3, wrap)
+        tbl = QTableWidget(len(transitions), 4, wrap)
         tbl.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)
         tbl.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-        tbl.setMinimumWidth(300)
+        wrap.setMinimumWidth(320)
+        wrap.setMaximumWidth(320)
+
         # הוספת כותרות לעמודות (לא חובה, אבל נוח)
-        tbl.setHorizontalHeaderLabels(["Move", "State", "Duration"])
+        tbl.setHorizontalHeaderLabels(["Move", "State", "Duration", "Remove"])
         # tbl.verticalHeader().setVisible(False)
+        tbl.cellClicked.connect(self._toggle_state)
+        tbl.cellChanged.connect(self._validate_number_column)
+
+        # set header
+        header = tbl.horizontalHeader()
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)  # עמודת Duration לפי תוכן
+        header.setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)  # עמודת Duration לפי תוכן
+        header.setSectionResizeMode(2, QHeaderView.ResizeMode.ResizeToContents)  # עמודת Duration לפי תוכן
+
 
         for row, transition in enumerate(transitions):
-            tbl.setItem(row, 0, QTableWidgetItem(str(transition.move)))
-            tbl.setItem(row, 1, QTableWidgetItem(str(transition.state)))
-            tbl.setItem(row, 2, QTableWidgetItem(str(transition.duration)))
+            # col 1
+            combo_widget = QComboBox()
+            combo_widget.addItems([move.name for move in self.data_controller.get_all_moves()])
+            combo_widget.setCurrentText(transition.move)  # או combo_widget.setCurrentIndex(1)
 
-        btn_remove = QPushButton("מחק SK")
-        # btn_remove.clicked.connect(lambda _, card_num = card_number: self._remove_sk(card_num))
+            remove_btn = QPushButton("❌")
+            remove_btn.clicked.connect(lambda _, t=tbl: self._remove_row(t))
+
+            color_widget = QTableWidgetItem("🔴" if str(transition.state) == "ROT" else "🟢")
+            color_widget.setFlags(color_widget.flags() & ~Qt.ItemFlag.ItemIsEditable)  # מסיר את האפשרות לערוך
+
+            tbl.setCellWidget(row, 0, combo_widget)
+            tbl.setItem(row, 1, color_widget)
+            tbl.setItem(row, 2, QTableWidgetItem(str(transition.duration)))
+            tbl.setCellWidget(row, 3, remove_btn)
+
+        btn_remove = QPushButton("הוסף")
+        btn_remove.clicked.connect(lambda _, t=tbl: self._add_row(t))
         btn_remove.setObjectName("remove_button")
 
         # set layout
@@ -174,6 +204,7 @@ class InterStagePanel(QWidget):
 
         wrap.setLayout(column_layout)
 
+        wrap.table = tbl
         wrap.img_out = img_out
         wrap.img_in = img_in
 
@@ -217,8 +248,88 @@ class InterStagePanel(QWidget):
 
         #
         for table in self.table_wrap_list:
+            # self.tables_layout.removeWidget(table)  # remove from layout
+            # table.setParent(None)  # release the child from the father (helps in the child removed before the father now)
             table.deleteLater()
 
+        self.table_wrap_list.clear()  # לרוקן לגמרי
 
 
+    def _add_inter_stage(self):
+        move_in = self.move_in_combo_top.currentText()
+        move_out = self.move_out_combo_top.currentText()
+
+        if move_in == "-" or move_out == "-":
+            return
+
+        if self.data_controller.add_inter_stage(move_out, move_in):
+            wrap = self._init_table(move_out, move_in, [])
+            self.table_wrap_list.append(wrap)
+            self.tables_layout.addWidget(wrap)
+            self.tables_layout.addStretch()
+            self.scroll_area.widget().update()  # רענון ה־scroll_area
+
+    def _toggle_state(self, row, column):
+        # אם זו העמודה של מצב (במקרה שלך 1)
+        if column != 1:
+            return
+
+        tbl = self.sender()  # שולף את הטבלה שהוציאה את האירוע
+        item = tbl.item(row, column)
+        if not item:
+            return
+
+        # מחליף בין הצבעים
+        current = item.text()
+        if current == "🔴":
+            item.setText("🟢")
+        else:
+            item.setText("🔴")
+
+    def _remove_row(self, tbl):
+        btn = self.sender()  # הכפתור שנלחץ
+        if btn is None:
+            return
+
+        # מצא את השורה שהכפתור נמצא בה
+        row = -1
+        for r in range(tbl.rowCount()):
+            if tbl.cellWidget(r, 3) == btn:  # נניח שהכפתור בעמודה 3
+                row = r
+                break
+
+        if row != -1:
+            tbl.removeRow(row)
+
+    def _add_row(self, tbl):
+        row = tbl.rowCount()
+        tbl.insertRow(row)
+
+        combo_widget = QComboBox()
+        combo_widget.addItems([move.name for move in self.data_controller.get_all_moves()])
+        combo_widget.setCurrentIndex(0)
+
+        remove_btn = QPushButton("❌")
+        remove_btn.clicked.connect(lambda _, t=tbl: self._remove_row(tbl))
+
+        tbl.setCellWidget(row, 0, combo_widget)
+        tbl.setItem(row, 1, QTableWidgetItem("🔴"))
+        tbl.setItem(row, 2, QTableWidgetItem("0"))
+        tbl.setCellWidget(row, 3, remove_btn)
+
+    def _validate_number_column(self, row, column):
+        # נבדוק אם זו העמודה 2
+        if column != 2:
+            return
+
+        tbl = self.sender()  # שולף את הטבלה
+        item = tbl.item(row, column)
+        text = item.text()
+
+        # אם זה לא מספר, החזר את הערך הקודם
+        try:
+            int(text)  # אם רוצים מספר שלם השתמשו ב int(text)
+        except ValueError:
+            QMessageBox.critical(self, "שגיאה", "ערך לא תקין, אנה הכנס מספר")
+            return
 

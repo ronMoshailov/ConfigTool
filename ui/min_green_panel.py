@@ -1,8 +1,9 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIntValidator
 from PyQt6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QSizePolicy, \
-    QGridLayout, QMessageBox
+    QGridLayout, QMessageBox, QScrollArea
 
+from config.special import clear_widget_from_layout
 from config.style import min_green_panel_style
 from controllers.data_controller import DataController
 
@@ -15,17 +16,39 @@ class MinGreenLayout(QWidget):
         self.data_controller = DataController()
 
         # =============== Grid Layout =============== #
-        self.root_layout = QGridLayout()
-        self.root_layout.setHorizontalSpacing(36)
-        self.root_layout.setVerticalSpacing(36)
-        self.root_layout.setContentsMargins(40, 40, 40, 40)
+        self.grid_layout = QGridLayout()
+        self.grid_layout.setHorizontalSpacing(36)
+        self.grid_layout.setVerticalSpacing(36)
+        self.grid_layout.setContentsMargins(40, 40, 40, 40)
 
-        # =============== Self =============== #
+        # ==================== Scroll Area ==================== #
+        self.scroll_area = QScrollArea()
+        self.scroll_area.setWidgetResizable(True)  # חשוב, אחרת הגובה יהיה 0
+        self.scroll_area.setObjectName("scroll_area")
+
+        self.container_widget = QWidget()
+        self.container_widget.setObjectName("container_widget")
+
+        self.scroll_area.setWidget(self.container_widget)   # set 'scroll_area' as father of 'scroll_content'
+        self.container_widget.setLayout(self.grid_layout) # set the widget as the father of the layout
+
+        # ==================== QPushButton ==================== #
+        btn = QPushButton("עדכן")
+        btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        btn.setObjectName("update_button")
+        btn.clicked.connect(self._update)
+
+        # ==================== Widget to hold grid ==================== #
+        self.root_layout = QVBoxLayout()
+        self.root_layout.addWidget(self.scroll_area, 1)
+        self.root_layout.addWidget(btn)
+
+        # ==================== Self ==================== #
         self.setLayout(self.root_layout)
-
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.setObjectName("root")
         self.setStyleSheet(min_green_panel_style)
+
         self.hide()
 
 
@@ -37,7 +60,7 @@ class MinGreenLayout(QWidget):
         cards_in_row = 7
 
         # =============== Clear grid =============== #
-        self._clear_layout()
+        clear_widget_from_layout([self.grid_layout])
 
         # =============== Build grid =============== #
         for i, move in enumerate(all_moves):
@@ -72,16 +95,11 @@ class MinGreenLayout(QWidget):
             card.setLayout(vertical_layout)
 
             # =============== Add to layout =============== #
-            self.root_layout.addWidget(card, row_num, col_num)
-
-        btn = QPushButton("עדכן")
-        btn.setCursor(Qt.CursorShape.PointingHandCursor)
-        btn.setObjectName("update_button")
-        btn.clicked.connect(self._update)
+            self.grid_layout.addWidget(card, row_num, col_num)
 
         # =============== Add to layout =============== #
-        self.root_layout.setRowStretch(self.root_layout.rowCount(), 1)
-        self.root_layout.addWidget(btn, self.root_layout.rowCount(), 0, 1, cards_in_row)  # add the textBox (component, row_num, col_num, how many rows use, how many columns to use)
+        self.grid_layout.setRowStretch(self.grid_layout.rowCount(), 1)
+        # self.grid_layout.addWidget(btn, self.grid_layout.rowCount(), 0, 1, cards_in_row)  # add the textBox (component, row_num, col_num, how many rows use, how many columns to use)
         self.show()
 
     # =============== inner methods =============== #
@@ -91,7 +109,7 @@ class MinGreenLayout(QWidget):
         If no layout is provided, clear the root_layout.
         """
         if layout is None:
-            layout = self.root_layout
+            layout = self.grid_layout
 
         while layout.count():
             item = layout.takeAt(0)
