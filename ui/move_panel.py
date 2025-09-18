@@ -65,45 +65,31 @@ class MovePanel(QWidget):
 
     # =============== Add methods =============== #
     def _add_move(self, name):
-        # check if move name empty
-        if name == "":
-            QMessageBox.critical(self, "שגיאה", "שם המופע ריק")
-            return
-
-        # check if move name contain numbers and digits
-        if any(c.isalpha() for c in name) and any(c.isdigit() for c in name):
-            QMessageBox.critical(self, "שגיאה", "שם המופע לא תקין")
-            return
-
         # check if move name contain numbers and digits
         is_main = True if self.main_radio.isChecked() else False
 
         # initialize variables
-        move_type = move_name = ""
+        move_type = ""
 
         # fix the value to fit the DB
         if self.traffic_radio.isChecked():
             move_type = "Traffic"
-            move_name = "k" + name
         elif self.traffic_flashing_radio.isChecked():
             move_type = "Traffic_Flashing"
-            move_name = "k" + name
         elif self.pedestrian_radio.isChecked():
             move_type = "Pedestrian"
-            move_name = "p" + name
         elif self.blinker_radio.isChecked():
             move_type = "Blinker"
-            move_name = "B" + name
         elif self.blinker_conditional_radio.isChecked():
             move_type = "Blinker_Conditional"
-            move_name = "B" + name
 
         # add the move to DB
-        success, message = self.data_controller.add_move(move_name, move_type, is_main)
+        success, message = self.data_controller.add_move(name, move_type, is_main)
         if success:
             self._show_scroll_bar()
             return
         QMessageBox.critical(self, "שגיאה", message)
+        self.main_phase_textbox.setText("")
 
     # =============== Remove methods =============== #
     def _remove_move(self, move_name):

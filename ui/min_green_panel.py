@@ -48,7 +48,6 @@ class MinGreenLayout(QWidget):
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.setObjectName("root")
         self.setStyleSheet(min_green_panel_style)
-
         self.hide()
 
 
@@ -103,28 +102,10 @@ class MinGreenLayout(QWidget):
         self.show()
 
     # =============== inner methods =============== #
-    def _clear_layout(self, layout=None):
-        """
-        Recursively clear all widgets and layouts inside a given layout.
-        If no layout is provided, clear the root_layout.
-        """
-        if layout is None:
-            layout = self.grid_layout
-
-        while layout.count():
-            item = layout.takeAt(0)
-
-            if item.widget():
-                item.widget().deleteLater()
-            elif item.layout():
-                self._clear_layout(item.layout())
-
-        if layout is not self.root_layout:
-            layout.deleteLater()
-
     def _update(self):
-        if self.data_controller.update_min_green(self.min_green_dict):
+        success, message = self.data_controller.update_min_green(self.min_green_dict)
+        if success:
             QMessageBox.information(self, "מינימום ירוק", "כל הזמני מינימום ירוק עודכנו בהצלחה")
             return
-        QMessageBox.information(self, "מינימום ירוק", "העדכון נכשלה")
+        QMessageBox.critical(self, "מינימום ירוק", message)
 

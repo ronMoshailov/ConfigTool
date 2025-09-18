@@ -28,6 +28,29 @@ class DataController:
 
     # --------------- add methods --------------- #
     def add_move(self, move_name: str, move_type: str, is_main: bool):
+        # check if move name empty
+        if move_name == "":
+            # QMessageBox.critical(self, "שגיאה", "שם המופע ריק")
+            return False, "שם המופע ריק"
+
+        # check if move name contain numbers and digits
+        if any(c.isalpha() for c in move_name) and any(c.isdigit() for c in move_name):
+            # QMessageBox.critical(self, "שגיאה", "שם המופע לא תקין")
+            return False, "שם המופע לא תקין"
+
+        # fix the value to fit the DB
+        if move_type == "Traffic":
+            move_name = "k" + move_name
+        elif move_type == "Traffic_Flashing":
+            move_name = "k" + move_name
+        elif move_type == "Pedestrian":
+            move_name = "p" + move_name
+        elif move_type == "Blinker":
+            move_name = "B" + move_name
+        elif move_type == "Blinker_Conditional":
+            move_name = "B" + move_name
+
+
         # check if the name is valid for the type
         success, message = is_move_valid(move_name, move_type)
         if not success:
@@ -142,25 +165,26 @@ class DataController:
         :param dictionary: dictionary that told as key the move name and in value the textBox
         :return: True is success, otherwise False.
         """
+        # check if the values are empty
         for key, value in dictionary.items():
             if value.text() == "":
-                self.write_log(f"The move {key} is empty", "r")
-                return False
-            value = value.text()
-            if isinstance(value, str):
-                value = int(value)
-            if value < 0:
-                Log.error(f"Error: The value of '{key} is negative ({value})")
-                continue
-            self.data_manager.update_min_green(key, value)
+                return False, f"המופע {key} ללא ערך"
+
+        # update values
+        for key, value in dictionary.items():
+            self.data_manager.update_min_green(key, int(value.text()))
+        return True, f"כל הזמני מינימום ירוק עודכנו בהצלחה"
+
+
+
+
+
         return True
 
     def update_matrix(self, changes_list):
         if self.data_manager.update_matrix(changes_list):
-            self.write_log("Matrix Updated", "g")
-            return True
-        self.write_log("update failed", "r")
-        return False
+            return True, "Matrix Updated"
+        return False, "update failed"
 
     def update_sk_comment(self, card_number: int, channel: int, status):
         """
@@ -325,19 +349,19 @@ class DataController:
         self.log_textbox = textbox
         self.log_textbox.setPlaceholderText("ברוכה הבאה...")
 
-    def write_log(self, text, color):
-        self.log_textbox.clear()  # מנקה
-
-        if color == "r":
-            self.log_textbox.setStyleSheet("background-color: red; color: white")
-            self.log_textbox.setText(text)
-        if color == "g":
-            self.log_textbox.setStyleSheet("background-color: green; color: white")
-            self.log_textbox.setText(text)
-        if color == "y":
-            self.log_textbox.setStyleSheet("background-color: yellow; color: white")
-            self.log_textbox.setText(text)
-        self.log_textbox.setAlignment(Qt.AlignmentFlag.AlignLeft)
+    # def write_log(self, text, color):
+    #     self.log_textbox.clear()  # מנקה
+    #
+    #     if color == "r":
+    #         self.log_textbox.setStyleSheet("background-color: red; color: white")
+    #         self.log_textbox.setText(text)
+    #     if color == "g":
+    #         self.log_textbox.setStyleSheet("background-color: green; color: white")
+    #         self.log_textbox.setText(text)
+    #     if color == "y":
+    #         self.log_textbox.setStyleSheet("background-color: yellow; color: white")
+    #         self.log_textbox.setText(text)
+    #     self.log_textbox.setAlignment(Qt.AlignmentFlag.AlignLeft)
 
     def set_schedule_list(self):
         tables_count = 7

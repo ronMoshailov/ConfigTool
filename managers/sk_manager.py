@@ -63,6 +63,8 @@ class SkManager:
             self.sk_channel_list[row].color = "hwAmber200"
         elif color == "🟢":
             self.sk_channel_list[row].color = "hwGreen200"
+        elif color == "":
+            self.sk_channel_list[row].color = ""
         return True
 
     def update_sk_name(self, row: int, new_name: str):

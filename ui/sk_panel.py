@@ -3,10 +3,11 @@ from PyQt6.QtGui import QBrush
 from PyQt6.QtWidgets import (
     QWidget, QScrollArea, QVBoxLayout, QHBoxLayout,
     QTableWidget, QLabel, QPushButton, QTableWidgetItem, QComboBox,
-    QCheckBox, QAbstractItemView
+    QCheckBox, QAbstractItemView, QMessageBox
 )
 
 from config.colors import gray_color, light_green_color, white_color
+from config.special import clear_widget_from_layout
 from config.style import sk_panel_style
 from controllers.data_controller import DataController
 
@@ -74,7 +75,6 @@ class SkPanel(QWidget):
         Color the row and check if the row can be in comment.
 
         :param table: The table.
-        :param card_number: number of the SK card.
         :param row_number: row number (channel) of the SK card.
         :param state: state of the checkbox
         :return: None
@@ -107,7 +107,7 @@ class SkPanel(QWidget):
 
     def _update_color(self, table: QTableWidget, row: int, col: int, fix_color = False):
         if col != 2:
-            return False
+            return
 
         combo = table.cellWidget(row, 1)
         item = table.item(row, 2)
@@ -115,80 +115,47 @@ class SkPanel(QWidget):
 
         with QSignalBlocker(combo), QSignalBlocker(table):
             if move_name == "-":
-                self.data_controller.write_log("update color failed (no move was chosen)", "r")
-                return False
+                return
 
         cur = item.text()
 
         if move_name.startswith("k"):
             if fix_color:
-                return True
+                if cur == "":
+                    item.setText("🔴")
+                return
             nxt_color = {"🔴": "🟡", "🟡": "🟢", "🟢": "🔴", "": "🔴"}.get(cur, "🔴")
         elif move_name.startswith("p"):
             if fix_color:
-                if cur == "🟡":
+                if cur == "🟡" or cur == "":
                     item.setText("🔴")
-                return True
+                return
             nxt_color = {"🔴": "🟢", "🟢": "🔴", "": "🔴"}.get(cur, "🔴")
         elif move_name.startswith("B"):
             if fix_color:
                 item.setText("🟡")
-                return True
+                return
             nxt_color = {"🟡": "🟡"}.get(cur, "🟡")
-
         item.setText(nxt_color)
-
 
     def _update_data(self):
         if self._is_names_valid() and self._is_color_valid():
             for idx, table in enumerate(self.tables_list):     # for each table
                 for row_num in range(24):                       # for each row in table
-                    # save name
+
                     move_name = table.cellWidget(row_num, 1).currentText()
-
-                    # save color
                     color = table.item(row_num, 2).text()
-
-                    # save comment
                     status = table.cellWidget(row_num, 3).isChecked()
+                    if move_name == "-":
+                        self.data_controller.update_sk_name(idx + 1, row_num, "")
+                        self.data_controller.update_sk_color(idx + 1, row_num, "")
+                        self.data_controller.update_sk_comment(idx + 1, row_num, False)
+                        continue
 
                     self.data_controller.update_sk_name(idx + 1, row_num, move_name)
                     self.data_controller.update_sk_color(idx + 1, row_num, color)
                     self.data_controller.update_sk_comment(idx + 1, row_num, status)
-
-                    # if self.data_controller.update_sk_color(table_num, row_num):
-                    #     return True
-                    # else:
-                    #     return False
-            pass
-            # self.data_controller.update_sk()
-            # return True
-        return None
-        # return False
-
-        #-# update comment #-#
-        # was = table.blockSignals(True) # block signals
-        #
-        # is_success = self.data_controller.update_sk_comment(card_number, row_number + 1) #
-        # if not is_success:
-        #     self.data_controller.write_log("The change of the comment state didn't succeed","r")
-        #     table.blockSignals(was)     # release signal
-        #     return False
-
-        # self.data_controller.write_log("The change of the comment succeeded","g")
-
-        #-# update name #-#
-        # if not self.data_controller.update_sk_name(card_number, row, move_name):
-        #     self.data_controller.write_log("update name failed in the controller", "r")
-        #     return False
-
-        #-# update color #-#
-        # if self.data_controller.update_sk_color(card_number, row):
-        #     self.data_controller.write_log("update color succeeded", "g")
-        #     item.setText(nxt_color)
-        #     return True
-        # self.data_controller.write_log("update color failed in the controller", "r")
-        # return False
+            QMessageBox.information(self, "SK כרטיס", "העדכון הצליח")
 
     def _update_name(self, table: QTableWidget, row: int, col: int):
         combo = table.cellWidget(row, col)
@@ -214,15 +181,19 @@ class SkPanel(QWidget):
 
     # --------------- remove methods --------------- #
     def _remove_sk(self, card_number):
+        # ask the user if he really wants to remove the card
+        reply = QMessageBox.question(self, "שאלה", "האם אתה בטוח שברצונך למחוק את העמודה?",QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        if reply == QMessageBox.StandardButton.No:
+            return
+
         if self.data_controller.get_sk_count() == 1:
-            self.data_controller.write_log("you can't have 0 sk cards", "r")
-            return False
+            QMessageBox.critical(self, "שגיאה", "לא ניתן להישאר ללא כרטיס SK")
+            return
         if self.data_controller.remove_sk(card_number):
-            self.data_controller.write_log("remove sk succeeded", "g")
             self._refresh_tables()
-            return True
-        self.data_controller.write_log("remove sk failed", "r")
-        return False
+            return
+        QMessageBox.critical(self, "שגיאה", "הסרת SK נכשלה, הבעיה בקוד")
+        return
 
     # --------------- general methods --------------- #
     def show_panel(self):
@@ -236,24 +207,21 @@ class SkPanel(QWidget):
         :return: None
         """
         # refresh the table
-        while self.tables_layout.count():  # as long a 'QLayoutItem' exist in 'tables_layout'
-            it = self.tables_layout.takeAt(0)  # disconnect the first 'QLayoutItem' (can be just another layout)
-            w = it.widget()
-            if w:
-                w.deleteLater()
+        clear_widget_from_layout([self.tables_layout])
+        self.tables_list.clear()
 
         # get how many SK cards exist
         num_cards = self.data_controller.get_sk_count()
 
         # for each SK card initialize a table
         for i in range(1, num_cards + 1):
-            card_widget = self._init_table(i)
+            card_widget = self._init_table_layout(i)
             self.tables_layout.addWidget(card_widget)
 
         # move all tables left
         self.tables_layout.addStretch(1)
 
-    def _init_table(self, card_number: int):
+    def _init_table_layout(self, card_number: int):
         """
         This method initialize the widget of the table (title, table with values and signals)
 
@@ -275,10 +243,6 @@ class SkPanel(QWidget):
 
         self.tables_list.append(tbl)
 
-        # btn_remove = DoubleClickButton("מחק SK")
-        # btn_remove.doubleClicked.connect(lambda _, c=card_number: self._remove_sk(c))
-        # btn_remove.setObjectName("remove_button")
-
         btn_remove = QPushButton("מחק SK")
         btn_remove.clicked.connect(lambda _, card_num = card_number: self._remove_sk(card_num))
         btn_remove.setObjectName("remove_button")
@@ -295,7 +259,7 @@ class SkPanel(QWidget):
 
         # create and fill the table
         was_tbl = tbl.blockSignals(True)
-        self._create_table(tbl, card_number)    # create the table with no values
+        self._init_table(tbl)    # create the table with no values
         self._fill_table(tbl, card_number)      # set values
         tbl.blockSignals(was_tbl)               # release signals
 
@@ -309,12 +273,11 @@ class SkPanel(QWidget):
 
         return wrap
 
-    def _create_table(self, tbl: QTableWidget, card_number: int):
+    def _init_table(self, tbl: QTableWidget):
         """
         This method create the table with all the rows and columns (without values).
 
         :param tbl: The 'QTableWidget' to create.
-        :param card_number: number of the SK card.
         :return: None
         """
         tbl.setHorizontalHeaderLabels(["#", "value", "color", "comment"])
@@ -376,9 +339,9 @@ class SkPanel(QWidget):
             is_commented = bool(ch.is_comment)
 
             # col 3 (check box)
-            it3 = tbl.cellWidget(row, 3)
+            it3 = tbl.cellWidget(row, 3) # type hint → אומר ל-IDE שזה QCheckBox
             was = it3.blockSignals(True)
-            it3.setCheckState(Qt.CheckState.Checked if is_commented else Qt.CheckState.Unchecked)
+            it3.setChecked(True) if is_commented else it3.setChecked(False)
             it3.blockSignals(was)
 
             # col 2 (color)
@@ -403,7 +366,7 @@ class SkPanel(QWidget):
         """
         This method check if names has exactly the count instances he needs.
 
-        :return: True if succeed, False otherwise
+        :return: True if succeeded, False otherwise
         """
         dict_count = {}
 
@@ -419,15 +382,15 @@ class SkPanel(QWidget):
         for key, val in dict_count.items():
             if key.startswith("k"):
                 if val != 3:
-                    self.data_controller.write_log(f"Move '{key}' is not valid ({val})", "r")
+                    QMessageBox.critical(self, "שגיאה", f"המופע {key} מופיע {val} פעמים")
                     return False
             elif key.startswith("p"):
                 if val != 2:
-                    self.data_controller.write_log(f"Move '{key}' is not valid ({val})", "r")
+                    QMessageBox.critical(self, "שגיאה", f"המופע {key} מופיע {val} פעמים")
                     return False
             elif key.startswith("B"):
                 if val != 1:
-                    self.data_controller.write_log(f"Move '{key}' is not valid ({val})", "r")
+                    QMessageBox.critical(self, "שגיאה", f"המופע {key} מופיע {val} פעמים")
                     return False
         return True
 
@@ -445,13 +408,12 @@ class SkPanel(QWidget):
                 if move_name != "-":
                     if move_name in dict_count:
                         if move_color in dict_count[move_name]:
-                            self.data_controller.write_log(f"Move '{move_name}' has invalid ({move_color}) count", "r")
+                            QMessageBox.critical(self, "שגיאה", f"המופע {move_name} בעל מספר שגוי של הצבע ה-{move_color}")
                             return False
                         dict_count[move_name].append(move_color)
                     else:
                         dict_count[move_name] = []
                         dict_count[move_name].append(move_color)
-
         return True
 
 

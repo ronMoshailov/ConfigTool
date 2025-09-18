@@ -1,8 +1,8 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIntValidator, QFont
-from PyQt6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QScrollArea
-from PyQt6.QtWidgets import QRadioButton, QButtonGroup
+from PyQt6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QScrollArea, QRadioButton, QButtonGroup
 
+from config.special import clear_widget_from_layout
 from config.style import detector_panel_style
 from controllers.data_controller import DataController
 
@@ -24,7 +24,7 @@ class DetectorPanel(QWidget):
         type_layout = QHBoxLayout()  # type radio layout
         btn_layout = QHBoxLayout()   # button 'run' layout
 
-        # =============== build layouts =============== #
+        # Name Layout
         self._build_name_layout(name_layout)
 
         self._init_type_radio()
@@ -45,12 +45,8 @@ class DetectorPanel(QWidget):
         self.scroll_content.setLayout(self.scroll_layout)  # set the widget as the father of the layout
 
         self.detector_rows = [QHBoxLayout(), QHBoxLayout(), QHBoxLayout(), QHBoxLayout(), QHBoxLayout()]  # list of layout that each one is a row in the scroll bar
-
-        self.scroll_layout.addLayout(self.detector_rows[0])  # add row 1 to the layout
-        self.scroll_layout.addLayout(self.detector_rows[1])  # add row 2 to the layout
-        self.scroll_layout.addLayout(self.detector_rows[2])  # add row 2 to the layout
-        self.scroll_layout.addLayout(self.detector_rows[3])  # add row 2 to the layout
-        self.scroll_layout.addLayout(self.detector_rows[4])  # add row 2 to the layout
+        for layout in self.detector_rows:
+            self.scroll_layout.addLayout(layout) # add row i to the layout
         self.scroll_layout.addStretch()  # move all up
 
         for row in self.detector_rows:  # add space between each element
@@ -83,6 +79,7 @@ class DetectorPanel(QWidget):
         self._show_scroll_bar()
         self.show()
 
+    # =============== inner methods =============== #
     def _show_scroll_bar(self):
         """
         Show the scroll bar of the 'set move' panel.
@@ -92,32 +89,22 @@ class DetectorPanel(QWidget):
         detector_list = self.data_controller.get_all_detectors()  # get all moves
 
         # remove all widgets
-        for row in self.detector_rows:
-            # Warning: 'row.takeAt(0)' remove from first item in the 'row' list, I added just widgets so I just remove them, it someone will add in the future any layout they will be removed from 'row' but still exist in Qt and because it belong to Qt the garbage collector will not remove them
-            while row.count():  # return how many 'QLayoutItem' exist in the list of 'QLayoutItem'
-                item = row.takeAt(0)  # get the first QLayoutItem of the layout 'row' and remove him from the list of the 'QLayoutItem'
-                widget = item.widget()  # get the widget
-                if widget:  #
-                    widget.deleteLater()  # remove widget (when widget remove -> all his layouts and children removed also), safer not remove now so he will be removed safely later by Qt
+        clear_widget_from_layout(self.detector_rows)
 
         # build the rows
         for detector in detector_list:
             name = detector.name
-            type = detector.type
 
-            if type == "DDetector":
+            if detector.type == "DDetector":
                 row_idx = 0
-            elif type == "EDetector":
+            elif detector.type == "EDetector":
                 row_idx = 1
-            elif type == "TPDetector":
+            elif detector.type == "TPDetector":
                 row_idx = 2
-            elif type == "DEDetector":
+            elif detector.type == "DEDetector":
                 row_idx = 3
-            elif type == "QDetector":
+            elif detector.type == "QDetector":
                 row_idx = 4
-            else:
-                self.data_controller.write_log(f"detector '{name}' is not supported", "r")
-                continue
 
             # label
             label = QLabel()
@@ -146,13 +133,9 @@ class DetectorPanel(QWidget):
             self.detector_rows[row_idx].addWidget(container)
 
         # move the rows left
-        self.detector_rows[0].addStretch()
-        self.detector_rows[1].addStretch()
-        self.detector_rows[2].addStretch()
-        self.detector_rows[3].addStretch()
-        self.detector_rows[4].addStretch()
+        for row in self.detector_rows:
+            row.addStretch()
 
-    # =============== inner methods =============== #
     def _remove_detector(self, detector_name):
         """
         This method removes the move and refresh the scroll bar.
@@ -188,6 +171,37 @@ class DetectorPanel(QWidget):
             self._show_scroll_bar()
             return True
         return False
+
+    # =============== build methods =============== #
+    def _build_type_radio_layout(self, type_layout):
+        # add radio to button
+        type_layout.addStretch()  # move the elements right
+        type_layout.addWidget(self.pedestrian_radio)
+        type_layout.addSpacing(20)
+        type_layout.addWidget(self.queue_radio)
+        type_layout.addSpacing(20)
+        type_layout.addWidget(self.demand_ext_radio)
+        type_layout.addSpacing(20)
+        type_layout.addWidget(self.ext_radio)
+        type_layout.addSpacing(20)
+        type_layout.addWidget(self.demand_radio)
+        type_layout.addSpacing(20)
+
+        label = QLabel("סוג הגלאי")
+        label.setObjectName("gray_label")
+        label.setAlignment(Qt.AlignmentFlag.AlignCenter)  # center the text (both H & V)
+        type_layout.addWidget(label)
+        type_layout.setContentsMargins(0, 0, 40, 0)  # left, top, right, bottom
+
+    def _build_button_layout(self, layout):
+        run_button = QPushButton("הוסף")  # create button
+        run_button.setObjectName("add_button")
+        ext_unit = self.ext_unit_textbox.text()
+        run_button.clicked.connect(lambda: self._add_detector(self.name_textbox.text(), None if ext_unit == "" else int(ext_unit)))
+
+        layout.addStretch()
+        layout.addWidget(run_button)
+        layout.setContentsMargins(0, 0, 40, 0)  # left, top, right, bottom
 
     def _build_name_layout(self, layout):
         # label
@@ -240,7 +254,7 @@ class DetectorPanel(QWidget):
         layout.addWidget(label)
         layout.setContentsMargins(0, 40, 40, 0)  # left, top, right, bottom
 
-
+    # =============== Init methods =============== #
     def _init_type_radio(self):
         self.demand_radio = QRadioButton()  # create radio button
         self.demand_radio.setText("דרישה")
@@ -270,36 +284,4 @@ class DetectorPanel(QWidget):
         type_radio_group.addButton(self.demand_ext_radio)
         type_radio_group.addButton(self.queue_radio)
         type_radio_group.addButton(self.pedestrian_radio)
-
-    def _build_type_radio_layout(self, type_layout):
-        # add radio to button
-        type_layout.addStretch()  # move the elements right
-        type_layout.addWidget(self.pedestrian_radio)
-        type_layout.addSpacing(20)
-        type_layout.addWidget(self.queue_radio)
-        type_layout.addSpacing(20)
-        type_layout.addWidget(self.demand_ext_radio)
-        type_layout.addSpacing(20)
-        type_layout.addWidget(self.ext_radio)
-        type_layout.addSpacing(20)
-        type_layout.addWidget(self.demand_radio)
-        type_layout.addSpacing(20)
-
-        label = QLabel("סוג הגלאי")
-        label.setObjectName("gray_label")
-        label.setAlignment(Qt.AlignmentFlag.AlignCenter)  # center the text (both H & V)
-        type_layout.addWidget(label)
-        type_layout.setContentsMargins(0, 0, 40, 0)  # left, top, right, bottom
-
-    def _build_button_layout(self, layout):
-        run_button = QPushButton("הוסף")  # create button
-        run_button.setObjectName("add_button")
-        ext_unit = self.ext_unit_textbox.text()
-        run_button.clicked.connect(lambda: self._add_detector(self.name_textbox.text(), None if ext_unit == "" else int(ext_unit)))
-
-        layout.addStretch()
-        layout.addWidget(run_button)
-        layout.setContentsMargins(0, 0, 40, 0)  # left, top, right, bottom
-
-
 

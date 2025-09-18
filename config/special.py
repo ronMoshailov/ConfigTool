@@ -87,3 +87,25 @@ def set_property(class_name, value_name, item_list):
     """
     for item in item_list:
         item.setProperty(class_name, value_name)
+
+def clear_widget_and_layout_from_layout(layout):
+    """
+    Recursively clear all widgets and sub-layouts from a given layout.
+    """
+    if layout is None:
+        return
+
+    while layout.count():
+        item = layout.takeAt(0)
+
+        # אם זה widget – מחיקה
+        widget = item.widget()
+        if widget is not None:
+            widget.deleteLater()
+            continue
+
+        # אם זה layout – קריאה רקורסיבית
+        child_layout = item.layout()
+        if child_layout is not None:
+            clear_widget_and_layout_from_layout(child_layout)
+            child_layout.deleteLater()
