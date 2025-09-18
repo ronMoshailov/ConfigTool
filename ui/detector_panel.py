@@ -2,7 +2,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIntValidator, QFont
 from PyQt6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QScrollArea, QRadioButton, QButtonGroup
 
-from config.special import clear_widget_from_layout
+from config.special import clear_widget_from_layout, init_scroll
 from config.style import detector_panel_style
 from controllers.data_controller import DataController
 
@@ -20,29 +20,21 @@ class DetectorPanel(QWidget):
 
         # =============== layouts =============== #
         root_layout = QVBoxLayout()  # panel layout
-        name_layout = QHBoxLayout()  # name layout
-        type_layout = QHBoxLayout()  # type radio layout
-        btn_layout = QHBoxLayout()   # button 'run' layout
 
         # Name Layout
-        self._build_name_layout(name_layout)
+        name_layout = self._build_name_layout()
 
+        # Type Layout
         self._init_type_radio()
-        self._build_type_radio_layout(type_layout)
+        type_layout = self._build_type_radio_layout()
 
-        self._build_button_layout(btn_layout)
+        # Type Layout
+        btn_layout = self._build_button_layout()
 
         # =============== scroll =============== #
-        self.scroll_area = QScrollArea()            # create the container of the scroll bar. (get only widget)
-        self.scroll_area.setWidgetResizable(True)   # it's needed and I don't know why and I don't even want to know, without this the scroll area size is like 0x0, fk chatGPT just confusing me
-
-        self.scroll_content = QWidget()  # create the widget that will be in the layout.
-        self.scroll_content.setObjectName("scrollContent")
-
         self.scroll_layout = QVBoxLayout()
 
-        self.scroll_area.setWidget(self.scroll_content)  # set 'scroll_area' as father of 'scroll_content'
-        self.scroll_content.setLayout(self.scroll_layout)  # set the widget as the father of the layout
+        self.scroll_area = init_scroll(self.scroll_layout)
 
         self.detector_rows = [QHBoxLayout(), QHBoxLayout(), QHBoxLayout(), QHBoxLayout(), QHBoxLayout()]  # list of layout that each one is a row in the scroll bar
         for layout in self.detector_rows:
@@ -173,37 +165,46 @@ class DetectorPanel(QWidget):
         return False
 
     # =============== build methods =============== #
-    def _build_type_radio_layout(self, type_layout):
+    def _build_type_radio_layout(self):
+
+        layout = QHBoxLayout()  # type radio layout
+
         # add radio to button
-        type_layout.addStretch()  # move the elements right
-        type_layout.addWidget(self.pedestrian_radio)
-        type_layout.addSpacing(20)
-        type_layout.addWidget(self.queue_radio)
-        type_layout.addSpacing(20)
-        type_layout.addWidget(self.demand_ext_radio)
-        type_layout.addSpacing(20)
-        type_layout.addWidget(self.ext_radio)
-        type_layout.addSpacing(20)
-        type_layout.addWidget(self.demand_radio)
-        type_layout.addSpacing(20)
+        layout.addStretch()  # move the elements right
+        layout.addWidget(self.pedestrian_radio)
+        layout.addSpacing(20)
+        layout.addWidget(self.queue_radio)
+        layout.addSpacing(20)
+        layout.addWidget(self.demand_ext_radio)
+        layout.addSpacing(20)
+        layout.addWidget(self.ext_radio)
+        layout.addSpacing(20)
+        layout.addWidget(self.demand_radio)
+        layout.addSpacing(20)
 
         label = QLabel("סוג הגלאי")
         label.setObjectName("gray_label")
         label.setAlignment(Qt.AlignmentFlag.AlignCenter)  # center the text (both H & V)
-        type_layout.addWidget(label)
-        type_layout.setContentsMargins(0, 0, 40, 0)  # left, top, right, bottom
+        layout.addWidget(label)
+        layout.setContentsMargins(0, 0, 40, 0)  # left, top, right, bottom
 
-    def _build_button_layout(self, layout):
+        return layout
+
+    def _build_button_layout(self):
         run_button = QPushButton("הוסף")  # create button
         run_button.setObjectName("add_button")
         ext_unit = self.ext_unit_textbox.text()
         run_button.clicked.connect(lambda: self._add_detector(self.name_textbox.text(), None if ext_unit == "" else int(ext_unit)))
 
+        layout = QHBoxLayout()
+
         layout.addStretch()
         layout.addWidget(run_button)
         layout.setContentsMargins(0, 0, 40, 0)  # left, top, right, bottom
 
-    def _build_name_layout(self, layout):
+        return layout
+
+    def _build_name_layout(self):
         # label
         label = QLabel("גלאי")
         label.setObjectName("gray_label")
@@ -247,6 +248,8 @@ class DetectorPanel(QWidget):
         ext_unit_layout.addWidget(label_ext_unit)
         ext_unit_layout.addWidget(self.ext_unit_textbox)
 
+        layout = QHBoxLayout()
+
         layout.addStretch()
         layout.addLayout(ext_unit_layout)
         layout.addLayout(name_layout)
@@ -254,26 +257,28 @@ class DetectorPanel(QWidget):
         layout.addWidget(label)
         layout.setContentsMargins(0, 40, 40, 0)  # left, top, right, bottom
 
+        return layout
+
     # =============== Init methods =============== #
     def _init_type_radio(self):
-        self.demand_radio = QRadioButton()  # create radio button
+        self.demand_radio = QRadioButton()
         self.demand_radio.setText("דרישה")
         self.demand_radio.setChecked(True)  # default checked
         self.demand_radio.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
 
-        self.ext_radio = QRadioButton()  # create radio button
+        self.ext_radio = QRadioButton()
         self.ext_radio.setText("הארכה")
         self.ext_radio.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
 
-        self.demand_ext_radio = QRadioButton()  # create radio button
+        self.demand_ext_radio = QRadioButton()
         self.demand_ext_radio.setText("הולכי רגל")
         self.demand_ext_radio.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
 
-        self.queue_radio = QRadioButton()  # create radio button
+        self.queue_radio = QRadioButton()
         self.queue_radio.setText("דרישה + הארכה")
         self.queue_radio.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
 
-        self.pedestrian_radio = QRadioButton()  # create radio button
+        self.pedestrian_radio = QRadioButton()
         self.pedestrian_radio.setText("תור")
         self.pedestrian_radio.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
 
