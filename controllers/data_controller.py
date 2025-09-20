@@ -1,4 +1,3 @@
-from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QLineEdit
 
 from config.special import is_move_valid
@@ -23,7 +22,6 @@ class DataController:
             cls.path_manager = PathsManager()
             cls.sk_manager = []
             cls.schedule_manager = []
-            cls.log_textbox = None
         return cls._instance
 
     # --------------- add methods --------------- #
@@ -89,12 +87,30 @@ class DataController:
         new_sk.initialize_channels()
         self.sk_manager.append(new_sk)
 
-    def add_detector(self, detector_name, move_type, ext_time):
+    def add_detector(self, detector_name, detector_type, ext_time):
+        if detector_name == "":
+            return False, "שם הגלאי ריק"
+
+        if detector_type == "DDetector":
+            detector_name = "d_" + detector_name
+        elif detector_type == "EDetector":
+            detector_name = "e_" + detector_name
+        elif detector_type == "TPDetector":
+            detector_name = "tp_" + detector_name
+        elif detector_type == "DEDetector":
+            detector_name = "de_" + detector_name
+        elif detector_type == "QDetector":
+            detector_name = "q_" + detector_name
+        else:
+            return False, "תקלה בסוג הגלאי, לא בשליטת המשתמש"
+
         for detector in self.data_manager.get_all_detectors():
             if detector.name == detector_name:
-                self.write_log("Detector already exists", "r")
-                return False
-        return self.data_manager.add_detector(detector_name, move_type, ext_time)
+                return False, "גלאי כבר קיים במערכת"
+
+        if self.data_manager.add_detector(detector_name, detector_type, ext_time):
+            return True, "הגלאי נוסף בהצלחה"
+        return False, "הגלאי לא התווסף למערכת מסיבה לא צפויה"
 
     def add_schedule_row(self, table_num):
         for manager in self.schedule_manager:
@@ -261,12 +277,10 @@ class DataController:
 
     def remove_detector(self, detector_name):
         if self.data_manager.remove_detector(detector_name):
-            msg = f"{detector_name} has been removed successfully"
-            self.write_log(msg, "r")
-            return True
-        msg = f"{detector_name} has not been removed"
-        self.write_log(msg, "r")
-        return False
+            msg = f"{detector_name}בהצלחה נמחק "
+            return True, msg
+        msg = f"המחיקה נכשלה"
+        return False, msg
 
     def remove_schedule_row(self, table_num, number_row):
         for manager in self.schedule_manager:
@@ -319,11 +333,10 @@ class DataController:
         """
         This method resets all the data.
         """
-        print(f"**** [class] DataController:\t [method] reset\t[start] ")
         # self.path_manager.reset() # For now it's not needed because his fields overwritten if all files exist like they should be.
         self.data_manager.reset()
         self.sk_manager = []
-        print(f"**** [class] DataController:\t [method] reset\t[end] ")
+        self.schedule_manager.clear()
 
 
     def set_sk_list(self, path):

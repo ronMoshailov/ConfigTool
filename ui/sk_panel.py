@@ -215,13 +215,13 @@ class SkPanel(QWidget):
 
         # for each SK card initialize a table
         for i in range(1, num_cards + 1):
-            card_widget = self._init_table_layout(i)
+            card_widget = self._build_table_layout(i)
             self.tables_layout.addWidget(card_widget)
 
         # move all tables left
         self.tables_layout.addStretch(1)
 
-    def _init_table_layout(self, card_number: int):
+    def _build_table_layout(self, card_number: int):
         """
         This method initialize the widget of the table (title, table with values and signals)
 

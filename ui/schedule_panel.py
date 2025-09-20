@@ -1,8 +1,9 @@
 from PyQt6.QtCore import Qt, QTime
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTableWidget, QLabel, QComboBox, \
-    QAbstractItemView, QTimeEdit, QAbstractSpinBox, QHeaderView, QPushButton, QCheckBox
+    QAbstractItemView, QTimeEdit, QAbstractSpinBox, QHeaderView, QPushButton, QCheckBox, QMessageBox
 
+from config.special import clear_widget_from_layout
 from config.style import schedule_panel_style
 from controllers.data_controller import DataController
 
@@ -16,9 +17,13 @@ class SchedulePanel(QWidget):
         # =============== QPushButton =============== #
         self.btn_add = QPushButton("עדכן")
         self.btn_add.setObjectName("update_button")
+        self.btn_add.clicked.connect(self._update)
 
         # =============== CheckBox =============== #
         self.check_box = QCheckBox("ראשון עד חמישי")
+        self.check_box.setObjectName("check_box")
+        self.check_box.clicked.connect(lambda: self._enable_mon_thu())
+        self.check_box.setChecked(True)
 
         # =============== Button Layout =============== #
         self.bottom_layout = QHBoxLayout()
@@ -42,8 +47,9 @@ class SchedulePanel(QWidget):
         self.hide()
 
         # =============== Style =============== #
-
-        self._set_finishers()
+        self.setObjectName("schedulePanel")
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+        self.setStyleSheet(schedule_panel_style)
 
     # --------------- add methods --------------- #
     def _add(self, table_num):
@@ -66,16 +72,10 @@ class SchedulePanel(QWidget):
                     table.removeRow(row_index)
                     break
 
-
     # --------------- general methods --------------- #
     def show_panel(self):
-        """
-        This method clear the root layout from all the tables and recreate it again from DB.
-
-        :return: None
-        """
         # clear the table
-        self.clear_some_layout()
+        clear_widget_from_layout([self.schedule_layout])
         self.table_list.clear()
         self.add_row_btn_list.clear()
 
@@ -126,18 +126,6 @@ class SchedulePanel(QWidget):
 
         return wrap, tbl
 
-    def clear_some_layout(self):
-        """
-        Clear the root layout.
-
-        :return: None
-        """
-        while self.schedule_layout.count():  # as long a 'QLayoutItem' exist in 'tables_layout'
-            it = self.schedule_layout.takeAt(0)  # disconnect the first 'QLayoutItem' (can be just another layout)
-            w = it.widget()
-            if w:
-                w.deleteLater()
-
     def _fill_table(self,table_num, table):
         """
         This method fill the table with all the schedules of this day
@@ -147,7 +135,7 @@ class SchedulePanel(QWidget):
         :return: None
         """
         schedule_list = self.data_controller.get_schedule_list(table_num) # get schedule list of this table number
-
+        tbl_num_arg = table_num + 1
         for schedule in schedule_list:
             row = table.rowCount() # get the number row that empty
             table.insertRow(row)   # add new row in the end
@@ -156,7 +144,8 @@ class SchedulePanel(QWidget):
 
             btn_remove = QPushButton("x")
             btn_remove.setObjectName("remove_button")
-            btn_remove.clicked.connect(lambda tbl_num=table_num, btn=btn_remove: self._remove(tbl_num + 1, table, btn))
+
+            btn_remove.clicked.connect(lambda tbl_num=table_num, btn=btn_remove: self._remove(tbl_num_arg, table, btn))
             btn_remove.setFont(font)
 
             time_edit = QTimeEdit()
@@ -204,46 +193,26 @@ class SchedulePanel(QWidget):
             btn.setDisabled(self.check_box.isChecked())
 
     def _check_time(self):
-        prev = None
-        current = None
+        for idx, table in enumerate (self.table_list):      # for each table
 
-        # for each table
-        for idx, table in enumerate (self.table_list):
-            # reset
-            prev = None
-            current = None
-            row_count = table.rowCount()
+            prev = None                     # reset
+            current = None                  # reset
+            row_count = table.rowCount()    # get row count
 
-            # for each row in table
-            for row in range(row_count):
+            for row in range(row_count):                    # for each row in table
                 prev = current
                 current = table.cellWidget(row, 1).time()
 
-                # if first iteration
-                if prev is None:
-                    continue
-
-                # if last iteration
-                if current is None:
+                # if first iteration or if last iteration
+                if prev is None or current is None:
                     continue
 
                 # compare
                 if current <= prev:
-                    self.data_controller.write_log(f"in table number {idx + 1} there is a problem with the time", "r")
+                    QMessageBox.critical(self, "שגיאה", f"יש בעיה עם הזמנים בטבלה מספר {idx + 1}")
                     return False
-        self.data_controller.write_log(f"עודכן", "g")
+        QMessageBox.information(self, "הודעה", f"העדכון הצליח")
         return True
 
-    def _set_finishers(self):
-
-        self.btn_add.clicked.connect(self._update)
-
-        self.check_box.setObjectName("check_box")
-        self.check_box.clicked.connect(lambda: self._enable_mon_thu())
-        self.check_box.setChecked(True)
-
-        self.setObjectName("schedulePanel")
-        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
-        self.setStyleSheet(schedule_panel_style)
 
 

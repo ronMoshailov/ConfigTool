@@ -317,11 +317,11 @@ class DataManager:
 
         :return: None
         """
-        self.moves = []
-        # self.d_detectors = []
-        # self.e_detectors = []
-        # self.inter_stages = []
-        self.MatrixCells = []
+        self.moves.clear()
+        self.detectors.clear()
+        self.MatrixCells.clear()
+        self.images.clear()
+        self.inter_stage.clear()
 
     def init_images(self, path):
         pattern = image_pattern

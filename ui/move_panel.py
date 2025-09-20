@@ -139,7 +139,9 @@ class MovePanel(QWidget):
 
             # QLabel
             label = QLabel()
-            label.setText(f"{phase} <img src='{icon}' width='25' height='25'/> {"⭐" if move.is_main else ""}")
+            star_symbol = "⭐" # required at home, I use at home python 3.10.11
+            empty_symbol = ""
+            label.setText(f"{phase} <img src='{icon}' width='25' height='25'/> {star_symbol if move.is_main else empty_symbol}")
             label.setObjectName("scroll_label")
             label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             label.setFixedHeight(30)
@@ -255,20 +257,20 @@ class MovePanel(QWidget):
     # =============== Init methods =============== #
     def _init_type_radio(self):
         # QRadioButton
-        self.traffic_radio = QRadioButton()                     
+        self.traffic_radio = QRadioButton()
         self.traffic_radio.setIcon(QIcon(GREEN_IMAGE_PATH))
         self.traffic_radio.setChecked(True)
 
-        self.traffic_flashing_radio = QRadioButton()  
+        self.traffic_flashing_radio = QRadioButton()
         self.traffic_flashing_radio.setIcon(QIcon(GREEN_BLINKER_IMAGE_PATH))
 
-        self.pedestrian_radio = QRadioButton()  
+        self.pedestrian_radio = QRadioButton()
         self.pedestrian_radio.setIcon(QIcon(PEDESTRIAN_IMAGE_PATH))
 
-        self.blinker_radio = QRadioButton()  
+        self.blinker_radio = QRadioButton()
         self.blinker_radio.setIcon(QIcon(BLINKER_IMAGE_PATH))
 
-        self.blinker_conditional_radio = QRadioButton()  
+        self.blinker_conditional_radio = QRadioButton()
         self.blinker_conditional_radio.setIcon(QIcon(BLINKER_CONDITIONAL_IMAGE_PATH))
 
         # QButtonGroup

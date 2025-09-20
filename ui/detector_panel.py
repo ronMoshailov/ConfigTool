@@ -1,6 +1,7 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIntValidator, QFont
-from PyQt6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QScrollArea, QRadioButton, QButtonGroup
+from PyQt6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QScrollArea, \
+    QRadioButton, QButtonGroup, QMessageBox
 
 from config.special import clear_widget_from_layout, init_scroll
 from config.style import detector_panel_style
@@ -135,34 +136,39 @@ class DetectorPanel(QWidget):
         :param move_name:
         :return:
         """
-        if self.data_controller.remove_detector(detector_name):
+        success, msg = self.data_controller.remove_detector(detector_name)
+        if success:
             self._show_scroll_bar()
-            self.data_controller.write_log("Removed successfully", "r")
+            QMessageBox.information(self, "מחיקת גלאי", msg)
+            return
+        QMessageBox.critical(self, "מחיקת גלאי", msg)
 
-    def _add_detector(self, name:str, ext_time:int = None):
+    def _add_detector(self, detector_name:str, ext_time:int = None):
+
+        # initialize variables
+        detector_type = ""
+
         if self.demand_radio.isChecked():
-            move_type = "DDetector"
-            detector_name = "d_" + name
+            detector_type = "DDetector"
         elif self.ext_radio.isChecked():
-            move_type = "EDetector"
-            detector_name = "e_" + name
+            detector_type = "EDetector"
         elif self.pedestrian_radio.isChecked():
-            move_type = "TPDetector"
-            detector_name = "tp_" + name
+            detector_type = "TPDetector"
         elif self.demand_ext_radio.isChecked():
-            move_type = "DEDetector"
-            detector_name = "de_" + name
+            detector_type = "DEDetector"
         elif self.queue_radio.isChecked():
-            move_type = "QDetector"
-            detector_name = "q_" + name
+            detector_type = "QDetector"
         else:
-            self.data_controller.write_log(f"detector_{name} is not supported", "r")
-            return False
+            QMessageBox.critical(self, "שגיאה", "תקלה בקוד, לא בשליטת המשתמש")
+            return
 
-        if self.data_controller.add_detector(detector_name, move_type, ext_time):
+        success, msg = self.data_controller.add_detector(detector_name, detector_type, ext_time)
+        if success:
+            QMessageBox.information(self, "הצלחה", msg)
             self._show_scroll_bar()
-            return True
-        return False
+            return
+        QMessageBox.critical(self, "שגיאה", msg)
+        return
 
     # =============== build methods =============== #
     def _build_type_radio_layout(self):

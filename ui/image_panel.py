@@ -1,7 +1,8 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTableWidget, QLabel, \
-    QAbstractItemView, QHeaderView, QPushButton, QScrollArea, QCheckBox, QLineEdit
+    QAbstractItemView, QHeaderView, QPushButton, QScrollArea, QCheckBox, QLineEdit, QMessageBox
 
+from config.special import clear_widget_from_layout
 from config.style import image_panel_style
 from controllers.data_controller import DataController
 
@@ -33,7 +34,7 @@ class ImagePanel(QWidget):
         self.btn_update = QPushButton("עדכן")
         self.btn_update.setFixedWidth(150)
         self.btn_update.setObjectName("update_button")
-        self.btn_update.clicked.connect(lambda: self.data_controller.update_images(self.table_dict))
+        self.btn_update.clicked.connect(self.update_images)
 
         self.btn_add = QPushButton("הוסף")
         self.btn_add.setFixedWidth(150)
@@ -63,35 +64,29 @@ class ImagePanel(QWidget):
         self.hide()
 
     # --------------- add methods --------------- #
-
-
-    # --------------- update methods --------------- #
-    def update_images(self):
-        self.data_controller.update_images(self.table_dict)
-
     def _add_wrap(self):
-
         # image name
         image_name = self.edit_add.text()
         if not image_name.isalpha() or not image_name.isascii(): # כאן נכנסים אם ריק או אם יש תווים לא אותיות באנגלית
-            self.data_controller.write_log("Invalid image name", "r")
-            return False
+            QMessageBox.critical(self, "שגיאה", "שם התמונה שגוי")
+            return
         image_name = image_name.capitalize()
 
         for img_name in self.table_dict.keys():
             if img_name == image_name:
-                self.data_controller.write_log("Image name already exists", "r")
-                return False
+                QMessageBox.critical(self, "שגיאה", "התמונה כבר קיימת")
+                return
 
         # warp
         wrap = self._create_wrap(image_name)
-
         count = self.scroll_layout.count()
         self.scroll_layout.insertWidget(count - 1, wrap)  # לפני ה-stretch
 
-        # self.scroll_layout.addWidget(wrap)
-        return True
-        # pass
+    # --------------- update methods --------------- #
+    def update_images(self):
+        self.data_controller.update_images(self.table_dict)
+        QMessageBox.information(self, "הצלחה", "העדכן הצליח")
+
 
     # --------------- remove methods --------------- #
     def _remove_wrap(self, wrap):
@@ -109,7 +104,7 @@ class ImagePanel(QWidget):
         :return: None
         """
         # clear the table
-        self.clear_scroll_layout()
+        clear_widget_from_layout([self.scroll_layout])
 
         # widget that holds title and table
         all_images = self.data_controller.get_all_images()
@@ -122,6 +117,12 @@ class ImagePanel(QWidget):
         self.show()                                                         # show panel
 
     def _create_wrap(self, image, first_show = False):
+        """
+        ניסיתי לאחד 2 מתודות וסתם יצאתי חכמולוג ואין לי כוח להחזיר, מה שעושה הפונקציה זה ליצור widget שכולל את כל העמודה כאשר כל עמודה זה תבלה וכל מה שיש בה ומחוץ לה
+        :param image:
+        :param first_show:
+        :return:
+        """
         # warp
         wrap = QWidget()
         wrap_layout = QVBoxLayout()
@@ -146,9 +147,7 @@ class ImagePanel(QWidget):
         all_moves = self.data_controller.get_all_moves()
 
         # table
-        table = self._init_table()
-
-        self._build_table(table, all_moves)
+        table = self._init_table(all_moves)
 
         if first_show:
             self._fill_table(table, image.move_list)
@@ -165,7 +164,10 @@ class ImagePanel(QWidget):
 
         # skeleton
         textbox = QLineEdit()
-        textbox.setText(str(image.skeleton))
+        if first_show:
+            textbox.setText(str(image.skeleton))
+        else:
+            textbox.setText(str(99))
 
         label = QLabel("שלד")
 
@@ -184,19 +186,7 @@ class ImagePanel(QWidget):
         return wrap
         # self.table_dict[image.image_name] = table
 
-    def clear_scroll_layout(self):
-        """
-        Clear the root layout.
-
-        :return: None
-        """
-        while self.scroll_layout.count():  # as long a 'QLayoutItem' exist in 'tables_layout'
-            it = self.scroll_layout.takeAt(0)  # disconnect the first 'QLayoutItem' (can be just another layout)
-            w = it.widget()
-            if w:
-                w.deleteLater()
-
-    def _init_table(self):
+    def _init_table(self, all_moves):
         """
         Create table and config the table.
 
@@ -211,21 +201,22 @@ class ImagePanel(QWidget):
         tbl.setColumnWidth(0, 40)  # עמודה 0 ברוחב 60px
         tbl.setColumnWidth(1, 20)  # עמודה 1 ברוחב 60px
         tbl.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
-        return tbl
 
-    def _build_table(self, table, all_moves):
+        # build move rows in table
         for move in all_moves:
-            row_num = table.rowCount()  # לוקח את מספר השורות הקיים
-            table.insertRow(row_num)  # מוסיף שורה חדשה בסוף
+            row_num = tbl.rowCount()  # לוקח את מספר השורות הקיים
+            tbl.insertRow(row_num)  # מוסיף שורה חדשה בסוף
 
             label = QLabel(move.name)
             label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            table.setCellWidget(row_num, 0, label)
+            tbl.setCellWidget(row_num, 0, label)
 
             check_box = QCheckBox()
             check_box.setChecked(False)
             check_box.setObjectName("checkbox_comment")
-            table.setCellWidget(row_num, 1, check_box)
+            tbl.setCellWidget(row_num, 1, check_box)
+
+        return tbl
 
     def _fill_table(self, table, all_moves):
         """
