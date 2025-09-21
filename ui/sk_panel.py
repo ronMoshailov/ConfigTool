@@ -280,7 +280,7 @@ class SkPanel(QWidget):
         :param tbl: The 'QTableWidget' to create.
         :return: None
         """
-        tbl.setHorizontalHeaderLabels(["#", "value", "color", "comment"])
+        tbl.setHorizontalHeaderLabels(["#", "move", "color", "comment"])
         tbl.setFixedWidth(351)
         tbl.verticalHeader().setVisible(False)
         tbl.setColumnWidth(0, 40)

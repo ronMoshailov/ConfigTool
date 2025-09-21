@@ -1275,7 +1275,7 @@ QHeaderView::section:hover {
 }
 
 /* ********************************* QPushButton ********************************* */
-QPushButton#add_button {
+QPushButton#add_inter_stage_button {
     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                                       stop:0 #00bfa5, stop:1 #26c6da); /* טורקיז חי וזורח */
     color: white;
@@ -1287,19 +1287,19 @@ QPushButton#add_button {
     box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
 }
 
-QPushButton#add_button:hover {
+QPushButton#add_inter_stage_button:hover {
     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                                       stop:0 #26c6da, stop:1 #00bfa5); /* הפוך לגרדיאנט */
     box-shadow: 0px 6px 8px rgba(0,0,0,0.15);
 }
 
-QPushButton#add_button:pressed {
+QPushButton#add_inter_stage_button:pressed {
     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                                       stop:0 #009688, stop:1 #00acc1); /* צבעים כהים יותר ללחיצה */
     box-shadow: none;
 }
 
-QPushButton#remove_button {
+QPushButton#add_action_button {
     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                                       stop:0 #76ff03, stop:1 #4caf50);
     border: 1px solid #1a98ff;
@@ -1307,9 +1307,22 @@ QPushButton#remove_button {
     font-weight: bold;
     color: white;
 }
-QPushButton#remove_button:hover {
+QPushButton#add_action_button:hover {
     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                                       stop:0 #5fd000, stop:1 #338237);
+}
+
+QPushButton#remove_button {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                      stop:0 #ff5252, stop:1 #b71c1c);
+    border: 1px solid #b71c1c;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+}
+QPushButton#remove_button:hover {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                      stop:0 #ff1744, stop:1 #d50000);
 }
 
 QPushButton#update_button {

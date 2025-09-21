@@ -1,12 +1,15 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTableWidget, QLabel, \
-    QAbstractItemView, QHeaderView, QPushButton, QScrollArea, QCheckBox, QLineEdit, QMessageBox
+    QAbstractItemView, QHeaderView, QPushButton, QScrollArea, QCheckBox, QLineEdit, QMessageBox, QSizePolicy
 
 from config.special import clear_widget_from_layout
 from config.style import image_panel_style
 from controllers.data_controller import DataController
 
 class ImagePanel(QWidget):
+
+    MOVE_NAME_WIDTH = 70
+    CHECKBOX_WIDTH = 70
 
     def __init__(self):
         super().__init__()
@@ -69,23 +72,27 @@ class ImagePanel(QWidget):
         image_name = self.edit_add.text()
         if not image_name.isalpha() or not image_name.isascii(): # כאן נכנסים אם ריק או אם יש תווים לא אותיות באנגלית
             QMessageBox.critical(self, "שגיאה", "שם התמונה שגוי")
+            self.edit_add.clear()
             return
         image_name = image_name.capitalize()
 
         for img_name in self.table_dict.keys():
             if img_name == image_name:
-                QMessageBox.critical(self, "שגיאה", "התמונה כבר קיימת")
+                QMessageBox.critical(self, "שגיאה", "התמונה קיימת במערכת")
+                self.edit_add.clear()
                 return
 
         # warp
         wrap = self._create_wrap(image_name)
         count = self.scroll_layout.count()
         self.scroll_layout.insertWidget(count - 1, wrap)  # לפני ה-stretch
+        self.edit_add.clear()
 
     # --------------- update methods --------------- #
     def update_images(self):
         self.data_controller.update_images(self.table_dict)
         QMessageBox.information(self, "הצלחה", "העדכן הצליח")
+        self.edit_add.clear()
 
 
     # --------------- remove methods --------------- #
@@ -96,6 +103,8 @@ class ImagePanel(QWidget):
         # מוחק
         wrap.deleteLater()
 
+        self.table_dict.pop(wrap.title)
+
     # --------------- general methods --------------- #
     def show_panel(self):
         """
@@ -105,6 +114,7 @@ class ImagePanel(QWidget):
         """
         # clear the table
         clear_widget_from_layout([self.scroll_layout])
+        self.table_dict.clear()
 
         # widget that holds title and table
         all_images = self.data_controller.get_all_images()
@@ -128,7 +138,6 @@ class ImagePanel(QWidget):
         wrap_layout = QVBoxLayout()
         wrap.setObjectName("column_wrap")
         wrap.setLayout(wrap_layout)
-        wrap.setFixedWidth(150)
 
         # title
         if first_show:
@@ -177,6 +186,8 @@ class ImagePanel(QWidget):
 
         wrap_layout.addWidget(title)
         wrap_layout.addWidget(table)
+        wrap.setFixedWidth(self.MOVE_NAME_WIDTH + self.CHECKBOX_WIDTH + 30)
+
         wrap_layout.addLayout(skeleton_layout)
         wrap_layout.addWidget(remove_button)
 
@@ -198,9 +209,8 @@ class ImagePanel(QWidget):
         tbl.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         tbl.verticalHeader().setVisible(False)
         tbl.setHorizontalHeaderLabels(["מופע", "קיים"])
-        tbl.setColumnWidth(0, 40)  # עמודה 0 ברוחב 60px
-        tbl.setColumnWidth(1, 20)  # עמודה 1 ברוחב 60px
-        tbl.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
+        tbl.setColumnWidth(0, self.MOVE_NAME_WIDTH)
+        tbl.setColumnWidth(1, self.CHECKBOX_WIDTH)
 
         # build move rows in table
         for move in all_moves:
@@ -214,7 +224,16 @@ class ImagePanel(QWidget):
             check_box = QCheckBox()
             check_box.setChecked(False)
             check_box.setObjectName("checkbox_comment")
-            tbl.setCellWidget(row_num, 1, check_box)
+
+            # wrapper קטן עם layout שמרכז את ה-checkbox
+            container = QWidget()
+            layout = QHBoxLayout(container)
+            layout.addStretch()
+            layout.addWidget(check_box)
+            layout.addStretch()
+            layout.setContentsMargins(0, 0, 0, 0)  # בלי margins מיותרים
+            tbl.setCellWidget(row_num, 1, container)
+
 
         return tbl
 
@@ -230,7 +249,7 @@ class ImagePanel(QWidget):
 
         for i in range (row_num):
             move_name = table.cellWidget(i, 0).text()
-            checkbox = table.cellWidget(i, 1)
+            checkbox = table.cellWidget(i, 1).findChild(QCheckBox)
 
             for move in all_moves:
                 if move.name == move_name:

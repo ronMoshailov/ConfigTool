@@ -11,6 +11,7 @@ class DataController:
     sk_manager = None
     _instance = None
 
+
     # --------------- Construction --------------- #
     def __new__(cls):
         """
@@ -24,16 +25,15 @@ class DataController:
             cls.schedule_manager = []
         return cls._instance
 
+
     # --------------- add methods --------------- #
     def add_move(self, move_name: str, move_type: str, is_main: bool):
         # check if move name empty
         if move_name == "":
-            # QMessageBox.critical(self, "שגיאה", "שם המופע ריק")
             return False, "שם המופע ריק"
 
         # check if move name contain numbers and digits
         if any(c.isalpha() for c in move_name) and any(c.isdigit() for c in move_name):
-            # QMessageBox.critical(self, "שגיאה", "שם המופע לא תקין")
             return False, "שם המופע לא תקין"
 
         # fix the value to fit the DB
@@ -60,26 +60,6 @@ class DataController:
             return False, message
 
         return True, ""
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     def add_sk(self):
         card_num = len(self.sk_manager) + 1
@@ -117,6 +97,9 @@ class DataController:
             if manager.table_num == table_num:
                 manager.add_schedule()
         pass
+
+    def add_inter_stage(self, move_out, move_in):
+        return self.data_manager.add_inter_stage(move_out, move_in)
 
 
     # --------------- get methods --------------- #
@@ -172,6 +155,16 @@ class DataController:
 
     def get_all_inter_stages(self):
         return self.data_manager.get_all_inter_stages()
+
+    def set_schedule_list(self):
+        tables_count = 7
+
+        for i in range (1, tables_count + 1):
+            self.schedule_manager.append(ScheduleManager(i))
+
+    def get_schedule_list(self, idx):
+        return self.schedule_manager[idx].get_schedule_list()
+
 
     # --------------- update methods --------------- #
     def update_min_green(self, dictionary: dict[str, QLineEdit]):
@@ -246,14 +239,35 @@ class DataController:
                 return True
         return False
 
-    def clear_channel(self, card_number: int, channel_num: int):
-        print(f"**** [class] DataController:\t [method] clear_channel\t[start] ")
-        for sk_manager in self.sk_manager:
-            if sk_manager.number_card == card_number:
-                sk_manager.update_sk_name(channel_num, "")
-                sk_manager.update_sk_color(channel_num, to_clear=True)
-                sk_manager.update_sk_comment(channel_num, to_clear=True)
-        print(f"**** [class] DataController:\t [method] clear_channel\t[end] ")
+    def update_schedule(self, table_list, is_repeat):
+        all_schedules = []
+
+        for idx, manager in enumerate (self.schedule_manager):
+            if is_repeat and idx in range(1, 5):
+                tbl = table_list[0]
+            else:
+                tbl = table_list[idx]
+
+            for row in range(tbl.rowCount()):
+
+                time_edit = tbl.cellWidget(row, 1)  # עמודה 0 = QTimeEdit
+                combo_prog = tbl.cellWidget(row, 2)  # עמודה 1 = QComboBox
+
+                hour = time_edit.time().hour()
+                minute = time_edit.time().minute()
+                program_num = int(combo_prog.currentText())
+
+                all_schedules.append((hour, minute, program_num))
+
+            manager.update_schedule(all_schedules)
+            all_schedules.clear()
+
+    def update_images(self, table_dict):
+        self.data_manager.update_images(table_dict)
+
+    def update_inter_stage(self, table_wrap_list):
+        self.data_manager.update_inter_stage(table_wrap_list)
+        return True, "העדכון הצליח"
 
 
     # --------------- remove methods --------------- #
@@ -288,6 +302,13 @@ class DataController:
                 manager.remove_schedule_row(number_row)
                 return True
         return False
+
+    def remove_image(self, image_name):
+        self.data_manager.remove_images(image_name)
+
+    def remove_inter_stage(self, img_out, img_in):
+        return self.data_manager.remove_inter_stage(img_out, img_in)
+
 
     # --------------- general methods --------------- #
     def initialize_app(self, btn_list):
@@ -338,7 +359,6 @@ class DataController:
         self.sk_manager = []
         self.schedule_manager.clear()
 
-
     def set_sk_list(self, path):
         """
         This method count how many sk cards exist and create the same instances of 'SkManager' as a list.
@@ -358,76 +378,13 @@ class DataController:
         # print(f"Found {card_num - 1} sk cards")
         # print(f"**** [class] DataController:\t [method] set_sk_list\t[end] ")
 
-    def set_log_textbox(self, textbox):
-        self.log_textbox = textbox
-        self.log_textbox.setPlaceholderText("ברוכה הבאה...")
-
-    # def write_log(self, text, color):
-    #     self.log_textbox.clear()  # מנקה
-    #
-    #     if color == "r":
-    #         self.log_textbox.setStyleSheet("background-color: red; color: white")
-    #         self.log_textbox.setText(text)
-    #     if color == "g":
-    #         self.log_textbox.setStyleSheet("background-color: green; color: white")
-    #         self.log_textbox.setText(text)
-    #     if color == "y":
-    #         self.log_textbox.setStyleSheet("background-color: yellow; color: white")
-    #         self.log_textbox.setText(text)
-    #     self.log_textbox.setAlignment(Qt.AlignmentFlag.AlignLeft)
-
-    def set_schedule_list(self):
-        tables_count = 7
-
-        for i in range (1, tables_count + 1):
-            self.schedule_manager.append(ScheduleManager(i))
-
-    def get_schedule_list(self, idx):
-        return self.schedule_manager[idx].get_schedule_list()
-
-    def update_schedule(self, table_list, is_repeat):
-        all_schedules = []
-
-        for idx, manager in enumerate (self.schedule_manager):
-            if is_repeat and idx in range(1, 5):
-                tbl = table_list[0]
-            else:
-                tbl = table_list[idx]
-
-            for row in range(tbl.rowCount()):
-
-                time_edit = tbl.cellWidget(row, 1)  # עמודה 0 = QTimeEdit
-                combo_prog = tbl.cellWidget(row, 2)  # עמודה 1 = QComboBox
-
-                hour = time_edit.time().hour()
-                minute = time_edit.time().minute()
-                program_num = int(combo_prog.currentText())
-
-                all_schedules.append((hour, minute, program_num))
-
-            manager.update_schedule(all_schedules)
-            all_schedules.clear()
-
-    def update_images(self, table_dict):
-        self.data_manager.update_images(table_dict)
-
-    def remove_image(self, image_name):
-        self.data_manager.remove_images(image_name)
-
-    def add_inter_stage(self, move_out, move_in):
-        return self.data_manager.add_inter_stage(move_out, move_in)
-
-    def update_inter_stage(self, table_wrap_list):
-        self.data_manager.update_inter_stage(table_wrap_list)
-
-
-
-
-
-
-
-
-
-
+    def clear_channel(self, card_number: int, channel_num: int):
+        print(f"**** [class] DataController:\t [method] clear_channel\t[start] ")
+        for sk_manager in self.sk_manager:
+            if sk_manager.number_card == card_number:
+                sk_manager.update_sk_name(channel_num, "")
+                sk_manager.update_sk_color(channel_num, to_clear=True)
+                sk_manager.update_sk_comment(channel_num, to_clear=True)
+        print(f"**** [class] DataController:\t [method] clear_channel\t[end] ")
 
 

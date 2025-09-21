@@ -43,6 +43,7 @@ def init_scroll(scroll_layout):
     """
     scroll_area = QScrollArea()            # create the container of the scroll bar. (get only widget)
     scroll_area.setWidgetResizable(True)   # make the scroll area resizable
+    scroll_area.setObjectName("scroll_area")  #
 
     scroll_content = QWidget()                     # create the widget that will be in the layout.
     scroll_content.setObjectName("scrollContent")  #
