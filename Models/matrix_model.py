@@ -17,6 +17,12 @@ class MatrixModel:
         is_found = False
 
         for row_name, col_name, value in changed_cells:
+            if value == "":
+                for i, cell in enumerate(self.all_cells):
+                    if row_name == cell.move_out and col_name == cell.move_in:
+                        del self.all_cells[i]
+                        break
+                continue
             for cell in self.all_cells:
                 if row_name == cell.move_out and col_name == cell.move_in:
                     cell.wait_time = value
