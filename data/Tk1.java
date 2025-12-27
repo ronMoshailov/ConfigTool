@@ -17,9 +17,10 @@ public class Tk1 extends Node {
 	public Preemptiontk1 preemption;
 	
 	//SIGNAL GROUPS
-	public Move k1, k2, k3, k4; // traffic
-	public Move pa, pd, pe, pf/*, pk, pe*/; // pedestrians
-	public Move Bf/*, Bk, Bb, Be*/;	// blinkers
+
+	public Move k1, k2;  // traffic
+	public Move pa, pb; // pedestrians
+	public Move Ba, Bb;	// blinkers
 
 	//INPUTS
 	//traffic detectors

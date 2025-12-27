@@ -20,6 +20,43 @@ class MatrixController:
         self.model.update_matrix(changed_cells)
         QMessageBox.information(self.view, "הודעה", "העדכון הצליח")
 
+    def init_model(self, path):
+        """
+        This method set from path the matrix cells in the app.
+
+        :param path: path to "InitTk1.java'
+        :return: None
+        """
+        self.model.reset_model()
+        pattern = matrix_pattern
+
+        with open(path, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.split("//", 1)[0].strip() # ignore what after //, split maximum 1 time
+                if not line:
+                    continue
+
+                match = pattern.search(line)
+                if match:
+                    out = match.group("out")
+                    inn = match.group("inn")
+                    t1 = int(match.group("t1"))
+                    t2 = int(match.group("t2"))
+
+                    self.model.new_cell(out, inn, t1)
+                    self.model.new_cell(inn, out, t2)
+
+        # if len(self.MatrixCells) == 0:
+        #     Log.warning(f"Warning: Matrix cells not found")
+
+
+
+
+
+
+
+
+
     def write_to_file(self, path):
         is_found = False
 
@@ -63,4 +100,5 @@ class MatrixController:
 
             line = f"\t\ttk.zwz.setzeZwz( tk.{move_out}{spaces_1}, tk.{move_in}{spaces_2},    {wait_time}{spaces_3},    {opposite_wait_time}{spaces_4});"
             tuple_list.append((move_out, move_in))
+            tuple_list.append((move_in, move_out))
             new_lines.append(line + "\n")

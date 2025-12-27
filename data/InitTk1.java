@@ -33,24 +33,18 @@ public class InitTk1 extends InitTk {
 
 		//Sg-definition:      partial- | Sg-   | Sg-                         |  min.  | min.| Main
 		//                    node     | name  | type                        |  green | red | Sg
-		tk.k1     =  new Move(   tk    , "_1"   , MoveType.Traffic            ,      1 ,   0 , true );
-		tk.k2     =  new Move(   tk    , "_2"   , MoveType.Traffic            ,      1 ,   0 , true );
-		tk.k3     =  new Move(   tk    , "_3"   , MoveType.Traffic            ,      1 ,   0 , false);
-		tk.k32    =  new Move(   tk    , "_32"  , MoveType.Traffic            ,      1 ,   0 , false);
-		tk.k4     =  new Move(   tk    , "_4"   , MoveType.Traffic_Flashing   ,      1 ,   0 , false);
-		tk.k5     =  new Move(   tk    , "_5"   , MoveType.Traffic_Flashing   ,      1 ,   0 , false);
+		tk.k1     =  new Move(   tk    , "_1"   , MoveType.Traffic            ,      1 ,   0 , true  );
+		tk.k2     =  new Move(   tk    , "_2"   , MoveType.Traffic            ,      1 ,   0 , true  );
 
-		tk.pa     =  new Move(   tk    , "_a"   , MoveType.Pedestrian         ,      8 ,   0 , false);
-		tk.pb     =  new Move(   tk    , "_b"   , MoveType.Pedestrian         ,      6 ,   0 , false);
-		tk.pc     =  new Move(   tk    , "_c"   , MoveType.Pedestrian         ,      6 ,   0 , true );
-		tk.pd     =  new Move(   tk    , "_d"   , MoveType.Pedestrian         ,      8 ,   0 , true );
-		tk.pe     =  new Move(   tk    , "_e"   , MoveType.Pedestrian         ,      8 ,   0 , true );
-		tk.pf     =  new Move(   tk    , "_f"   , MoveType.Pedestrian         ,      8 ,   0 , true );
+		tk.pa     =  new Move(   tk    , "_a"   , MoveType.Pedestrian         ,      8 ,   0 , false );
+		tk.pb     =  new Move(   tk    , "_b"   , MoveType.Pedestrian         ,      6 ,   0 , false );
 
-		tk.Ba     =  new Move(   tk    , "_Ba"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
-		tk.Bb     =  new Move(   tk    , "_Bb"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
-		tk.Bc     =  new Move(   tk    , "_Bc"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
-		tk.Bd     =  new Move(   tk    , "_Bd"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
+		tk.Ba     =  new Move(   tk    , "_Ba"  , MoveType.Blinker_Conditional,      0 ,   0 , true  );
+		tk.Bb     =  new Move(   tk    , "_Bb"  , MoveType.Blinker_Conditional,      0 ,   0 , true  );
+
+
+
+
 
 	}
 
@@ -289,13 +283,9 @@ public class InitTk1 extends InitTk {
 		//stages
 		//   	                         node| name        | num | skel length     | skel length     | is stop in | moves
 		//                                   |             |     | start of cycle  | end of cycle    | Police     | list
-		tk.MainPhase = tk.PhA = new PhaseA(tk, "PhaseA"    , 10  , new int[] { 2 } , new int[] { 0 } , false      , new Move[] {tk.k1, tk.k2, tk.pc, tk.pd, tk.Bc});
 
 		//                               node| name        | num | skel | sp | is stop in | moves
 		//                                   |             |     | len  | sp | Police     | list
-		tk.PhEQA       = new PhaseEQA     (tk, "PhaseEQA"  , 11  ,    3 ,  1 , true       , new Move[] {tk.k1, tk.k2, tk.pc, tk.pd, tk.Bc});
-		tk.PhB         = new PhaseB       (tk, "PhaseB"    , 20  ,    7 ,  2 , true       , new Move[] {tk.k3, tk.pa});
-		tk.PhC         = new PhaseC       (tk, "PhaseC"    , 20  ,    7 ,  3 , true       , new Move[] {tk.k2, tk.pb});
 
 		//interstages
 		//                               node| name        | len | stage out | stage in

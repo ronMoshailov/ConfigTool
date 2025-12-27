@@ -178,7 +178,7 @@ class MainController:
         self._init_sk(self.path_init)
 
         # init project moves
-        self._init_moves(self.path_init_tk1)
+        self.move_controller.init_model(self.path_init_tk1)
 
         # init detectors moves
         self._init_detectors(self.path_tk1)
@@ -190,7 +190,7 @@ class MainController:
         self._init_phue(self.phue_model.phue_paths, self.path_init_tk1)
 
         # init matrix
-        self._init_matrix(self.path_init_tk1)
+        self.matrix_controller.init_model(self.path_init_tk1)
 
         # init schedule
         self._init_schedule(self.path_init_tk1)
@@ -364,25 +364,6 @@ class MainController:
                     # if card == self.number_card:
                     #     self.sk_channel_list.append(SkChannel(name, color, channel, is_commented))
 
-    def _init_moves(self, path):
-        """
-        This method set from path the moves in the app.
-
-        :param path: path to "InitTk1.java'
-        :return: None
-        """
-        pattern = move_pattern
-
-        with open(path, 'r', encoding='utf-8') as file:
-            for line in file:
-                line = line.strip()
-                if line.startswith("//") or not line.startswith("tk."):
-                    continue
-                match = pattern.match(line)
-                if match:
-                    phase, move_type, min_green, is_main = match.groups()
-                    self.move_model.add_move(phase, move_type, True if is_main == "true" else False, min_green)
-
     def _init_detectors(self, path):
         """
         This method extracts detector declarations from InitTk1.java.
@@ -467,33 +448,7 @@ class MainController:
                 length = match.group(3)
                 self.phue_model.update_length(img_out, img_in, length)
 
-    def _init_matrix(self, path):
-        """
-        This method set from path the matrix cells in the app.
 
-        :param path: path to "InitTk1.java'
-        :return: None
-        """
-        pattern = matrix_pattern
-
-        with open(path, "r", encoding="utf-8") as f:
-            for line in f:
-                line = line.split("//", 1)[0].strip() # ignore what after //, split maximum 1 time
-                if not line:
-                    continue
-
-                match = pattern.search(line)
-                if match:
-                    out = match.group("out")
-                    inn = match.group("inn")
-                    t1 = int(match.group("t1"))
-                    t2 = int(match.group("t2"))
-
-                    self.matrix_model.new_cell(out, inn, t1)
-                    self.matrix_model.new_cell(inn, out, t2)
-
-        # if len(self.MatrixCells) == 0:
-        #     Log.warning(f"Warning: Matrix cells not found")
 
     def _init_schedule(self, path):
         pattern = schedule_pattern
@@ -583,5 +538,6 @@ class MainController:
     #     self.path_init_tk1 = None
 
     def write_to_code(self):
+        self.move_controller.write_to_file(self.path_tk1, self.path_init_tk1)
         # self.detector_controller.write_to_file(self.path_init_tk1)
-        self.matrix_controller.write_to_file(self.path_init_tk1)
+        # self.matrix_controller.write_to_file(self.path_init_tk1)

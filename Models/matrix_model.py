@@ -10,6 +10,13 @@ class MatrixModel:
         self.all_cells = []
 
     def new_cell(self, move_out, move_in, wait_time):
+        """
+        This method creates a new matrix cell.
+
+        :param move_out: Move name out
+        :param move_in: Move name in
+        :param wait_time: Waiting time between moves
+        """
         cell = MatrixCell(move_out, move_in, wait_time)
         self.all_cells.append(cell)
 
@@ -33,3 +40,6 @@ class MatrixModel:
             is_found = False
 
         return True
+
+    def reset_model(self):
+        self.all_cells.clear()
