@@ -91,6 +91,7 @@ class MoveController:
         # data
         is_found = False
         new_lines = []
+        backslash_N = 0
 
         # update initTk1.java file
         with open(path_inittk1, 'r', encoding='utf-8') as f:
@@ -103,6 +104,9 @@ class MoveController:
                     self.add_initTk1_lines(new_lines)
                 continue
 
+            if is_found and line == "\n" and backslash_N != 2:
+                backslash_N += 1
+                continue
             new_lines.append(line)
 
         with open(path_inittk1, 'w', encoding='utf-8') as f:
@@ -149,7 +153,8 @@ class MoveController:
             spaces_name5 = " " * max(1, 4 - len(move.name[1:]))
             spaces_name3 = " " * max(0,19 - len(move.type))
             spaces_name4 = " " * max(1,7 - len(str(move.min_green)))
-
+            if move.name == "Bd":
+                print()
 
             line = "\t\t"
             if not move.name.startswith(start):
@@ -161,7 +166,7 @@ class MoveController:
             else:
                 line += f"=  new Move(   tk    , \"_{move.name[1:]}\"{spaces_name5}, "
             line += f"MoveType.{move.type}{spaces_name3},"
-            line += f"{spaces_name4}{move.min_green} ,   0 , {str(move.is_main).lower()} "
+            line += f"{spaces_name4}{move.min_green} ,   0 , {str(move.is_main).lower()}"
             if move.is_main:
                 line += " );\n"
             else:

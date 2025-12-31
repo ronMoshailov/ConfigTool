@@ -18,9 +18,9 @@ public class Tk1 extends Node {
 	
 	//SIGNAL GROUPS
 
-	public Move k1, k2;  // traffic
-	public Move pa, pb; // pedestrians
-	public Move Ba, Bb;	// blinkers
+	public Move k1, k2, k3, k32, k4, k5;  // traffic
+	public Move pa, pb, pc, pd, pe, pf; // pedestrians
+	public Move Ba, Bb, Bc, Bd;	// blinkers
 
 	//INPUTS
 	//traffic detectors

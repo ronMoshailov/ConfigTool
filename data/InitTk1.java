@@ -33,19 +33,24 @@ public class InitTk1 extends InitTk {
 
 		//Sg-definition:      partial- | Sg-   | Sg-                         |  min.  | min.| Main
 		//                    node     | name  | type                        |  green | red | Sg
-		tk.k1     =  new Move(   tk    , "_1"   , MoveType.Traffic            ,      1 ,   0 , true  );
-		tk.k2     =  new Move(   tk    , "_2"   , MoveType.Traffic            ,      1 ,   0 , true  );
+		tk.k1     =  new Move(   tk    , "_1"   , MoveType.Traffic            ,      1 ,   0 , true );
+		tk.k2     =  new Move(   tk    , "_2"   , MoveType.Traffic            ,      1 ,   0 , true );
+		tk.k3     =  new Move(   tk    , "_3"   , MoveType.Traffic            ,      1 ,   0 , false);
+		tk.k32    =  new Move(   tk    , "_32"  , MoveType.Traffic            ,      1 ,   0 , false);
+		tk.k4     =  new Move(   tk    , "_4"   , MoveType.Traffic_Flashing   ,      1 ,   0 , false);
+		tk.k5     =  new Move(   tk    , "_5"   , MoveType.Traffic_Flashing   ,      1 ,   0 , false);
 
-		tk.pa     =  new Move(   tk    , "_a"   , MoveType.Pedestrian         ,      8 ,   0 , false );
-		tk.pb     =  new Move(   tk    , "_b"   , MoveType.Pedestrian         ,      6 ,   0 , false );
+		tk.pa     =  new Move(   tk    , "_a"   , MoveType.Pedestrian         ,      8 ,   0 , false);
+		tk.pb     =  new Move(   tk    , "_b"   , MoveType.Pedestrian         ,      6 ,   0 , false);
+		tk.pc     =  new Move(   tk    , "_c"   , MoveType.Pedestrian         ,      6 ,   0 , true );
+		tk.pd     =  new Move(   tk    , "_d"   , MoveType.Pedestrian         ,      8 ,   0 , true );
+		tk.pe     =  new Move(   tk    , "_e"   , MoveType.Pedestrian         ,      8 ,   0 , true );
+		tk.pf     =  new Move(   tk    , "_f"   , MoveType.Pedestrian         ,      8 ,   0 , true );
 
-		tk.Ba     =  new Move(   tk    , "_Ba"  , MoveType.Blinker_Conditional,      0 ,   0 , true  );
-		tk.Bb     =  new Move(   tk    , "_Bb"  , MoveType.Blinker_Conditional,      0 ,   0 , true  );
-
-
-
-
-
+		tk.Ba     =  new Move(   tk    , "_Ba"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
+		tk.Bb     =  new Move(   tk    , "_Bb"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
+		tk.Bc     =  new Move(   tk    , "_Bc"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
+		tk.Bd     =  new Move(   tk    , "_Bd"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
 	}
 
 	//INTERGREEN MATRIX
@@ -58,14 +63,22 @@ public class InitTk1 extends InitTk {
 
 		//              ending  | starting | ending-> | starting
 		//                      |          | starting | ->ending
-        tk.zwz.setzeZwz( tk.k1   , tk.k3    ,    6     ,    5   );
-        tk.zwz.setzeZwz( tk.k1   , tk.pa    ,    5     ,   11   );
+		tk.zwz.setzeZwz( tk.k1   , tk.k3    ,    3     ,    5   );
 
-        tk.zwz.setzeZwz( tk.k2   , tk.k3    ,    5     ,    6   );
-        tk.zwz.setzeZwz( tk.k2   , tk.pa    ,    6     ,   10   );
+		tk.zwz.setzeZwz( tk.k32  , tk.k2    ,    2     ,    1   );
 
-        tk.zwz.setzeZwz( tk.k3   , tk.pc    ,    7     ,    6   );
-        tk.zwz.setzeZwz( tk.k3   , tk.pd    ,    5     ,   11   );
+		tk.zwz.setzeZwz( tk.k5   , tk.k2    ,    4     ,    1   );
+
+
+
+
+
+
+
+
+
+
+
 
 		tk.zwz.endInit();
 	}

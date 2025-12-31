@@ -540,4 +540,4 @@ class MainController:
     def write_to_code(self):
         self.move_controller.write_to_file(self.path_tk1, self.path_init_tk1)
         # self.detector_controller.write_to_file(self.path_init_tk1)
-        # self.matrix_controller.write_to_file(self.path_init_tk1)
+        self.matrix_controller.write_to_file(self.path_init_tk1)

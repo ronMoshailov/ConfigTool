@@ -1,4 +1,5 @@
 from PyQt6.QtWidgets import QMessageBox
+from torch.fx.experimental.unification.unification_tools import first
 
 from Config.patterns import matrix_pattern
 
@@ -79,26 +80,45 @@ class MatrixController:
 
     def add_new_lines(self, new_lines):
         tuple_list = []
+        last_move = None
+        new_line = False
+        first_row = True
+
         for cell in self.model.all_cells:
             move_out = cell.move_out
             move_in = cell.move_in
             wait_time = cell.wait_time
             opposite_wait_time = None
+
             spaces_1 = " " * max(1, 5 - len(move_out))
             spaces_2 = " " * max(1, 6 - len(move_in))
             spaces_3 = " " * max(1, 6 - len(str(wait_time)))
 
+            if last_move != move_out:
+                new_line = True
 
+            # find opposite
             for c in self.model.all_cells:
-                if (c.move_out, c.move_in) in tuple_list or (c.move_in, c.move_out) in tuple_list:
-                    continue
+                # if opposite cell
+                if c.move_out == move_in and c.move_in == move_out:
 
-                if move_in == c.move_out and move_out == c.move_in:
+                    # if I already found this opposite
+                    if (c.move_in, c.move_out) in tuple_list:
+                        break
+
+                    # add to tuple list
+                    tuple_list.append((c.move_out, c.move_in))
+                # if move_in == c.move_out and move_out == c.move_in:
                     opposite_wait_time = c.wait_time
                     spaces_4 = " " * max(1, 4 - len(str(opposite_wait_time)))
                     break
 
-            line = f"\t\ttk.zwz.setzeZwz( tk.{move_out}{spaces_1}, tk.{move_in}{spaces_2},    {wait_time}{spaces_3},    {opposite_wait_time}{spaces_4});"
-            tuple_list.append((move_out, move_in))
-            tuple_list.append((move_in, move_out))
-            new_lines.append(line + "\n")
+            if opposite_wait_time is None:
+                continue
+
+            if not new_line or first_row:
+                new_lines.append(f"\t\ttk.zwz.setzeZwz( tk.{move_out}{spaces_1}, tk.{move_in}{spaces_2},    {wait_time}{spaces_3},    {opposite_wait_time}{spaces_4});\n")
+            else:
+                new_lines.append(f"\n\t\ttk.zwz.setzeZwz( tk.{move_out}{spaces_1}, tk.{move_in}{spaces_2},    {wait_time}{spaces_3},    {opposite_wait_time}{spaces_4});\n")
+            last_move = move_out
+            first_row = False
