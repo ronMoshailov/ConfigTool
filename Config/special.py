@@ -56,3 +56,9 @@ def set_property(class_name, value_name, item_list):
     """
     for item in item_list:
         item.setProperty(class_name, value_name)
+
+def get_space(min_value, max_value, my_string):
+    return " " * max(min_value, max_value+1 - len(str(my_string)))
+
+
+

@@ -14,6 +14,26 @@ class DetectorController:
         self.view.remove_detector_method = self.remove_detector
         self.view.add_detector_method = self.add_detector
 
+    def init_model(self, path):
+        """
+        This method extracts detector declarations from InitTk1.java.
+
+        :param path: path to "InitTk1.java"
+        :return: None
+        """
+        pattern = detectors_pattern
+
+        with open(path, "r", encoding="utf-8") as f:
+            for line in f:
+                matches = pattern.findall(line)
+                for detector_type, instances in matches:
+                    variables = [v.strip() for v in instances.split(",")]
+                    for name in variables:
+                        self.model.new_detector(name, detector_type)
+
+        # if len(self.moves) == 0:
+        #     Log.warning(f"Warning: Moves not found")
+
     def remove_detector(self, name):
         for detector in self.model.all_detectors:
             if detector.name == name:

@@ -52,7 +52,6 @@ public class InitTk1 extends InitTk {
 		tk.Bc     =  new Move(   tk    , "_Bc"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
 		tk.Bd     =  new Move(   tk    , "_Bd"  , MoveType.Blinker_Conditional,      0 ,   0 , true );
 	}
-
 	//INTERGREEN MATRIX
 	public void initialisiereZwz() {
 		tk.zwz = new ZwzMatrix();
@@ -68,6 +67,20 @@ public class InitTk1 extends InitTk {
 		tk.zwz.setzeZwz( tk.k32  , tk.k2    ,    2     ,    1   );
 
 		tk.zwz.setzeZwz( tk.k5   , tk.k2    ,    4     ,    1   );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -312,29 +325,18 @@ public class InitTk1 extends InitTk {
 
 	//TIME TABLE
 	public void initialisiereUhr() {
-		TagesPlan sun_thur = new TagesPlan("Sunday_Thurday", tk.p04);
-		sun_thur.initProgWunsch( 1 , 00,  tk.p07 );
-		sun_thur.initProgWunsch( 6 , 00,  tk.p09 );
-		sun_thur.initProgWunsch( 7 , 15,  tk.p15 );
-		sun_thur.initProgWunsch( 9 , 10,  tk.p11 );
-		sun_thur.initProgWunsch(12 , 00,  tk.p14 );
-		sun_thur.initProgWunsch(14 , 30,  tk.p15 );
-		sun_thur.initProgWunsch(19 , 30,  tk.p04 );
+		TagesPlan sun_thur = new TagesPlan("Sunday_Thurday",  tk.p04);
+)		sun_thur.initProgWunsch(14 , 30, tk.p15 );
+		sun_thur.initProgWunsch(19 , 30, tk.p04 );
+		sun_thur.initProgWunsch( 7 , 15, tk.p15 );
+		sun_thur.initProgWunsch( 9 , 10, tk.p11 );
+		sun_thur.initProgWunsch(14 , 30, tk.p15 );
+		sun_thur.initProgWunsch(19 , 30, tk.p04 );
 
-		TagesPlan fr = new TagesPlan("Fr", tk.p04);
-		fr.initProgWunsch( 1 , 00,  tk.p07 );
-		fr.initProgWunsch( 6 , 00,  tk.p12 );
-		fr.initProgWunsch( 9 , 10,  tk.p11 );
-		fr.initProgWunsch(11 , 00,  tk.p04 );
-		fr.initProgWunsch(12 , 00,  tk.p15 );
-		fr.initProgWunsch(16 , 00,  tk.p04 );
-
-		TagesPlan sa = new TagesPlan("Sat", tk.p04);
-		sa.initProgWunsch( 1 , 00,  tk.p07 );
-		sa.initProgWunsch( 6 , 00,  tk.p11 );
-		sa.initProgWunsch(16 , 00,  tk.p04 );
-
-
+		TagesPlan fr = new TagesPlan("Fr",  tk.p04);
+)
+		TagesPlan sa = new TagesPlan("Sat",  tk.p04);
+)
 		TagesPlan kipurEve = new TagesPlan("KipurEve", tk.p20);
 		kipurEve.initProgWunsch( 6 , 30,  tk.p12 );
 		kipurEve.initProgWunsch( 9 , 00,  tk.p20 );

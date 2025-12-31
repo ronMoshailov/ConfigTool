@@ -3,10 +3,8 @@ from PyQt6.QtWidgets import QWidget, QHBoxLayout, QFileDialog, QMessageBox, QMai
     QVBoxLayout, QDialog
 import os
 import re
-from pathlib import Path
 
-from Config.patterns import move_pattern, detectors_pattern, image_pattern, matrix_pattern, schedule_pattern, \
-    settings_pattern, sk_pattern
+from Config.patterns import  sk_pattern
 from Config.style import main_window_style
 from Controllers.parameters_controller import ParametersTaController
 from Models.detector_model import DetectorModel
@@ -50,7 +48,6 @@ class MainController:
     Holds all panels in a single layout.
     """
     def __init__(self):
-
         self.root = QMainWindow()
 
         self.main_root = QWidget()
@@ -109,16 +106,23 @@ class MainController:
         root_layout.addWidget(self.parameters_ta_view)
         root_layout.addWidget(self.navigator_view)
 
-        self.navigator_view.write_to_code_method = self.write_to_code
-
         # =============== self =============== #
         self.main_root.setLayout(root_layout)
+
         self.root.setCentralWidget(self.main_root)
         self.root.setStyleSheet(main_window_style)
         self.root.show()
         self.root.showMaximized()          # show in full-screen
 
-    def show_view(self, view):
+        self.navigator_view.write_to_code_method = self.write_to_code
+
+    def show_view(self, act):
+        """
+        Determines which view should be displayed based on the given action.
+
+        :param act: An action identifier that specifies which operation/view to perform.
+        :return: None
+        """
         # hide all views
         self.settings_view.hide_view()
         self.move_view.hide_view()
@@ -131,74 +135,41 @@ class MainController:
         self.phue_view.hide_view()
         self.parameters_ta_view.hide_view()
 
-        if view == "init":
-            self.initialize_app()
+        if act == "init":
+            self._initialize_app()
             return
 
         if self.path_project is None:
             QMessageBox.critical(self.main_root, "שגיאה", "פרויקט לא מאותחל")
             return
 
-        if view == "settings":
+        if act == "settings":
             self.settings_controller.show_view()
-        elif view == "move":
+        elif act == "move":
             self.move_controller.show_view()
-        elif view == "min_green":
+        elif act == "min_green":
             self.min_green_controller.show_view()
-        elif view == "matrix":
+        elif act == "matrix":
             self.matrix_controller.show_view(self.move_model.all_moves)
-        elif view == "detector":
+        elif act == "detector":
             self.detector_controller.show_view()
-        elif view == "sk":
+        elif act == "sk":
             self.sk_controller.show_view(self.move_model.all_moves)
-        elif view == "schedule":
+        elif act == "schedule":
             self.schedule_controller.show_view()
             self.schedule_view.show_view()
-        elif view == "image":
+        elif act == "image":
             self.image_controller.show_view(self.move_model.all_moves)
-        elif view == "phue":
+        elif act == "phue":
             self.phue_controller.show_view(self.image_model.all_images, self.move_model.all_moves)
-        elif view == "parameters_ta":
+        elif act == "parameters_ta":
             self.parameters_ta_controller.show_view([img for img in self.image_model.all_images])
 
-    def initialize_app(self):
-        # set project path
-        self._set_folder_path()
-        if self.path_project is None:
-            QMessageBox.critical(self.main_root, "שגיאה", "לא נבחרה תיקייה")
-            return
-
-        # set files of use
-        self._set_files_path()
-
-        # init settings moves
-        self._init_settings(self.path_init)
-
-        # init sk moves
-        self._init_sk(self.path_init)
-
-        # init project moves
-        self.move_controller.init_model(self.path_init_tk1)
-
-        # init detectors moves
-        self._init_detectors(self.path_tk1)
-
-        # init images moves
-        self._init_images(self.path_init_tk1)
-
-        # init phue moves
-        self._init_phue(self.phue_model.phue_paths, self.path_init_tk1)
-
-        # init matrix
-        self.matrix_controller.init_model(self.path_init_tk1)
-
-        # init schedule
-        self._init_schedule(self.path_init_tk1)
-
-        #
-        self.init_ta_parameters(self.path_parameters_ta)
-
     def print_all(self):
+        """
+        This method prints all the data for the window.
+        :return: None
+        """
         if self.path_project is None:
             return
 
@@ -272,26 +243,75 @@ class MainController:
 
         text_to_show = "\n".join(out)
 
-        # -----------------------------
-        # יצירת החלון בתוך הפונקציה
-        # -----------------------------
+        # create window for the data
         dialog = QDialog(self.root)
         dialog.setWindowTitle("Print All Output")
         dialog.resize(800, 600)
-
-        layout = QVBoxLayout()
 
         text_edit = QTextEdit()
         text_edit.setReadOnly(True)
         text_edit.setText(text_to_show)
 
+        layout = QVBoxLayout()
         layout.addWidget(text_edit)
 
         dialog.setLayout(layout)
-
         dialog.exec()
+
+    def write_to_code(self):
+        self.settings_controller.write_to_file(self.path_init)
+        self.move_controller.write_to_file(self.path_tk1, self.path_init_tk1)
+        # self.detector_controller.write_to_file(self.path_init_tk1)
+        self.matrix_controller.write_to_file(self.path_init_tk1)
+        self.schedule_controller.write_to_file(self.path_init_tk1)
+
     # =============== inner methods =============== #
+    def _initialize_app(self):
+        """
+        Initialize all the data for the models.
+        :return: None
+        """
+        # set project path
+        self._set_folder_path()
+        if self.path_project is None:
+            QMessageBox.critical(self.main_root, "שגיאה", "לא נבחרה תיקייה")
+            return
+
+        # set files of use
+        self._set_files_path()
+
+        # init settings moves
+        self.settings_controller.init_model(self.path_init)
+
+        # init sk moves
+        self.sk_controller.init_model(self.path_init)
+
+        # init project moves
+        self.move_controller.init_model(self.path_init_tk1)
+
+        # init detectors moves
+        self.detector_controller.init_model(self.path_tk1)
+
+        # init images moves
+        self.image_controller.init_model(self.path_init_tk1)
+
+        # init phue moves
+        self.phue_controller.init_model(self.phue_model.phue_paths, self.path_init_tk1)
+
+        # init matrix
+        self.matrix_controller.init_model(self.path_init_tk1)
+
+        # init schedule
+        self.schedule_controller.init_model(self.path_init_tk1)
+
+        #
+        self.parameters_ta_controller.init_model(self.path_parameters_ta, len(self.image_model.all_images))
+
     def _set_folder_path(self):
+        """
+        Set folder path.
+        :return:
+        """
         folder_path = QFileDialog.getExistingDirectory(None, "בחר תיקייה")
         if not folder_path:
             print(f"folder_path is false")
@@ -299,7 +319,17 @@ class MainController:
         self.path_project = folder_path
 
     def _set_files_path(self):
+        """
+        Set all the path of the files that hold the data.
+        :return:
+        """
         for root, dirs, files in os.walk(self.path_project):
+            # ============================================================
+            # os.walk returns:
+            #   root - current path in the scan
+            #   dirs - list of all the folders in root
+            #   files - list of all the files in root
+            # ============================================================
             for file in files:
                 if file.lower() == "init.java":  # בודק בלי תלות ברישיות
                     self.path_init = os.path.join(root, file)
@@ -311,233 +341,3 @@ class MainController:
                     self.path_parameters_ta = os.path.join(root, file)
                 elif file.lower().startswith("phue"):
                     self.phue_model.phue_paths.append(os.path.join(root, file))
-
-    # =============== inner methods -> init methods =============== #
-    def _init_settings(self, path):
-        pattern = settings_pattern
-        with open(path, "r", encoding="utf-8") as f:
-            content = f.read()
-
-        for match in pattern.finditer(content):
-            gd = match.groupdict()
-            for key, value in gd.items():
-                if not value:  # מדלג על None או ריק
-                    continue
-
-                if key == "anlagenName":
-                    anlagenName = value
-                elif key == "tk1Name":
-                    tk1Name = value
-                elif key == "version":
-                    version = value
-                elif key == "lastVersion":
-                    m = re.match(r'(?P<date>\d{2}/\d{2}/\d{4})\s*-\s*(?P<author>.+)', value)
-                    if m:
-                        lastVersionDate = m.group("date")
-                        lastVersionAuthor = m.group("author")
-                elif key == "tk1Arg":
-                    first_time_ext = value
-
-        self.settings_model.set(lastVersionAuthor, anlagenName, tk1Name, version, lastVersionDate, first_time_ext)
-
-    def _init_sk(self, path):
-        with open(path, 'r', encoding='utf-8') as file:
-            for line in file:
-                line = line.strip()
-                if "SK24 sk" in line:
-                    self.sk_model.add_sk()
-
-        pattern = sk_pattern
-        with open(path, 'r', encoding='utf-8') as file:
-            for line in file:
-                line = line.strip()
-                if "new SchaltKanal" not in line:
-                    continue
-                match = pattern.match(line)
-                if match:
-                    is_commented = bool(match.group(1))
-                    name = match.group(2)
-                    color = match.group(3)
-                    card_number = int(match.group(4))
-                    channel = int(match.group(5))
-                    self.sk_model.set_channel(card_number, name, color, channel, is_commented)
-                    # if card == self.number_card:
-                    #     self.sk_channel_list.append(SkChannel(name, color, channel, is_commented))
-
-    def _init_detectors(self, path):
-        """
-        This method extracts detector declarations from InitTk1.java.
-
-        :param path: path to "InitTk1.java"
-        :return: None
-        """
-        pattern = detectors_pattern
-
-        with open(path, "r", encoding="utf-8") as f:
-            for line in f:
-                matches = pattern.findall(line)
-                for detector_type, instances in matches:
-                    variables = [v.strip() for v in instances.split(",")]
-                    for name in variables:
-                        self.detector_model.new_detector(name, detector_type)
-
-        # if len(self.moves) == 0:
-        #     Log.warning(f"Warning: Moves not found")
-
-    def _init_images(self, path):
-        pattern = image_pattern
-
-        with open(path, "r", encoding="utf-8") as f:
-            for line in f:
-                m = pattern.search(line)
-                if m:
-                    image_name = m.group(1)
-                    image_num = m.group(2).strip()
-                    image_skeleton = m.group(3).strip()
-                    image_sp = m.group(4).strip()
-                    is_police = True if m.group(5).strip() == 'true' else False
-                    moves_raw = m.group(6)
-                    image_moves = re.findall(r'tk\.([A-Za-z0-9_]+)', moves_raw)
-
-                    if image_name == 'A':
-                        image_num = 10
-                        image_skeleton = re.search(r'\{([^}]*)\}', m.group(3)).group(1).strip()
-                        image_sp = 0
-
-                    all_moves = self.move_model.all_moves
-                    collection = []
-
-                    for move in all_moves:
-                        if move.name in image_moves:
-                            collection.append(move)
-                    self.image_model.new_image(image_name, image_num, image_skeleton, image_sp, is_police, collection)
-                    # self.image_model.new_image(image_name, image_num, image_skeleton, image_sp, is_police)
-
-    def _init_phue(self, path_list, path_len):
-        class_pattern = re.compile(r"public\s+class\s+Phue([A-Za-z0-9]+)_([A-Za-z0-9]+)")
-        sg_pattern = re.compile(r"_tk\.(\w+)\.setSg\s*\(Zustand\.(ROT|GRUEN)\s*,\s*(\d+)\s*\)")
-        phue_len_pattern = re.compile(r'tk\.Phue([A-Za-z0-9]+)_([A-Za-z0-9]+)\s*=.*?\(\s*tk\s*,\s*"[^"]+"\s*,\s*([0-9]+)')
-
-        for path in path_list:
-            path = Path(path)
-            with open(path, "r", encoding="utf-8") as f:
-                content = f.read()
-
-            # find image_out and image_in
-            class_match = class_pattern.search(content)
-            if not class_match:
-                continue
-            img_out, img_in = class_match.groups()
-
-            transitions = []
-            # new_interstage = InterStage(img_out, img_in, 0)
-
-            # find turn of and turn off moves
-            for m in sg_pattern.finditer(content):
-                move, state, time = m.groups()
-                transition = self.phue_model.new_transition(move, state, time)
-                transitions.append(transition)
-            self.phue_model.new_phue(img_out, img_in, 0, transitions)
-
-        with open(path_len, "r", encoding="utf-8") as f:
-            content = f.read()
-
-            for match in phue_len_pattern.finditer(content):
-                img_out = match.group(1)
-                img_in = match.group(2)
-                length = match.group(3)
-                self.phue_model.update_length(img_out, img_in, length)
-
-
-
-    def _init_schedule(self, path):
-        pattern = schedule_pattern
-        mapping_day = {"sun_thur": [1,2,3,4,5], "fr": [6],"sa": [7]}
-
-        with open(path, 'r', encoding='utf-8') as file:
-            for line in file:
-                line = line.strip()
-                match = pattern.match(line)
-                if not match:
-                    continue
-
-                if match.group(1):  # שורת TagesPlan
-                    var_name = match.group(1)
-                    if var_name in ["kipurEve", "kipur", "blink"]:
-                        return
-                    days = mapping_day[var_name]
-
-                    # if self.is_valid(var_name):
-                    program_number = int(match.group(2))
-                    for day in days:
-                        self.schedule_model.add_cell(day, 0, 0, program_number)
-
-                else:  # שורת initProgWunsch
-                    var_name = match.group(3)
-                    days = mapping_day[var_name]
-                    hour = int(match.group(4))
-                    minute = int(match.group(5))
-                    program_number = int(match.group(6))
-
-                    for day in days:
-                        self.schedule_model.add_cell(day, hour, minute, program_number)
-
-                    # if self.is_valid(var_name):
-                    #     program_number = int(match.group(6))
-                        # self.schedule_list.append(Schedule(hour, minute, program_number))
-                        # print(f"{var_name}: שעה {hour}, דקה {minute}, תוכנית {program_number}")
-
-    def init_ta_parameters(self, path):
-        pattern = re.compile(r'^static int\[\]\s+DVI35_P(\d+)\s*=\s*\{([^}]*)\}')
-        with open(path, 'r', encoding='utf-8') as file:
-            for line in file:
-                line = line.strip()
-                match = pattern.match(line)
-                if not match:
-                    continue
-                index = int(match.group(1))       # 03
-                values_str = match.group(2)  # "0, 0, 0, ..."
-
-                # # הפיכת הטקסט של הערכים לרשימת מספרים
-                values = [int(v.strip()) for v in values_str.split(",")]
-                images_len = len(self.image_model.all_images)
-
-                min_list = values[0: images_len]
-                max_list = values[images_len: 2 * images_len]
-                type_list = values[2 * images_len: 3 * images_len]
-
-                str = values[3 * images_len]
-                cycle = values[ 3 * images_len + 1]
-
-                self.parameters_ta_model.add_program(index, min_list, max_list, type_list, str, cycle)
-            print('')
-                # print("index:", index)
-                # print("values:", values)
-                # print("---")
-
-
-    # ============================================================
-    # os.walk returns:
-    #   root - current path in the scan
-    #   dirs - list of all the folders in root
-    #   files - list of all the files in root
-    # ============================================================
-
-    # ======================================================= #
-    #    not needed for now but maybe in future I will use    #
-    # ======================================================= #
-    # def reset(self):
-    #     """
-    #     This method reset all the paths.
-    #
-    #     :return: None
-    #     """
-    #     self.path_project = None
-    #     self.path_init = None
-    #     self.path_tk1 = None
-    #     self.path_init_tk1 = None
-
-    def write_to_code(self):
-        self.move_controller.write_to_file(self.path_tk1, self.path_init_tk1)
-        # self.detector_controller.write_to_file(self.path_init_tk1)
-        self.matrix_controller.write_to_file(self.path_init_tk1)

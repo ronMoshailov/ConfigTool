@@ -16,7 +16,12 @@ import special.PoliceKeyboard;
 import special.SpecialInOuts;
 
 public class Init implements enp.Initialisierung {
-
+	public static String anlagenName = "Maatz Junc. 0075";
+	public static String tk1Name     = "Yavor - Road 70 - Road 805";
+	public static String version     = "V1.2.20 G5tf.7";
+	public static String version     = "V1.2.20 G5tf.7";
+	public static String[] versions = {"08/07/2025 - Ron M.."};
+    
 	public static String anlagenName = "Maatz Junc. 0075";
 	public static String tk1Name     = "Yavor - Road 70 - Road 805";
 	public static String version     = "V1.2.20 G5tf.7";

@@ -1,3 +1,5 @@
+import re
+
 from PyQt6.QtWidgets import QCheckBox
 
 
@@ -7,6 +9,29 @@ class ParametersTaController:
         self.model = model
 
         self.view.update_parameters_method = self.update_parameters
+
+    def init_model(self, path, images_len):
+        pattern = re.compile(r'^static int\[\]\s+DVI35_P(\d+)\s*=\s*\{([^}]*)\}')
+        with open(path, 'r', encoding='utf-8') as file:
+            for line in file:
+                line = line.strip()
+                match = pattern.match(line)
+                if not match:
+                    continue
+                index = int(match.group(1))       # 03
+                values_str = match.group(2)  # "0, 0, 0, ..."
+
+                # # הפיכת הטקסט של הערכים לרשימת מספרים
+                values = [int(v.strip()) for v in values_str.split(",")]
+
+                min_list = values[0: images_len]
+                max_list = values[images_len: 2 * images_len]
+                type_list = values[2 * images_len: 3 * images_len]
+
+                str = values[3 * images_len]
+                cycle = values[ 3 * images_len + 1]
+
+                self.model.add_program(index, min_list, max_list, type_list, str, cycle)
 
     def show_view(self, all_images):
         self.view.show_view(all_images, self.model.get_parameters())

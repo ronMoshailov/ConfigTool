@@ -3,6 +3,7 @@ from PyQt6.QtGui import QBrush
 from PyQt6.QtWidgets import QMessageBox, QTableWidget, QTableWidgetItem
 
 from Config.colors import white_color, gray_color, light_green_color
+from Config.patterns import sk_pattern
 
 
 class SkController:
@@ -22,6 +23,29 @@ class SkController:
         self.view.update_comment_method = self.update_comment
         self.view.update_data_method = self.update_data
 
+    def init_model(self, path):
+        with open(path, 'r', encoding='utf-8') as file:
+            for line in file:
+                line = line.strip()
+                if "SK24 sk" in line:
+                    self.model.add_sk()
+
+        pattern = sk_pattern
+        with open(path, 'r', encoding='utf-8') as file:
+            for line in file:
+                line = line.strip()
+                if "new SchaltKanal" not in line:
+                    continue
+                match = pattern.match(line)
+                if match:
+                    is_commented = bool(match.group(1))
+                    name = match.group(2)
+                    color = match.group(3)
+                    card_number = int(match.group(4))
+                    channel = int(match.group(5))
+                    self.model.set_channel(card_number, name, color, channel, is_commented)
+                    # if card == self.number_card:
+                    #     self.sk_channel_list.append(SkChannel(name, color, channel, is_commented))
 
     def show_view(self, all_moves):
         self.all_moves = all_moves

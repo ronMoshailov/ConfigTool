@@ -5,9 +5,15 @@ from Config.patterns import move_pattern
 
 class MoveController:
     """
-    This class represents a traffic signal group.
+    This class represents controller of a traffic signal move.
     """
     def __init__(self, view, model):
+        """
+        Constructor.
+
+        :param view: Moves view.
+        :param model: Move model.
+        """
         self.view = view
         self.model = model
 
@@ -15,14 +21,26 @@ class MoveController:
         self.view.remove_move_method = self.remove_move
 
     def show_view(self):
+        """
+        This method show the view.
+        :return: None
+        """
         self.view.show_view(self.model.all_moves)
 
     def add_move(self, move_name, move_type, is_main, min_green):
+        """
+        This method add a move.
+
+        :param move_name: Move name without [k, p, B].
+        :param move_type: Move type.
+        :param is_main: Move is main or not.
+        :param min_green: Move minimum green time.
+        :return:
+        """
         # check if the name is empty
         if move_name.strip() == '':
             QMessageBox.critical(self.view, "שגיאה", f"שם ריק")
             return
-
 
         # check if move name contain numbers and digits
         if any(c.isalpha() for c in move_name) and any(c.isdigit() for c in move_name):
@@ -37,12 +55,21 @@ class MoveController:
         elif move_type == "Blinker" or move_type == "Blinker_Conditional":
             move_name = "B" + move_name
 
+        # add move (if failed it's because the move already exist)
         if not self.model.add_move(move_name, move_type, is_main, min_green):
             QMessageBox.critical(self.view, "שגיאה", "מופע כבר קיים במערכת")
             return
+
+        # refresh the view
         self.show_view()
 
     def remove_move(self, move_name):
+        """
+        This method remove a move.
+
+        :param move_name: Move name.
+        :return: None
+        """
         if self.model.remove_move(move_name):
             self.show_view()
             return
@@ -65,9 +92,9 @@ class MoveController:
                 match = pattern.match(line)
                 if match:
                     phase, move_type, min_green, is_main = match.groups()
-                    self.model.add_move(phase, move_type, True if is_main == "true" else False, min_green)
+                    self.model.add_move(phase, move_type, True if is_main == "true" else False, int(min_green))
 
-    def write_to_file(self, path_tk, path_inittk1):
+    def write_to_file(self, path_tk, path_initTk1):
         # data
         is_found = False
         new_lines = []
@@ -94,7 +121,7 @@ class MoveController:
         backslash_N = 0
 
         # update initTk1.java file
-        with open(path_inittk1, 'r', encoding='utf-8') as f:
+        with open(path_initTk1, 'r', encoding='utf-8') as f:
             lines = f.readlines()
 
         for line in lines:
@@ -109,7 +136,7 @@ class MoveController:
                 continue
             new_lines.append(line)
 
-        with open(path_inittk1, 'w', encoding='utf-8') as f:
+        with open(path_initTk1, 'w', encoding='utf-8') as f:
             f.writelines(new_lines)
 
     def add_tk1_lines(self, new_lines):

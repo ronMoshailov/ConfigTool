@@ -1,4 +1,7 @@
+import re
+
 from PyQt6.QtWidgets import QWidget, QMessageBox
+from pathlib import Path
 
 
 class PhueController:
@@ -13,6 +16,41 @@ class PhueController:
 
         self.all_images = None
         self.all_moves = None
+
+    def init_model(self, path_list, path_len):
+        class_pattern = re.compile(r"public\s+class\s+Phue([A-Za-z0-9]+)_([A-Za-z0-9]+)")
+        sg_pattern = re.compile(r"_tk\.(\w+)\.setSg\s*\(Zustand\.(ROT|GRUEN)\s*,\s*(\d+)\s*\)")
+        phue_len_pattern = re.compile(r'tk\.Phue([A-Za-z0-9]+)_([A-Za-z0-9]+)\s*=.*?\(\s*tk\s*,\s*"[^"]+"\s*,\s*([0-9]+)')
+
+        for path in path_list:
+            path = Path(path)
+            with open(path, "r", encoding="utf-8") as f:
+                content = f.read()
+
+            # find image_out and image_in
+            class_match = class_pattern.search(content)
+            if not class_match:
+                continue
+            img_out, img_in = class_match.groups()
+
+            transitions = []
+            # new_interstage = InterStage(img_out, img_in, 0)
+
+            # find turn of and turn off moves
+            for m in sg_pattern.finditer(content):
+                move, state, time = m.groups()
+                transition = self.model.new_transition(move, state, time)
+                transitions.append(transition)
+            self.model.new_phue(img_out, img_in, 0, transitions)
+
+        with open(path_len, "r", encoding="utf-8") as f:
+            content = f.read()
+
+            for match in phue_len_pattern.finditer(content):
+                img_out = match.group(1)
+                img_in = match.group(2)
+                length = match.group(3)
+                self.model.update_length(img_out, img_in, length)
 
     def add_phue(self, img_out, img_in):
         if img_out == img_in:
