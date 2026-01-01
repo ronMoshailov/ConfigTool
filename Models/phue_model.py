@@ -1,5 +1,5 @@
 class Phue:
-    def __init__(self, move_out, move_in, length, transitions=[]):
+    def __init__(self, move_out: str, move_in: str, length: int, transitions: list = []):
         self.image_out   = move_out
         self.image_in    = move_in
         self.length = length

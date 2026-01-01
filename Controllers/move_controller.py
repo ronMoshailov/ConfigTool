@@ -94,6 +94,48 @@ class MoveController:
                     phase, move_type, min_green, is_main = match.groups()
                     self.model.add_move(phase, move_type, True if is_main == "true" else False, int(min_green))
 
+    def get_code(self):
+        # tk.k1     =  new Move(     tk  , "_1"  ,  MoveType.Traffic  		 ,      5 ,   0 , false);
+        code = []
+        line = ""
+        prev_start = self.model.all_moves[0].name[0]
+
+        for move in self.model.all_moves:
+            if prev_start != move.name[0]:
+                code.append("\n")
+            line += f"\t\ttk.{move.name}"                           # add code
+            line += " " * (12 - len(line))                          # add spaces
+            if move.name.startswith("B"):
+                line += f"=  new Move(     tk  , \"_{move.name}\""  # add code
+            else:
+                line += f"=  new Move(     tk  , \"_{move.name[1:]}\""  # add code
+            line += " " * (41 - len(line))                          # add spaces
+            if move.name.startswith("B"):
+                line += f", MoveType.{move.type}"                   # add code
+            else:
+                line += f",  MoveType.{move.type}"                  # add code
+            line += " " * (71 - len(line))                          # add spaces
+            line += ","                                             # add code
+            if move.min_green >= 10:
+                line += " " * 5                                     # add spaces
+            else:
+                line += " " * 6                                     # add spaces
+            line += f"{move.min_green} ,   0 , "                    # add code
+            if move.is_main:
+                line += "true );\n"
+            else:
+                line += "false);\n"
+
+            code.append(line)
+            prev_start = move.name[0]
+            line = ""
+
+        for c in code:
+            print(c)
+
+
+
+
     def write_to_file(self, path_tk, path_initTk1):
         # data
         is_found = False

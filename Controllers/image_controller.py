@@ -79,3 +79,5 @@ class ImageController:
             self.model.update_image(image_name, skeleton_num, image_number, results)
         self.show_view(self.all_moves)
         QMessageBox.information(self.view, "הודעה", "העדכון הצליח")
+
+

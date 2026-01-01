@@ -59,6 +59,39 @@ class DetectorController:
     def show_view(self):
         self.view.show_view(self.model.all_detectors)
 
+    def get_code(self):
+        code = []
+        line = ""
+        all_detectors = self.model.all_detectors
+        # mapping = {1: "DDetector", 1: "EDetector", 1: "TPDetector", 1: "DEDetector", 1: "QDetector", }
+
+        for detector in all_detectors:
+            line += f"\t\ttk.{detector.name}"                       # add code
+            line += " " * (12 - len(line))                          # add spaces
+            if detector.type in ["DDetector", "EDetector", "QDetector"]:
+                line += f"= new {detector.type} "                        # add code
+            else:
+                line += f"= new {detector.type}"                        # add code
+
+            left, right = detector.name.split("_", 1)               # prepare name
+            result = left.upper() + "-" + right                     # prepare name
+            line += f"(\"{result}\""
+            line += " " * (37 - len(line))                          # add spaces
+
+            if right[0].isdigit():
+                line += f", tk.p{right[0]}"
+            else:
+                line += f", tk.k{right[0]}"
+
+            line += f" ,    true ,        true ,                  true );"
+
+            code.append(line)
+            line = ""
+
+        for c in code:
+            print(c)
+
+
     # def write_to_file(self, path):
     #     is_found = False
     #

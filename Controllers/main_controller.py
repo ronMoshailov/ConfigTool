@@ -259,11 +259,18 @@ class MainController:
         dialog.exec()
 
     def write_to_code(self):
-        self.settings_controller.write_to_file(self.path_init)
-        self.move_controller.write_to_file(self.path_tk1, self.path_init_tk1)
-        # self.detector_controller.write_to_file(self.path_init_tk1)
-        self.matrix_controller.write_to_file(self.path_init_tk1)
-        self.schedule_controller.write_to_file(self.path_init_tk1)
+        # self.phue_controller.get_code()
+        # self.move_controller.get_code()
+        # self.matrix_controller.get_code()
+
+
+        # self.schedule_controller.get_code()
+        # self.detector_controller.get_code()
+        # self.settings_controller.write_to_file(self.path_init)
+        # self.move_controller.write_to_file(self.path_tk1, self.path_init_tk1)
+        # # self.detector_controller.write_to_file(self.path_init_tk1)
+        # self.schedule_controller.write_to_file(self.path_init_tk1)
+        pass
 
     # =============== inner methods =============== #
     def _initialize_app(self):
@@ -307,12 +314,13 @@ class MainController:
         #
         self.parameters_ta_controller.init_model(self.path_parameters_ta, len(self.image_model.all_images))
 
+        print('')
     def _set_folder_path(self):
         """
         Set folder path.
         :return:
         """
-        folder_path = QFileDialog.getExistingDirectory(None, "בחר תיקייה")
+        folder_path = QFileDialog.getExistingDirectory(None, "בחר תיקייה")  # choose folder window
         if not folder_path:
             print(f"folder_path is false")
             return

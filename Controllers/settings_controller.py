@@ -12,21 +12,37 @@ class SettingsController(QWidget):
 
         self.view = view
         self.model = model
+        self.is_old = None
 
         # =============== Controller Methods =============== #
         self.view.update_settings_method = self.update_model
         self.view.change_state_method = self.change_state
         self.view.make_checkable_method = self.make_checkable
 
-    def init_model(self, path):
-        pattern = settings_pattern
-        with open(path, "r", encoding="utf-8") as f:
-            content = f.read()
 
-        for match in pattern.finditer(content):
-            gd = match.groupdict()
+    def init_model(self, path):
+        # data
+        pattern = settings_pattern
+
+        anlagenName = None
+        tk1Name = None
+        version = None
+        lastVersionDate = None
+        lastVersionAuthor = None
+        first_time_ext = None
+
+        # reset previous data
+        self.model.reset()
+
+        # read
+        with open(path, "r", encoding="utf-8") as f:
+            content = f.read() # read all the data from the file
+
+        for match in pattern.finditer(content):  # return iterator each match
+            gd = match.groupdict() # get dictionary from match [variable name, value of the variable]
+
             for key, value in gd.items():
-                if not value:  # מדלג על None או ריק
+                if not value:
                     continue
 
                 if key == "anlagenName":
@@ -71,25 +87,48 @@ class SettingsController(QWidget):
         for btn in btn_list:
             btn.setCheckable(True)
 
-    def write_to_file(self, path_init):
+    def write_to_file(self, path):
         # data
         code = []
 
         # read the code from the file
-        with open(path_init, 'r', encoding='utf-8') as f:
+        with open(path, 'r', encoding='utf-8') as f:
             lines = f.readlines()
 
-        #
-        for line in lines:
-            if "write settings here" in line:
-                code.append(f"\tpublic static String anlagenName = \"{self.model.junction_num}\";\n")
-                code.append(f"\tpublic static String tk1Name     = \"{self.model.junction_name}\";\n")
-                code.append(f"\tpublic static String version     = \"{self.model.version}\";\n")
-                code.append("\tpublic static String[] versions = {")
-                code.append(f"\"{self.model.date} - {self.model.programmer_name}.\"")
-                code.append("};")
-            else:
-                code.append(line)
+        # # "write here"
+        # for line in lines:
+        #     if "// write settings here" in line:
+        #         code.append(f"\tpublic static String anlagenName = \"{self.model.junction_num}\";\n")
+        #         code.append(f"\tpublic static String tk1Name     = \"{self.model.junction_name}\";\n")
+        #         code.append(f"\tpublic static String version     = \" {self.model.version}\";")
+        #         code.append( "\tpublic static String[] versions = {")
+        #         code.append(f"\"{self.model.date} - {self.model.programmer_name}\"")
+        #         code.append("};")
+        #         continue
+        #     code.append(line)
 
-        with open(path_init, 'w', encoding='utf-8') as f:
-            f.writelines(code)
+        # not for now
+        # for line in lines:
+        #     if "public static String anlagenName" in line:
+        #         code.append(f"\tpublic static String anlagenName = \"{self.model.junction_num}\";\n")
+        #     elif "public static String tk1Name" in line:
+        #         code.append(f"\tpublic static String tk1Name     = \"{self.model.junction_name}\";\n")
+        #     elif "public static String version" in line:
+        #         code.append(f"public static String version     = \" {self.model.version}\";")
+        #     elif "public static String[] versions" in line:
+        #         while "};" not in line:
+        #             code.append(line)
+        #         code.append()
+        #     elif "public static String date": in line:
+        #         code.append(f"\tpublic static String tk1Name     = \"{self.model.junction_name}\";\n")
+        #
+        #     elif "write settings here" in line:
+        #
+        #         code.append("\tpublic static String[] versions = {")
+        #         code.append(f"\"{self.model.date} - {self.model.programmer_name}.\"")
+        #         code.append("};")
+        #     else:
+        #         code.append(line)
+        #
+        # with open(path, 'w', encoding='utf-8') as f:
+        #     f.writelines(code)

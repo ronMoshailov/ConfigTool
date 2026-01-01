@@ -97,6 +97,15 @@ class ScheduleController:
                     return False
         return True
 
+
+
+
+
+
+
+
+
+
     # def is_copy_sunday(self):
     #     tables = self.model.all_schedule_tables[0:5]
     #     cell_list
@@ -221,5 +230,8 @@ class ScheduleController:
         ]
 
         new_lines.extend(end_line)
+
+    def get_code(self):
+        pass
 
 

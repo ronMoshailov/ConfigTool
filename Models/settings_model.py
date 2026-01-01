@@ -2,7 +2,7 @@ class SettingsModel:
     def __init__(self):
         self.programmer_name = None
         self.junction_num = None
-        self.junction_name = None
+        self.junction_name = None     # anlagenName
         self.version = None
         self.date = None
         self.first_ext = None
@@ -15,3 +15,10 @@ class SettingsModel:
         self.date = date
         self.first_ext = first_ext
 
+    def reset(self):
+        self.programmer_name = None
+        self.junction_num = None
+        self.junction_name = None
+        self.version = None
+        self.date = None
+        self.first_ext = None

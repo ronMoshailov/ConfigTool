@@ -50,16 +50,56 @@ class MatrixController:
         # if len(self.MatrixCells) == 0:
         #     Log.warning(f"Warning: Matrix cells not found")
 
+    def get_code(self):
+        code = []
+        tuple_list = []
+        line = ""
+        all_cells = self.model.all_cells
+        prev_start = all_cells[0].move_out
+
+        for cell in all_cells:
+            if (cell.move_out, cell.move_in) in tuple_list:
+                continue
+            if prev_start != cell.move_out:
+                code.append("\n")
+            line += "\t\ttk.zwz.setzeZwz( "
+            line += f"tk.{cell.move_out}"
+            line += " " * (26 - len(line))                          # add spaces
+            line += f", tk{cell.move_in}"
+            line += " " * (37 - len(line))                          # add spaces
+            line += f", "
+            if cell.wait_time >= 10:
+                line += f" {cell.wait_time}"
+            else:
+                line += f"  {cell.wait_time}"
+            line += "  ,  "
+            # add opposite
+            for c in all_cells:
+                if c.move_in == cell.move_out and c.move_out == cell.move_in:
+                    if c.wait_time >= 10:
+                        line += f"{c.wait_time}"
+                    else:
+                        line += f" {c.wait_time}"
+                    tuple_list.append((c.move_out, c.move_in))
+                    break
+            line += " );"
 
 
 
+            code.append(line)
+            prev_start = cell.move_out
+            line = ""
 
+        for c in code:
+            print(c)
+
+
+    
 
 
 
 
     def write_to_file(self, path):
-        is_found = False
 
         with open(path, 'r', encoding='utf-8') as f:
             lines = f.readlines()

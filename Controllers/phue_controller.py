@@ -50,7 +50,7 @@ class PhueController:
                 img_out = match.group(1)
                 img_in = match.group(2)
                 length = match.group(3)
-                self.model.update_length(img_out, img_in, length)
+                self.model.update_length(img_out, img_in, int(length))
 
     def add_phue(self, img_out, img_in):
         if img_out == img_in:
@@ -87,7 +87,7 @@ class PhueController:
             img_in = wrap.img_in
             table = wrap.table
             row_count = table.rowCount()
-            length = wrap.len_textbox.text()
+            length = int(wrap.len_textbox.text())
 
             move_name_list = []
             color_list = []
@@ -117,3 +117,35 @@ class PhueController:
         self.all_images = all_images
         self.all_moves = all_moves
         self.view.show_view(self.model.all_phue, self.all_images, self.all_moves)
+
+    def get_code(self):
+        """
+        This method create a code of all phues for InitTk1
+
+        :return: List of code of the phues
+        """
+        code = []
+        line = ""
+
+        for phue in self.model.all_phue:
+            line += f"\t\ttk.Phue{phue.image_out}_{phue.image_in}"          # add code
+            line += " " * (16 - len(line))                                  # add spaces
+            line += f"= new Phue{phue.image_out}_{phue.image_in}"           # add code
+            line += " " * (36 - len(line))                                  # add spaces
+            line += f"(tk, \"Phue{phue.image_out}_{phue.image_in}\""        # add code
+            line += " " * (53 - len(line))                                  # add spaces
+            if phue.length >= 10:
+                line += f",  {phue.length}"                                 # add code
+            else:
+                line += f",   {phue.length}"                                # add code
+            line += f" , tk.Ph{phue.image_out}"                             # add code
+            line += " " * (71 - len(line))                                  # add spaces
+            line += f", tk.Ph{phue.image_in}"                               # add code
+            line += " " * (84 - len(line))                                  # add spaces
+            line += ");\n"
+
+            code.append(line)
+            line = ""
+
+        for c in code:
+            print(c)

@@ -1,5 +1,5 @@
 class MatrixCell:
-    def __init__(self, move_out, move_in, wait_time):
+    def __init__(self, move_out: str, move_in: str, wait_time: int):
         self.move_out = move_out
         self.move_in = move_in
         self.wait_time = wait_time
@@ -43,3 +43,4 @@ class MatrixModel:
 
     def reset_model(self):
         self.all_cells.clear()
+
