@@ -266,12 +266,13 @@ class MainController:
         # self.phue_controller.get_code()
         self.move_controller.write_to_file(self.path_tk1_dst, self.path_init_tk1_dst)
         self.matrix_controller.write_to_file(self.path_init_tk1_dst)
-
-
-
+        self.schedule_controller.write_to_file(self.path_init_tk1_dst)
 
 
         # self.schedule_controller.get_code()
+
+
+
         # self.detector_controller.get_code()
         # self.settings_controller.write_to_file(self.path_init)
         # self.move_controller.write_to_file(self.path_tk1, self.path_init_tk1)

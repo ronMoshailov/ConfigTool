@@ -111,18 +111,16 @@ class ScheduleController:
     #     cell_list
 
     def write_to_file(self, path):
-        is_found = False
-
         with open(path, 'r', encoding='utf-8') as f:
             lines = f.readlines()
 
         new_lines = []
         for line in lines:
-            if "initialisiereUhr" in line:
-                new_lines.append(line)
+            if "write schedule here" in line:
                 self.add_new_lines(new_lines)
-                break
+                continue
             new_lines.append(line)
+
         with open(path, 'w', encoding='utf-8') as f:
             f.writelines(new_lines)
 
@@ -196,7 +194,7 @@ class ScheduleController:
             # if it's the first row
             if first_row:
                 first_row = False
-                line = f"\t\tTagesPlan sa = new TagesPlan(\"Sat\",  tk.p{prog_num});\n)"
+                line = f"\t\tTagesPlan sa = new TagesPlan(\"Sat\",  tk.p{prog_num});\n"
                 new_lines.append(line)
                 continue
 
@@ -207,31 +205,7 @@ class ScheduleController:
             new_lines.append(line)
         new_lines.append("\n")
 
-        end_line = [
-            '\t\tTagesPlan kipurEve = new TagesPlan("KipurEve", tk.p20);\n',
-            '\t\tkipurEve.initProgWunsch( 6 , 30,  tk.p12 );\n',
-            '\t\tkipurEve.initProgWunsch( 9 , 00,  tk.p20 );\n',
-            '\t\tkipurEve.initProgWunsch(11 , 45,  tk.p13 );\n',
-            '\t\tkipurEve.initProgWunsch(15 , 00,  tk.p03 );\n',
-            '\n',
-            '\t\tTagesPlan kipur = new TagesPlan("Kipur", tk.p03 );\n',
-            '\t\tkipur.initProgWunsch( 5 , 00,  tk.p05 );\n',
-            '\n',
-            '\t\tTagesPlan blink = new TagesPlan("Blink", tk.blinkprog);\n',
-            '\t\tblink.initProgWunsch( 0 , 01,  tk.blinkprog );\n',
-            '\n',
-            '\t\tnew WochenPlan("time table", sun_thur, sun_thur, sun_thur, sun_thur, fr, sa, sun_thur);\n',
-            '\n',
-            '\t\t//                       Friday | Saturday | Kipur Eve| Kipur    | All Day | Is Kipur | Is Saturday\n',
-            '\t\t//                       Sched. | Sched.   | Sched.   | Sched.   | Blink   | Blink    | Blink (Haifa)\n',
-            '\t\tInitHolidays.setHolidays(    fr ,       sa , kipurEve ,    kipur ,   blink ,    false , false);\n',
-            '\t}\n',
-            '}\n'
-        ]
-
-        new_lines.extend(end_line)
-
-    def get_code(self):
-        pass
+    # def get_code(self):
+    #     pass
 
 

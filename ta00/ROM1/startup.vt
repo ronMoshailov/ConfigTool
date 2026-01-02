@@ -1,0 +1,11 @@
+#
+# Startup script template
+#
+moduls      = nsg dvi35
+vtClass     = ta118.Init
+arguments   =
+archive     = true
+ocit        = false
+ozs         = false
+funcCall4   = DCF_Ein
+funcArg4    = 2 60
