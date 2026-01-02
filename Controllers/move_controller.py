@@ -94,7 +94,7 @@ class MoveController:
                     phase, move_type, min_green, is_main = match.groups()
                     self.model.add_move(phase, move_type, True if is_main == "true" else False, int(min_green))
 
-    def get_code(self):
+    def get_init_tk1_code(self):
         # tk.k1     =  new Move(     tk  , "_1"  ,  MoveType.Traffic  		 ,      5 ,   0 , false);
         code = []
         line = ""
@@ -138,48 +138,37 @@ class MoveController:
 
     def write_to_file(self, path_tk, path_initTk1):
         # data
-        is_found = False
-        new_lines = []
+        code = []
 
         # update tk1.java file
         with open(path_tk, 'r', encoding='utf-8') as f:
             lines = f.readlines()
 
         for line in lines:
-            if line.strip().startswith("public Move"):
-                if not is_found:
-                    is_found = True
-                    self.add_tk1_lines(new_lines)
+            if "write moves here" in line:
+                self.add_tk1_lines(code)
                 continue
 
-            new_lines.append(line)
+            code.append(line)
 
         with open(path_tk, 'w', encoding='utf-8') as f:
-            f.writelines(new_lines)
+            f.writelines(code)
 
         # data
-        is_found = False
-        new_lines = []
-        backslash_N = 0
+        code = []
 
         # update initTk1.java file
         with open(path_initTk1, 'r', encoding='utf-8') as f:
             lines = f.readlines()
 
         for line in lines:
-            if "new Move" in line.strip():
-                if not is_found:
-                    is_found = True
-                    self.add_initTk1_lines(new_lines)
+            if "write moves here" in line:
+                self.add_initTk1_lines(code)
                 continue
-
-            if is_found and line == "\n" and backslash_N != 2:
-                backslash_N += 1
-                continue
-            new_lines.append(line)
+            code.append(line)
 
         with open(path_initTk1, 'w', encoding='utf-8') as f:
-            f.writelines(new_lines)
+            f.writelines(code)
 
     def add_tk1_lines(self, new_lines):
         cars = []
@@ -214,17 +203,15 @@ class MoveController:
         new_lines.append(pedestrians_line)
         new_lines.append(blinkers_line)
 
+
     def add_initTk1_lines(self, new_lines):
         start = 'k'
         for move in self.model.all_moves:
             spaces_name = " " * max(1, 6 - len(move.name))
-            spaces_name2 = " " * max(1, 3 - len(move.name[1:]))
+            spaces_name2 = " " * max(1, 2 - len(move.name[1:]))
             spaces_name5 = " " * max(1, 4 - len(move.name[1:]))
             spaces_name3 = " " * max(0,19 - len(move.type))
             spaces_name4 = " " * max(1,7 - len(str(move.min_green)))
-            if move.name == "Bd":
-                print()
-
             line = "\t\t"
             if not move.name.startswith(start):
                 line = "\n\t\t"

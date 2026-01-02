@@ -264,7 +264,7 @@ class MainController:
         if not self._create_copy():
             return
         # self.phue_controller.get_code()
-        # self.move_controller.get_code()
+        self.move_controller.write_to_file(self.path_tk1_dst, self.path_init_tk1_dst)
         self.matrix_controller.write_to_file(self.path_init_tk1_dst)
 
 
