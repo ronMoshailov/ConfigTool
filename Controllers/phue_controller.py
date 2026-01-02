@@ -24,7 +24,7 @@ class PhueController:
 
         for path in path_list:
             path = Path(path)
-            with open(path, "r", encoding="utf-8") as f:
+            with open(path, "r", encoding="utf-8", errors="ignore") as f:
                 content = f.read()
 
             # find image_out and image_in

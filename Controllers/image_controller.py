@@ -15,7 +15,7 @@ class ImageController:
         self.view.remove_image_method = self.remove_image
         self.view.update_image_method = self.update_image
 
-    def init_model(self, path):
+    def init_model(self, path, all_moves):
         pattern = image_pattern
 
         with open(path, "r", encoding="utf-8") as f:
@@ -35,7 +35,6 @@ class ImageController:
                         image_skeleton = re.search(r'\{([^}]*)\}', m.group(3)).group(1).strip()
                         image_sp = 0
 
-                    all_moves = self.model.all_moves
                     collection = []
 
                     for move in all_moves:

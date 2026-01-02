@@ -3,7 +3,9 @@ from PyQt6.QtWidgets import QWidget, QHBoxLayout, QFileDialog, QMessageBox, QMai
     QVBoxLayout, QDialog
 import os
 import re
-
+from pathlib import Path
+import shutil
+import Config
 from Config.patterns import  sk_pattern
 from Config.style import main_window_style
 from Controllers.parameters_controller import ParametersTaController
@@ -259,9 +261,14 @@ class MainController:
         dialog.exec()
 
     def write_to_code(self):
+        if not self._create_copy():
+            return
         # self.phue_controller.get_code()
         # self.move_controller.get_code()
-        # self.matrix_controller.get_code()
+        self.matrix_controller.write_to_file(self.path_init_tk1_dst)
+
+
+
 
 
         # self.schedule_controller.get_code()
@@ -300,7 +307,7 @@ class MainController:
         self.detector_controller.init_model(self.path_tk1)
 
         # init images moves
-        self.image_controller.init_model(self.path_init_tk1)
+        self.image_controller.init_model(self.path_init_tk1, self.move_model.all_moves)
 
         # init phue moves
         self.phue_controller.init_model(self.phue_model.phue_paths, self.path_init_tk1)
@@ -314,7 +321,7 @@ class MainController:
         #
         self.parameters_ta_controller.init_model(self.path_parameters_ta, len(self.image_model.all_images))
 
-        print('')
+
     def _set_folder_path(self):
         """
         Set folder path.
@@ -349,3 +356,42 @@ class MainController:
                     self.path_parameters_ta = os.path.join(root, file)
                 elif file.lower().startswith("phue"):
                     self.phue_model.phue_paths.append(os.path.join(root, file))
+
+    def _create_copy(self):
+        # create path
+        source_folder = Path(os.path.join(Config.constants.PROJECT_DIR, "Original"))
+
+        # user choose folder
+        target_dir = QFileDialog.getExistingDirectory(self.root, "בחר תיקייה לשמירת הפרויקט")
+        if not target_dir:
+            return
+
+        target_dir = Path(target_dir)
+
+        dst = target_dir / "ta00"
+
+        self.path_init_dst = dst / "src" / "ta00" / "init.java"
+        self.path_tk1_dst = dst / "src" / "ta00" / "Tk1.java"
+        self.path_init_tk1_dst = dst / "src" / "ta00" / "initTk1.java"
+        self.path_parameters_ta_dst = dst / "src" / "ta00" / "ParametersTelAviv.java"
+
+        try:
+            # remove the old folder if exist
+            if dst.exists():
+                reply = QMessageBox.question(self.root, "אישור מחיקה", f"התיקייה כבר קיימת:\n{dst}\n\nלמחוק ולהמשיך?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+
+                if reply != QMessageBox.StandardButton.Yes:
+                    return False
+
+                # remove folder
+                shutil.rmtree(dst)
+
+            # copy
+            shutil.copytree(source_folder, dst)
+
+            QMessageBox.information(self.root, "הצלחה", "הפרויקט נשמר בהצלחה")
+            return True
+
+        except Exception as e:
+            QMessageBox.critical(self.root, "שגיאה", str(e))
+            return False
