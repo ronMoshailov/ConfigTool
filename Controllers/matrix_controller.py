@@ -90,8 +90,8 @@ class MatrixController:
             prev_start = cell.move_out
             line = ""
 
-        for c in code:
-            print(c)
+        # for c in code:
+        #     print(c)
 
         return code
     

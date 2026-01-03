@@ -35,6 +35,7 @@ public class Tk1 extends Node {
 	//structure 1
 	public MainStage PhA;
 	public Stage PhEQA, PhB, PhC;
+
 	//structure 2
 //	public Stage PhB1, PhC1, PhD1, PhE1;
 	

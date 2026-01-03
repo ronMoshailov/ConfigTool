@@ -175,7 +175,7 @@ class PhueView(QWidget):
             remove_btn = QPushButton("❌")
             remove_btn.clicked.connect(lambda _, t=tbl: self._remove_row(t))
 
-            color_widget = QTableWidgetItem("🔴" if str(transition.state) == "ROT" else "🟢")
+            color_widget = QTableWidgetItem("🔴" if str(transition.state) == "TurnOff" else "🟢")
             color_widget.setFlags(color_widget.flags() & ~Qt.ItemFlag.ItemIsEditable)  # מסיר את האפשרות לערוך
             color_widget.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
 

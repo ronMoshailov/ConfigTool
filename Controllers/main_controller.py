@@ -263,22 +263,19 @@ class MainController:
     def write_to_code(self):
         if not self._create_copy():
             return
-        # self.phue_controller.get_code()
         self.move_controller.write_to_file(self.path_tk1_dst, self.path_init_tk1_dst)
         self.matrix_controller.write_to_file(self.path_init_tk1_dst)
         self.schedule_controller.write_to_file(self.path_init_tk1_dst)
         self.sk_controller.write_to_file(self.path_init_dst)
-
-
-        # self.schedule_controller.get_code()
+        self.image_controller.write_to_file(self.path_tk1_dst, self.path_init_tk1_dst)
+        self.phue_controller.write_to_file(self.path_init_tk1_dst, self.path_phue_folder_dst)
+        self.parameters_ta_controller.write_to_file(self.path_parameters_ta_dst)
 
 
 
         # self.detector_controller.get_code()
         # self.settings_controller.write_to_file(self.path_init)
-        # self.move_controller.write_to_file(self.path_tk1, self.path_init_tk1)
         # # self.detector_controller.write_to_file(self.path_init_tk1)
-        # self.schedule_controller.write_to_file(self.path_init_tk1)
         pass
 
     # =============== inner methods =============== #
@@ -376,6 +373,7 @@ class MainController:
         self.path_tk1_dst = dst / "src" / "ta00" / "Tk1.java"
         self.path_init_tk1_dst = dst / "src" / "ta00" / "initTk1.java"
         self.path_parameters_ta_dst = dst / "src" / "ta00" / "ParametersTelAviv.java"
+        self.path_phue_folder_dst = dst /  "src" /"phue"
 
         try:
             # remove the old folder if exist

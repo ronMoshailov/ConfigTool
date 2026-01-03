@@ -85,3 +85,113 @@ class ParametersTaController:
 
         # print(images_list)
 
+    def write_to_file(self, path_parameters_ta_dst):
+        # data
+        code = []
+
+        # update tk1.java file
+        with open(path_parameters_ta_dst, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+
+        for line in lines:
+            if "write parameters here" in line:
+                self.add_lines(code)
+                continue
+
+            code.append(line)
+
+        with open(path_parameters_ta_dst, 'w', encoding='utf-8') as f:
+            f.writelines(code)
+
+    def add_lines(self, code):
+        # data
+        line = ""
+
+        # add comment index [later]
+        ###############
+
+        # write index code
+        length = len(self.model.parameters[0].min_list)
+        line += "\tstatic final int[] parameters_indexes = {"
+
+        # write min++
+        for _ in range(length):
+            line += "min++,"
+        # write max++
+        for _ in range(length):
+            line += "max++,"
+        # write type++
+        for _ in range(length):
+            line += "type++,"
+        line += "  96,   97 };\n"
+        code.append(line)
+
+        # comments
+        ########
+        #######
+        ########
+
+        # programs
+        first_program_param = self.model.parameters[0]
+        first_iteration = True
+        for param in self.model.parameters:
+            # data
+            line = ""
+
+            # write program number
+            if param.program_number >= 10:
+                line += f"\tstatic int[]       DVI35_P{param.program_number}          ="
+            else:
+                line += f"\tstatic int[]       DVI35_P0{param.program_number}          ="
+            line += " {   "
+
+            # write min
+            for min_num in param.min_list:
+                if min_num >= 10:
+                    line += f"{min_num},   "
+                else:
+                    line += f" {min_num},   "
+
+            # write max
+            for max_num in param.max_list:
+                if max_num >= 100:
+                    line += f"{max_num},   "
+                elif 10 <= max_num <= 99:
+                    line += f" {max_num},   "
+                else:
+                    line += f"  {max_num},   "
+
+            line += "  "
+            # write type
+            for type_num in param.type_list:
+                line += f"{type_num},    "
+
+            # write str
+            line = line[:-2]
+            line += str(param.str) + ",  "
+
+            # write cycle
+            if param.cycle >= 100:
+                line += f"{param.cycle}"
+            else:
+                line += f" {param.cycle}"
+            line += " }"
+
+            if param.program_number >= 10:
+                if self.model.is_equal(first_program_param, param) and not first_iteration:
+                    line += f"; // {param.program_number} - P0{first_program_param.program_number}\n"
+                else:
+                    line += f"; // {param.program_number} - ACTIVE\n"
+            else:
+                if self.model.is_equal(first_program_param, param) and not first_iteration:
+                    line += f"; //  {param.program_number} - P0{first_program_param.program_number}\n"
+                else:
+                    line += f"; //  {param.program_number} - ACTIVE\n"
+
+            first_iteration = False
+            code.append(line)
+
+
+
+
+

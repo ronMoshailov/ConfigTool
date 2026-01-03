@@ -23,7 +23,11 @@ public class ParametersTelAviv extends Dvi35ParametersBase {
 	public static int typ = 81;
 	public static final int StructIndex         = 95;
 	public static final int CycleTimeIndex      = 96;
-	
+
+    // write parameters here
+
+
+
 //												51    52    53    54     66    67    68    69     81    82    83    84   96    97
 	static final int[] parameters_indexes = {min++,min++,min++,min++, max++,max++,max++,max++, typ++,typ++,typ++,typ++,  96,   97 };
 //	                                           MIN                      MAX                     TYPE                    STR CYCLE

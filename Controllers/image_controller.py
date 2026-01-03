@@ -80,3 +80,98 @@ class ImageController:
         QMessageBox.information(self.view, "הודעה", "העדכון הצליח")
 
 
+    def write_to_file(self, path_tk, path_init_tk):
+        # data
+        code = []
+
+        # update tk1.java file
+        with open(path_tk, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+
+        for line in lines:
+            if "write images here" in line:
+                self.add_tk_code(code)
+                continue
+
+            code.append(line)
+
+        with open(path_tk, 'w', encoding='utf-8') as f:
+            f.writelines(code)
+
+
+        # data
+        code = []
+
+        # update tk1.java file
+        with open(path_init_tk, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+
+        for line in lines:
+            if "write image A here" in line:
+                for image in self.model.all_images:
+                    if image.image_name == "A":
+                        line = "\t\ttk.MainPhase = tk.PhA = new PhaseA(tk, \"PhaseA\"    , 10  , new int[] "
+                        if int(image.skeleton) >= 10:
+                            line += "{"
+                            line += f"{image.skeleton}"
+                            line += " }"
+                        else:
+                            line += "{ "
+                            line += f"{image.skeleton}"
+                            line += " }"
+                        line += " , new int[] { 0 } , false      , new Move[] {"
+                        for move_name in image.move_list:
+                            line += f"tk.{move_name.name}, "
+                        line = line[:-2] + "});\n"
+                        break
+
+            if "write images here" in line:
+                self.add_init_tk_code(code)
+                continue
+            code.append(line)
+
+        with open(path_init_tk, 'w', encoding='utf-8') as f:
+            f.writelines(code)
+
+#          10        20        30        40        50        60        70        80        90       100       110       120       130       140
+#### tk.PhEQA       = new PhaseEQA     (tk, "PhaseEQA"  , 11  ,    3 ,  1 , true       , new Move[] {tk.k1, tk.pc, tk.pf});
+
+    def add_tk_code(self, code):
+        line = "\tpublic Stage "
+        for image in self.model.all_images:
+            if image.image_name == "A":
+                continue
+            line += f"Ph{image.image_name}, "
+        line = line[:-2]
+        line += ";\n"
+        code.append(line)
+
+    def add_init_tk_code(self, code):
+        all_images = self.model.all_images
+
+        for image in all_images:
+            if image.image_name == "A":
+                continue
+            line = "\t\ttk.Ph"                                  # tk.Ph
+            line += f"{image.image_name}"                       # tk.PhEQA
+            line += " " * (17 - len(line))                      # add spaces
+            line += f"= new Phase{image.image_name}"            # tk.PhEQA = new PhaseEQA
+            line += " " * (36 - len(line))                      # add spaces
+            line += f"(tk, \"Phase{image.image_name}\""         # tk.PhEQA = new PhaseEQA (tk, "PhaseEQA"
+            line += " " * (53 - len(line))                      # add spaces
+            if int(image.image_num) >= 10:                      # tk.PhEQA = new PhaseEQA (tk, "PhaseEQA", 11
+                line += f", {image.image_num}  "                #
+            else:                                               #
+                line += f",  {image.image_num}  "               #
+            if int(image.skeleton) >= 10:
+                line += f",   {image.skeleton} "                # tk.PhEQA = new PhaseEQA (tk, "PhaseEQA", 11, 3
+            else:
+                line += f",    {image.skeleton} "               # tk.PhEQA = new PhaseEQA (tk, "PhaseEQA", 11, 3
+            line += f",  {image.sp} , "                         # tk.PhEQA = new PhaseEQA (tk, "PhaseEQA", 11, 3, 1
+            line += f", {image.is_police}"                      # tk.PhEQA = new PhaseEQA (tk, "PhaseEQA", 11, 3, 1, true
+            line += " " * (84 - len(line))                      # add spaces
+            line += ", new Move[] {"
+            for move_name in image.move_list:
+                line += f"tk.{move_name.name}, "
+            line = line[:-2] + "});\n"
+            code.append(line)                                   #

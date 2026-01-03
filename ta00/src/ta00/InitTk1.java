@@ -287,20 +287,22 @@ public class InitTk1 extends InitTk {
 		//   	                         node| name        | num | skel length     | skel length     | is stop in | moves
 		//                                   |             |     | start of cycle  | end of cycle    | Police     | list
 		tk.MainPhase = tk.PhA = new PhaseA(tk, "PhaseA"    , 10  , new int[] { 5 } , new int[] { 0 } , false      , new Move[] {tk.k1, tk.pc, tk.pf});
-		                                                   
+
 		//                               node| name        | num | skel | sp | is stop in | moves
 		//                                   |             |     | len  | sp | Police     | list
-		tk.PhEQA       = new PhaseEQA     (tk, "PhaseEQA"  , 11  ,    3 ,  1 , true       , new Move[] {tk.k1, tk.pc, tk.pf});
-		tk.PhB         = new PhaseB       (tk, "PhaseB"    , 20  ,    6 ,  2 , true       , new Move[] {tk.k2, tk.k3, tk.k4, tk.pa});
-		tk.PhC         = new PhaseC       (tk, "PhaseC"    , 30  ,    1 ,  3 , true       , new Move[] {tk.k2, tk.k5, tk.pa, tk.pf});
-		
+		tk.PhEQA       = new PhaseEQA     (tk, "PhaseEQA"  , 11  ,    3 ,  1 , , True     , new Move[] {tk.k1, tk.pc, tk.pf});
+		tk.PhB         = new PhaseB       (tk, "PhaseB"    , 20  ,    6 ,  2 , , True     , new Move[] {tk.k2, tk.k3, tk.k4, tk.pa});
+		tk.PhC         = new PhaseC       (tk, "PhaseC"    , 30  ,    1 ,  3 , , True     , new Move[] {tk.k2, tk.k5, tk.pa, tk.pf});
+
+
+
 
 		//interstages                                      
 		//                               node| name        | len | stage out | stage in
-		// structure 0
-		tk.PhueEQA_B   = new PhueEQA_B    (tk, "PhueEQA_B" ,  99 , tk.PhEQA  , tk.PhB     );
-		tk.PhueB_C	   = new PhueB_C   	  (tk, "PhueB_C"   ,  99 , tk.PhB	 , tk.PhC     );
-		tk.PhueC_A	   = new PhueC_A   	  (tk, "PhueC_A"   ,  99 , tk.PhC	 , tk.PhA     );
+		tk.PhueB_C    = new PhueB_C       (tk, "PhueB_C"   ,  99 , tk.PhB    , tk.PhC     );
+		tk.PhueC_A    = new PhueC_A       (tk, "PhueC_A"   ,  99 , tk.PhC    , tk.PhA     );
+		tk.PhueEQA_B  = new PhueEQA_B     (tk, "PhueEQA_B" ,  99 , tk.PhEQA  , tk.PhB     );
+
 
 		if (Var.controller.isPreemption()) {
 			tk.preemption.InitializeStages();

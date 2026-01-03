@@ -17,12 +17,12 @@ class PhueController:
         self.all_images = None
         self.all_moves = None
 
-    def init_model(self, path_list, path_len):
+    def init_model(self, phue_paths, path_init_tk1): # self.phue_model.phue_paths, self.path_init_tk1
         class_pattern = re.compile(r"public\s+class\s+Phue([A-Za-z0-9]+)_([A-Za-z0-9]+)")
-        sg_pattern = re.compile(r"_tk\.(\w+)\.setSg\s*\(Zustand\.(ROT|GRUEN)\s*,\s*(\d+)\s*\)")
+        sg_pattern = re.compile( r"_tk\.(\w+)\.(TurnOn|TurnOff)\s*\(\s*(\d+)\s*\)")
         phue_len_pattern = re.compile(r'tk\.Phue([A-Za-z0-9]+)_([A-Za-z0-9]+)\s*=.*?\(\s*tk\s*,\s*"[^"]+"\s*,\s*([0-9]+)')
 
-        for path in path_list:
+        for path in phue_paths:
             path = Path(path)
             with open(path, "r", encoding="utf-8", errors="ignore") as f:
                 content = f.read()
@@ -43,7 +43,7 @@ class PhueController:
                 transitions.append(transition)
             self.model.new_phue(img_out, img_in, 0, transitions)
 
-        with open(path_len, "r", encoding="utf-8") as f:
+        with open(path_init_tk1, "r", encoding="utf-8") as f:
             content = f.read()
 
             for match in phue_len_pattern.finditer(content):
@@ -118,13 +118,32 @@ class PhueController:
         self.all_moves = all_moves
         self.view.show_view(self.model.all_phue, self.all_images, self.all_moves)
 
-    def get_code(self):
+    def write_to_file(self, init_tk1_dst, phue_folder_dst):
+        # create files
+        for phue in self.model.all_phue:
+            self.create_file(phue.image_out, phue.image_in, phue.transitions, phue_folder_dst)
+
+
+        with open(init_tk1_dst, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+
+        code = []
+        for line in lines:
+            if "write phues here" in line:
+                self.get_code(code)
+                continue
+            code.append(line)
+
+        with open(init_tk1_dst, 'w', encoding='utf-8') as f:
+            f.writelines(code)
+
+    def get_code(self, code):
         """
         This method create a code of all phues for InitTk1
 
         :return: List of code of the phues
         """
-        code = []
+        # code = []
         line = ""
 
         for phue in self.model.all_phue:
@@ -147,5 +166,61 @@ class PhueController:
             code.append(line)
             line = ""
 
-        for c in code:
-            print(c)
+    def create_file(self, image_out, image_in, transitions, phue_folder_dst):
+        line = ""
+        line += "package ta118;\n"
+        line += "\n"
+        line += "\n"
+        line += "import vt.*;\n"
+        line += "import special.InterStage;\n"
+        line += "\n"
+        line += f"public class Phue{image_out}_{image_in} "
+        line += "extends InterStage {\n"
+        line += "\tprivate static Tk1 _tk;\n"
+        line += f"public Phue{image_out}_{image_in}(Tk1 tk, String name, int laenge, Phase quelle, Phase ziel) "
+        line += "{\n"
+        line += "\t\tsuper(tk, name, laenge, quelle, ziel);\n"
+        line += "\t\t_tk = tk;\n"
+        line += "\t\t}\n"
+        line += "\n"
+        line += "\tpublic Phase phasenFunktion() {\n"
+
+        for transition in transitions:
+            if transition.state == "TurnOff":
+                line += f"\t\t_tk.{transition.move}.TurnOff("
+                if int(transition.duration) >= 10:
+                    line += f"{transition.duration});\n"
+                else:
+                    line += f" {transition.duration});\n"
+
+        line += "\n"
+
+        for transition in transitions:
+            if transition.state == "TurnOn":
+                line += f"\t\t_tk.{transition.move}.TurnOn ("
+                if int(transition.duration) >= 10:
+                    line += f"{transition.duration});\n"
+                else:
+                    line += f" {transition.duration});\n"
+
+        line += "\n"
+        line += "\t\tif (isTargetStageBuilt()) {\n"
+        line += "\t\t\t_tk.lenPhue = this.getPhasenZeit();\n"
+        line += "\t\t\tthis.entfernen();\n"
+        line += "\t\t}\n"
+        line += "\t\treturn KEINE_UMSCHALTUNG;\n"
+        line += "\t}\n"
+        line += "}\n"
+        line += "\n"
+        line += "\n"
+
+        # create file
+        file_path = phue_folder_dst / f"Phue{image_out}_{image_in}.java"
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write(line)
+
+        return line
+
+
+
+
