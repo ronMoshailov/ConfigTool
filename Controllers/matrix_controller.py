@@ -1,12 +1,10 @@
 from PyQt6.QtWidgets import QMessageBox
-from torch.fx.experimental.unification.unification_tools import first
 
 from Config.patterns import matrix_pattern
 
-
 class MatrixController:
     """
-    This class represents a matrix group.
+    This class represents a matrix controller.
     """
     def __init__(self, view, model):
         self.view = view
@@ -46,9 +44,6 @@ class MatrixController:
 
                     self.model.new_cell(out, inn, t1)
                     self.model.new_cell(inn, out, t2)
-
-        # if len(self.MatrixCells) == 0:
-        #     Log.warning(f"Warning: Matrix cells not found")
 
     def get_code(self):
         code = []

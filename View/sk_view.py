@@ -3,7 +3,7 @@ from PyQt6.QtGui import QBrush
 from PyQt6.QtWidgets import QWidget, QPushButton, QScrollArea, QVBoxLayout, QHBoxLayout, QLabel, QAbstractItemView, \
     QTableWidget, QTableWidgetItem, QComboBox, QCheckBox, QMessageBox
 
-from Config.colors import gray_color, light_green_color, white_color
+from Config.constants import gray_color, light_green_color
 from Config.special import clear_widget_from_layout
 from Config.style import sk_panel_style
 

@@ -81,6 +81,10 @@ class ImageController:
 
 
     def write_to_file(self, path_tk, path_init_tk):
+        # # create files
+        # for image in self.model.all_images:
+        #     self.create_file(image.image_name, image.image_num, image.skeleton, image.sp, image.is_police, image.move_list)
+
         # data
         code = []
 
@@ -175,3 +179,6 @@ class ImageController:
                 line += f"tk.{move_name.name}, "
             line = line[:-2] + "});\n"
             code.append(line)                                   #
+
+    # def create_file(self):
+    #     pass

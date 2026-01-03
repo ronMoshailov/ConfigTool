@@ -271,14 +271,26 @@ class MainController:
         self.phue_controller.write_to_file(self.path_init_tk1_dst, self.path_phue_folder_dst)
         self.parameters_ta_controller.write_to_file(self.path_parameters_ta_dst)
 
+        # update package
+        # self._update_package(self.path_tk1_dst)
+        # self._update_package(self.path_init_tk1_dst)
+        # self._update_package(self.path_init_dst)
+        # self._update_package(self.path_parameters_ta_dst)
 
-
-        # self.detector_controller.get_code()
-        # self.settings_controller.write_to_file(self.path_init)
-        # # self.detector_controller.write_to_file(self.path_init_tk1)
-        pass
 
     # =============== inner methods =============== #
+    def _update_package(self, path):
+        with open(path, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+
+        for i, line in enumerate(lines):
+            if line.strip().startswith("package"):
+                lines[i] = f"package {Config.constants.PROJECT_NUMBER};"
+                break
+
+        with open(path, 'w', encoding='utf-8') as f:
+            f.writelines(lines)
+
     def _initialize_app(self):
         """
         Initialize all the data for the models.

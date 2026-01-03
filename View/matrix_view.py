@@ -3,7 +3,7 @@ from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QAbstractItemView, QTableWidget, QTableWidgetItem, \
     QMessageBox
 
-from Config.colors import light_red_color
+from Config.constants import light_red_color
 from Config.style import matrix_panel_style
 
 
