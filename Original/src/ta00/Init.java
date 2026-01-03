@@ -169,9 +169,7 @@ public class Init implements enp.Initialisierung {
 		new NkkFusion230V50Hz(); // for new Alpha Backplane without NKK Card
 
 		//switch cards
-		SK24 sk1 = new SK24(cardsIndex++, (HwTeilknoten)Var.hwTk1);
-		SK24 sk2 = new SK24(cardsIndex++, (HwTeilknoten)Var.hwTk1);
-//		SK24 sk3 = new SK24(cardsIndex++, (HwTeilknoten)Var.hwTk1);
+        // write sk cards here
 
 		//input/output cards
 		IO24 io1  = new IO24(cardsIndex++);
@@ -184,49 +182,8 @@ public class Init implements enp.Initialisierung {
 
 		//switch channels
 		//TODO: update according to amount of moves and switch cards
-		//traffic
+        // write sk channels here
 
-		new SchaltKanal(Var.tk1.k1     , Move.lred       , hwRed200  , Hw.HF, sk1, 1, Hw.SK);
-		new SchaltKanal(Var.tk1.k1     , Move.lamber     , hwAmber200, Hw.HF, sk1, 2, Hw.SK);
-		new SchaltKanal(Var.tk1.k1     , Move.lgreen     , hwGreen200, Hw.HF, sk1, 3, Hw.SK);
-		new SchaltKanal(Var.tk1.k2     , Move.lred       , hwRed200  , Hw.HF, sk1, 4, Hw.SK);
-		new SchaltKanal(Var.tk1.k2     , Move.lamber     , hwAmber200, Hw.HF, sk1, 5, Hw.SK);
-		new SchaltKanal(Var.tk1.k2     , Move.lgreen     , hwGreen200, Hw.HF, sk1, 6, Hw.SK);
-		new SchaltKanal(Var.tk1.k3     , Move.lred       , hwRed200  , Hw.HF, sk1, 7, Hw.SK);
-		new SchaltKanal(Var.tk1.k3     , Move.lamber     , hwAmber200, Hw.HF, sk1, 8, Hw.SK);
-		new SchaltKanal(Var.tk1.k3     , Move.lgreen     , hwGreen200, Hw.HF, sk1, 9, Hw.SK);
-		new SchaltKanal(Var.tk1.k4     , Move.lred       , hwRed200  , Hw.HF, sk1,10, Hw.SK);
-		new SchaltKanal(Var.tk1.k4     , Move.lamber     , hwAmber200, Hw.HF, sk1,11, Hw.SK);
-		new SchaltKanal(Var.tk1.k4     , Move.lgreen     , hwGreen200, Hw.HF, sk1,12, Hw.SK);
-		new SchaltKanal(Var.tk1.k5     , Move.lred       , hwRed200  , Hw.HF, sk1,13, Hw.SK);
-		new SchaltKanal(Var.tk1.k5     , Move.lamber     , hwAmber200, Hw.HF, sk1,14, Hw.SK);
-		new SchaltKanal(Var.tk1.k5     , Move.lgreen     , hwGreen200, Hw.HF, sk1,15, Hw.SK);
-//		new SchaltKanal(Var.tk1.k6     , Move.lred       , hwRed200  , Hw.HF, sk1,16, Hw.SK);
-//		new SchaltKanal(Var.tk1.k6     , Move.lamber     , hwAmber200, Hw.HF, sk1,17, Hw.SK);
-//		new SchaltKanal(Var.tk1.k6     , Move.lgreen     , hwGreen200, Hw.HF, sk1,18, Hw.SK);
-
-		//pedestrians
-		new SchaltKanal(Var.tk1.pa     , Move.lred       , hwRed200  , Hw.HF, sk1,19, Hw.SK);
-		new SchaltKanal(Var.tk1.pa     , Move.lgreen     , hwGreen200, Hw.HF, sk1,20, Hw.SK);
-//		new SchaltKanal(Var.tk1.pb     , Move.lred       , hwRed200  , Hw.HF, sk1,21, Hw.SK);
-//		new SchaltKanal(Var.tk1.pb     , Move.lgreen     , hwGreen200, Hw.HF, sk1,22, Hw.SK);
-		new SchaltKanal(Var.tk1.pc     , Move.lred       , hwRed200  , Hw.HF, sk1,23, Hw.SK);
-		new SchaltKanal(Var.tk1.pc     , Move.lgreen     , hwGreen200, Hw.HF, sk1,24, Hw.SK);
-//		new SchaltKanal(Var.tk1.pd     , Move.lred       , hwRed200  , Hw.HF, sk2, 1, Hw.SK);
-//		new SchaltKanal(Var.tk1.pd     , Move.lgreen     , hwGreen200, Hw.HF, sk2, 2, Hw.SK);
-//		new SchaltKanal(Var.tk1.pe     , Move.lred       , hwRed200  , Hw.HF, sk2, 3, Hw.SK);
-//		new SchaltKanal(Var.tk1.pe     , Move.lgreen     , hwGreen200, Hw.HF, sk2, 4, Hw.SK);
-		new SchaltKanal(Var.tk1.pf     , Move.lred       , hwRed200  , Hw.HF, sk2, 5, Hw.SK);
-		new SchaltKanal(Var.tk1.pf     , Move.lgreen     , hwGreen200, Hw.HF, sk2, 6, Hw.SK);
-//		new SchaltKanal(Var.tk1.pg     , Move.lred       , hwRed200  , Hw.HF, sk2, 7, Hw.SK);
-//		new SchaltKanal(Var.tk1.pg     , Move.lgreen     , hwGreen200, Hw.HF, sk2, 8, Hw.SK);
-
-		//blinkers
-//		new SchaltKanal(Var.tk1.Bb     , Move.lamber_nuge, hwAmber200, Hw.HF, sk2, 9, Hw.KK);
-//		new SchaltKanal(Var.tk1.Bc     , Move.lamber_nuge, hwAmber200, Hw.HF, sk2,10, Hw.KK);
-//		new SchaltKanal(Var.tk1.Be     , Move.lamber_nuge, hwAmber200, Hw.HF, sk2,11, Hw.KK);
-//		new SchaltKanal(Var.tk1.Bg     , Move.lamber_nuge, hwAmber200, Hw.HF, sk2,12, Hw.KK);
-		new SchaltKanal(Var.tk1.Bf     , Move.lamber_nuge, hwAmber200, Hw.HF, sk2,13, Hw.KK);
 		//all blinkers, including conditioned (mutne), have to be excluded from current monitoring
 		//therefore the last parameter must be Hw.KK
 		

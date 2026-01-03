@@ -27,7 +27,7 @@ class SkController:
         with open(path, 'r', encoding='utf-8') as file:
             for line in file:
                 line = line.strip()
-                if "SK24 sk" in line:
+                if "SK24 sk" in line and not line.startswith("//"):
                     self.model.add_sk()
 
         pattern = sk_pattern
@@ -174,6 +174,57 @@ class SkController:
                     self.model.set_channel(idx + 1, move_name, color, row_num+1, status)
 
             QMessageBox.information(self.view, "SK כרטיס", "העדכון הצליח")
+
+    def write_to_file(self, path):
+        # data
+        code = []
+
+        # update tk1.java file
+        with open(path, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+
+        for line in lines:
+            if "write sk cards here" in line:
+                for idx, card in enumerate(self.model.sk_list):
+                    code.append(f"\t\tSK24 sk{idx+1} = new SK24(cardsIndex++, (HwTeilknoten)Var.hwTk1);\n")
+
+            if "write sk channels here" in line:
+                self.add_lines(code)
+                continue
+
+            code.append(line)
+
+        with open(path, 'w', encoding='utf-8') as f:
+            f.writelines(code)
+
+
+    def add_lines(self, code):
+        for sk_card in self.model.sk_list:
+            card_num = sk_card.card_number
+            all_channels = sk_card.all_channels
+            for channel in all_channels:
+                if not channel.name:
+                    continue
+                line = ""
+                color_mapping = {"hwRed200": "lred","hwAmber200": "lamber", "hwGreen200": "lgreen"}
+                line += f"\t\tnew SchaltKanal(Var.tk1.{channel.name}"
+                line += " " * (33 - len(line))
+                line += f", Move.{color_mapping[channel.color]}"
+                line += " " * (51 - len(line))
+                line += f", {channel.color}"
+                line += " " * (63 - len(line))
+                line += f", Hw.HF, sk{card_num},"
+                line += " " * (33 - len(line))
+                if channel.channel >= 10:
+                    line += f"{channel.channel}, Hw.SK);\n"
+                else:
+                    line += f" {channel.channel}, Hw.SK);\n"
+
+                if channel.is_comment:
+                    line = "//" + line
+
+                code.append(line)
+
 
     # --------------- validation methods --------------- #
     def _is_names_valid(self, tables_list):

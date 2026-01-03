@@ -323,7 +323,7 @@ public class InitTk1 extends InitTk {
 		fr.initProgWunsch(17 ,  0,  tk.p02 );
 
 		TagesPlan sa = new TagesPlan("Sat",  tk.p02);
-)		sa.initProgWunsch( 1 ,  0,  tk.p04 );
+		sa.initProgWunsch( 1 ,  0,  tk.p04 );
 		sa.initProgWunsch( 6 ,  0,  tk.p02 );
 		sa.initProgWunsch(16 ,  0,  tk.p03 );
 

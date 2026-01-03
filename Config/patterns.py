@@ -27,7 +27,7 @@ sk_pattern = re.compile(
             r'^\s*(//)?\s*'  # 1) האם מתחיל ב-// (הערה)
             r'new\s+SchaltKanal\('
             r'\s*Var\.tk1\.([A-Za-z0-9]+)\s*,'  # 2) שם המופע אחרי Var.tk1.  → group(2)
-            r'\s*Var\.[^,]+,\s*'  # הצבע הלוגי (לא מעניין אותנו)
+            r'\s*Move\.[^,]+,\s*'  # הצבע הלוגי (לא מעניין אותנו)
             r'(hwGreen200|hwAmber200|hwRed200)\s*,'  # 3) color גולמי → group(3)
             r'\s*[^,]*,\s*sk(\d+)\s*,'  # 4) מספר כרטיס אחרי sk → group(4)
             r'\s*(\d+)\s*,'  # 5) המספר הבא (בין שני הפסיקים) → group(5)

@@ -171,7 +171,7 @@ public class Init implements enp.Initialisierung {
 		//switch cards
 		SK24 sk1 = new SK24(cardsIndex++, (HwTeilknoten)Var.hwTk1);
 		SK24 sk2 = new SK24(cardsIndex++, (HwTeilknoten)Var.hwTk1);
-//		SK24 sk3 = new SK24(cardsIndex++, (HwTeilknoten)Var.hwTk1);
+        // write sk cards here
 
 		//input/output cards
 		IO24 io1  = new IO24(cardsIndex++);
@@ -184,8 +184,6 @@ public class Init implements enp.Initialisierung {
 
 		//switch channels
 		//TODO: update according to amount of moves and switch cards
-		//traffic
-
 		new SchaltKanal(Var.tk1.k1     , Move.lred       , hwRed200  , Hw.HF, sk1, 1, Hw.SK);
 		new SchaltKanal(Var.tk1.k1     , Move.lamber     , hwAmber200, Hw.HF, sk1, 2, Hw.SK);
 		new SchaltKanal(Var.tk1.k1     , Move.lgreen     , hwGreen200, Hw.HF, sk1, 3, Hw.SK);
@@ -204,8 +202,6 @@ public class Init implements enp.Initialisierung {
 //		new SchaltKanal(Var.tk1.k6     , Move.lred       , hwRed200  , Hw.HF, sk1,16, Hw.SK);
 //		new SchaltKanal(Var.tk1.k6     , Move.lamber     , hwAmber200, Hw.HF, sk1,17, Hw.SK);
 //		new SchaltKanal(Var.tk1.k6     , Move.lgreen     , hwGreen200, Hw.HF, sk1,18, Hw.SK);
-
-		//pedestrians
 		new SchaltKanal(Var.tk1.pa     , Move.lred       , hwRed200  , Hw.HF, sk1,19, Hw.SK);
 		new SchaltKanal(Var.tk1.pa     , Move.lgreen     , hwGreen200, Hw.HF, sk1,20, Hw.SK);
 //		new SchaltKanal(Var.tk1.pb     , Move.lred       , hwRed200  , Hw.HF, sk1,21, Hw.SK);
@@ -220,13 +216,12 @@ public class Init implements enp.Initialisierung {
 		new SchaltKanal(Var.tk1.pf     , Move.lgreen     , hwGreen200, Hw.HF, sk2, 6, Hw.SK);
 //		new SchaltKanal(Var.tk1.pg     , Move.lred       , hwRed200  , Hw.HF, sk2, 7, Hw.SK);
 //		new SchaltKanal(Var.tk1.pg     , Move.lgreen     , hwGreen200, Hw.HF, sk2, 8, Hw.SK);
+//		new SchaltKanal(Var.tk1.Bb     , Move.lamber     , hwAmber200, Hw.HF, sk2, 9, Hw.SK);
+//		new SchaltKanal(Var.tk1.Bc     , Move.lamber     , hwAmber200, Hw.HF, sk2,10, Hw.SK);
+//		new SchaltKanal(Var.tk1.Be     , Move.lamber     , hwAmber200, Hw.HF, sk2,11, Hw.SK);
+//		new SchaltKanal(Var.tk1.Bg     , Move.lamber     , hwAmber200, Hw.HF, sk2,12, Hw.SK);
+		new SchaltKanal(Var.tk1.Bf     , Move.lamber     , hwAmber200, Hw.HF, sk2,13, Hw.SK);
 
-		//blinkers
-//		new SchaltKanal(Var.tk1.Bb     , Move.lamber_nuge, hwAmber200, Hw.HF, sk2, 9, Hw.KK);
-//		new SchaltKanal(Var.tk1.Bc     , Move.lamber_nuge, hwAmber200, Hw.HF, sk2,10, Hw.KK);
-//		new SchaltKanal(Var.tk1.Be     , Move.lamber_nuge, hwAmber200, Hw.HF, sk2,11, Hw.KK);
-//		new SchaltKanal(Var.tk1.Bg     , Move.lamber_nuge, hwAmber200, Hw.HF, sk2,12, Hw.KK);
-		new SchaltKanal(Var.tk1.Bf     , Move.lamber_nuge, hwAmber200, Hw.HF, sk2,13, Hw.KK);
 		//all blinkers, including conditioned (mutne), have to be excluded from current monitoring
 		//therefore the last parameter must be Hw.KK
 		
