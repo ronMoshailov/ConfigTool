@@ -142,7 +142,7 @@ class ScheduleController:
                 # if it's the first row
                 if first_row:
                     first_row = False
-                    line = f"\t\tTagesPlan sun_thur = new TagesPlan(\"Sunday_Thurday\",  tk.p{prog_num});\n)"
+                    line = f"\t\tTagesPlan sun_thur = new TagesPlan(\"Sunday_Thurday\",  tk.p{prog_num});\n"
                     new_lines.append(line)
                     continue
 
@@ -169,7 +169,7 @@ class ScheduleController:
             # if it's the first row
             if first_row:
                 first_row = False
-                line = f"\t\tTagesPlan fr = new TagesPlan(\"Fr\",  tk.p{prog_num});\n)"
+                line = f"\t\tTagesPlan fr = new TagesPlan(\"Fr\",  tk.p{prog_num});\n"
                 new_lines.append(line)
                 continue
 

@@ -3,6 +3,8 @@ import re
 from PyQt6.QtWidgets import QWidget, QMessageBox
 from pathlib import Path
 
+import Config.constants
+
 
 class PhueController:
 
@@ -129,6 +131,8 @@ class PhueController:
 
         code = []
         for line in lines:
+            if "public class InitTk1 extends InitTk" in line:
+                line = "import phue.*;\n" + line
             if "write phues here" in line:
                 self.get_code(code)
                 continue
@@ -168,11 +172,12 @@ class PhueController:
 
     def create_file(self, image_out, image_in, transitions, phue_folder_dst):
         line = ""
-        line += "package ta118;\n"
+        line += "package phue;\n"
         line += "\n"
         line += "\n"
         line += "import vt.*;\n"
         line += "import special.InterStage;\n"
+        line += f"import {Config.constants.PROJECT_NUMBER}.Tk1;"
         line += "\n"
         line += f"public class Phue{image_out}_{image_in} "
         line += "extends InterStage {\n"

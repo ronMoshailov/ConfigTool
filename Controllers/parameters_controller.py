@@ -106,24 +106,42 @@ class ParametersTaController:
     def add_lines(self, code):
         # data
         line = ""
+        param_length = len(self.model.parameters[0].min_list)
+        min_idx = 51
+        max_idx = 66
+        type_idx = 81
+        str_param = 96
+        cycle_param = 97
 
-        # add comment index [later]
-        ###############
+        # add comment index
+        line += "//												"
+        for _ in range(param_length):
+            line += f"{min_idx}    "
+            min_idx += 1
+
+        for _ in range(param_length):
+            line += f"{max_idx}    "
+            max_idx += 1
+
+        for _ in range(param_length):
+            line += f"{type_idx}    "
+            type_idx += 1
+
+        line += f"    {str_param}    {cycle_param}\n"
 
         # write index code
-        length = len(self.model.parameters[0].min_list)
         line += "\tstatic final int[] parameters_indexes = {"
 
         # write min++
-        for _ in range(length):
+        for _ in range(param_length):
             line += "min++,"
         # write max++
-        for _ in range(length):
+        for _ in range(param_length):
             line += "max++,"
-        # write type++
-        for _ in range(length):
-            line += "type++,"
-        line += "  96,   97 };\n"
+        # write typ++
+        for _ in range(param_length):
+            line += "typ++,"
+        line += "   96,   97 };\n"
         code.append(line)
 
         # comments

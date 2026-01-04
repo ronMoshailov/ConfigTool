@@ -18,10 +18,8 @@ public class Tk1 extends Node {
 
 	//INPUTS
 	//traffic detectors
-//	public DDetector d2, d6;
-//	public EDetector e1, e2, e5, e6;
-//	public DEDetector de1;
-	
+	// write detectors here
+
 	//pedestrian detectors
 //	public TPDetector tp_a, tp_a_b, tp_b;
 //	public Input de;

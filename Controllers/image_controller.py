@@ -172,7 +172,7 @@ class ImageController:
             else:
                 line += f",    {image.skeleton} "               # tk.PhEQA = new PhaseEQA (tk, "PhaseEQA", 11, 3
             line += f",  {image.sp} , "                         # tk.PhEQA = new PhaseEQA (tk, "PhaseEQA", 11, 3, 1
-            line += f", {image.is_police}"                      # tk.PhEQA = new PhaseEQA (tk, "PhaseEQA", 11, 3, 1, true
+            line += f"  {str(image.is_police).lower()}"                      # tk.PhEQA = new PhaseEQA (tk, "PhaseEQA", 11, 3, 1, true
             line += " " * (84 - len(line))                      # add spaces
             line += ", new Move[] {"
             for move_name in image.move_list:

@@ -25,11 +25,18 @@ class DetectorController:
 
         with open(path, "r", encoding="utf-8") as f:
             for line in f:
+                if line.startswith("//"):
+                    continue
                 matches = pattern.findall(line)
-                for detector_type, instances in matches:
-                    variables = [v.strip() for v in instances.split(",")]
-                    for name in variables:
-                        self.model.new_detector(name, detector_type)
+                for var_name, class_name, detector_name, move_name in matches:
+                    # צור את הדטקטור במודל
+                    self.model.new_detector(
+                        var_name=var_name,
+                        class_name=class_name,
+                        datector_name=detector_name,
+                        move_name=move_name,
+                        ext_unit=0  # אם צריך אפשר לשנות
+                    )
 
         # if len(self.moves) == 0:
         #     Log.warning(f"Warning: Moves not found")

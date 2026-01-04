@@ -33,7 +33,19 @@ sk_pattern = re.compile(
             r'\s*(\d+)\s*,'  # 5) המספר הבא (בין שני הפסיקים) → group(5)
         )
 
-detectors_pattern = re.compile(r'^(?!\s*//)\s*public\s+(DEDetector|DDetector|EDetector|TPDetector|QDetector)\s+([^;]+);')
+# detectors_pattern = re.compile(r'^(?!\s*//)\s*public\s+(DEDetector|DDetector|EDetector|TPDetector|QDetector)\s+([^;]+);')
+detectors_pattern = re.compile(
+    r"""
+    tk\.(\w+)              # 1) e1
+    \s*=\s*new\s+
+    (\w+)                  # 2) EDetector
+    \s*\(\s*
+    "([^"]+)"              # 3) E1
+    \s*,\s*
+    tk\.(\w+)              # 4) k1
+    """,
+    re.VERBOSE
+)
 
 schedule_pattern = re.compile(
     r'(?:TagesPlan\s+(\w+)\s*=\s*new\s+TagesPlan\("[^"]+",\s*tk\.p(\d{2}))'

@@ -114,3 +114,7 @@ class MatrixController:
         matrix_code = self.get_code()
         new_lines.extend(matrix_code)
 
+    def remove_from_matrix(self, move_name):
+        self.model.all_cells = [cell for cell in self.model.all_cells if cell.move_in != move_name and cell.move_out != move_name]
+
+

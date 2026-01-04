@@ -28,47 +28,13 @@ public class ParametersTelAviv extends Dvi35ParametersBase {
 
 
 
-//												51    52    53    54     66    67    68    69     81    82    83    84   96    97
-	static final int[] parameters_indexes = {min++,min++,min++,min++, max++,max++,max++,max++, typ++,typ++,typ++,typ++,  96,   97 };
-//	                                           MIN                      MAX                     TYPE                    STR CYCLE
-//	                                             A   EQA     B     C      A   EQA     B     C      A   EQA     B     C      
-//	                                            SY   ET1   ET2   ET3     SY   ET1   ET2   ET3     SY   ET1   ET2   ET3      
-	static int[]       DVI35_P01          = {    0,    0,    0,    0,    84,   18,   34,    6,     1,    0,    0,    0,  21,  110 }; // 1 - ACTIVE    
-	static int[]       DVI35_P02          = {    0,    0,    0,    0,    84,    3,   19,   13,     1,    0,    0,    0,  21,  100 }; // 2 - ACTIVE 
-	static int[]       DVI35_P03          = {    0,    0,    0,    0,    84,   13,   13,   15,     1,    0,    0,    0,  21,  110 }; // 3 - ACTIVE 
-	static int[]       DVI35_P04          = {    0,    0,    0,    0,    68,   10,   12,    4,     1,    0,    0,    0,  21,   85 }; // 4 - ACTIVE    
-	static int[]       DVI35_P05          = {    0,    0,    0,    0,    84,   26,   34,    8,     1,    0,    0,    0,  21,  120 }; // 5 - ACTIVE    
-	static int[]       DVI35_P06          = {    0,    0,    0,    0,   115,    9,   35,   10,     1,    0,    0,    0,  21,  127 }; // 6 - ACTIVE    
-	static int[]       DVI35_P07          = {    0,    0,    0,    0,    84,   31,   19,   16,     1,    0,    0,    0,  21,  120 }; // 7 - ACTIVE 
-	static int[]       DVI35_P08          = {    0,    0,    0,    0,    84,   33,   17,   14,     1,    0,    0,    0,  21,  120 }; // 8 - ACTIVE 
-	static int[]       DVI35_P09          = {    0,    0,    0,    0,    84,    9,   19,    9,     1,    0,    0,    0,  21,  100 }; // 9 - ACTIVE    
-	static int[]       DVI35_P10          = {    0,    0,    0,    0,    84,   17,   32,   11,     1,    0,    0,    0,  21,  110 }; //10 - ACTIVE
-	static int[]       DVI35_P11          = {    0,    0,    0,    0,    84,   25,   34,   11,     1,    0,    0,    0,  21,  120 }; //11 - ACTIVE
-	static int[]       DVI35_P12          = {    0,    0,    0,    0,     8,    1,   17,   15,     1,    0,    0,    0,  21,  127 }; //12 - ACTIVE
-	static int[]       DVI35_P13          = {    0,    0,    0,    0,    84,   18,   34,    6,     1,    0,    0,    0,  21,  110 }; //13 - P01  
-	static int[]       DVI35_P14          = {    0,    0,    0,    0,    84,   18,   34,    6,     1,    0,    0,    0,  21,  110 }; //14 - P01    
-	static int[]       DVI35_P15          = {    0,    0,    0,    0,    84,   18,   34,    6,     1,    0,    0,    0,  21,  110 }; //15 - P01    
-	static int[]       DVI35_P16          = {    0,    0,    0,    0,    84,   18,   34,    6,     1,    0,    0,    0,  21,  110 }; //16 - P01    
-	static int[]       DVI35_P17          = {    0,    0,    0,    0,    84,   18,   34,    6,     1,    0,    0,    0,  21,  110 }; //17 - P01 
-	static int[]       DVI35_P18          = {    0,    0,    0,    0,    84,   18,   34,    6,     1,    0,    0,    0,  21,  110 }; //18 - P01
-	static int[]       DVI35_P19          = {    0,    0,    0,    0,    84,   18,   34,    6,     1,    0,    0,    0,  21,  110 }; //19 - P01  
-	static int[]       DVI35_P20          = {    0,    0,    0,    0,    84,   18,   34,    6,     1,    0,    0,    0,  21,  110 }; //20 - P01    
-	static int[]       DVI35_P21          = {    0,    0,    0,    0,    84,   18,   34,    6,     1,    0,    0,    0,  21,  110 }; //21 - P01
-	static int[]       DVI35_P22          = {    0,    0,    0,    0,    84,   18,   34,    6,     1,    0,    0,    0,  21,  110 }; //22 - P01    
-	static int[]       DVI35_P23          = {    0,    0,    0,    0,    84,   18,   34,    6,     1,    0,    0,    0,  21,  110 }; //23 - P01
-	static int[]       DVI35_P24          = {    0,    0,    0,    0,    84,   18,   34,    6,     1,    0,    0,    0,  21,  110 }; //24 - P01
-	static int[]       DVI35_P25          = {    0,    0,    0,    0,    84,   18,   34,    6,     1,    0,    0,    0,  21,  110 }; //25 - P01    
-	static int[]       DVI35_P26          = {    0,    0,    0,    0,    84,   18,   34,    6,     1,    0,    0,    0,  21,  110 }; //26 - P01
-	static int[]       DVI35_P27          = {    0,    0,    0,    0,    84,   18,   34,    6,     1,    0,    0,    0,  21,  110 }; //27 - P01   
-	static int[]       DVI35_P28          = {    0,    0,    0,    0,    84,   18,   34,    6,     1,    0,    0,    0,  21,  110 }; //28 - P01   
-	static int[]       DVI35_P29          = {    0,    0,    0,    0,    84,   18,   34,    6,     1,    0,    0,    0,  21,  110 }; //29 - P01   
-	static int[]       DVI35_P30          = {    0,    0,    0,    0,    84,   18,   34,    6,     1,    0,    0,    0,  21,  110 }; //30 - P01   
-	static int[]       DVI35_P31          = {    0,    0,    0,    0,    84,   18,   34,    6,     1,    0,    0,    0,  21,  110 }; //31 - P01   
-	static int[]       DVI35_P32          = {    0,    0,    0,    0,    84,   18,   34,    6,     1,    0,    0,    0,  21,  110 }; //32 - P01   
-//	static int[]       DVI35_P31          = {    0,    0,    0,    0,     8,    1,   11,    6,     1,    0,    0,    0,  21,   80 }; //31 - SK   
-//	static int[]       DVI35_P32          = {    0,    0,    0,    0,     0,    0,    0,    0,     0,    0,    0,    0,  21,    0 }; //32 - Pure SK   
 
-	//TODO: 
+
+
+
+
+
+	//TODO:
 	public void setGaps() {
 //		Var.tk1.e1.gapUnit = VarInt.init(Var.tk1, "GAP E-1" , 1000, true, true, true);
 //		Var.tk1.e2.gapUnit = VarInt.init(Var.tk1, "GAP E-2" , 1000, true, true, true);

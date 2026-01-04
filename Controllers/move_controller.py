@@ -19,6 +19,7 @@ class MoveController:
 
         self.view.add_move_method = self.add_move
         self.view.remove_move_method = self.remove_move
+        self.remove_from_matrix_method = None
 
     def show_view(self):
         """
@@ -71,6 +72,7 @@ class MoveController:
         :return: None
         """
         if self.model.remove_move(move_name):
+            self.remove_from_matrix_method(move_name)
             self.show_view()
             return
         QMessageBox.critical(self.view, "שגיאה", "שגיאה שלא אמורה להתרחש")

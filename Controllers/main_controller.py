@@ -117,7 +117,7 @@ class MainController:
         self.root.showMaximized()          # show in full-screen
 
         self.navigator_view.write_to_code_method = self.write_to_code
-
+        self.move_controller.remove_from_matrix_method = self.matrix_controller.remove_from_matrix
     def show_view(self, act):
         """
         Determines which view should be displayed based on the given action.
@@ -196,8 +196,7 @@ class MainController:
 
         out.append("\n============================== Detector ==============================")
         for detector in self.detector_model.all_detectors:
-            ext = detector.ext_unit if detector.ext_unit else "None"
-            out.append(f"name: {detector.name:<5}, type: {detector.type:<10}, extension unit: {ext:<5}")
+            out.append(f"var_name: {detector.var_name:<5}, class_name: {detector.class_name:<10}, datector_name: {detector.datector_name:<5}, move_name: {detector.move_name:<10}, ext_unit: {detector.ext_unit:<10}")
 
         out.append("\n============================== Schedule ==============================")
         for schedule_table in self.schedule_model.all_schedule_tables:
@@ -270,8 +269,12 @@ class MainController:
         self.image_controller.write_to_file(self.path_tk1_dst, self.path_init_tk1_dst)
         self.phue_controller.write_to_file(self.path_init_tk1_dst, self.path_phue_folder_dst)
         self.parameters_ta_controller.write_to_file(self.path_parameters_ta_dst)
-
+        # self.detector_controller.get_code()
+        # later
+        # add detectors
         # update package
+
+
         # self._update_package(self.path_tk1_dst)
         # self._update_package(self.path_init_tk1_dst)
         # self._update_package(self.path_init_dst)
@@ -315,7 +318,7 @@ class MainController:
         self.move_controller.init_model(self.path_init_tk1)
 
         # init detectors moves
-        self.detector_controller.init_model(self.path_tk1)
+        self.detector_controller.init_model(self.path_init_tk1)
 
         # init images moves
         self.image_controller.init_model(self.path_init_tk1, self.move_model.all_moves)
@@ -379,12 +382,12 @@ class MainController:
 
         target_dir = Path(target_dir)
 
-        dst = target_dir / "ta00"
+        dst = target_dir / f"{Config.constants.PROJECT_NUMBER}"
 
-        self.path_init_dst = dst / "src" / "ta00" / "init.java"
-        self.path_tk1_dst = dst / "src" / "ta00" / "Tk1.java"
-        self.path_init_tk1_dst = dst / "src" / "ta00" / "initTk1.java"
-        self.path_parameters_ta_dst = dst / "src" / "ta00" / "ParametersTelAviv.java"
+        self.path_init_dst = dst / "src" / f"{Config.constants.PROJECT_NUMBER}" / "init.java"
+        self.path_tk1_dst = dst / "src" / f"{Config.constants.PROJECT_NUMBER}" / "Tk1.java"
+        self.path_init_tk1_dst = dst / "src" / f"{Config.constants.PROJECT_NUMBER}" / "initTk1.java"
+        self.path_parameters_ta_dst = dst / "src" / f"{Config.constants.PROJECT_NUMBER}" / "ParametersTelAviv.java"
         self.path_phue_folder_dst = dst /  "src" /"phue"
 
         try:
@@ -401,9 +404,19 @@ class MainController:
             # copy
             shutil.copytree(source_folder, dst)
 
+            # rename
+            old_folder = dst / "src" / "ta00"
+            new_folder = dst / "src" / f"{Config.constants.PROJECT_NUMBER}"
+
+            old_folder.rename(new_folder)
+            print(f"Folder renamed to {new_folder}")
+
             QMessageBox.information(self.root, "הצלחה", "הפרויקט נשמר בהצלחה")
             return True
 
         except Exception as e:
             QMessageBox.critical(self.root, "שגיאה", str(e))
             return False
+
+
+

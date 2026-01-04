@@ -10,11 +10,11 @@ PROJECT_NUMBER      = None
 BASE_DIR            = os.path.dirname(__file__)     # path of the file
 PROJECT_DIR         = os.path.dirname(BASE_DIR)     # path of the project file
 
-GREEN_IMAGE_PATH                = os.path.join(PROJECT_DIR, "data", "icons", "green.png")
-GREEN_BLINKER_IMAGE_PATH        = os.path.join(PROJECT_DIR, "data", "icons", "green_blink.png")
-PEDESTRIAN_IMAGE_PATH           = os.path.join(PROJECT_DIR, "data", "icons", "pedestrian.png")
-BLINKER_IMAGE_PATH              = os.path.join(PROJECT_DIR, "data", "icons", "blinker.png")
-BLINKER_CONDITIONAL_IMAGE_PATH  = os.path.join(PROJECT_DIR, "data", "icons", "blinker conditional.png")
+GREEN_IMAGE_PATH                = os.path.join(PROJECT_DIR, "Pictures", "Icons", "green.png")
+GREEN_BLINKER_IMAGE_PATH        = os.path.join(PROJECT_DIR, "Pictures", "Icons", "green_blink.png")
+PEDESTRIAN_IMAGE_PATH           = os.path.join(PROJECT_DIR, "Pictures", "Icons", "pedestrian.png")
+BLINKER_IMAGE_PATH              = os.path.join(PROJECT_DIR, "Pictures", "Icons", "blinker.png")
+BLINKER_CONDITIONAL_IMAGE_PATH  = os.path.join(PROJECT_DIR, "Pictures", "Icons", "blinker conditional.png")
 
 # =============== QColor =============== #
 # QColor - רק הצבע עצמו.
