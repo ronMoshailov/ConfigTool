@@ -66,37 +66,30 @@ class DetectorController:
     def show_view(self):
         self.view.show_view(self.model.all_detectors)
 
-    def get_code(self):
+    def write_to_file(self, path_init_tk1):
         code = []
-        line = ""
-        all_detectors = self.model.all_detectors
-        # mapping = {1: "DDetector", 1: "EDetector", 1: "TPDetector", 1: "DEDetector", 1: "QDetector", }
+        with open(path_init_tk1, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
 
-        for detector in all_detectors:
-            line += f"\t\ttk.{detector.name}"                       # add code
-            line += " " * (12 - len(line))                          # add spaces
-            if detector.type in ["DDetector", "EDetector", "QDetector"]:
-                line += f"= new {detector.type} "                        # add code
-            else:
-                line += f"= new {detector.type}"                        # add code
-
-            left, right = detector.name.split("_", 1)               # prepare name
-            result = left.upper() + "-" + right                     # prepare name
-            line += f"(\"{result}\""
-            line += " " * (37 - len(line))                          # add spaces
-
-            if right[0].isdigit():
-                line += f", tk.p{right[0]}"
-            else:
-                line += f", tk.k{right[0]}"
-
-            line += f" ,    true ,        true ,                  true );"
-
+        for line in lines:
+            if "write detectors here" in line:
+                for detector in self.model.all_detectors:
+                    line = ""
+                    line += f"\t\ttk.{detector.var_name}"                   # add code
+                    line += " " * (12 - len(line))                          # add spaces
+                    line += f"= new {detector.class_name}"                  # add code
+                    line += " " * (28 - len(line))                          # add spaces
+                    line += f"( \"{detector.datector_name}\""               #
+                    line += " " * (38 - len(line))                          # add spaces
+                    line += f", tk.{detector.move_name}"               #
+                    line += " " * (46 - len(line))                          # add spaces
+                    line += ", true    , true        , true );\n"
+                    code.append(line)
+                continue
             code.append(line)
-            line = ""
 
-        for c in code:
-            print(c)
+        with open(path_init_tk1, 'w', encoding='utf-8') as f:
+            f.writelines(code)
 
 
     # def write_to_file(self, path):

@@ -92,7 +92,9 @@ public class InitTk1 extends InitTk {
 
 		//detectors
 		//		                    Name    | SG    | Has DSY | is call-all | isSetFromParamsEnabled
-//		tk.e1 	  = new EDetector ( "E1"    , tk.k1 , true    , true        , true );
+        // write detectors here
+
+//		tk.e1     = new EDetector ( "E1"    , tk.k1 , true    , true        , true );
 //		tk.d2 	  = new DDetector ( "D2"    , tk.k2 , true    , true        , true );
 //		tk.e2 	  = new EDetector ( "E2"    , tk.k2 , true    , true        , true );
 //		tk.e5 	  = new EDetector ( "E5"    , tk.k5 , true    , true        , true );
@@ -101,7 +103,7 @@ public class InitTk1 extends InitTk {
 //		tk.tp_a   = new TPDetector( "TPa"   , tk.pa , true    , true        , true );
 //		tk.tp_a_b = new TPDetector( "TPa_b" , tk.pa , true    , true        , true );
 //		tk.tp_b   = new TPDetector( "TPb"   , tk.pb , true    , true        , true );
-		
+
 		// inputs
 		//                    Node | Name | Has DSY | is call-all | isSetFromParamsEnabled
 //		tk.de   = new Input ( tk   , "DE" , false   , false       , false );
