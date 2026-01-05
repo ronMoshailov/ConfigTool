@@ -93,7 +93,6 @@ public class InitTk1 extends InitTk {
 		//detectors
 		//		                    Name    | SG    | Has DSY | is call-all | isSetFromParamsEnabled
         // write detectors here
-
 //		tk.e1     = new EDetector ( "E1"    , tk.k1 , true    , true        , true );
 //		tk.d2 	  = new DDetector ( "D2"    , tk.k2 , true    , true        , true );
 //		tk.e2 	  = new EDetector ( "E2"    , tk.k2 , true    , true        , true );

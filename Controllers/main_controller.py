@@ -154,7 +154,7 @@ class MainController:
         elif act == "matrix":
             self.matrix_controller.show_view(self.move_model.all_moves)
         elif act == "detector":
-            self.detector_controller.show_view()
+            self.detector_controller.show_view([m.name for m in self.move_model.all_moves])
         elif act == "sk":
             self.sk_controller.show_view(self.move_model.all_moves)
         elif act == "schedule":
@@ -269,7 +269,7 @@ class MainController:
         self.image_controller.write_to_file(self.path_tk1_dst, self.path_init_tk1_dst)
         self.phue_controller.write_to_file(self.path_init_tk1_dst, self.path_phue_folder_dst)
         self.parameters_ta_controller.write_to_file(self.path_parameters_ta_dst)
-        self.detector_controller.write_to_file(self.path_init_tk1_dst)
+        self.detector_controller.write_to_file(self.path_init_tk1_dst, self.path_tk1_dst)
         # later
         # add detectors
         # update package

@@ -1083,202 +1083,6 @@ navigator_panel_style = """
             }
 
         """
-detector_panel_style = """
-        /* ********************************* panel ********************************* */
-        #detectorPanel{
-            border-radius: 20px;
-            border: 1px solid #ff8c1a;
-            background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0   #fbc898, stop:1   #f0f8ff);
-        }
-
-        /* ********************************* gray label ********************************* */
-        QLabel#gray_label {
-            background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #fdfefe, stop:1 #ebedef);
-            color: #2c3e50;
-            border: 1px solid #d5d8dc;
-            border-radius: 8px;
-            padding: 8px 12px;
-            font-size: 24px;
-            font-weight: bold;
-            min-width: 170px;
-        }
-
-        QLabel#gray_label:hover {
-            background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #f8f9f9, stop:1 #d6dbdf);
-            border: 1px solid #b2babb;
-        }
-
-        QLabel#little_title {
-            color: #2c3e50;         /* צבע כהה ואלגנטי */
-            font-weight: bold;      /* הדגשה */
-            letter-spacing: 1px;    /* ריווח קטן בין אותיות */
-            border-bottom: 1px solid #1a98ff;  /* קו דק מתחת */
-            padding-bottom: 2px;    /* ריווח קטן מהקו */
-        }
-
-        /* ********************************* text field ********************************* */
-        QLineEdit#text_box {
-            font-size: 32px;
-            max-height: 50px;
-            padding: 6px 10px;
-            border: 2px solid #cccccc;
-            border-radius: 6px;
-            background: #fdfdfd;
-            selection-background: #3399ff;
-        }
-        QLineEdit#text_box:focus {
-            border: 2px solid #3399ff;       /* מסגרת כחולה בזמן פוקוס */
-            background: #ffffff;
-        }
-        QLineEdit#text_box:disabled {
-            background: #eeeeee;
-            color: #888888;
-        }
-
-        /* ********************************* Radio Button ********************************* */
-        QRadioButton {
-            qproperty-iconSize: 22px 22px;   /* אם יש גם אייקון */
-            spacing: 8px;                    /* רווח בין הבולט/אייקון לטקסט */
-            font-weight: bold;
-            font-size: 16px;
-            color: #2c3e50;
-        }
-
-        QRadioButton::indicator {
-            width: 18px; height: 18px;
-            border-radius: 9px;
-            border: 2px solid #2471a3;
-            background: #ffffff;
-            margin: 0 6px;
-        }
-        QRadioButton::indicator:hover {
-            border: 2px solid #1b4f72;
-        }
-        QRadioButton::indicator:checked {
-            background: #000000;
-            border: 2px solid #4060b9;
-        }
-        QRadioButton::indicator:disabled {
-            background: #e5e7eb;
-            border: 2px solid #a6acaf;
-        }
-
-        /* ********************************* scroll ********************************* */
-        QScrollArea {
-            background: transparent;
-            border: None;
-        }
-
-        QScrollBar:vertical {
-            width: 10px;
-            margin: 4px 4px 4px 2px;           /* top right bottom left */
-            background: transparent;
-        }
-        QScrollBar::handle:vertical {
-            background: qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #5dade2, stop:1 #2e86c1);
-            border: 1px solid #2471a3;
-            border-radius: 5px;
-            min-height: 24px;
-        }
-        QScrollBar::handle:vertical:hover {
-            background: qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #5499c7, stop:1 #21618c);
-        }
-        QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
-            height: 0; /* remove the scrollbar buttons */
-        } 
-
-
-        QScrollBar:horizontal {
-            height: 10px;
-            margin: 2px 4px 4px 4px;
-            background: transparent;
-        }
-        QScrollBar::handle:horizontal {
-            background: qlineargradient(x1:0,y1:0,x2:1,y2:0, stop:0 #5dade2, stop:1 #2e86c1);
-            border: 1px solid #2471a3;
-            border-radius: 5px;
-            min-width: 24px;
-        }
-        QScrollBar::handle:horizontal:hover {
-            background: qlineargradient(x1:0,y1:0,x2:1,y2:0, stop:0 #5499c7, stop:1 #21618c);
-        }
-
-        /* הסתרת כפתורי החיצים של הסקרולבר */
-        QScrollBar::add-line, QScrollBar::sub-line {
-            width: 0px; height: 0px;
-            background: none;
-            border: none;
-        }
-        QScrollBar::add-page, QScrollBar::sub-page {
-            background: transparent;
-        }
-
-        #scrollContent {
-            background: transparent;
-            /* border-top: 1px solid #005aa3; */
-            /* border-radius: 25px; */
-            /* border-radius: 10px; */
-            /* background: qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #0087f5, stop:1 #eff6fb); */
-        }
-
-        QLabel#scroll_label {
-            font-size: 36px;
-            font-weight: bold;
-            color: black;
-            padding: 4px 6px;
-            border-radius: 30px;
-            background: white;
-            border: 1px solid #4559a1;
-            min-height: 60px;
-            min-width: 150px;
-        }
-        QLabel#scroll_label:hover {
-            background: #d6eaf8;
-        }
-
-        QPushButton#btn_remove_move {
-            background: transparent;
-            border: None;
-
-        }
-
-        QPushButton#btn_remove_move:hover {
-            border: 1px solid #3498db;      /* עובי וצבע גבול */
-            background: #f5f5f5;    /* רקע במעבר עכבר */
-        }
-        QPushButton#btn_remove_move:pressed {
-            background: #e0e0e0;    /* רקע בלחיצה */
-        }
-
-        /* ********************************* QPushButton ********************************* */
-        QPushButton#add_button {
-            background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #5dade2, stop:1 #2e86c1);
-            color: white;
-            border: 2px solid #2471a3;
-            border-radius: 10px;
-            padding: 0px;
-            font-weight: bold;
-            font-size: 18px;
-            min-width: 150px;
-            min-height: 36px;
-        }
-
-        QPushButton#add_button:hover {
-            background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #5499c7, stop:1 #21618c);
-            border: 2px solid #1b4f72;
-        }
-
-        QPushButton#add_button:checked {
-            background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #58d68d, stop:1 #28b463);
-            border: 2px solid #239b56;
-        }
-
-        QPushButton#add_button:disabled {
-            background: #d5d8dc;
-            border: 2px solid #a6acaf;
-            color: #7f8c8d;
-        }
-        """
 main_window_style = """
         QMainWindow {
             background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #cce0ff, stop:1 #e6f2fe);
@@ -1303,5 +1107,365 @@ parameters_ta_window_style = """
                     background-color: #C7FFDA;      /* כתום בהיר */
                 }
 """
+detector_panel_style = """
+/* ********************************* Detector Panel ********************************* */
+QWidget {
+    background-color: #f7f9fc;
+    font-family: Arial;
+    font-size: 13px;
+}
+
+/* ********************************* Table ********************************* */
+QTableWidget {
+    background-color: white;
+    border: 1px solid #d0d7de;
+    gridline-color: #e1e4e8;
+    selection-background-color: #d6eaf8;
+    selection-color: #2c3e50;
+}
+
+/* ********************************* Column Header ********************************* */
+QHeaderView::section {
+    background-color: #d2e1ff;
+    color: #2c3e50;
+    font-weight: bold;
+    padding: 6px;
+    border: 1px solid #d0d7de;
+}
+
+/* ********************************* Cells ********************************* */
+QTableWidget::item {
+    padding: 4px;
+    border: none;
+}
+
+QTableWidget::item:hover {
+    background-color: #eef4ff;
+}
+
+QTableWidget::item:selected {
+    background-color: #cfe2ff;
+}
+
+/* ********************************* ComboBox inside table ********************************* */
+QComboBox {
+    background-color: white;
+    border: 1px solid #cfd6dd;
+    border-radius: 6px;
+    padding: 2px 6px;
+    min-height: 28px;
+}
+
+QComboBox:hover {
+    border: 1px solid #3498db;
+}
+
+QComboBox::drop-down {
+    border: none;
+}
+
+QComboBox::down-arrow {
+    image: none;
+}
+
+/* ********************************* QPushButton inside table ********************************* */
+QPushButton#remove_button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-weight: bold;
+}
+
+QPushButton#remove_button:hover {
+    background-color: #c0392b;
+}
+
+QPushButton#remove_button:pressed {
+    background-color: #a93226;
+}
+
+/* ********************************* QPushButton – Add ********************************* */
+QPushButton#add_button {
+    background-color: #3498db;       /* כחול */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-weight: bold;
+    min-height: 36px;
+}
+
+QPushButton#add_button:hover {
+    background-color: #2980b9;
+}
+
+QPushButton#add_button:pressed {
+    background-color: #1f618d;
+}
+
+/* ********************************* QPushButton – Update ********************************* */
+QPushButton#update_button {
+    background-color: #27ae60;       /* ירוק */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-weight: bold;
+    min-height: 36px;
+}
+
+QPushButton#update_button:hover {
+    background-color: #1e8449;
+}
+
+QPushButton#update_button:pressed {
+    background-color: #196f3d;
+}
+
+/* ********************************* LineEdit inside table ********************************* */
+QLineEdit {
+    background-color: white;
+    border: 1px solid #cfd6dd;
+    border-radius: 6px;
+    padding: 2px 6px;
+    min-height: 28px;
+}
+
+QLineEdit:focus {
+    border: 1px solid #3498db;
+    background-color: #eef6ff;
+}
+
+/* ********************************* Scrollbar ********************************* */
+QScrollBar:vertical {
+    background: #f0f0f0;
+    width: 12px;
+    margin: 0px;
+    border-radius: 6px;
+}
+
+QScrollBar::handle:vertical {
+    background: #cfd6dd;
+    min-height: 20px;
+    border-radius: 6px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #a8b3bd;
+}
+
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+    height: 0px;
+    subcontrol-origin: margin;
+}
+
+/* ********************************* Table Widgets padding ********************************* */
+QTableWidget QAbstractItemView {
+    padding: 0px;
+}
+
+QTableWidget QHeaderView::section {
+    padding: 4px;
+}
+"""
 
 
+# detector_panel_style = """
+#         /* ********************************* panel ********************************* */
+#         #detectorPanel{
+#             border-radius: 20px;
+#             border: 1px solid #ff8c1a;
+#             background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0   #fbc898, stop:1   #f0f8ff);
+#         }
+#
+#         /* ********************************* gray label ********************************* */
+#         QLabel#gray_label {
+#             background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #fdfefe, stop:1 #ebedef);
+#             color: #2c3e50;
+#             border: 1px solid #d5d8dc;
+#             border-radius: 8px;
+#             padding: 8px 12px;
+#             font-size: 24px;
+#             font-weight: bold;
+#             min-width: 170px;
+#         }
+#
+#         QLabel#gray_label:hover {
+#             background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #f8f9f9, stop:1 #d6dbdf);
+#             border: 1px solid #b2babb;
+#         }
+#
+#         QLabel#little_title {
+#             color: #2c3e50;         /* צבע כהה ואלגנטי */
+#             font-weight: bold;      /* הדגשה */
+#             letter-spacing: 1px;    /* ריווח קטן בין אותיות */
+#             border-bottom: 1px solid #1a98ff;  /* קו דק מתחת */
+#             padding-bottom: 2px;    /* ריווח קטן מהקו */
+#         }
+#
+#         /* ********************************* text field ********************************* */
+#         QLineEdit#text_box {
+#             font-size: 32px;
+#             max-height: 50px;
+#             padding: 6px 10px;
+#             border: 2px solid #cccccc;
+#             border-radius: 6px;
+#             background: #fdfdfd;
+#             selection-background: #3399ff;
+#         }
+#         QLineEdit#text_box:focus {
+#             border: 2px solid #3399ff;       /* מסגרת כחולה בזמן פוקוס */
+#             background: #ffffff;
+#         }
+#         QLineEdit#text_box:disabled {
+#             background: #eeeeee;
+#             color: #888888;
+#         }
+#
+#         /* ********************************* Radio Button ********************************* */
+#         QRadioButton {
+#             qproperty-iconSize: 22px 22px;   /* אם יש גם אייקון */
+#             spacing: 8px;                    /* רווח בין הבולט/אייקון לטקסט */
+#             font-weight: bold;
+#             font-size: 16px;
+#             color: #2c3e50;
+#         }
+#
+#         QRadioButton::indicator {
+#             width: 18px; height: 18px;
+#             border-radius: 9px;
+#             border: 2px solid #2471a3;
+#             background: #ffffff;
+#             margin: 0 6px;
+#         }
+#         QRadioButton::indicator:hover {
+#             border: 2px solid #1b4f72;
+#         }
+#         QRadioButton::indicator:checked {
+#             background: #000000;
+#             border: 2px solid #4060b9;
+#         }
+#         QRadioButton::indicator:disabled {
+#             background: #e5e7eb;
+#             border: 2px solid #a6acaf;
+#         }
+#
+#         /* ********************************* scroll ********************************* */
+#         QScrollArea {
+#             background: transparent;
+#             border: None;
+#         }
+#
+#         QScrollBar:vertical {
+#             width: 10px;
+#             margin: 4px 4px 4px 2px;           /* top right bottom left */
+#             background: transparent;
+#         }
+#         QScrollBar::handle:vertical {
+#             background: qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #5dade2, stop:1 #2e86c1);
+#             border: 1px solid #2471a3;
+#             border-radius: 5px;
+#             min-height: 24px;
+#         }
+#         QScrollBar::handle:vertical:hover {
+#             background: qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #5499c7, stop:1 #21618c);
+#         }
+#         QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+#             height: 0; /* remove the scrollbar buttons */
+#         }
+#
+#
+#         QScrollBar:horizontal {
+#             height: 10px;
+#             margin: 2px 4px 4px 4px;
+#             background: transparent;
+#         }
+#         QScrollBar::handle:horizontal {
+#             background: qlineargradient(x1:0,y1:0,x2:1,y2:0, stop:0 #5dade2, stop:1 #2e86c1);
+#             border: 1px solid #2471a3;
+#             border-radius: 5px;
+#             min-width: 24px;
+#         }
+#         QScrollBar::handle:horizontal:hover {
+#             background: qlineargradient(x1:0,y1:0,x2:1,y2:0, stop:0 #5499c7, stop:1 #21618c);
+#         }
+#
+#         /* הסתרת כפתורי החיצים של הסקרולבר */
+#         QScrollBar::add-line, QScrollBar::sub-line {
+#             width: 0px; height: 0px;
+#             background: none;
+#             border: none;
+#         }
+#         QScrollBar::add-page, QScrollBar::sub-page {
+#             background: transparent;
+#         }
+#
+#         #scrollContent {
+#             background: transparent;
+#             /* border-top: 1px solid #005aa3; */
+#             /* border-radius: 25px; */
+#             /* border-radius: 10px; */
+#             /* background: qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #0087f5, stop:1 #eff6fb); */
+#         }
+#
+#         QLabel#scroll_label {
+#             font-size: 36px;
+#             font-weight: bold;
+#             color: black;
+#             padding: 4px 6px;
+#             border-radius: 30px;
+#             background: white;
+#             border: 1px solid #4559a1;
+#             min-height: 60px;
+#             min-width: 150px;
+#         }
+#         QLabel#scroll_label:hover {
+#             background: #d6eaf8;
+#         }
+#
+#         QPushButton#btn_remove_move {
+#             background: transparent;
+#             border: None;
+#
+#         }
+#
+#         QPushButton#btn_remove_move:hover {
+#             border: 1px solid #3498db;      /* עובי וצבע גבול */
+#             background: #f5f5f5;    /* רקע במעבר עכבר */
+#         }
+#         QPushButton#btn_remove_move:pressed {
+#             background: #e0e0e0;    /* רקע בלחיצה */
+#         }
+#
+#         /* ********************************* QPushButton ********************************* */
+#         QPushButton#add_button {
+#             background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #5dade2, stop:1 #2e86c1);
+#             color: white;
+#             border: 2px solid #2471a3;
+#             border-radius: 10px;
+#             padding: 0px;
+#             font-weight: bold;
+#             font-size: 18px;
+#             min-width: 150px;
+#             min-height: 36px;
+#         }
+#
+#         QPushButton#add_button:hover {
+#             background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #5499c7, stop:1 #21618c);
+#             border: 2px solid #1b4f72;
+#         }
+#
+#         QPushButton#add_button:checked {
+#             background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #58d68d, stop:1 #28b463);
+#             border: 2px solid #239b56;
+#         }
+#
+#         QPushButton#add_button:disabled {
+#             background: #d5d8dc;
+#             border: 2px solid #a6acaf;
+#             color: #7f8c8d;
+#         }
+#         """

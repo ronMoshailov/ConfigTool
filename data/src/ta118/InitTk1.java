@@ -121,10 +121,10 @@ public class InitTk1 extends InitTk {
 //		tk.e1 	  = new EDetector ( "E1"    , tk.k1 , true    , true        , true );
 		tk.d2 	  = new DDetector ( "D2"    , tk.k2 , true    , true        , true );
 //		tk.e2 	  = new EDetector ( "E2"    , tk.k2 , true    , true        , true );
-//		tk.e5 	  = new EDetector ( "E5"    , tk.k5 , true    , true        , true );
+		tk.de5 	  = new DEDetector( "DE5"   , tk.k5 , true    , true        , true );
 		tk.d6 	  = new DDetector ( "D6"    , tk.k6 , true    , true        , true );
 //		tk.e6 	  = new EDetector ( "E6"    , tk.k6 , true    , true        , true );
-//		tk.tp_a   = new TPDetector( "TPa"   , tk.pa , true    , true        , true );
+		tk.tp_a   = new TPDetector( "TPa"   , tk.pa , true    , true        , true );
 //		tk.tp_a_b = new TPDetector( "TPa_b" , tk.pa , true    , true        , true );
 //		tk.tp_b   = new TPDetector( "TPb"   , tk.pb , true    , true        , true );
 		

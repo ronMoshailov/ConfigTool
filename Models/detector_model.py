@@ -10,10 +10,10 @@ class DetectorModel:
     def __init__(self):
         self.all_detectors = []
 
-    def new_detector(self, var_name: str, class_name: str, datector_name :str, move_name: str, ext_unit:int = 0):
+    def new_detector(self, var_name: str, class_name: str, detector_name :str, move_name: str, ext_unit:int = 0):
         if self.is_detector_exist(var_name):
             return False
-        detector = Detector(var_name, class_name, datector_name, move_name, ext_unit)
+        detector = Detector(var_name, class_name, detector_name, move_name, ext_unit)
         self.all_detectors.append(detector)
         return True
 
@@ -22,3 +22,24 @@ class DetectorModel:
             if detector.var_name == var_name:
                 return True
         return False
+
+    def get_all_types(self):
+        return ["DDetector", "EDetector", "DEDetector", "TPDetector", "QDetector"]
+
+    def get_all_d_detectors(self):
+        return [detector for detector in self.all_detectors if detector.class_name == "DDetector"]
+
+    def get_all_e_detectors(self):
+        return [detector for detector in self.all_detectors if detector.class_name == "EDetector"]
+
+    def get_all_de_detectors(self):
+        return [detector for detector in self.all_detectors if detector.class_name == "DEDetector"]
+
+    def get_all_tp_detectors(self):
+        return [detector for detector in self.all_detectors if detector.class_name == "TPDetector"]
+
+    def get_all_q_detectors(self):
+        return [detector for detector in self.all_detectors if detector.class_name == "QDetector"]
+
+    def reset(self):
+        self.all_detectors.clear()

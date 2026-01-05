@@ -218,7 +218,8 @@ class SkView(QWidget):
             # col 1 (combo)
             combo = tbl.cellWidget(row, 1)
             idx = 0 if combo.findText(ch.name) == -1 else combo.findText(ch.name)
-            combo.setCurrentIndex(idx)
+            combo.addItems([ch.name])
+            combo.setCurrentIndex(combo.findText(ch.name))
             if is_commented:
                 combo.setStyleSheet("background-color: rgb(200,255,200);")
 
