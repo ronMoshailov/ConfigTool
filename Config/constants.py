@@ -1,4 +1,3 @@
-# config/constants.py
 import os
 
 from PyQt6.QtGui import QColor
@@ -17,8 +16,8 @@ BLINKER_IMAGE_PATH              = os.path.join(PROJECT_DIR, "Pictures", "Icons",
 BLINKER_CONDITIONAL_IMAGE_PATH  = os.path.join(PROJECT_DIR, "Pictures", "Icons", "blinker conditional.png")
 
 # =============== QColor =============== #
-# QColor - רק הצבע עצמו.
-# QBrush - צבע + איך ממלאים איתו (מלא, חצי שקוף, פסים, תמונה וכו’).
+# QColor - just the color itself
+# QBrush - color + how to fill (full, Semi-transparent, transparent, lines, picture etc')
 
 gray_color          = QColor(230, 230, 230)
 light_green_color   = QColor(180, 255, 180)

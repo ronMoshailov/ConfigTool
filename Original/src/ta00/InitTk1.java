@@ -31,8 +31,8 @@ public class InitTk1 extends InitTk {
 		//- blinkers:				0    	 
 		//- for traffic sg:			if the sg has green blink, subtract 3 seconds from the minimum green time
 		
-		//Sg-definition:      partial- | Sg-   | Sg-                         |  min.  | min.| Main   
-		//                    node     | name  | type                        |  green | red | Sg     
+		//Sg-definition:      partial- | Sg-   | Sg-                          |  min.  | min.| Main
+		//                    node     | name  | type                         |  green | red | Sg
 	    // write moves here
 	}
 

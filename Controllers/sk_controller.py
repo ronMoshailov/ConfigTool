@@ -2,7 +2,7 @@ from PyQt6.QtCore import QSignalBlocker, Qt
 from PyQt6.QtGui import QBrush
 from PyQt6.QtWidgets import QMessageBox, QTableWidget, QTableWidgetItem
 
-import Config.constants
+import Config
 from Config.patterns import sk_pattern
 
 
@@ -53,9 +53,9 @@ class SkController:
         self.all_moves = all_moves
         self.view.show_view(self.model.sk_list, all_moves)
 
-    def hide_view(self):
-        self.view.hide()
-
+    ####################################################################################
+    #                                     CRUD                                         #
+    ####################################################################################
     def add_sk_card(self):
         self.model.add_sk()
         self.view.show_view(self.model.sk_list, self.all_moves)
@@ -63,6 +63,16 @@ class SkController:
     def remove_sk_card(self, card_num):
         self.model.remove_sk(card_num)
         self.view.show_view(self.model.sk_list, self.all_moves)
+
+    ####################################################################################
+    #                           Write to file                                          #
+    ####################################################################################
+
+    ####################################################################################
+    #                               Logic                                              #
+    ####################################################################################
+
+
 
     def change_color(self, table: QTableWidget, row: int, col: int, fix_color = False):
         if col != 2:
@@ -101,8 +111,8 @@ class SkController:
         combo = table.cellWidget(row, col)
         move_name = combo.currentText()
 
-        white = QBrush(Config.white_color)
-        gray = QBrush(Config.gray_color)
+        white = QBrush(Config.constants.white_color)
+        gray = QBrush(Config.constants.gray_color)
 
         with QSignalBlocker(combo), QSignalBlocker(table):
             move_name = "" if move_name == "-" else move_name
@@ -134,9 +144,9 @@ class SkController:
             table.cellWidget(row_number, 3).setCheckState(Qt.CheckState.Unchecked)
             return False
 
-        gray_brush = QBrush(Config.gray_color)
-        light_green_brush = QBrush(Config.light_green_color)
-        white_brush = QBrush(Config.white_color)
+        gray_brush = QBrush(Config.constants.gray_color)
+        light_green_brush = QBrush(Config.constants.light_green_color)
+        white_brush = QBrush(Config.constants.white_color)
 
         # color the rows
         if Qt.CheckState(state) == Qt.CheckState.Checked:

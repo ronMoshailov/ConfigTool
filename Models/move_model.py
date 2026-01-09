@@ -97,3 +97,7 @@ class MoveModel:
                 move.min_green = min_green
                 return True
         return False
+
+    def get_all_moves_names(self):
+        return [m.name for m in self.all_moves]
+

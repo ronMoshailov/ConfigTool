@@ -24,6 +24,7 @@ import tk.Var;
 
 public class Init implements enp.Initialisierung {
 
+    // write settings here
 	public static String anlagenName = "Tel-Aviv Junc. 118";
 	public static String tk1Name     = "Yitzhak Sadeh - Tversky";
 	public static String version     = "V1.4.1e G5tf.7";

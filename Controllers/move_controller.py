@@ -28,6 +28,28 @@ class MoveController:
         """
         self.view.show_view(self.model.all_moves)
 
+    def init_model(self, path):
+        """
+        This method set from path the moves in the app.
+
+        :param path: path to "InitTk1.java'
+        :return: None
+        """
+        pattern = move_pattern
+
+        with open(path, 'r', encoding='utf-8') as file:
+            for line in file:
+                line = line.strip()
+                if line.startswith("//") or not line.startswith("tk."):
+                    continue
+                match = pattern.match(line)
+                if match:
+                    phase, move_type, min_green, is_main = match.groups()
+                    self.model.add_move(phase, move_type, True if is_main == "true" else False, int(min_green))
+
+    ####################################################################################
+    #                                     CRUD                                         #
+    ####################################################################################
     def add_move(self, move_name, move_type, is_main, min_green):
         """
         This method add a move.
@@ -50,10 +72,19 @@ class MoveController:
 
         # fix 'name' depend on 'type'
         if move_type == "Traffic" or move_type == "Traffic_Flashing":
+            if move_name[0].isalpha():
+                QMessageBox.critical(self.view, "שגיאה", "מופע תנועה לא יכול להיות עם אות בשם")
+                return
             move_name = "k" + move_name
         elif move_type == "Pedestrian":
+            if move_name[0].isdigit():
+                QMessageBox.critical(self.view, "שגיאה", "מופע הולך רגל לא יכול להיות עם מספר בשם")
+                return
             move_name = "p" + move_name
         elif move_type == "Blinker" or move_type == "Blinker_Conditional":
+            if move_name[0].isdigit():
+                QMessageBox.critical(self.view, "שגיאה", "בלינקר לא יכול להיות עם מספר בשם")
+                return
             move_name = "B" + move_name
 
         # add move (if failed it's because the move already exist)
@@ -77,68 +108,10 @@ class MoveController:
             return
         QMessageBox.critical(self.view, "שגיאה", "שגיאה שלא אמורה להתרחש")
 
-    def init_model(self, path):
-        """
-        This method set from path the moves in the app.
-
-        :param path: path to "InitTk1.java'
-        :return: None
-        """
-        pattern = move_pattern
-
-        with open(path, 'r', encoding='utf-8') as file:
-            for line in file:
-                line = line.strip()
-                if line.startswith("//") or not line.startswith("tk."):
-                    continue
-                match = pattern.match(line)
-                if match:
-                    phase, move_type, min_green, is_main = match.groups()
-                    self.model.add_move(phase, move_type, True if is_main == "true" else False, int(min_green))
-
-    def get_init_tk1_code(self):
-        # tk.k1     =  new Move(     tk  , "_1"  ,  MoveType.Traffic  		 ,      5 ,   0 , false);
-        code = []
-        line = ""
-        prev_start = self.model.all_moves[0].name[0]
-
-        for move in self.model.all_moves:
-            if prev_start != move.name[0]:
-                code.append("\n")
-            line += f"\t\ttk.{move.name}"                           # add code
-            line += " " * (12 - len(line))                          # add spaces
-            if move.name.startswith("B"):
-                line += f"=  new Move(     tk  , \"_{move.name}\""  # add code
-            else:
-                line += f"=  new Move(     tk  , \"_{move.name[1:]}\""  # add code
-            line += " " * (41 - len(line))                          # add spaces
-            if move.name.startswith("B"):
-                line += f", MoveType.{move.type}"                   # add code
-            else:
-                line += f",  MoveType.{move.type}"                  # add code
-            line += " " * (71 - len(line))                          # add spaces
-            line += ","                                             # add code
-            if move.min_green >= 10:
-                line += " " * 5                                     # add spaces
-            else:
-                line += " " * 6                                     # add spaces
-            line += f"{move.min_green} ,   0 , "                    # add code
-            if move.is_main:
-                line += "true );\n"
-            else:
-                line += "false);\n"
-
-            code.append(line)
-            prev_start = move.name[0]
-            line = ""
-
-        for c in code:
-            print(c)
-
-
-
-
-    def write_to_file(self, path_tk, path_initTk1):
+    ####################################################################################
+    #                           Write to file                                          #
+    ####################################################################################
+    def write_to_file(self, path_tk, path_init_tk1):
         # data
         code = []
 
@@ -150,7 +123,6 @@ class MoveController:
             if "write moves here" in line:
                 self.add_tk1_lines(code)
                 continue
-
             code.append(line)
 
         with open(path_tk, 'w', encoding='utf-8') as f:
@@ -160,7 +132,7 @@ class MoveController:
         code = []
 
         # update initTk1.java file
-        with open(path_initTk1, 'r', encoding='utf-8') as f:
+        with open(path_init_tk1, 'r', encoding='utf-8') as f:
             lines = f.readlines()
 
         for line in lines:
@@ -169,35 +141,28 @@ class MoveController:
                 continue
             code.append(line)
 
-        with open(path_initTk1, 'w', encoding='utf-8') as f:
+        with open(path_init_tk1, 'w', encoding='utf-8') as f:
             f.writelines(code)
 
+
     def add_tk1_lines(self, new_lines):
-        cars = []
-        pedestrians = []
-        blinkers = []
-
-        for move in self.model.all_moves:
-            if move.name.startswith("k"):
-                cars.append(move.name)
-            elif move.name.startswith("p"):
-                pedestrians.append(move.name)
-            else:
-                blinkers.append(move.name)
-
         cars_line = "\tpublic Move "
         pedestrians_line = "\tpublic Move "
         blinkers_line = "\tpublic Move "
 
-        for item in cars:
+        moves_dictionary = {"k": [], "p": [], "B": []}
+        for name in self.model.get_all_moves_names():
+            moves_dictionary[name[0]].append(name)
+
+        for item in moves_dictionary["k"]:
             cars_line += f"{item}, "
         cars_line = cars_line[:-2] + ";  // traffic\n"
 
-        for item in pedestrians:
+        for item in moves_dictionary["p"]:
             pedestrians_line += f"{item}, "
         pedestrians_line = pedestrians_line[:-2] + "; // pedestrians\n"
 
-        for item in blinkers:
+        for item in moves_dictionary["B"]:
             blinkers_line += f"{item}, "
         blinkers_line = blinkers_line[:-2] + ";	// blinkers\n"
 
@@ -207,43 +172,45 @@ class MoveController:
 
 
     def add_initTk1_lines(self, new_lines):
-        start = 'k'
+        car_lines = []
+        pedestrians_lines = []
+        blinkers_lines = []
+
+        moves_dictionary = {"k": [], "p": [], "B": []}
+        for name in self.model.get_all_moves_names():
+            moves_dictionary[name[0]].append(name)
+
         for move in self.model.all_moves:
-            spaces_name = " " * max(1, 6 - len(move.name))
-            spaces_name2 = " " * max(1, 2 - len(move.name[1:]))
-            spaces_name5 = " " * max(1, 4 - len(move.name[1:]))
-            spaces_name3 = " " * max(0,19 - len(move.type))
-            spaces_name4 = " " * max(1,7 - len(str(move.min_green)))
-            line = "\t\t"
-            if not move.name.startswith(start):
-                line = "\n\t\t"
-                start = move.name[0]
-            line += f"tk.{move.name}{spaces_name} "
-            if move.name.startswith("B"):
-                line += f"=  new Move(   tk    , \"_{move.name}\"{spaces_name2}, "
+            line = ""
+            line += f"\t\ttk.{move.name}"
+            line += " " * (12 - (len(line)))
+            line += f"=  new Move(   tk    , \"_{move.name}\""
+            line += " " * (42 - (len(line)))
+            line += f", MoveType.{move.type}"
+            line += " " * (72 - (len(line)))
+            line += ",     "
+            if move.min_green >= 10:
+                line += f"{move.min_green}"
             else:
-                line += f"=  new Move(   tk    , \"_{move.name[1:]}\"{spaces_name5}, "
-            line += f"MoveType.{move.type}{spaces_name3},"
-            line += f"{spaces_name4}{move.min_green} ,   0 , {str(move.is_main).lower()}"
+                line += f" {move.min_green}"
+            line += " ,   0 , "
             if move.is_main:
-                line += " );\n"
+                line += "true "
             else:
-                line += ");\n"
-            new_lines.append(line)
-            #
-            #
-            #     cars_line += f"{item}, "
-            # cars_line = cars_line[:-2] + ";  // traffic\n"
-            #
-            # for item in pedestrians:
-            #     pedestrians_line += f"{item}, "
-            # pedestrians_line = pedestrians_line[:-2] + "; // pedestrians\n"
-            #
-            # for item in blinkers:
-            #     blinkers_line += f"{item}, "
-            # blinkers_line = blinkers_line[:-2] + ";	// blinkers\n"
-            #
-            # new_lines.append(cars_line)
-            # new_lines.append(pedestrians_line)
-            # new_lines.append(blinkers_line)
+                line += "false"
+            line += ");\n"
+
+            if move.name.startswith("k"):
+                car_lines.append(line)
+            elif move.name.startswith("p"):
+                pedestrians_lines.append(line)
+            else:
+                blinkers_lines.append(line)
+
+        new_lines.extend(car_lines)
+        new_lines.append("\n")
+        new_lines.extend(pedestrians_lines)
+        new_lines.append("\n")
+        new_lines.extend(blinkers_lines)
+
 

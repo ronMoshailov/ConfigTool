@@ -15,10 +15,6 @@ class MatrixController:
     def show_view(self, all_moves):
         self.view.show_view(all_moves, self.model.all_cells)
 
-    def update_matrix(self, changed_cells):
-        self.model.update_matrix(changed_cells)
-        QMessageBox.information(self.view, "הודעה", "העדכון הצליח")
-
     def init_model(self, path):
         """
         This method set from path the matrix cells in the app.
@@ -45,7 +41,37 @@ class MatrixController:
                     self.model.new_cell(out, inn, t1)
                     self.model.new_cell(inn, out, t2)
 
-    def get_code(self):
+    ####################################################################################
+    #                                     CRUD                                         #
+    ####################################################################################
+    def update_matrix(self, changed_cells):
+        self.model.update_matrix(changed_cells)
+        QMessageBox.information(self.view, "הודעה", "העדכון הצליח")
+
+    def remove_from_matrix(self, move_name):
+        self.model.all_cells = [cell for cell in self.model.all_cells if cell.move_in != move_name and cell.move_out != move_name]
+
+    ####################################################################################
+    #                           Write to file                                          #
+    ####################################################################################
+    def write_to_file(self, path):
+        # data
+        code = []
+
+        # update file
+        with open(path, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+
+        for line in lines:
+            if "write matrix here" in line:
+                self.add_new_lines(code)
+                continue
+            code.append(line)
+
+        with open(path, 'w', encoding='utf-8') as f:
+            f.writelines(code)
+
+    def add_new_lines(self, new_lines):
         code = []
         tuple_list = []
         line = ""
@@ -63,15 +89,16 @@ class MatrixController:
             line += f", tk.{cell.move_in}"
             line += " " * (37 - len(line))                          # add spaces
             line += f", "
-            if cell.wait_time >= 10:
+            if int(cell.wait_time) >= 10:
                 line += f"   {cell.wait_time}"
             else:
                 line += f"    {cell.wait_time}"
             line += "    ,  "
+
             # add opposite
             for c in all_cells:
                 if c.move_in == cell.move_out and c.move_out == cell.move_in:
-                    if c.wait_time >= 10:
+                    if int(c.wait_time) >= 10:
                         line += f"{c.wait_time}"
                     else:
                         line += f" {c.wait_time}"
@@ -79,42 +106,9 @@ class MatrixController:
                     break
             line += " );\n"
 
-
-
             code.append(line)
             prev_start = cell.move_out
             line = ""
 
-        # for c in code:
-        #     print(c)
-
-        return code
-    
-
-
-
-
-    def write_to_file(self, path):
-
-        with open(path, 'r', encoding='utf-8') as f:
-            lines = f.readlines()
-
-        code = []
-        for line in lines:
-            if "write matrix here" in line:
-                self.add_new_lines(code)
-                continue
-
-            code.append(line)
-
-        with open(path, 'w', encoding='utf-8') as f:
-            f.writelines(code)
-
-    def add_new_lines(self, new_lines):
-        matrix_code = self.get_code()
-        new_lines.extend(matrix_code)
-
-    def remove_from_matrix(self, move_name):
-        self.model.all_cells = [cell for cell in self.model.all_cells if cell.move_in != move_name and cell.move_out != move_name]
-
+        new_lines.extend(code)
 

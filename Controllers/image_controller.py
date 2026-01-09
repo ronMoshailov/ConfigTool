@@ -2,6 +2,7 @@ import re
 
 from PyQt6.QtWidgets import QCheckBox, QMessageBox
 
+import Config.constants
 from Config.patterns import image_pattern
 
 
@@ -80,10 +81,10 @@ class ImageController:
         QMessageBox.information(self.view, "הודעה", "העדכון הצליח")
 
 
-    def write_to_file(self, path_tk, path_init_tk):
-        # # create files
-        # for image in self.model.all_images:
-        #     self.create_file(image.image_name, image.image_num, image.skeleton, image.sp, image.is_police, image.move_list)
+    def write_to_file(self, path_tk, path_init_tk, phase_folder_dst):
+        # create files
+        for image in self.model.all_images:
+            self.create_file(image.image_name, phase_folder_dst)
 
         # data
         code = []
@@ -182,3 +183,126 @@ class ImageController:
 
     # def create_file(self):
     #     pass
+
+
+    def create_file(self, image_name, path_dst):
+        line = ""
+
+        line += "package phase;\n"
+        line += "\n"
+        line += "import vt.*;\n"
+        line += "import enums.ExtensionType;\n"
+        line += "import special.Move;\n"
+        line += "import special.Stage;\n"
+        line += f"import {Config.constants.PROJECT_NUMBER}.Tk1;\n"
+        line += f"import {Config.constants.PROJECT_NUMBER}.ParametersTelAviv;\n"
+        line += f"import tk.Var;\n"
+        line += "\n"
+        line += f"public class Phase{image_name}"
+        line += " extends Stage {\n"
+        line += "\tprivate Tk1 node;"
+        line += "\n"
+        line += "/**\n"
+        line += "\t * Constructor for Haifa applications or for Jerusalem preemption applications\n"
+        line += "\t * @param node - the node to which the stage refers\n"
+        line += "\t * @param name - the name of the stage\n"
+        line += "\t * @param number - the number of the stage\n"
+        line += "\t * @param length - the minimal (skeleton) length of the stage\n"
+        line += "\t * @param isStopInPolice - whether a non-fixed police program should stop in this stage\n"
+        line += "\t * @param sgs - list of moves that must open in this stage\n"
+        line += "\t */\n"
+        line += f"\tpublic Phase{image_name}(Tk1 node, String name, int number, int length, boolean isStopInPolice, Move[] sgs) \n"
+        line += "{\n"
+        line += "\t\tsuper(node, name, number, length, isStopInPolice, sgs);\n"
+        line += "\t\tthis.node = node;\n"
+        line += "}\n"
+        line += "\n"
+        line += "/**\n"
+        line += " * Constructor for applications with parameters based on stop-points\n"
+        line += " * @param node - the node to which the stage refers\n"
+        line += " * @param name - the name of the stage\n"
+        line += " * @param number - the number of the stage\n"
+        line += " * @param length - the minimal (skeleton) length of the stage\n"
+        line += " * @param sp - this stage's stop-point number\n"
+        line += " * @param isStopInPolice - whether a non-fixed police program should stop in this stage\n"
+        line += " * @param sgs - list of moves that must open in this stage\n"
+        line += " */\n"
+        line += f"\tpublic Phase{image_name}(Tk1 node, String name, int numberr, int length, int sp, boolean isStopInPolice, Move[] sgs) "
+        line += "{\n"
+        line += "\t\tsuper(node, name, numberr, length, sp, isStopInPolice, sgs);\n"
+        line += "\t\tthis.node = node;\n"
+        line += "}\n"
+        line += "\n"
+        line += "\t/**\n"
+        line += "\t * This methods does two things:<br>\n"
+        line += "\t * <ol>\n"
+        line += "\t * 	<li>\n"
+        line += "\t * 		Sets the type of Minimum extension:\n"
+        line += "\t * 		<ul>\n"
+        line += "\t * 			<li>duration</li>\n"
+        line += "\t * 			<li>absolute</li>\n"
+        line += "\t * 			<li>complement</li>\n"
+        line += "\t * 		</ul>\n"
+        line += "\t * 	</li>\n"
+        line += "\t * 	<li>Returns the required value of the Minimum extension</li>\n"
+        line += "\t * </ol>\n"
+        line += "\t * @return returns the Minimum extension value\n"
+        line += "\t */\n"
+        line += "\tpublic int getMinExt() {\n"
+        line += "\t\tminType = ((ParametersTelAviv)Var.controller.dvi35Parameters).getType(spNum) > 0 ? ExtensionType.ABSOLUTE : ExtensionType.DURATION;\n"
+        line += "\t\treturn ((ParametersTelAviv)Var.controller.dvi35Parameters).getMinimum(spNum);\n"
+        line += "\t}\n"
+        line += "\n"
+        line += "\t/**\n"
+        line += "\t * This methods does two things:<br>\n"
+        line += "\t * <ol>\n"
+        line += "\t * 	<li>\n"
+        line += "\t * 		Sets the type of Maximum extension:\n"
+        line += "\t * 		<ul>\n"
+        line += "\t * 			<li>duration</li>\n"
+        line += "\t * 			<li>absolute</li>\n"
+        line += "\t * 			<li>complement</li>\n"
+        line += "\t * 		</ul>\n"
+        line += "\t * 	</li>\n"
+        line += "\t * 	<li>Returns the required value of the Maximum extension</li>\n"
+        line += "\t * </ol>\n"
+        line += "\t * @return returns the Maximum extension value\n"
+        line += "\tpublic int getMaxExt() {\n"
+        line += "\t\tmaxType = ((ParametersTelAviv)Var.controller.dvi35Parameters).getType(spNum) > 0 ? ExtensionType.ABSOLUTE : ExtensionType.DURATION;\n"
+        line += "\t\treturn ((ParametersTelAviv)Var.controller.dvi35Parameters).getMaximum(spNum);\n"
+        line += "\t}\n"
+        line += "\n"
+        line += "\t/**\n"
+        line += "\t * This method is called when the stage is terminated\n"
+        line += "\t */\n"
+        line += "\tprotected void deactivated() {\n"
+        line += "\t}\n"
+        line += "\n"
+        line += "\t/**\n"
+        line += "\t * This method is called every scan-cycle while the stage is active\n"
+        line += "\t */\n"
+        line += "\tpublic Phase phasenFunktion() {\n"
+        line += "\t\tstopInPolice();\n"
+        line += "\n"
+        line += "\t\tif (getPhasenZeit() >= node.lenPhue + getPhLenMS()) \n"
+        line += "\t\t{\n"
+        line += "\t\t\tgaps = true;\n"
+        line += "//\t\t\tgaps = node.e_6.IsActive();\n"
+        line += "\n"
+        line += "\t\t\tisStageDoneFlag = isStageDone(gaps);\n"
+        line += "\n"
+        line += "\t\t\tif (isStageDoneFlag) \n"
+        line += "\t\t\t{\n"
+        line += "//\t\t\tif (node.d_8.IsActive())\n"
+        line += "//\t\t\t\t\treturn startNextPhase(node.PhueC_D);\n"
+        line += "\t\t\t}\n"
+        line += "\t\t}\n"
+        line += "\t\treturn KEINE_UMSCHALTUNG;\n"
+        line += "\t}\n"
+        line += "}\n"
+
+        # create file
+        file_path = path_dst / f"Phase{image_name}.java"
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write(line)
+

@@ -44,3 +44,9 @@ class MatrixModel:
     def reset_model(self):
         self.all_cells.clear()
 
+    def is_cell_exist(self, name_out, name_in):
+        for cell in self.all_cells:
+            if name_out == cell.move_in and name_in == cell.move_out:
+                return True
+        return False
+

@@ -118,6 +118,8 @@ class MainController:
 
         self.navigator_view.write_to_code_method = self.write_to_code
         self.move_controller.remove_from_matrix_method = self.matrix_controller.remove_from_matrix
+
+
     def show_view(self, act):
         """
         Determines which view should be displayed based on the given action.
@@ -154,7 +156,7 @@ class MainController:
         elif act == "matrix":
             self.matrix_controller.show_view(self.move_model.all_moves)
         elif act == "detector":
-            self.detector_controller.show_view([m.name for m in self.move_model.all_moves])
+            self.detector_controller.show_view(self.move_model.get_all_moves_names())
         elif act == "sk":
             self.sk_controller.show_view(self.move_model.all_moves)
         elif act == "schedule":
@@ -165,7 +167,7 @@ class MainController:
         elif act == "phue":
             self.phue_controller.show_view(self.image_model.all_images, self.move_model.all_moves)
         elif act == "parameters_ta":
-            self.parameters_ta_controller.show_view([img for img in self.image_model.all_images])
+            self.parameters_ta_controller.show_view(self.image_model.all_images)
 
     def print_all(self):
         """
@@ -266,19 +268,10 @@ class MainController:
         self.matrix_controller.write_to_file(self.path_init_tk1_dst)
         self.schedule_controller.write_to_file(self.path_init_tk1_dst)
         self.sk_controller.write_to_file(self.path_init_dst)
-        self.image_controller.write_to_file(self.path_tk1_dst, self.path_init_tk1_dst)
+        self.image_controller.write_to_file(self.path_tk1_dst, self.path_init_tk1_dst, self.path_phase_folder_dst)
         self.phue_controller.write_to_file(self.path_init_tk1_dst, self.path_phue_folder_dst)
         self.parameters_ta_controller.write_to_file(self.path_parameters_ta_dst)
         self.detector_controller.write_to_file(self.path_init_tk1_dst, self.path_tk1_dst)
-        # later
-        # add detectors
-        # update package
-
-
-        # self._update_package(self.path_tk1_dst)
-        # self._update_package(self.path_init_tk1_dst)
-        # self._update_package(self.path_init_dst)
-        # self._update_package(self.path_parameters_ta_dst)
 
 
     # =============== inner methods =============== #
@@ -389,6 +382,7 @@ class MainController:
         self.path_init_tk1_dst = dst / "src" / f"{Config.constants.PROJECT_NUMBER}" / "initTk1.java"
         self.path_parameters_ta_dst = dst / "src" / f"{Config.constants.PROJECT_NUMBER}" / "ParametersTelAviv.java"
         self.path_phue_folder_dst = dst /  "src" /"phue"
+        self.path_phase_folder_dst = dst /  "src" /"phase"
 
         try:
             # remove the old folder if exist

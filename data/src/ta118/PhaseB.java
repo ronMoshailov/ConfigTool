@@ -8,7 +8,7 @@ public class PhaseB extends Stage {
 	private Tk1 node;
 
 	/**
-	 * Constructor for Haifa applications or for Jerusalem preemption applications
+     * Constructor for Haifa applications or for Jerusalem preemption applications
 	 * @param node - the node to which the stage refers
 	 * @param name - the name of the stage
 	 * @param number - the number of the stage
@@ -37,7 +37,7 @@ public class PhaseB extends Stage {
 	}
 
 	/**
-	 * This methods does two things:<br>
+     * This methods does two things:<br>
 	 * <ol>
 	 * 	<li>
 	 * 		Sets the type of Minimum extension:
@@ -91,12 +91,14 @@ public class PhaseB extends Stage {
 		if (getPhasenZeit() >= node.lenPhue + getPhLenMS()) 
 		{
 			gaps = true;
+//			gaps = node.e_6.IsActive();
 
 			isStageDoneFlag = isStageDone(gaps);
 			
 			if (isStageDoneFlag) 
 			{
-				return startNextPhase(node.PhueB_C);
+//				if (node.d_8.IsActive())
+//					return startNextPhase(node.PhueC_D);
 			}
 		}
 		return KEINE_UMSCHALTUNG;
