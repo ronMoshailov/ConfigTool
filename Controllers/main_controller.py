@@ -267,6 +267,9 @@ class MainController:
 
         if not self._create_copy():
             return
+
+        self.write_imports()
+
         self.move_controller.write_to_file(self.path_tk1_dst, self.path_init_tk1_dst)
         self.matrix_controller.write_to_file(self.path_init_tk1_dst)
         self.schedule_controller.write_to_file(self.path_init_tk1_dst)
@@ -275,6 +278,29 @@ class MainController:
         self.phue_controller.write_to_file(self.path_init_tk1_dst, self.path_phue_folder_dst)
         self.parameters_ta_controller.write_to_file(self.path_parameters_ta_dst)
         self.detector_controller.write_to_file(self.path_init_tk1_dst, self.path_tk1_dst)
+
+    def write_imports(self):
+
+        # data
+        code = []
+
+        # update tk1.java file
+        with open(self.path_init_tk1_dst, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+
+        for line in lines:
+            if "write imports here" in line:
+                for image in self.image_model.all_images:
+                    if image.image_name == "A":
+                        continue
+                    line = f"import phase.Phase{image.image_name};\n"
+                    code.append(line)
+                continue
+            code.append(line)
+
+        with open(self.path_init_tk1_dst, 'w', encoding='utf-8') as f:
+            f.writelines(code)
+
 
 
     # =============== inner methods =============== #

@@ -13,6 +13,9 @@ import tk.InitHolidays;
 import tk.Preemptiontk1;
 import tk.Var;
 
+import phase.*;
+import phue.*;
+
 public class InitTk1 extends InitTk {
 	private static Tk1 tk;
 

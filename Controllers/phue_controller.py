@@ -131,8 +131,6 @@ class PhueController:
 
         code = []
         for line in lines:
-            if "public class InitTk1 extends InitTk" in line:
-                line = "import phue.*;\n" + line
             if "write phues here" in line:
                 self.get_code(code)
                 continue
