@@ -1,5 +1,5 @@
 class Image:
-    def __init__(self, name, num, skeleton, sp, is_police, move_list):
+    def __init__(self, name: str, num: str, skeleton: str, sp: str, is_police: bool, move_list: list):
         self.image_name = name
         self.image_num = num
         self.skeleton = skeleton
@@ -42,4 +42,27 @@ class ImageModel:
         for image in self.all_images:
             if image.image_name == name:
                 image.skeleton = skeleton
+
+    def get_images_by_sp(self):
+        image_list = []
+
+        for i in range(len(self.all_images)):
+            for image in self.all_images:
+                if image.sp == i:
+                    image_list.append(image.image_name)
+                    break
+        return image_list
+
+    def is_sp_valid(self):
+        highest_sp = 0
+        for image in self.all_images:
+            if highest_sp < image.sp:
+                highest_sp = image.sp
+
+        if highest_sp  == len(self.all_images)-1:
+            return True
+        return False
+
+
+
 

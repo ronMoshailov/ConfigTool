@@ -18,6 +18,7 @@ class ImageView(QWidget):
         self.add_image_method = None
         self.remove_image_method = None
         self.update_image_method = None
+        self.on_sp_changed_method = None
 
         # =============== scroll =============== #
         self.scroll_area = QScrollArea()            # create the container of the scroll bar. (get only widget)
@@ -45,7 +46,7 @@ class ImageView(QWidget):
         self.btn_add = QPushButton("הוסף")
         self.btn_add.setFixedWidth(150)
         self.btn_add.setObjectName("add_button")
-        self.btn_add.clicked.connect(lambda: self.add_image_method(self.edit_add.text(), 15, 2, 3))
+        self.btn_add.clicked.connect(lambda: self.add_image_method(self.edit_add.text()))
 
         # =============== QLineEdit =============== #
         self.edit_add = QLineEdit()
@@ -136,11 +137,24 @@ class ImageView(QWidget):
         skeleton_image_number.addWidget(textbox_image_number)
         skeleton_image_number.addWidget(label)
 
+        # sp
+        textbox_sp = QLineEdit()
+        textbox_sp.textChanged.connect(lambda text, name=image.image_name: self.on_sp_changed_method(name, text))
+        textbox_sp.setText(str(image.sp))
+
+        label = QLabel("נקודת החלטה")
+
+        sp_layout = QHBoxLayout()
+        sp_layout.addWidget(textbox_sp)
+        sp_layout.addWidget(label)
+
+
         # add to wrap
         wrap_layout.addWidget(title)
         wrap_layout.addWidget(table)
         wrap.setFixedWidth(self.MOVE_NAME_WIDTH + self.CHECKBOX_WIDTH + 30)
 
+        wrap_layout.addLayout(sp_layout)
         wrap_layout.addLayout(skeleton_layout)
         wrap_layout.addLayout(skeleton_image_number)
         wrap_layout.addWidget(remove_button)

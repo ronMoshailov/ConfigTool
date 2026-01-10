@@ -6,6 +6,7 @@ class ParametersTaProgram:
         self.type_list = type_list
         self.str = str
         self.cycle = cycle
+        self.is_copied = False
 
 class ParametersTaModel:
     def __init__(self):

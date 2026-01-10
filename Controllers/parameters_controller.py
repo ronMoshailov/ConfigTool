@@ -85,7 +85,7 @@ class ParametersTaController:
 
         # print(images_list)
 
-    def write_to_file(self, path_parameters_ta_dst):
+    def write_to_file(self, path_parameters_ta_dst, img_list):
         # data
         code = []
 
@@ -95,7 +95,7 @@ class ParametersTaController:
 
         for line in lines:
             if "write parameters here" in line:
-                self.add_lines(code)
+                self.add_lines(code, img_list)
                 continue
 
             code.append(line)
@@ -103,7 +103,7 @@ class ParametersTaController:
         with open(path_parameters_ta_dst, 'w', encoding='utf-8') as f:
             f.writelines(code)
 
-    def add_lines(self, code):
+    def add_lines(self, code, img_list):
         # data
         line = ""
         param_length = len(self.model.parameters[0].min_list)
@@ -151,7 +151,20 @@ class ParametersTaController:
         code.append(line)
 
         # ----- comments ----- #
-        ########
+        line = "//\t                                        "
+        for img in img_list:
+            line += " " * (6 - len(img))
+            line += img
+        line += " "
+        for img in img_list:
+            line += " " * (6 - len(img))
+            line += img
+        line += " "
+        for img in img_list:
+            line += " " * (6 - len(img))
+            line += img
+        code.append(line + "\n")
+
         #######
         ########
 

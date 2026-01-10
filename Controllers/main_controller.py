@@ -169,6 +169,7 @@ class MainController:
         elif act == "parameters_ta":
             self.parameters_ta_controller.show_view(self.image_model.all_images)
 
+
     def print_all(self):
         """
         This method prints all the data for the window.
@@ -265,6 +266,8 @@ class MainController:
         if not self.matrix_controller.is_matrix_valid():
             return
 
+        if self.image_model.is_sp_valid():
+            print("sp valid")
         if not self._create_copy():
             return
 
@@ -276,7 +279,7 @@ class MainController:
         self.sk_controller.write_to_file(self.path_init_dst)
         self.image_controller.write_to_file(self.path_tk1_dst, self.path_init_tk1_dst, self.path_phase_folder_dst)
         self.phue_controller.write_to_file(self.path_init_tk1_dst, self.path_phue_folder_dst)
-        self.parameters_ta_controller.write_to_file(self.path_parameters_ta_dst)
+        self.parameters_ta_controller.write_to_file(self.path_parameters_ta_dst, self.image_model.get_images_by_sp())
         self.detector_controller.write_to_file(self.path_init_tk1_dst, self.path_tk1_dst)
 
     def write_imports(self):
