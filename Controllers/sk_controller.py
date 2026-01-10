@@ -23,6 +23,77 @@ class SkController:
         self.view.update_comment_method = self.update_comment
         self.view.update_data_method = self.update_data
 
+    def show_view(self, all_moves):
+        self.all_moves = all_moves
+        self.view.show_view(self.model.sk_list, all_moves)
+
+    ####################################################################################
+    #                                     CRUD                                         #
+    ####################################################################################
+    def add_sk_card(self):
+        self.model.add_sk()
+        self.view.show_view(self.model.sk_list, self.all_moves)
+
+    def remove_sk_card(self, card_num):
+        self.model.remove_sk(card_num)
+        self.view.show_view(self.model.sk_list, self.all_moves)
+
+    ####################################################################################
+    #                           Write to file                                          #
+    ####################################################################################
+    def write_to_file(self, path):
+        # data
+        code = []
+
+        # update tk1.java file
+        with open(path, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+
+        for line in lines:
+            if "write sk cards here" in line:
+                for idx, card in enumerate(self.model.sk_list):
+                    code.append(f"\t\tSK24 sk{idx+1} = new SK24(cardsIndex++, (HwTeilknoten)Var.hwTk1);\n")
+
+            if "write sk channels here" in line:
+                self.add_lines(code)
+                continue
+
+            code.append(line)
+
+        with open(path, 'w', encoding='utf-8') as f:
+            f.writelines(code)
+
+
+    def add_lines(self, code):
+        for sk_card in self.model.sk_list:
+            card_num = sk_card.card_number
+            all_channels = sk_card.all_channels
+            for channel in all_channels:
+                if not channel.name:
+                    continue
+                line = ""
+                color_mapping = {"hwRed200": "lred","hwAmber200": "lamber", "hwGreen200": "lgreen"}
+                line += f"\t\tnew SchaltKanal(Var.tk1.{channel.name}"
+                line += " " * (33 - len(line))
+                line += f", Move.{color_mapping[channel.color]}"
+                line += " " * (51 - len(line))
+                line += f", {channel.color}"
+                line += " " * (63 - len(line))
+                line += f", Hw.HF, sk{card_num},"
+                line += " " * (33 - len(line))
+                if channel.channel >= 10:
+                    line += f"{channel.channel}, Hw.SK);\n"
+                else:
+                    line += f" {channel.channel}, Hw.SK);\n"
+
+                if channel.is_comment:
+                    line = "//" + line
+
+                code.append(line)
+
+    ####################################################################################
+    #                               Logic                                              #
+    ####################################################################################
     def init_model(self, path):
         with open(path, 'r', encoding='utf-8') as file:
             for line in file:
@@ -48,31 +119,6 @@ class SkController:
                     self.model.set_channel(card_number, name, color, channel, is_commented)
                     # if card == self.number_card:
                     #     self.sk_channel_list.append(SkChannel(name, color, channel, is_commented))
-
-    def show_view(self, all_moves):
-        self.all_moves = all_moves
-        self.view.show_view(self.model.sk_list, all_moves)
-
-    ####################################################################################
-    #                                     CRUD                                         #
-    ####################################################################################
-    def add_sk_card(self):
-        self.model.add_sk()
-        self.view.show_view(self.model.sk_list, self.all_moves)
-
-    def remove_sk_card(self, card_num):
-        self.model.remove_sk(card_num)
-        self.view.show_view(self.model.sk_list, self.all_moves)
-
-    ####################################################################################
-    #                           Write to file                                          #
-    ####################################################################################
-
-    ####################################################################################
-    #                               Logic                                              #
-    ####################################################################################
-
-
 
     def change_color(self, table: QTableWidget, row: int, col: int, fix_color = False):
         if col != 2:
@@ -186,57 +232,6 @@ class SkController:
                     self.model.set_channel(idx + 1, move_name, color, row_num+1, status)
 
             QMessageBox.information(self.view, "SK כרטיס", "העדכון הצליח")
-
-    def write_to_file(self, path):
-        # data
-        code = []
-
-        # update tk1.java file
-        with open(path, 'r', encoding='utf-8') as f:
-            lines = f.readlines()
-
-        for line in lines:
-            if "write sk cards here" in line:
-                for idx, card in enumerate(self.model.sk_list):
-                    code.append(f"\t\tSK24 sk{idx+1} = new SK24(cardsIndex++, (HwTeilknoten)Var.hwTk1);\n")
-
-            if "write sk channels here" in line:
-                self.add_lines(code)
-                continue
-
-            code.append(line)
-
-        with open(path, 'w', encoding='utf-8') as f:
-            f.writelines(code)
-
-
-    def add_lines(self, code):
-        for sk_card in self.model.sk_list:
-            card_num = sk_card.card_number
-            all_channels = sk_card.all_channels
-            for channel in all_channels:
-                if not channel.name:
-                    continue
-                line = ""
-                color_mapping = {"hwRed200": "lred","hwAmber200": "lamber", "hwGreen200": "lgreen"}
-                line += f"\t\tnew SchaltKanal(Var.tk1.{channel.name}"
-                line += " " * (33 - len(line))
-                line += f", Move.{color_mapping[channel.color]}"
-                line += " " * (51 - len(line))
-                line += f", {channel.color}"
-                line += " " * (63 - len(line))
-                line += f", Hw.HF, sk{card_num},"
-                line += " " * (33 - len(line))
-                if channel.channel >= 10:
-                    line += f"{channel.channel}, Hw.SK);\n"
-                else:
-                    line += f" {channel.channel}, Hw.SK);\n"
-
-                if channel.is_comment:
-                    line = "//" + line
-
-                code.append(line)
-
 
     # --------------- validation methods --------------- #
     def _is_names_valid(self, tables_list):

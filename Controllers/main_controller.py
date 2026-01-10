@@ -179,26 +179,26 @@ class MainController:
 
         out = []
 
-        out.append("\n============================== Moves ==============================")
-        for move in self.move_model.all_moves:
-            out.append(
-                f"name: {move.name:<5}, move_type: {move.type:<25}, is_main: {move.is_main:<8}, min_green: {move.min_green:<3}")
+        # out.append("\n============================== Moves ==============================")
+        # for move in self.move_model.all_moves:
+        #     out.append(
+        #         f"name: {move.name:<5}, move_type: {move.type:<25}, is_main: {move.is_main:<8}, min_green: {move.min_green:<3}")
 
-        out.append("\n============================== Matrix ==============================")
-        for cell in self.matrix_model.all_cells:
-            out.append(f"out: {cell.move_out:<5}, in: {cell.move_in:<5}, wait: {cell.wait_time:<5}")
+        # out.append("\n============================== Matrix ==============================")
+        # for cell in self.matrix_model.all_cells:
+        #     out.append(f"out: {cell.move_out:<5}, in: {cell.move_in:<5}, wait: {cell.wait_time:<5}")
 
-        out.append("\n============================== SK ==============================")
-        for sk_card in self.sk_model.sk_list:
-            out.append(f"----------------------------- sk:{sk_card.card_number} -----------------------------")
-            for channel in sk_card.all_channels:
-                out.append(
-                    f"name: {channel.name:<5}, color: {channel.color:<10}, channel: {channel.channel:<5}, is_comment: {channel.is_comment}")
-            out.append("")
+        # out.append("\n============================== SK ==============================")
+        # for sk_card in self.sk_model.sk_list:
+        #     out.append(f"----------------------------- sk:{sk_card.card_number} -----------------------------")
+        #     for channel in sk_card.all_channels:
+        #         out.append(
+        #             f"name: {channel.name:<5}, color: {channel.color:<10}, channel: {channel.channel:<5}, is_comment: {channel.is_comment}")
+        #     out.append("")
 
-        out.append("\n============================== Detector ==============================")
-        for detector in self.detector_model.all_detectors:
-            out.append(f"var_name: {detector.var_name:<5}, class_name: {detector.class_name:<10}, datector_name: {detector.datector_name:<5}, move_name: {detector.move_name:<10}, ext_unit: {detector.ext_unit:<10}")
+        # out.append("\n============================== Detector ==============================")
+        # for detector in self.detector_model.all_detectors:
+        #     out.append(f"var_name: {detector.var_name:<5}, class_name: {detector.class_name:<10}, datector_name: {detector.datector_name:<5}, move_name: {detector.move_name:<10}, ext_unit: {detector.ext_unit:<10}")
 
         out.append("\n============================== Schedule ==============================")
         for schedule_table in self.schedule_model.all_schedule_tables:
@@ -262,6 +262,9 @@ class MainController:
         dialog.exec()
 
     def write_to_code(self):
+        if not self.matrix_controller.is_matrix_valid():
+            return
+
         if not self._create_copy():
             return
         self.move_controller.write_to_file(self.path_tk1_dst, self.path_init_tk1_dst)

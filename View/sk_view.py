@@ -59,14 +59,16 @@ class SkView(QWidget):
         self.setStyleSheet(sk_panel_style)
         self.hide()
 
-    def hide_view(self):
-        self.hide()
-
     def show_view(self, sk_list, all_moves):
         self._refresh_tables(sk_list, all_moves)
         self.show()
 
+    def hide_view(self):
+        self.hide()
 
+    ####################################################################################
+    #                                    Layout                                        #
+    ####################################################################################
     def _refresh_tables(self, sk_list, all_moves):
         """
         This method clears the main layout and build back with data from DB.
@@ -138,6 +140,7 @@ class SkView(QWidget):
 
         return wrap
 
+
     def _init_table(self, tbl: QTableWidget, all_moves):
         """
         This method create the table with all the rows and columns (without values).
@@ -186,6 +189,9 @@ class SkView(QWidget):
             tbl.setCellWidget(r, 3, col_3)
             col_3.stateChanged.connect(lambda state, row=r: self.update_comment_method(tbl, row, state))
 
+    ####################################################################################
+    #                                        Logic                                     #
+    ####################################################################################
     def _fill_table(self, tbl: QTableWidget, card_number: int, sk_list):
         """
         This method fill the tables with values from DB.
@@ -217,14 +223,21 @@ class SkView(QWidget):
 
             # col 1 (combo)
             combo = tbl.cellWidget(row, 1)
-            idx = 0 if combo.findText(ch.name) == -1 else combo.findText(ch.name)
-            combo.addItems([ch.name])
-            combo.setCurrentIndex(combo.findText(ch.name))
-            if is_commented:
-                combo.setStyleSheet("background-color: rgb(200,255,200);")
+            if ch.name == '':
+                combo.setCurrentIndex(0)
+            else:
+                # idx = 0 if combo.findText(ch.name) == -1 else combo.findText(ch.name)
+                combo.addItems([ch.name])
+                combo.setCurrentIndex(combo.findText(ch.name))
+                if is_commented:
+                    combo.setStyleSheet("background-color: rgb(200,255,200);")
 
             # col 0 (display)
             if is_commented:
                 tbl.item(row, 0).setBackground(green_bg)
+
+
+
+
 
 

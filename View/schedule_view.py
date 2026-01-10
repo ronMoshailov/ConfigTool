@@ -33,7 +33,7 @@ class ScheduleView(QWidget):
         self.bottom_layout.addWidget(self.check_box, alignment=Qt.AlignmentFlag.AlignCenter)
         self.bottom_layout.addWidget(self.btn_add)
 
-        # =============== Some Layout =============== #
+        # =============== Schedule Layout =============== #
         self.schedule_layout = QHBoxLayout()
 
         # =============== Root Layout =============== #
@@ -54,10 +54,7 @@ class ScheduleView(QWidget):
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.setStyleSheet(schedule_panel_style)
 
-    def hide_view(self):
-        self.hide()
-
-    def show_view(self, ):
+    def show_view(self):
         # clear the table
         clear_widget_from_layout([self.schedule_layout])
         self.table_list.clear()
@@ -70,13 +67,14 @@ class ScheduleView(QWidget):
             self._fill_table(idx+1, table)                                            # fill table with values
             self.schedule_layout.addWidget(schedule_column, stretch=1)              # add schedule_column to layout
         self._enable_mon_thu()
-
         self.show()
 
+    def hide_view(self):
+        self.hide()
 
-    # --------------- general methods --------------- #
-
-
+    ####################################################################################
+    #                                    Layout                                        #
+    ####################################################################################
     def _initialize_schedule_column(self, table_num: int):
         """
         This method initialize column that contain the elements (no values of the elements).
@@ -114,45 +112,6 @@ class ScheduleView(QWidget):
 
         return wrap, tbl
 
-    def _fill_table(self,table_num, table):
-        """
-        This method fill the table with all the schedules of this day
-
-        :param table_num: number of the table
-        :param table: Table QTableWidget
-        :return: None
-        """
-        schedule_list = self.get_all_channels_method(table_num)
-        for schedule in schedule_list:
-            row = table.rowCount() # get the number row that empty
-            table.insertRow(row)   # add new row in the end
-
-            font = QFont("Roboto")
-
-            btn_remove = QPushButton("x")
-            btn_remove.setObjectName("remove_button")
-
-            btn_remove.clicked.connect(lambda _, tbl_num_arg=table_num, tbl=table, btn=btn_remove: self.remove_row_method(tbl_num_arg, tbl, btn))
-            btn_remove.setFont(font)
-
-            time_edit = QTimeEdit()
-            time_edit.setObjectName("edit_time")
-            time_edit.setDisplayFormat("HH:mm")
-            time_edit.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.NoButtons)
-            time_edit.setTime(QTime(schedule.hour, schedule.minute))
-
-            time_edit.setFont(font)
-
-            combo_num_prog = QComboBox()
-            combo_num_prog.setObjectName("combo_num_prog")
-            combo_num_prog.addItems([str(i) for i in range(1, 33)])
-            combo_num_prog.setCurrentText(str(schedule.prog_num))
-            combo_num_prog.setFont(font)
-
-            table.setCellWidget(row, 0, btn_remove)
-            table.setCellWidget(row, 1, time_edit)
-            table.setCellWidget(row, 2, combo_num_prog)
-
     def _create_table(self):
         """
         Create the table with no values
@@ -172,10 +131,56 @@ class ScheduleView(QWidget):
         tbl.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
         return tbl
 
+    ####################################################################################
+    #                                        Logic                                     #
+    ####################################################################################
+    def _fill_table(self,table_num, table):
+        """
+        This method fill the table with all the schedules of this day
+
+        :param table_num: number of the table
+        :param table: Table QTableWidget
+        :return: None
+        """
+        schedule_list = self.get_all_channels_method(table_num)
+        for schedule in schedule_list:
+            row = table.rowCount() # get the number of rows
+            table.insertRow(row)   # add new row in the end
+
+            font = QFont("Roboto")
+
+            btn_remove = QPushButton("x")
+            btn_remove.setObjectName("remove_button")
+            btn_remove.clicked.connect(lambda _, tbl_num_arg=table_num, tbl=table, btn=btn_remove: self.remove_row_method(tbl_num_arg, tbl, btn))
+            btn_remove.setFont(font)
+
+            time_edit = QTimeEdit()
+            time_edit.setObjectName("edit_time")
+            time_edit.setDisplayFormat("HH:mm")
+            time_edit.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.NoButtons)
+            time_edit.setTime(QTime(schedule.hour, schedule.minute))
+            time_edit.setFont(font)
+
+            combo_num_prog = QComboBox()
+            combo_num_prog.setObjectName("combo_num_prog")
+            combo_num_prog.addItems([str(i) for i in range(1, 33)])
+            combo_num_prog.setCurrentText(str(schedule.prog_num))
+            combo_num_prog.setFont(font)
+
+            table.setCellWidget(row, 0, btn_remove)
+            table.setCellWidget(row, 1, time_edit)
+            table.setCellWidget(row, 2, combo_num_prog)
+
+
     def _enable_mon_thu(self):
         for table in self.table_list[1:5]:
             table.setDisabled(self.check_box.isChecked())
 
         for btn in self.add_row_btn_list[1:5]:
             btn.setDisabled(self.check_box.isChecked())
+
+
+
+
+
 

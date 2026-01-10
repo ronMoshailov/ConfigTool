@@ -13,7 +13,7 @@ class MoveView(QWidget):
     def __init__(self):
         super().__init__()
 
-        # =============== Controller Methods =============== #
+        # Controller Methods
         self.add_move_method = None
         self.remove_move_method = None
 
@@ -65,6 +65,16 @@ class MoveView(QWidget):
         self.setStyleSheet(move_panel_style)
         self.hide()
 
+    def show_view(self, all_moves):
+        self._show_scroll_bar(all_moves)
+        self.show()
+
+    def hide_view(self):
+        self.hide()
+
+    ####################################################################################
+    #                                    Layout                                        #
+    ####################################################################################
     def _build_name_layout(self):
         # QLabel
         label = QLabel("שם המופע")
@@ -137,7 +147,7 @@ class MoveView(QWidget):
         run_button = QPushButton("הוסף")
         run_button.setCursor(Qt.CursorShape.PointingHandCursor)
         run_button.setObjectName("add_button")
-        run_button.clicked.connect(lambda: self.add_move_method(self.move_name_textbox.text(), self.get_selected_move_type(), self.is_main_move(), 0))
+        run_button.clicked.connect(lambda: self.add_move_method(self.move_name_textbox.text(), self._get_selected_move_type(), self._is_main_move(), 0))
 
         # Layout
         layout = QHBoxLayout()
@@ -147,59 +157,6 @@ class MoveView(QWidget):
         layout.setContentsMargins(0, 0, 40, 0)  # left, top, right, bottom
 
         return layout
-
-    def show_view(self, all_moves):
-        self._show_scroll_bar(all_moves)
-        self.show()
-
-    def hide_view(self):
-        self.hide()
-
-    # =============== Init methods =============== #
-    def _init_type_radio(self):
-        # QRadioButton
-        self.traffic_radio = QRadioButton()
-        self.traffic_radio.setIcon(QIcon(GREEN_IMAGE_PATH))
-        self.traffic_radio.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
-        self.traffic_radio.setChecked(True)
-
-        self.traffic_flashing_radio = QRadioButton()
-        self.traffic_flashing_radio.setIcon(QIcon(GREEN_BLINKER_IMAGE_PATH))
-        self.traffic_flashing_radio.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
-
-        self.pedestrian_radio = QRadioButton()
-        self.pedestrian_radio.setIcon(QIcon(PEDESTRIAN_IMAGE_PATH))
-        self.pedestrian_radio.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
-
-        self.blinker_radio = QRadioButton()
-        self.blinker_radio.setIcon(QIcon(BLINKER_IMAGE_PATH))
-        self.blinker_radio.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
-
-        self.blinker_conditional_radio = QRadioButton()
-        self.blinker_conditional_radio.setIcon(QIcon(BLINKER_CONDITIONAL_IMAGE_PATH))
-        self.blinker_conditional_radio.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
-
-        # QButtonGroup
-        type_radio_group = QButtonGroup(self)
-        type_radio_group.addButton(self.traffic_radio)
-        type_radio_group.addButton(self.traffic_flashing_radio)
-        type_radio_group.addButton(self.pedestrian_radio)
-        type_radio_group.addButton(self.blinker_radio)
-        type_radio_group.addButton(self.blinker_conditional_radio)
-
-    def _init_main_radio(self):
-        # QRadioButton
-        self.main_radio = QRadioButton("כן")
-        self.main_radio.setChecked(True)  # checked is default
-        self.main_radio.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
-
-        self.not_main_radio = QRadioButton("לא")
-        self.not_main_radio.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
-
-        # QButtonGroup
-        main_group = QButtonGroup(self)
-        main_group.addButton(self.not_main_radio)
-        main_group.addButton(self.main_radio)
 
     def _show_scroll_bar(self, all_moves):
         # Remove All Widgets
@@ -263,7 +220,55 @@ class MoveView(QWidget):
         self.moves_layout_list[1].addStretch()
         self.moves_layout_list[2].addStretch()
 
-    def get_selected_move_type(self):
+    ####################################################################################
+    #                                        Logic                                     #
+    ####################################################################################
+    def _init_type_radio(self):
+        # QRadioButton
+        self.traffic_radio = QRadioButton()
+        self.traffic_radio.setIcon(QIcon(GREEN_IMAGE_PATH))
+        self.traffic_radio.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
+        self.traffic_radio.setChecked(True)
+
+        self.traffic_flashing_radio = QRadioButton()
+        self.traffic_flashing_radio.setIcon(QIcon(GREEN_BLINKER_IMAGE_PATH))
+        self.traffic_flashing_radio.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
+
+        self.pedestrian_radio = QRadioButton()
+        self.pedestrian_radio.setIcon(QIcon(PEDESTRIAN_IMAGE_PATH))
+        self.pedestrian_radio.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
+
+        self.blinker_radio = QRadioButton()
+        self.blinker_radio.setIcon(QIcon(BLINKER_IMAGE_PATH))
+        self.blinker_radio.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
+
+        self.blinker_conditional_radio = QRadioButton()
+        self.blinker_conditional_radio.setIcon(QIcon(BLINKER_CONDITIONAL_IMAGE_PATH))
+        self.blinker_conditional_radio.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
+
+        # QButtonGroup
+        type_radio_group = QButtonGroup(self)
+        type_radio_group.addButton(self.traffic_radio)
+        type_radio_group.addButton(self.traffic_flashing_radio)
+        type_radio_group.addButton(self.pedestrian_radio)
+        type_radio_group.addButton(self.blinker_radio)
+        type_radio_group.addButton(self.blinker_conditional_radio)
+
+    def _init_main_radio(self):
+        # QRadioButton
+        self.main_radio = QRadioButton("כן")
+        self.main_radio.setChecked(True)  # checked is default
+        self.main_radio.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
+
+        self.not_main_radio = QRadioButton("לא")
+        self.not_main_radio.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
+
+        # QButtonGroup
+        main_group = QButtonGroup(self)
+        main_group.addButton(self.not_main_radio)
+        main_group.addButton(self.main_radio)
+
+    def _get_selected_move_type(self):
         if self.traffic_radio.isChecked():
             return "Traffic"
         elif self.traffic_flashing_radio.isChecked():
@@ -275,5 +280,6 @@ class MoveView(QWidget):
         elif self.blinker_conditional_radio.isChecked():
             return "Blinker_Conditional"
 
-    def is_main_move(self):
+    def _is_main_move(self):
         return True if self.main_radio.isChecked() else False
+

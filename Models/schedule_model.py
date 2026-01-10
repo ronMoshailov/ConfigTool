@@ -1,5 +1,5 @@
 class CellScheduleModel:
-    def __init__(self, hour, minute, prog_num):
+    def __init__(self, hour: int, minute: int, prog_num: int):
         self.hour = hour
         self.minute = minute
         self.prog_num = prog_num
@@ -43,34 +43,32 @@ class ScheduleModel:
             if table.table_num == table_num:
                 table.add_cell(0, 0, 1)
 
-    def update_schedule(self, is_copy_sunday):
+    def update_schedule(self, is_copy_sunday, table_list):
         if not is_copy_sunday:
             return
 
-        sunday_table = self.all_schedule_tables[0]
-        for i in range(1, 5):
-            for i in range(1, 5):
-                target = self.all_schedule_tables[i]
-                target.cell_list.clear()
+        for idx, table in enumerate(table_list):
+            self.all_schedule_tables[idx].cell_list.clear() # clear previous cell list
+            if is_copy_sunday and 1 <= idx <= 4:
+                for row_num in range(table_list[0].rowCount()):
+                    time_edit = table_list[0].cellWidget(row_num, 1)
+                    hours = time_edit.time().hour()
+                    minutes = time_edit.time().minute()
 
-                for cell in sunday_table.cell_list:
-                    target.add_cell(cell.hour, cell.minute, cell.prog_num)
+                    combo = table_list[0].cellWidget(row_num, 2)
+                    num_prog = int(combo.currentText())
 
-        # for i in range(7):
-        #     class_table = self.all_schedule_tables[i]
-        #     arg_table = table_list[i]
-        #
-        #     class_table.cell_list.clear()
-        #
-        #     for row in range(arg_table.rowCount()):
-        #
-        #         time_edit = arg_table.cellWidget(row, 1)  # עמודה 0 = QTimeEdit
-        #         combo_prog = arg_table.cellWidget(row, 2)  # עמודה 1 = QComboBox
-        #
-        #         hour = time_edit.time().hour()
-        #         minute = time_edit.time().minute()
-        #         program_num = int(combo_prog.currentText())
-        #
-        #         class_table.add_cell(hour, minute, program_num)
+                    self.all_schedule_tables[idx].add_cell(hours, minutes, num_prog)
+                continue
+            for row_num in range(table.rowCount()):
+                time_edit = table.cellWidget(row_num, 1)
+                hours = time_edit.time().hour()
+                minutes = time_edit.time().minute()
+
+                combo = table.cellWidget(row_num, 2)
+                num_prog = int(combo.currentText())
+
+                self.all_schedule_tables[idx].add_cell(hours, minutes, num_prog)
+
 
 

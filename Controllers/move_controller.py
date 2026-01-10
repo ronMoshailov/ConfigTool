@@ -28,25 +28,6 @@ class MoveController:
         """
         self.view.show_view(self.model.all_moves)
 
-    def init_model(self, path):
-        """
-        This method set from path the moves in the app.
-
-        :param path: path to "InitTk1.java'
-        :return: None
-        """
-        pattern = move_pattern
-
-        with open(path, 'r', encoding='utf-8') as file:
-            for line in file:
-                line = line.strip()
-                if line.startswith("//") or not line.startswith("tk."):
-                    continue
-                match = pattern.match(line)
-                if match:
-                    phase, move_type, min_green, is_main = match.groups()
-                    self.model.add_move(phase, move_type, True if is_main == "true" else False, int(min_green))
-
     ####################################################################################
     #                                     CRUD                                         #
     ####################################################################################
@@ -213,4 +194,25 @@ class MoveController:
         new_lines.append("\n")
         new_lines.extend(blinkers_lines)
 
+    ####################################################################################
+    #                               Logic                                              #
+    ####################################################################################
+    def init_model(self, path):
+        """
+        This method set from path the moves in the app.
+
+        :param path: path to "InitTk1.java'
+        :return: None
+        """
+        pattern = move_pattern
+
+        with open(path, 'r', encoding='utf-8') as file:
+            for line in file:
+                line = line.strip()
+                if line.startswith("//") or not line.startswith("tk."):
+                    continue
+                match = pattern.match(line)
+                if match:
+                    phase, move_type, min_green, is_main = match.groups()
+                    self.model.add_move(phase, move_type, True if is_main == "true" else False, int(min_green))
 

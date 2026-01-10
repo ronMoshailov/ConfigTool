@@ -84,6 +84,8 @@ class ImageController:
     def write_to_file(self, path_tk, path_init_tk, phase_folder_dst):
         # create files
         for image in self.model.all_images:
+            if image.image_name == "A":
+                continue
             self.create_file(image.image_name, phase_folder_dst)
 
         # data

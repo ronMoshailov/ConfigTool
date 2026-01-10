@@ -8,6 +8,11 @@ import special.Node;
 import special.Stage;
 import tk.Preemptiontk1;
 import tk.Var;
+import special.DDetector;
+import special.DEDetector;
+import special.EDetector;
+import special.TPDetector;
+import special.QDetector;
 
 public class Tk1 extends Node {
 	public int structure;

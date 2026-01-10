@@ -20,26 +20,12 @@ class MatrixModel:
         cell = MatrixCell(move_out, move_in, wait_time)
         self.all_cells.append(cell)
 
-    def update_matrix(self, changed_cells):
-        is_found = False
-
-        for row_name, col_name, value in changed_cells:
-            if value == "":
-                for i, cell in enumerate(self.all_cells):
-                    if row_name == cell.move_out and col_name == cell.move_in:
-                        del self.all_cells[i]
-                        break
-                continue
-            for cell in self.all_cells:
-                if row_name == cell.move_out and col_name == cell.move_in:
-                    cell.wait_time = value
-                    is_found = True
-                    break
-            if not is_found:
-                self.all_cells.append(MatrixCell(row_name, col_name, value))
-            is_found = False
-
-        return True
+    def update_matrix(self, out_name, in_name, val):
+        for cell in self.all_cells:
+            if cell.move_out == out_name and cell.move_in== in_name:
+                cell.wait_time = val
+                return
+        self.all_cells.append(MatrixCell(out_name, in_name, val))
 
     def reset_model(self):
         self.all_cells.clear()

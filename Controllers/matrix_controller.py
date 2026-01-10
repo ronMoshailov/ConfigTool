@@ -15,37 +15,12 @@ class MatrixController:
     def show_view(self, all_moves):
         self.view.show_view(all_moves, self.model.all_cells)
 
-    def init_model(self, path):
-        """
-        This method set from path the matrix cells in the app.
-
-        :param path: path to "InitTk1.java'
-        :return: None
-        """
-        self.model.reset_model()
-        pattern = matrix_pattern
-
-        with open(path, "r", encoding="utf-8") as f:
-            for line in f:
-                line = line.split("//", 1)[0].strip() # ignore what after //, split maximum 1 time
-                if not line:
-                    continue
-
-                match = pattern.search(line)
-                if match:
-                    out = match.group("out")
-                    inn = match.group("inn")
-                    t1 = int(match.group("t1"))
-                    t2 = int(match.group("t2"))
-
-                    self.model.new_cell(out, inn, t1)
-                    self.model.new_cell(inn, out, t2)
 
     ####################################################################################
     #                                     CRUD                                         #
     ####################################################################################
-    def update_matrix(self, changed_cells):
-        self.model.update_matrix(changed_cells)
+    def update_matrix(self, out_name, in_name, val):
+        self.model.update_matrix(out_name, in_name, int(val))
         QMessageBox.information(self.view, "הודעה", "העדכון הצליח")
 
     def remove_from_matrix(self, move_name):
@@ -112,3 +87,44 @@ class MatrixController:
 
         new_lines.extend(code)
 
+    ####################################################################################
+    #                               Logic                                              #
+    ####################################################################################
+    def init_model(self, path):
+        """
+        This method set from path the matrix cells in the app.
+
+        :param path: path to "InitTk1.java'
+        :return: None
+        """
+        self.model.reset_model()
+        pattern = matrix_pattern
+
+        with open(path, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.split("//", 1)[0].strip() # ignore what after //, split maximum 1 time
+                if not line:
+                    continue
+
+                match = pattern.search(line)
+                if match:
+                    out = match.group("out")
+                    inn = match.group("inn")
+                    t1 = int(match.group("t1"))
+                    t2 = int(match.group("t2"))
+
+                    self.model.new_cell(out, inn, t1)
+                    self.model.new_cell(inn, out, t2)
+
+    ####################################################################################
+    #                               Logic                                              #
+    ####################################################################################
+    def is_matrix_valid(self):
+        pairs = {(cell.move_out, cell.move_in) for cell in self.model.all_cells}
+
+        for move_out, move_in in pairs:
+            if (move_in, move_out) not in pairs:
+                QMessageBox.critical(self.view, "הודעה", f"חסר תא במטריצה ב-[{move_in}, {move_out}]")
+                return False
+
+        return True
