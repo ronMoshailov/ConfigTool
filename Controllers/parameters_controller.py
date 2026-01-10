@@ -113,43 +113,49 @@ class ParametersTaController:
         str_param = 96
         cycle_param = 97
 
-        # add comment index
+        # ----- add comment index line ----- #
         line += "//												"
         for _ in range(param_length):
             line += f"{min_idx}    "
             min_idx += 1
+        line += " "
 
         for _ in range(param_length):
             line += f"{max_idx}    "
             max_idx += 1
+        line += " "
 
         for _ in range(param_length):
             line += f"{type_idx}    "
             type_idx += 1
 
-        line += f"    {str_param}    {cycle_param}\n"
+        line = line[:-1] + f"{str_param}    {cycle_param}\n"
 
-        # write index code
+        # ----- add index code line ----- #
         line += "\tstatic final int[] parameters_indexes = {"
 
         # write min++
         for _ in range(param_length):
             line += "min++,"
+        line += " "
+
         # write max++
         for _ in range(param_length):
             line += "max++,"
+        line += " "
+
         # write typ++
         for _ in range(param_length):
             line += "typ++,"
-        line += "   96,   97 };\n"
+        line += "  96,   97 };\n"
         code.append(line)
 
-        # comments
+        # ----- comments ----- #
         ########
         #######
         ########
 
-        # programs
+        # ----- programs ----- #
         first_program_param = self.model.parameters[0]
         first_iteration = True
         for param in self.model.parameters:
@@ -173,13 +179,13 @@ class ParametersTaController:
             # write max
             for max_num in param.max_list:
                 if max_num >= 100:
-                    line += f"{max_num},   "
+                    line += f"{max_num},  "
                 elif 10 <= max_num <= 99:
-                    line += f" {max_num},   "
+                    line += f" {max_num},  "
                 else:
-                    line += f"  {max_num},   "
+                    line += f"  {max_num},  "
 
-            line += "  "
+            line += "   "
             # write type
             for type_num in param.type_list:
                 line += f"{type_num},    "
