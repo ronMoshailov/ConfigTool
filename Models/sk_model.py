@@ -61,5 +61,6 @@ class SkModel:
     #         if sk_card.card_number == card_number:
     #             sk_card.set_channel(name, color, channel, is_comment)
 
-
+    def reset(self):
+        self.sk_list.clear()
 

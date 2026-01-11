@@ -18,6 +18,9 @@ class ImageController:
         self.view.on_sp_changed_method = self.on_sp_changed_method
 
     def init_model(self, path, all_moves):
+
+        self.model.reset()
+
         pattern = image_pattern
 
         with open(path, "r", encoding="utf-8") as f:

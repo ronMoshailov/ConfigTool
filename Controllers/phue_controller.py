@@ -20,6 +20,9 @@ class PhueController:
         self.all_moves = None
 
     def init_model(self, phue_paths, path_init_tk1): # self.phue_model.phue_paths, self.path_init_tk1
+
+        self.model.reset()
+
         class_pattern = re.compile(r"public\s+class\s+Phue([A-Za-z0-9]+)_([A-Za-z0-9]+)")
         sg_pattern = re.compile( r"_tk\.(\w+)\.(TurnOn|TurnOff)\s*\(\s*(\d+)\s*\)")
         phue_len_pattern = re.compile(r'tk\.Phue([A-Za-z0-9]+)_([A-Za-z0-9]+)\s*=.*?\(\s*tk\s*,\s*"[^"]+"\s*,\s*([0-9]+)')

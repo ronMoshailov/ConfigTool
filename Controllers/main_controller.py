@@ -147,9 +147,9 @@ class MainController:
             QMessageBox.critical(self.main_root, "שגיאה", "פרויקט לא מאותחל")
             return
 
-        if act == "settings":
-            self.settings_controller.show_view()
-        elif act == "move":
+        # if act == "settings":
+        # self.settings_controller.show_view()
+        if act == "move":
             self.move_controller.show_view()
         elif act == "min_green":
             self.min_green_controller.show_view()
@@ -167,6 +167,10 @@ class MainController:
         elif act == "phue":
             self.phue_controller.show_view(self.image_model.all_images, self.move_model.all_moves)
         elif act == "parameters_ta":
+            if not self.image_model.is_sp_valid():
+                QMessageBox.critical(self.main_root, "שגיאה", "רצף נקודות ההחלטה לא תקינות")
+                self.image_controller.show_view(self.move_model.all_moves)
+                return
             self.parameters_ta_controller.show_view(self.image_model.all_images)
 
 
@@ -360,6 +364,7 @@ class MainController:
         #
         self.parameters_ta_controller.init_model(self.path_parameters_ta, len(self.image_model.all_images))
 
+        self.settings_controller.show_view()
 
     def _set_folder_path(self):
         """

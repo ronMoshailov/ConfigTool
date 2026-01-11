@@ -23,6 +23,9 @@ class DetectorController:
         :param path: path to "InitTk1.java"
         :return: None
         """
+
+        self.model.reset()
+
         pattern = detectors_pattern
 
         with open(path, "r", encoding="utf-8") as f:

@@ -101,3 +101,6 @@ class MoveModel:
     def get_all_moves_names(self):
         return [m.name for m in self.all_moves]
 
+    def reset(self):
+        self.all_moves.clear()
+

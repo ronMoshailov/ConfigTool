@@ -39,6 +39,11 @@ class ParametersTaView(QWidget):
         self.hide()
 
     def show_view(self, all_images, parameters_list):
+
+        self.tbl.clear()  # מוחק את תוכן הטבלה (items) וגם כותרות
+        self.tbl.setRowCount(0)
+        self.tbl.setColumnCount(0)  # אם רוצים לאפס גם את העמודות
+
         # data
         all_images_names = [img.image_name for img in all_images]
         images_len = len(all_images_names)
@@ -122,9 +127,14 @@ class ParametersTaView(QWidget):
         row_num = 2
 
         for parameter in parameters_list:
+            self.normalize_list(parameter.min_list, images_len, 0)
+            self.normalize_list(parameter.max_list, images_len, 0)
+            self.normalize_list(parameter.type_list, images_len, 0)
+
             # Min
             for i in range(images_len):
                 item = QTableWidgetItem(str(parameter.min_list[i]))
+                print(i)
                 item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
                 item.setBackground(QColor("#C7F3FF"))
                 self.tbl.setItem(row_num, i, item)
@@ -155,27 +165,23 @@ class ParametersTaView(QWidget):
 
             # Checkbox
             checkbox = QCheckBox()
-            container = QWidget()
-            layout = QHBoxLayout(container)
-            layout.addWidget(checkbox)
-            layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            container.setLayout(layout)
-            checkbox = QCheckBox()
-            checkbox.setCursor(Qt.CursorShape.PointingHandCursor)  # סמן יד כשהעכבר מעל
+            # checkbox.stateChanged.connect(lambda state, tbl=self.tbl, r=row_num: self.on_state_changed(state, tbl, r))
+            checkbox.setCursor(Qt.CursorShape.PointingHandCursor)
+            if parameter.is_copied:
+                checkbox.setChecked(True)
+                # for col in range(self.tbl.columnCount()):
+                #     item = self.tbl.item(row_num, col)
+                #     if item:
+                #         item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEnabled)
 
-            # יצירת container לעטיפה ולמרכוז
-            container = QWidget()
-            container.setObjectName("container")
-            layout = QHBoxLayout(container)
+            layout = QHBoxLayout()
             layout.addWidget(checkbox)
             layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
             layout.setContentsMargins(0, 0, 0, 0)
+
+            container = QWidget()
+            container.setObjectName("container")
             container.setLayout(layout)
-
-            # עיצוב מודרני עם צבעים עדינים, פינות מעוגלות ואפקט hover
-
-            # עיצוב ה-checkbox עצמו (indicator) במראה מודרני
-
 
             self.tbl.setCellWidget(row_num, 3 * images_len + 2, container)
 
@@ -183,32 +189,28 @@ class ParametersTaView(QWidget):
 
         self.show()
 
-
     def hide_view(self):
         self.hide()
 
+    def normalize_list(self, lst, target_len, fill_value=0):
+        if len(lst) < target_len:
+            lst.extend([fill_value] * (target_len - len(lst)))
+        elif len(lst) > target_len:
+            del lst[target_len:]
+
     def sync_combos(self, index):
-        """Synchronize comboboxes separated by images_len."""
+        """Synchronize comboboxes by column across groups."""
         images_len = len(self.image_combos) // 3
 
         base_combo = self.image_combos[index]
         value = base_combo.currentText()
 
-        linked_indices = []
+        # מציאת העמדה בתוך הקבוצה
+        col = index % images_len
 
-        # קדימה
-        if index + images_len < len(self.image_combos):
-            linked_indices.append(index + images_len)
-
-        # אחורה
-        if index - images_len >= 0:
-            linked_indices.append(index - images_len)
-
-        # לעדכן את אלה המקושרים
-        for idx in linked_indices:
-            combo = self.image_combos[idx]
-
-            # מניעת לולאת אירועים (מכיוון שהעדכון יפעיל שוב את signal)
-            combo.blockSignals(True)
-            combo.setCurrentText(value)
-            combo.blockSignals(False)
+        # עדכון כל הקומבואים עם אותו col חוץ מהקומבו ששונה
+        for i, combo in enumerate(self.image_combos):
+            if i % images_len == col and i != index:
+                combo.blockSignals(True)
+                combo.setCurrentText(value)
+                combo.blockSignals(False)

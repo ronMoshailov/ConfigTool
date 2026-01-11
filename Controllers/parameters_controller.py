@@ -11,7 +11,9 @@ class ParametersTaController:
         self.view.update_parameters_method = self.update_parameters
 
     def init_model(self, path, images_len):
-        pattern = re.compile(r'^static int\[\]\s+DVI35_P(\d+)\s*=\s*\{([^}]*)\}')
+        self.model.reset()
+
+        pattern = re.compile(r'^static int\[\]\s+DVI35_P(\d+)\s*=\s*\{([^}]*)\}', re.IGNORECASE)
         with open(path, 'r', encoding='utf-8') as file:
             for line in file:
                 line = line.strip()
@@ -20,6 +22,7 @@ class ParametersTaController:
                     continue
                 index = int(match.group(1))       # 03
                 values_str = match.group(2)  # "0, 0, 0, ..."
+                is_active = 'active' in line.lower()
 
                 # # הפיכת הטקסט של הערכים לרשימת מספרים
                 values = [int(v.strip()) for v in values_str.split(",")]
@@ -31,7 +34,7 @@ class ParametersTaController:
                 str = values[3 * images_len]
                 cycle = values[ 3 * images_len + 1]
 
-                self.model.add_program(index, min_list, max_list, type_list, str, cycle)
+                self.model.add_program(index, min_list, max_list, type_list, str, cycle, not is_active)
 
     def show_view(self, all_images):
         self.view.show_view(all_images, self.model.get_parameters())
@@ -165,8 +168,21 @@ class ParametersTaController:
             line += img
         code.append(line + "\n")
 
-        #######
-        ########
+        # ----- comments ----- #
+        all_types = self.model.parameters[0].type_list
+        line = "//\t                                        "
+        temp = ""
+        for idx, value in enumerate (all_types):
+            if idx == 0 and value == 1:
+                temp += "    SY"
+                continue
+            elif value == 0:
+                temp += f"   ET{idx}"
+            elif value == 1:
+                temp += f"   FO{idx}"
+
+        line += temp + " " + temp + " " + temp
+        code.append(line + "\n")
 
         # ----- programs ----- #
         first_program_param = self.model.parameters[0]

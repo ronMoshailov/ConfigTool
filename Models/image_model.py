@@ -63,6 +63,8 @@ class ImageModel:
             return True
         return False
 
+    def reset(self):
+        self.all_images.clear()
 
 
 

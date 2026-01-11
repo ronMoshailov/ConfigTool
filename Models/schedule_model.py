@@ -70,5 +70,9 @@ class ScheduleModel:
 
                 self.all_schedule_tables[idx].add_cell(hours, minutes, num_prog)
 
+    def reset(self):
+        self.all_schedule_tables.clear()
+        for i in range(7):
+            self.all_schedule_tables.append(TableScheduleModel(i+1))
 
 

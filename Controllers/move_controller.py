@@ -204,6 +204,9 @@ class MoveController:
         :param path: path to "InitTk1.java'
         :return: None
         """
+
+        self.model.reset()
+
         pattern = move_pattern
 
         with open(path, 'r', encoding='utf-8') as file:

@@ -95,6 +95,8 @@ class SkController:
     #                               Logic                                              #
     ####################################################################################
     def init_model(self, path):
+        self.model.reset()
+
         with open(path, 'r', encoding='utf-8') as file:
             for line in file:
                 line = line.strip()

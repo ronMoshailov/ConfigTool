@@ -52,3 +52,8 @@ class PhueModel:
             if phue.image_out == img_out and phue.image_in == img_in:
                 phue.length = length
                 return
+
+    def reset(self):
+        self.all_phue.clear()
+        self.phue_paths.clear()
+

@@ -19,7 +19,7 @@ class MinGreenController:
     ####################################################################################
     def update_min_green(self, min_green_dict):
         for key, value in min_green_dict.items():
-            if not self.model.update_min_green(key, value.text()):
+            if not self.model.update_min_green(key, int(value.text())):
                 QMessageBox.critical(self.view, "שגיאה", "שגיאה שלא אמורה להתרחש")
         # QMessageBox.information(self.view, "הודעה", "העדכון הצליח")
 

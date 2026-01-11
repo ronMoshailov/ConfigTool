@@ -1,19 +1,19 @@
 class ParametersTaProgram:
-    def __init__(self, program_number:int, min_list:[int], max_list:[int], type_list:[int], str:int, cycle:int):
+    def __init__(self, program_number:int, min_list:[int], max_list:[int], type_list:[int], str:int, cycle:int, is_copied: bool):
         self.program_number = program_number
         self.min_list = min_list
         self.max_list = max_list
         self.type_list = type_list
         self.str = str
         self.cycle = cycle
-        self.is_copied = False
+        self.is_copied = is_copied
 
 class ParametersTaModel:
     def __init__(self):
         self.parameters = []
 
-    def add_program(self, program_number, min_list, max_list, type_list, str, cycle):
-        self.parameters.append(ParametersTaProgram(program_number, min_list, max_list, type_list, str, cycle))
+    def add_program(self, program_number, min_list, max_list, type_list, str, cycle, is_copied):
+        self.parameters.append(ParametersTaProgram(program_number, min_list, max_list, type_list, str, cycle, is_copied))
 
     def get_parameters(self):
         return self.parameters
@@ -59,3 +59,7 @@ class ParametersTaModel:
 
         # success
         return True
+
+
+    def reset(self):
+        self.parameters.clear()
