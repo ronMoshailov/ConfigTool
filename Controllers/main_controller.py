@@ -25,13 +25,13 @@ from View.matrix_view import MatrixView
 from View.navigator_view import NavigatorView
 from View.detector_view import DetectorView
 from View.move_view import MoveView
-from View.min_green_view import MinGreenView
+# from View.min_green_view import MinGreenView
 
 from Controllers.detector_controller import DetectorController
 from Controllers.image_controller import ImageController
 from Controllers.io_controller import IoController
 from Controllers.matrix_controller import MatrixController
-from Controllers.min_green_controller import MinGreenController
+# from Controllers.min_green_controller import MinGreenController
 from Controllers.move_controller import MoveController
 from Controllers.phue_controller import PhueController
 from Controllers.schedule_controller import ScheduleController
@@ -71,7 +71,7 @@ class MainController:
         self.navigator_view = NavigatorView(self.show_view, self.print_all)
         self.settings_view = SettingsView()
         self.detector_view = DetectorView()
-        self.min_green_view = MinGreenView()
+        # self.min_green_view = MinGreenView()
         self.matrix_view = MatrixView()
         self.move_view = MoveView()
         self.sk_view = SkView()
@@ -85,7 +85,7 @@ class MainController:
         # self.io_controller = IoController(root)
         self.matrix_controller = MatrixController(self.matrix_view, self.matrix_model)
         self.move_controller = MoveController(self.move_view, self.move_model)
-        self.min_green_controller = MinGreenController(self.min_green_view, self.move_model)
+        # self.min_green_controller = MinGreenController(self.min_green_view, self.move_model)
         self.phue_controller = PhueController(self.phue_view, self.phue_model)
         self.schedule_controller = ScheduleController(self.schedule_view, self.schedule_model)
         self.settings_controller = SettingsController(self.settings_view, self.settings_model)
@@ -97,7 +97,7 @@ class MainController:
         root_layout = QHBoxLayout()
         root_layout.setAlignment(Qt.AlignmentFlag.AlignRight)
         root_layout.addWidget(self.move_view)
-        root_layout.addWidget(self.min_green_view)
+        # root_layout.addWidget(self.min_green_view)
         root_layout.addWidget(self.detector_view)
         root_layout.addWidget(self.settings_view)
         root_layout.addWidget(self.matrix_view)
@@ -130,7 +130,7 @@ class MainController:
         # hide all views
         self.settings_view.hide_view()
         self.move_view.hide_view()
-        self.min_green_view.hide_view()
+        # self.min_green_view.hide_view()
         self.matrix_view.hide_view()
         self.detector_view.hide_view()
         self.schedule_view.hide_view()
@@ -151,8 +151,8 @@ class MainController:
         # self.settings_controller.show_view()
         if act == "move":
             self.move_controller.show_view()
-        elif act == "min_green":
-            self.min_green_controller.show_view()
+        # elif act == "min_green":
+        #     self.min_green_controller.show_view()
         elif act == "matrix":
             self.matrix_controller.show_view(self.move_model.all_moves)
         elif act == "detector":
@@ -172,7 +172,8 @@ class MainController:
                 self.image_controller.show_view(self.move_model.all_moves)
                 return
             self.parameters_ta_controller.show_view(self.image_model.all_images)
-
+        else:
+            self.settings_controller.show_view()
 
     def print_all(self):
         """
@@ -188,6 +189,14 @@ class MainController:
         # for move in self.move_model.all_moves:
         #     out.append(
         #         f"name: {move.name:<5}, move_type: {move.type:<25}, is_main: {move.is_main:<8}, min_green: {move.min_green:<3}")
+
+        out.append("\n============================== Settings ==============================")
+        out.append(
+            f"junction_num: {self.settings_model.junction_num:<5}, junction_name: {self.settings_model.junction_name:<25}, version: {self.settings_model.version:<8}, first_ext: {self.settings_model.first_ext:<3}")
+        for h in self.settings_model.history:
+            date, author = h
+            out.append(f"date: {date:<5}, author: {author:<25}")
+
 
         # out.append("\n============================== Matrix ==============================")
         # for cell in self.matrix_model.all_cells:
@@ -205,49 +214,49 @@ class MainController:
         # for detector in self.detector_model.all_detectors:
         #     out.append(f"var_name: {detector.var_name:<5}, class_name: {detector.class_name:<10}, datector_name: {detector.datector_name:<5}, move_name: {detector.move_name:<10}, ext_unit: {detector.ext_unit:<10}")
 
-        out.append("\n============================== Schedule ==============================")
-        for schedule_table in self.schedule_model.all_schedule_tables:
-            out.append(f"----- table: {schedule_table.table_num} -----")
-            for cell in schedule_table.cell_list:
-                out.append(f"hour: {cell.hour:<5}, minute: {cell.minute:<5}, program_num: {cell.prog_num:<5}")
-
-        out.append("\n============================== Image ==============================")
-        for image in self.image_model.all_images:
-            if image.image_name == 'A':
-                out.append(
-                    f"name: {image.image_name:<5}, number: {image.image_num:<5}, skeleton: {image.skeleton:<5}, is_police: {image.is_police:<5}")
-            else:
-                out.append(
-                    f"name: {image.image_name:<5}, number: {image.image_num:<5}, skeleton: {image.skeleton:<5}, sp: {image.sp:<5}, is_police: {image.is_police:<5}")
-            move_str = ", ".join([m.name for m in image.move_list])
-            out.append(f"moves: {move_str}\n")
-
-        out.append("\n============================== Phue ==============================")
-        for phue in self.phue_model.all_phue:
-            out.append(f"{phue.image_out:<4} → {phue.image_in:<4}, length: {phue.length:<3}")
-            for tran in phue.transitions:
-                out.append(f"move: {tran.move:<4}, state: {tran.state:<5}, duration: {tran.duration:<5}")
-            out.append("")
-
-        out.append("\n============================== Parameters ==============================")
-        for parameter in self.parameters_ta_model.parameters:
-            out.append(f"Program number: {parameter.program_number:<4}")
-            min_str = ""
-            for min_param in parameter.min_list:
-                min_str += f"{min_param:<4}"
-            out.append(f"Min: {min_str}")
-            max_str = ""
-            for max_param in parameter.max_list:
-                max_str += f"{max_param:<4}"
-            out.append(f"Max: {max_str}")
-            type_str = ""
-            for type_param in parameter.type_list:
-                type_str += f"{type_param:<4}"
-            out.append(f"Type: {type_str}")
-
-            out.append(f"str: {parameter.str:<4}")
-            out.append(f"cycle: {parameter.cycle:<4}")
-            out.append("")
+        # out.append("\n============================== Schedule ==============================")
+        # for schedule_table in self.schedule_model.all_schedule_tables:
+        #     out.append(f"----- table: {schedule_table.table_num} -----")
+        #     for cell in schedule_table.cell_list:
+        #         out.append(f"hour: {cell.hour:<5}, minute: {cell.minute:<5}, program_num: {cell.prog_num:<5}")
+        #
+        # out.append("\n============================== Image ==============================")
+        # for image in self.image_model.all_images:
+        #     if image.image_name == 'A':
+        #         out.append(
+        #             f"name: {image.image_name:<5}, number: {image.image_num:<5}, skeleton: {image.skeleton:<5}, is_police: {image.is_police:<5}")
+        #     else:
+        #         out.append(
+        #             f"name: {image.image_name:<5}, number: {image.image_num:<5}, skeleton: {image.skeleton:<5}, sp: {image.sp:<5}, is_police: {image.is_police:<5}")
+        #     move_str = ", ".join([m.name for m in image.move_list])
+        #     out.append(f"moves: {move_str}\n")
+        #
+        # out.append("\n============================== Phue ==============================")
+        # for phue in self.phue_model.all_phue:
+        #     out.append(f"{phue.image_out:<4} → {phue.image_in:<4}, length: {phue.length:<3}")
+        #     for tran in phue.transitions:
+        #         out.append(f"move: {tran.move:<4}, state: {tran.state:<5}, duration: {tran.duration:<5}")
+        #     out.append("")
+        #
+        # out.append("\n============================== Parameters ==============================")
+        # for parameter in self.parameters_ta_model.parameters:
+        #     out.append(f"Program number: {parameter.program_number:<4}")
+        #     min_str = ""
+        #     for min_param in parameter.min_list:
+        #         min_str += f"{min_param:<4}"
+        #     out.append(f"Min: {min_str}")
+        #     max_str = ""
+        #     for max_param in parameter.max_list:
+        #         max_str += f"{max_param:<4}"
+        #     out.append(f"Max: {max_str}")
+        #     type_str = ""
+        #     for type_param in parameter.type_list:
+        #         type_str += f"{type_param:<4}"
+        #     out.append(f"Type: {type_str}")
+        #
+        #     out.append(f"str: {parameter.str:<4}")
+        #     out.append(f"cycle: {parameter.cycle:<4}")
+        #     out.append("")
 
         text_to_show = "\n".join(out)
 

@@ -15,9 +15,10 @@ class SettingsController(QWidget):
         self.is_old = None
 
         # =============== Controller Methods =============== #
-        self.view.update_settings_method = self.update_model
-        self.view.change_state_method = self.change_state
-        self.view.make_checkable_method = self.make_checkable
+        self.view.update_junction_number_method = self.model.update_junction_number
+        self.view.update_junction_name_method   = self.model.update_junction_name
+        self.view.update_version_method         = self.model.update_version
+        self.view.update_first_cycle_ext_method = self.model.update_first_ext
 
 
     def init_model(self, path):
@@ -27,7 +28,7 @@ class SettingsController(QWidget):
         anlagenName = None
         tk1Name = None
         version = None
-        lastVersionDate = None
+        versions = []
         lastVersionAuthor = None
         first_time_ext = None
 
@@ -45,24 +46,28 @@ class SettingsController(QWidget):
                 if not value:
                     continue
 
-                if key == "anlagenName":
+                if key == "anlagenName": # junction number
                     anlagenName = value
-                elif key == "tk1Name":
+                elif key == "tk1Name": # junction name
                     tk1Name = value
-                elif key == "version":
+                elif key == "version": #
                     version = value
-                elif key == "lastVersion":
-                    m = re.match(r'(?P<date>\d{2}/\d{2}/\d{4})\s*-\s*(?P<author>.+)', value)
-                    if m:
-                        lastVersionDate = m.group("date")
-                        lastVersionAuthor = m.group("author")
+                elif key == "versionsInside":
+                    version_items = re.findall(r'"([^"]+)"', value)
+
+                    for item in version_items:
+                        m = re.match(r'(?P<date>\d{2}/\d{2}/\d{4})\s*-\s*(?P<author>.+)', item)
+                        if m:
+                            date = m.group("date")
+                            author = m.group("author")
+                            versions.append((date, author))
                 elif key == "tk1Arg":
                     first_time_ext = value
 
-        self.model.set(lastVersionAuthor, anlagenName, tk1Name, version, lastVersionDate, first_time_ext)
+        self.model.set(anlagenName, tk1Name, version, versions, first_time_ext)
 
     def show_view(self):
-        self.view.show_view(self.model.programmer_name, self.model.junction_num, self.model.junction_name, self.model.version, self.model.date, self.model.first_ext)
+        self.view.show_view(self.model.junction_num, self.model.junction_name, self.model.version, self.model.first_ext, self.model.history)
 
     def hide_view(self):
         self.view.show_view()

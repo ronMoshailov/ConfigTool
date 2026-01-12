@@ -104,3 +104,6 @@ class MoveModel:
     def reset(self):
         self.all_moves.clear()
 
+    def get_all_types(self):
+        return ["Traffic", "Traffic_Flashing", "Pedestrian", "Blinker_Conditional", "Blinker"]
+

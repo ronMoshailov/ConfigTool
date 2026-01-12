@@ -1,8 +1,7 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout
 
-from Config.special import set_property
-from Config.style import navigator_panel_style
+import Config
 
 
 class NavigatorView(QWidget):
@@ -44,7 +43,7 @@ class NavigatorView(QWidget):
     #     # =============== Style =============== #
         self.setFixedWidth(300)
         self.setObjectName("root_panel")
-        self.setStyleSheet(navigator_panel_style)
+        self.setStyleSheet(Config.style.navigator_panel_style)
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
     #
     def _initialize_buttons(self):
@@ -54,7 +53,7 @@ class NavigatorView(QWidget):
         settings_btn = QPushButton("⚙️ הגדרות ⚙️")                #  1
         settings_btn.setObjectName("MainButton")
         move_panel_btn = QPushButton("🚦 מופעים 🚦")              #  2
-        min_green_panel_btn = QPushButton("🕰️ מינימום 🕰️")        #  3
+        # min_green_panel_btn = QPushButton("🕰️ מינימום 🕰️")        #  3
         matrix_panel_btn = QPushButton("🔢 מטריצה 🔢")            #  4
         sk24_panel_btn = QPushButton("🧑‍💻   SK24   👩‍💻")                #  5
         io24_panel_btn = QPushButton("IO24")                #  6
@@ -72,7 +71,7 @@ class NavigatorView(QWidget):
             set_paths_btn,           #  0
             settings_btn,            #  1
             move_panel_btn,          #  2
-            min_green_panel_btn,     #  3
+            # min_green_panel_btn,     #  3
             matrix_panel_btn,        #  4
             sk24_panel_btn,          #  5
             io24_panel_btn,          #  6
@@ -88,19 +87,19 @@ class NavigatorView(QWidget):
         buttons[ 0].clicked.connect(lambda: self.show_view_method("init"))
         buttons[ 1].clicked.connect(lambda: self.show_view_method("settings"))
         buttons[ 2].clicked.connect(lambda: self.show_view_method("move"))
-        buttons[ 3].clicked.connect(lambda: self.show_view_method("min_green"))
-        buttons[ 4].clicked.connect(lambda: self.show_view_method("matrix"))
-        buttons[ 5].clicked.connect(lambda: self.show_view_method("sk"))
+        # buttons[ 3].clicked.connect(lambda: self.show_view_method("min_green"))
+        buttons[ 3].clicked.connect(lambda: self.show_view_method("matrix"))
+        buttons[ 4].clicked.connect(lambda: self.show_view_method("sk"))
     #     # buttons[ 6].clicked.connect(lambda: self.ui_controller.show_panel_by_name("io"))
-        buttons[ 7].clicked.connect(lambda: self.show_view_method("detector"))
-        buttons[ 8].clicked.connect(lambda: self.show_view_method("schedule"))
-        buttons[ 9].clicked.connect(lambda: self.show_view_method("image"))
-        buttons[10].clicked.connect(lambda: self.show_view_method("phue"))
-        buttons[11].clicked.connect(lambda: self.show_view_method("parameters_ta"))
-        buttons[12].clicked.connect(lambda: self.print_all_method())
+        buttons[ 6].clicked.connect(lambda: self.show_view_method("detector"))
+        buttons[ 7].clicked.connect(lambda: self.show_view_method("schedule"))
+        buttons[ 8].clicked.connect(lambda: self.show_view_method("image"))
+        buttons[ 9].clicked.connect(lambda: self.show_view_method("phue"))
+        buttons[10].clicked.connect(lambda: self.show_view_method("parameters_ta"))
+        buttons[11].clicked.connect(lambda: self.print_all_method())
     #
     #     # =============== special methods =============== #
     #     set_btn_disable(buttons[1:])                         # Disable buttons
-        set_property("class", "navigator_button", buttons)
+        Config.special.set_property("class", "navigator_button", buttons)
     #
         return buttons

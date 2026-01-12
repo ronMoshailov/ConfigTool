@@ -67,8 +67,7 @@ settings_pattern = re.compile(
     r'public\s+static\s+String\s+anlagenName\s*=\s*"(?P<anlagenName>[^"]+)"|'
     r'public\s+static\s+String\s+tk1Name\s*=\s*"(?P<tk1Name>[^"]+)"|'
     r'public\s+static\s+String\s+version\s*=\s*"(?P<version>[^"]+)"|'
-    r'public\s+static\s+String\[\]\s+versions\s*=\s*\{[^}]*"(?P<lastVersion>[^"]+)"(?=[^"]*\})|'
+    r'public\s+static\s+String\[\]\s+versions\s*=\s*\{(?P<versionsInside>[^}]+)\}|'
     r'Var\.tk1\s*=\s*new\s+Tk1\([^,]+,\s*[^,]+,\s*[^,]+,\s*(?P<tk1Arg>\d+)\s*\)',
     re.MULTILINE
 )
-

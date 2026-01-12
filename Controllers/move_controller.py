@@ -19,14 +19,36 @@ class MoveController:
 
         self.view.add_move_method = self.add_move
         self.view.remove_move_method = self.remove_move
+        self.view.update_name_method = self.update_name
         self.remove_from_matrix_method = None
+        self.view.update_type_method = self.update_type
+        self.view.update_min_green_method = self.update_min_green
+        self.view.update_main_method = self.update_main
+        self.view.get_min_green_tooltip_method = self.get_min_green
+
+    def get_min_green(self, move):
+        return str(move.min_green)
+
+
+    def update_name(self, move, name):
+        move.name=name
+
+    def update_type(self, text,  move):
+        move.type=text
+
+    def update_min_green(self, move, time):
+        move.min_green = int(time)
+
+    def update_main(self, move, state):
+        move.is_main = True if state == 2 else False
+
 
     def show_view(self):
         """
         This method show the view.
         :return: None
         """
-        self.view.show_view(self.model.all_moves)
+        self.view.show_view(self.model.all_moves, self.model.get_all_types())
 
     ####################################################################################
     #                                     CRUD                                         #
@@ -76,18 +98,26 @@ class MoveController:
         # refresh the view
         self.show_view()
 
-    def remove_move(self, move_name):
+    def remove_move(self, table, btn):
         """
         This method remove a move.
 
         :param move_name: Move name.
         :return: None
         """
-        if self.model.remove_move(move_name):
-            self.remove_from_matrix_method(move_name)
-            self.show_view()
-            return
-        QMessageBox.critical(self.view, "שגיאה", "שגיאה שלא אמורה להתרחש")
+        row_count = table.rowCount()
+        for row in range(row_count):
+            item = table.cellWidget(row, 0)
+            if item is btn:
+                self.model.remove_move(table.cellWidget(row, 1).text())
+                table.removeRow(row)
+                break
+
+        # if self.model.remove_move(move_name):
+        #     self.remove_from_matrix_method(move_name)
+        #     self.show_view()
+        #     return
+        # QMessageBox.critical(self.view, "שגיאה", "שגיאה שלא אמורה להתרחש")
 
     ####################################################################################
     #                           Write to file                                          #
