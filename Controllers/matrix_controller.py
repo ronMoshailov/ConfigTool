@@ -128,3 +128,6 @@ class MatrixController:
                 return False
 
         return True
+
+    def update_names(self, old_name, new_name):
+        self.model.update_names(old_name, new_name)

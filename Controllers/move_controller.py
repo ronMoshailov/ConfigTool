@@ -19,7 +19,6 @@ class MoveController:
 
         self.view.add_move_method = self.add_move
         self.view.remove_move_method = self.remove_move
-        self.view.update_name_method = self.update_name
         self.remove_from_matrix_method = None
         self.view.update_type_method = self.update_type
         self.view.update_min_green_method = self.update_min_green
@@ -29,9 +28,8 @@ class MoveController:
     def get_min_green(self, move):
         return str(move.min_green)
 
-
-    def update_name(self, move, name):
-        move.name=name
+    def update_names(self, old_name, new_name):
+        self.model.update_name(old_name, new_name)
 
     def update_type(self, text,  move):
         move.type=text

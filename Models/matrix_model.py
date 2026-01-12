@@ -36,3 +36,9 @@ class MatrixModel:
                 return True
         return False
 
+    def update_names(self, old_name, new_name):
+        for cell in self.all_cells:
+            if cell.move_in == old_name:
+                cell.move_in = new_name
+            if cell.move_out == old_name:
+                cell.move_out = new_name

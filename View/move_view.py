@@ -27,7 +27,7 @@ class MoveView(QWidget):
         # Controller methods
         self.remove_move_method = None
         self.update_detectors_method = None
-        self.update_name_method = None
+        self.update_names_method = None
         self.update_type_method = None
         self.update_min_green_method = None
         self.update_main_method = None
@@ -76,7 +76,7 @@ class MoveView(QWidget):
             # name (col 1)
             line_edit = QLineEdit()
             line_edit.setText(move_name)  # הערך ההתחלתי
-            line_edit.editingFinished.connect(lambda le=line_edit, m=move: self.update_name_method(m, le.text()))
+            line_edit.editingFinished.connect(lambda le=line_edit, m=move: self.update_names_method(m.name, le.text()))
             self.tbl.setCellWidget(idx, 1, line_edit)
 
             # type (col 2)

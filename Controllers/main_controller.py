@@ -110,6 +110,7 @@ class MainController:
 
         # =============== self =============== #
         self.main_root.setLayout(root_layout)
+        self.move_controller.view.update_names_method = self.update_names
 
         self.root.setCentralWidget(self.main_root)
         self.root.setStyleSheet(main_window_style)
@@ -458,5 +459,8 @@ class MainController:
             QMessageBox.critical(self.root, "שגיאה", str(e))
             return False
 
+    def update_names(self, old_name, new_name):
+        self.matrix_controller.update_names(old_name, new_name)
+        self.move_controller.update_names(old_name, new_name)
 
 

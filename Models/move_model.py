@@ -107,3 +107,8 @@ class MoveModel:
     def get_all_types(self):
         return ["Traffic", "Traffic_Flashing", "Pedestrian", "Blinker_Conditional", "Blinker"]
 
+    def update_name(self, old_name, new_name):
+        for move in self.all_moves:
+            if move.name == old_name:
+                move.name = new_name
+                return
