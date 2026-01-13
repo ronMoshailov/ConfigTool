@@ -18,6 +18,7 @@ class PhueView(QWidget):
         self.remove_phue_method = None
         self.update_phue_method = None
         self.update_move_method = None
+        self.update_duration_method = None
 
         # =============== Data =============== #
         self.table_wrap_list = []
@@ -172,22 +173,24 @@ class PhueView(QWidget):
             combo_widget = QComboBox()
             combo_widget.addItems([name for name in all_moves_names])
             combo_widget.setCurrentText(transition.move)  # או combo_widget.setCurrentIndex(1)
-            combo_widget.currentTextChanged.connect(lambda text, m=transition.move: self.update_move_method(text, m))
+            combo_widget.currentTextChanged.connect(lambda text, m=transition.move: self.update_move_method(m, text))
+            tbl.setCellWidget(row, 0, combo_widget)
 
-            remove_btn = QPushButton("❌")
-            remove_btn.clicked.connect(lambda _, t=tbl: self._remove_row(t))
-
+            # col 2
             color_widget = QTableWidgetItem("🔴" if str(transition.state) == "TurnOff" else "🟢")
             color_widget.setFlags(color_widget.flags() & ~Qt.ItemFlag.ItemIsEditable)  # מסיר את האפשרות לערוך
             color_widget.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-
-            tbl.setCellWidget(row, 0, combo_widget)
             tbl.setItem(row, 1, color_widget)
 
-            duration_table_widget = QTableWidgetItem(str(transition.duration))
-            duration_table_widget.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+            # col 3
+            duration_table_widget = QLineEdit(str(transition.duration))
+            # duration_table_widget.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+            tbl.setCellWidget(row, 2, duration_table_widget)
+            # duration_table_widget.editingFinished.connect(lambda le=duration_table_widget, m=transition.move: self.update_duration_method(m, le.text()))
 
-            tbl.setItem(row, 2, duration_table_widget)
+            # col 4
+            remove_btn = QPushButton("❌")
+            remove_btn.clicked.connect(lambda _, t=tbl: self._remove_row(t))
             tbl.setCellWidget(row, 3, remove_btn)
 
         length_layout = QHBoxLayout()
