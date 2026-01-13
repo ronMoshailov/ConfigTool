@@ -17,11 +17,9 @@ class PhueController:
         self.view.update_phue_method = self.update_phue
 
         self.all_images = None
-        self.all_moves = None
+        self.all_moves_names = None
 
     def init_model(self, phue_paths, path_init_tk1): # self.phue_model.phue_paths, self.path_init_tk1
-
-        self.model.reset()
 
         class_pattern = re.compile(r"public\s+class\s+Phue([A-Za-z0-9]+)_([A-Za-z0-9]+)")
         sg_pattern = re.compile( r"_tk\.(\w+)\.(TurnOn|TurnOff)\s*\(\s*(\d+)\s*\)")
@@ -64,11 +62,11 @@ class PhueController:
         if not self.model.new_phue(img_out, img_in, 0, []):
             QMessageBox.critical(self.view, "שגיאה", "המעבר כבר קיים במערכת")
             return
-        self.show_view(self.all_images, self.all_moves)
+        self.show_view(self.all_images, self.all_moves_names)
 
     def remove_phue(self, img_out, img_in):
         self.model.remove_phue(img_out, img_in)
-        self.show_view(self.all_images, self.all_moves)
+        self.show_view(self.all_images, self.all_moves_names)
 
     def update_phue(self, table_wrap_list):
     # check if move exist twice
@@ -118,10 +116,10 @@ class PhueController:
         # success, message = self.data_controller.update_inter_stage(self.table_wrap_list)
         QMessageBox.information(self.view, "הודעה", "העדכון הצליח")
 
-    def show_view(self, all_images, all_moves):
+    def show_view(self, all_images, all_moves_names):
         self.all_images = all_images
-        self.all_moves = all_moves
-        self.view.show_view(self.model.all_phue, self.all_images, self.all_moves)
+        self.all_moves_names = all_moves_names
+        self.view.show_view(self.model.all_phue, self.all_images, self.all_moves_names)
 
     def write_to_file(self, init_tk1_dst, phue_folder_dst):
         # create files
@@ -227,6 +225,10 @@ class PhueController:
 
         return line
 
+    def reset(self):
+        self.model.reset()
 
+    def update_names(self, old_name, new_name):
+        self.model.update_names(old_name, new_name)
 
 

@@ -64,3 +64,15 @@ class SkModel:
     def reset(self):
         self.sk_list.clear()
 
+    def update_names(self, old_name, new_name):
+        for sk in self.sk_list:
+            all_channels = sk.all_channels
+            for channel in all_channels:
+                if channel.name == old_name:
+                    channel.name = new_name
+
+    def remove_move(self, move_name):
+        for sk in self.sk_list:
+            for channel in sk.all_channels:
+                if channel.name == move_name:
+                    channel.is_comment = True

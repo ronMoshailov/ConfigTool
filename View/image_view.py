@@ -73,7 +73,7 @@ class ImageView(QWidget):
     def hide_view(self):
         self.hide()
 
-    def show_view(self, all_images, all_moves):
+    def show_view(self, all_images, all_moves_names):
         clear_widget_from_layout([self.scroll_layout])
         self.table_dict.clear()
 
@@ -81,13 +81,13 @@ class ImageView(QWidget):
         image_count = len(all_images)
 
         for i in range(image_count):
-            wrap = self._create_wrap(all_images[i], all_moves)
+            wrap = self._create_wrap(all_images[i], all_moves_names)
             self.scroll_layout.addWidget(wrap)
         self.scroll_layout.addStretch()
         self.show()                                                         # show panel
 
 
-    def _create_wrap(self, image, all_moves):
+    def _create_wrap(self, image, all_moves_names):
         """
         ניסיתי לאחד 2 מתודות וסתם יצאתי חכמולוג ואין לי כוח להחזיר, מה שעושה הפונקציה זה ליצור widget שכולל את כל העמודה כאשר כל עמודה זה תבלה וכל מה שיש בה ומחוץ לה
         :param image:
@@ -108,9 +108,9 @@ class ImageView(QWidget):
         wrap.title = image.image_name
 
         # table
-        table = self._init_table(all_moves)
+        table = self._init_table(all_moves_names)
 
-        self._fill_table(table, image.move_list)
+        self._fill_table(table, image.move_names_list)
 
         # # button
         remove_button = QPushButton("מחק")
@@ -166,7 +166,7 @@ class ImageView(QWidget):
         self.table_dict[image.image_name] = table
         return wrap
 
-    def _fill_table(self, table, all_moves):
+    def _fill_table(self, table, all_moves_names):
         """
         This method fill the table with all moves and values.
 
@@ -177,15 +177,15 @@ class ImageView(QWidget):
         row_num = table.rowCount()  # לוקח את מספר השורות הקיים
 
         for i in range (row_num):
-            move_name = table.cellWidget(i, 0).text()
+            table_move_name = table.cellWidget(i, 0).text()
             checkbox = table.cellWidget(i, 1).findChild(QCheckBox)
 
-            for move in all_moves:
-                if move.name == move_name:
+            for move_name in all_moves_names:
+                if move_name == table_move_name:
                     checkbox.setChecked(True)
 
 
-    def _init_table(self, all_moves):
+    def _init_table(self, all_moves_names):
         """
         Create table and config the table.
 
@@ -201,11 +201,11 @@ class ImageView(QWidget):
         tbl.setColumnWidth(1, self.CHECKBOX_WIDTH)
 
         # build move rows in table
-        for move in all_moves:
+        for move_name in all_moves_names:
             row_num = tbl.rowCount()  # לוקח את מספר השורות הקיים
             tbl.insertRow(row_num)  # מוסיף שורה חדשה בסוף
 
-            label = QLabel(move.name)
+            label = QLabel(move_name)
             label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             tbl.setCellWidget(row_num, 0, label)
 

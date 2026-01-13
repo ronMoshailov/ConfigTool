@@ -97,7 +97,6 @@ class MatrixController:
         :param path: path to "InitTk1.java'
         :return: None
         """
-        self.model.reset_model()
         pattern = matrix_pattern
 
         with open(path, "r", encoding="utf-8") as f:
@@ -131,3 +130,11 @@ class MatrixController:
 
     def update_names(self, old_name, new_name):
         self.model.update_names(old_name, new_name)
+
+    def reset(self):
+        self.model.reset()
+
+    def remove_move(self, move_name):
+        self.model.remove_move(move_name)
+
+

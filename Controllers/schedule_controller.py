@@ -149,8 +149,6 @@ class ScheduleController:
     #                               Logic                                              #
     ####################################################################################
     def init_model(self, path):
-        self.model.reset()
-
         pattern = schedule_pattern
         mapping_day = {"sun_thur": [1,2,3,4,5], "fr": [6],"sa": [7]}
 
@@ -208,4 +206,6 @@ class ScheduleController:
                     return False
         return True
 
+    def reset(self):
+        self.model.reset()
 

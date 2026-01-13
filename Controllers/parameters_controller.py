@@ -11,7 +11,6 @@ class ParametersTaController:
         self.view.update_parameters_method = self.update_parameters
 
     def init_model(self, path, images_len):
-        self.model.reset()
 
         pattern = re.compile(r'^static int\[\]\s+DVI35_P(\d+)\s*=\s*\{([^}]*)\}', re.IGNORECASE)
         with open(path, 'r', encoding='utf-8') as file:
@@ -244,6 +243,8 @@ class ParametersTaController:
             first_iteration = False
             code.append(line)
 
+    def reset(self):
+        self.model.reset()
 
 
 

@@ -32,9 +32,6 @@ class SettingsController(QWidget):
         lastVersionAuthor = None
         first_time_ext = None
 
-        # reset previous data
-        self.model.reset()
-
         # read
         with open(path, "r", encoding="utf-8") as f:
             content = f.read() # read all the data from the file
@@ -137,3 +134,6 @@ class SettingsController(QWidget):
         #
         # with open(path, 'w', encoding='utf-8') as f:
         #     f.writelines(code)
+
+    def reset(self):
+        self.model.reset()

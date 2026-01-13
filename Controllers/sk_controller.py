@@ -38,6 +38,10 @@ class SkController:
         self.model.remove_sk(card_num)
         self.view.show_view(self.model.sk_list, self.all_moves)
 
+    def update_names(self, old_name, new_name):
+        self.model.update_names(old_name, new_name)
+
+
     ####################################################################################
     #                           Write to file                                          #
     ####################################################################################
@@ -95,7 +99,6 @@ class SkController:
     #                               Logic                                              #
     ####################################################################################
     def init_model(self, path):
-        self.model.reset()
 
         with open(path, 'r', encoding='utf-8') as file:
             for line in file:
@@ -289,3 +292,12 @@ class SkController:
                         dict_count[move_name] = []
                         dict_count[move_name].append(move_color)
         return True
+
+    def reset(self):
+        self.model.reset()
+
+    def remove_move(self, move_name):
+        self.model.remove_move(move_name)
+
+
+

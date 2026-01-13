@@ -12,8 +12,8 @@ public class PhueB_C extends InterStage {
 	}
 
 	public Phase phasenFunktion() {
-		_tk.k3.TurnOff (0);
-		_tk.k4.TurnOff (0);
+		_tk.k1.TurnOff (0);
+		_tk.k2.TurnOff (0);
 		
 		_tk.k5.TurnOn (5);
 		_tk.pf.TurnOn (8);

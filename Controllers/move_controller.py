@@ -8,38 +8,19 @@ class MoveController:
     This class represents controller of a traffic signal move.
     """
     def __init__(self, view, model):
-        """
-        Constructor.
-
-        :param view: Moves view.
-        :param model: Move model.
-        """
         self.view = view
         self.model = model
 
+        # Set View Methods
         self.view.add_move_method = self.add_move
         self.view.remove_move_method = self.remove_move
-        self.remove_from_matrix_method = None
         self.view.update_type_method = self.update_type
         self.view.update_min_green_method = self.update_min_green
         self.view.update_main_method = self.update_main
         self.view.get_min_green_tooltip_method = self.get_min_green
 
-    def get_min_green(self, move):
-        return str(move.min_green)
-
-    def update_names(self, old_name, new_name):
-        self.model.update_name(old_name, new_name)
-
-    def update_type(self, text,  move):
-        move.type=text
-
-    def update_min_green(self, move, time):
-        move.min_green = int(time)
-
-    def update_main(self, move, state):
-        move.is_main = True if state == 2 else False
-
+        #
+        self.global_remove_move = None
 
     def show_view(self):
         """
@@ -47,6 +28,26 @@ class MoveController:
         :return: None
         """
         self.view.show_view(self.model.all_moves, self.model.get_all_types())
+
+    def init_model(self, path):
+        """
+        This method set from path the moves in the app.
+
+        :param path: path to "InitTk1.java'
+        :return: None
+        """
+
+        pattern = move_pattern
+
+        with open(path, 'r', encoding='utf-8') as file:
+            for line in file:
+                line = line.strip()
+                if line.startswith("//") or not line.startswith("tk."):
+                    continue
+                match = pattern.match(line)
+                if match:
+                    phase, move_type, min_green, is_main = match.groups()
+                    self.model.add_move(phase, move_type, True if is_main == "true" else False, int(min_green))
 
     ####################################################################################
     #                                     CRUD                                         #
@@ -96,6 +97,24 @@ class MoveController:
         # refresh the view
         self.show_view()
 
+    def get_min_green(self, move):
+        return str(move.min_green)
+
+    def get_all_moves_names(self):
+        return self.model.get_all_moves_names()
+
+    def update_names(self, old_name, new_name):
+        self.model.update_name(old_name, new_name)
+
+    def update_type(self, text,  move):
+        move.type=text
+
+    def update_min_green(self, move, time):
+        move.min_green = int(time)
+
+    def update_main(self, move, state):
+        move.is_main = True if state == 2 else False
+
     def remove_move(self, table, btn):
         """
         This method remove a move.
@@ -107,15 +126,19 @@ class MoveController:
         for row in range(row_count):
             item = table.cellWidget(row, 0)
             if item is btn:
-                self.model.remove_move(table.cellWidget(row, 1).text())
+                move_name = table.cellWidget(row, 1).text()
+                self.model.remove_move(move_name)
+                self.global_remove_move(move_name)
                 table.removeRow(row)
                 break
 
-        # if self.model.remove_move(move_name):
-        #     self.remove_from_matrix_method(move_name)
-        #     self.show_view()
-        #     return
-        # QMessageBox.critical(self.view, "שגיאה", "שגיאה שלא אמורה להתרחש")
+    ####################################################################################
+    #                               Logic                                              #
+    ####################################################################################
+
+    def reset(self):
+        self.model.reset()
+
 
     ####################################################################################
     #                           Write to file                                          #
@@ -153,7 +176,6 @@ class MoveController:
         with open(path_init_tk1, 'w', encoding='utf-8') as f:
             f.writelines(code)
 
-
     def add_tk1_lines(self, new_lines):
         cars_line = "\tpublic Move "
         pedestrians_line = "\tpublic Move "
@@ -178,7 +200,6 @@ class MoveController:
         new_lines.append(cars_line)
         new_lines.append(pedestrians_line)
         new_lines.append(blinkers_line)
-
 
     def add_initTk1_lines(self, new_lines):
         car_lines = []
@@ -221,29 +242,4 @@ class MoveController:
         new_lines.extend(pedestrians_lines)
         new_lines.append("\n")
         new_lines.extend(blinkers_lines)
-
-    ####################################################################################
-    #                               Logic                                              #
-    ####################################################################################
-    def init_model(self, path):
-        """
-        This method set from path the moves in the app.
-
-        :param path: path to "InitTk1.java'
-        :return: None
-        """
-
-        self.model.reset()
-
-        pattern = move_pattern
-
-        with open(path, 'r', encoding='utf-8') as file:
-            for line in file:
-                line = line.strip()
-                if line.startswith("//") or not line.startswith("tk."):
-                    continue
-                match = pattern.match(line)
-                if match:
-                    phase, move_type, min_green, is_main = match.groups()
-                    self.model.add_move(phase, move_type, True if is_main == "true" else False, int(min_green))
 

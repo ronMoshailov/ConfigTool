@@ -57,3 +57,17 @@ class PhueModel:
         self.all_phue.clear()
         self.phue_paths.clear()
 
+    def update_names(self, old_name, new_name):
+        for phue in self.all_phue:
+            for transition in phue.transitions:
+                if transition.move == old_name:
+                    transition.move = new_name
+
+    def remove_move(self, move_name):
+        for phue in self.all_phue:
+            for transition in phue.transitions:
+                if transition.move == move_name:
+                    phue.transitions.remove(transition)
+
+
+

@@ -27,7 +27,7 @@ class MatrixModel:
                 return
         self.all_cells.append(MatrixCell(out_name, in_name, val))
 
-    def reset_model(self):
+    def reset(self):
         self.all_cells.clear()
 
     def is_cell_exist(self, name_out, name_in):
@@ -42,3 +42,7 @@ class MatrixModel:
                 cell.move_in = new_name
             if cell.move_out == old_name:
                 cell.move_out = new_name
+
+    def remove_move(self, move_name):
+        # O(n)
+        self.all_cells = [cell for cell in self.all_cells if cell.move_out != move_name and cell.move_in != move_name]

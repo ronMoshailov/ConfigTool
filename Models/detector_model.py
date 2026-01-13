@@ -43,3 +43,8 @@ class DetectorModel:
 
     def reset(self):
         self.all_detectors.clear()
+
+    def update_names(self, old_name, new_name):
+        for detector in self.all_detectors:
+            if detector.move_name == old_name:
+                detector.move_name = new_name

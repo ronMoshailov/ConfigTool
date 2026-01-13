@@ -58,7 +58,7 @@ class PhueView(QWidget):
     def hide_view(self):
         self.hide()
 
-    def show_view(self, all_phue, all_images, all_moves):
+    def show_view(self, all_phue, all_images, all_moves_names):
         self._reset()
 
         # fill the combos with values
@@ -74,7 +74,7 @@ class PhueView(QWidget):
         out_in_images = [(inter_stage.image_out, inter_stage.image_in, inter_stage.length, inter_stage.transitions) for inter_stage in all_phue]
 
         for img_out, img_in, length, transition in out_in_images:
-            wrap = self._init_table(img_out, img_in, length, transition, all_moves)
+            wrap = self._init_table(img_out, img_in, length, transition, all_moves_names)
             self.table_wrap_list.append(wrap)
             self.tables_layout.addWidget(wrap)
         self.show()
@@ -133,7 +133,7 @@ class PhueView(QWidget):
 
         return layout
 
-    def _init_table(self, img_out, img_in, length, transitions, all_moves):
+    def _init_table(self, img_out, img_in, length, transitions, all_moves_names):
         """
         This method initialize the widget of the table (title, table with values and signals)
 
@@ -169,7 +169,7 @@ class PhueView(QWidget):
         for row, transition in enumerate(transitions):
             # col 1
             combo_widget = QComboBox()
-            combo_widget.addItems([move.name for move in all_moves])
+            combo_widget.addItems([name for name in all_moves_names])
             combo_widget.setCurrentText(transition.move)  # או combo_widget.setCurrentIndex(1)
 
             remove_btn = QPushButton("❌")
@@ -200,7 +200,7 @@ class PhueView(QWidget):
         length_layout.addWidget(len_label)
 
         add_action_btn = QPushButton("הוסף פעולה")
-        add_action_btn.clicked.connect(lambda _, t=tbl: self._add_row(t, all_moves))
+        add_action_btn.clicked.connect(lambda _, t=tbl: self._add_row(t, all_moves_names))
         add_action_btn.setObjectName("add_action_button")
 
         remove_btn = QPushButton("מחק מעבר")

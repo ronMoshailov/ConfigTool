@@ -10,16 +10,14 @@ class ImageController:
     def __init__(self, view, model):
         self.view = view
         self.model = model
-        self.all_moves = None
+        self.all_moves_names = None
 
         self.view.add_image_method = self.add_image
         self.view.remove_image_method = self.remove_image
         self.view.update_image_method = self.update_image
         self.view.on_sp_changed_method = self.on_sp_changed_method
 
-    def init_model(self, path, all_moves):
-
-        self.model.reset()
+    def init_model(self, path, all_moves_names):
 
         pattern = image_pattern
 
@@ -42,15 +40,15 @@ class ImageController:
 
                     collection = []
 
-                    for move in all_moves:
-                        if move.name in image_moves:
-                            collection.append(move)
+                    for move_name in all_moves_names:
+                        if move_name in image_moves:
+                            collection.append(move_name)
                     self.model.new_image(image_name, image_num, int(image_skeleton), int(image_sp), is_police, collection)
                     # self.image_model.new_image(image_name, image_num, image_skeleton, image_sp, is_police)
 
-    def show_view(self, all_moves):
-        self.all_moves = all_moves
-        self.view.show_view(self.model.all_images, self.all_moves)
+    def show_view(self, all_moves_names):
+        self.all_moves_names = all_moves_names
+        self.view.show_view(self.model.all_images, self.all_moves_names)
 
     def on_sp_changed_method(self, image_name, sp):
         for image in self.model.all_images:
@@ -60,15 +58,18 @@ class ImageController:
 
     def add_image(self, name):
         name = name.capitalize()
-        name = "EQA" if name == "Eqa" else name
+        name = "EQA" if name.lower == "Eqa" else name
 
         if not self.model.new_image(name, (len(self.model.all_images) - 1) * 10, 1, len(self.model.all_images)):
             QMessageBox.critical(self.view, "שגיאה", "התמונה כבר קיימת במערכת")
-        self.show_view(self.all_moves)
+        self.show_view(self.all_moves_names)
 
     def remove_image(self, name):
         self.model.remove_image(name)
-        self.show_view(self.all_moves)
+        self.show_view(self.all_moves_names)
+
+    def remove_move(self, move_name):
+        self.model.remove_move(move_name)
 
     def update_image(self, table_dict):
         for image_name, table in table_dict.items():
@@ -84,12 +85,12 @@ class ImageController:
                 if checkbox and checkbox.isChecked():
                     label = table.cellWidget(row, 0)
                     if label:
-                        for move in self.all_moves:
-                            if move.name == label.text():
-                                results.append(move)
+                        for move_name in self.all_moves_names:
+                            if move_name == label.text():
+                                results.append(move_name)
                                 break
             self.model.update_image(image_name, skeleton_num, image_number, results)
-        self.show_view(self.all_moves)
+        self.show_view(self.all_moves_names)
         QMessageBox.information(self.view, "הודעה", "העדכון הצליח")
 
 
@@ -139,8 +140,8 @@ class ImageController:
                             line += f"{image.skeleton}"
                             line += " }"
                         line += " , new int[] { 0 } , false      , new Move[] {"
-                        for move_name in image.move_list:
-                            line += f"tk.{move_name.name}, "
+                        for move_name in image.move_names_list:
+                            line += f"tk.{move_name}, "
                         line = line[:-2] + "});\n"
                         break
 
@@ -190,8 +191,8 @@ class ImageController:
             line += f"  {str(image.is_police).lower()}"                      # tk.PhEQA = new PhaseEQA (tk, "PhaseEQA", 11, 3, 1, true
             line += " " * (84 - len(line))                      # add spaces
             line += ", new Move[] {"
-            for move_name in image.move_list:
-                line += f"tk.{move_name.name}, "
+            for move_name in image.move_names_list:
+                line += f"tk.{move_name}, "
             line = line[:-2] + "});\n"
             code.append(line)                                   #
 
@@ -319,4 +320,10 @@ class ImageController:
         file_path = path_dst / f"Phase{image_name}.java"
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(line)
+
+    def update_names(self, old_name, new_name):
+        self.model.update_names(old_name, new_name)
+
+    def reset(self):
+        self.model.reset()
 

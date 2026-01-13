@@ -1,22 +1,22 @@
 class Image:
-    def __init__(self, name: str, num: str, skeleton: str, sp: str, is_police: bool, move_list: list):
+    def __init__(self, name: str, num: str, skeleton: str, sp: str, is_police: bool, move_names_list: list):
         self.image_name = name
         self.image_num = num
         self.skeleton = skeleton
         self.sp = sp
         self.is_police = is_police
-        self.move_list = move_list
+        self.move_names_list = move_names_list
 
 
 class ImageModel:
     def __init__(self):
         self.all_images = []
 
-    def new_image(self, name, num, skeleton, sp, is_police = False, move_list = []):
+    def new_image(self, name, num, skeleton, sp, is_police = False, move_names_list = []):
         for image in self.all_images:
             if image.image_name == name:
                 return False
-        image = Image(name, num, skeleton, sp, is_police, move_list)
+        image = Image(name, num, skeleton, sp, is_police, move_names_list)
         self.all_images.append(image)
         return True
 
@@ -30,10 +30,10 @@ class ImageModel:
                 self.all_images.remove(image)
                 return
 
-    def update_image(self, name, skeleton_num, image_number, move_list):
+    def update_image(self, name, skeleton_num, image_number, move_names_list):
         for image in self.all_images:
             if image.image_name == name:
-                image.move_list = move_list
+                image.move_names_list = move_names_list
                 image.image_num = image_number
                 image.skeleton = skeleton_num
                 return
@@ -66,5 +66,16 @@ class ImageModel:
     def reset(self):
         self.all_images.clear()
 
+    def update_names(self, old_name, new_name):
+        for image in self.all_images:
+            for move_name in image.move_names_list:
+                if move_name == old_name:
+                    move_name = new_name
 
+    def remove_move(self, new_move_name):
+        for image in self.all_images:
+            for move_name in image.move_names_list:
+                if move_name == new_move_name:
+                    image.move_names_list.remove(move_name)
+                    continue
 

@@ -24,8 +24,6 @@ class DetectorController:
         :return: None
         """
 
-        self.model.reset()
-
         pattern = detectors_pattern
 
         with open(path, "r", encoding="utf-8") as f:
@@ -75,7 +73,6 @@ class DetectorController:
                 return
 
     def update_detectors(self, tbl):
-        self.model.reset()
 
         for row in range(tbl.rowCount()):
             # col 1 – var_name (QTableWidgetItem)
@@ -234,3 +231,9 @@ class DetectorController:
     # def get_lines(self, new_lines):
     #     for detector in self.model.all_detectors:
     #         new_lines.append(f"tk.{detector.name} = new DDetector(\"{detector.name.upper()}\", tk.k1, true, true, true);")
+
+    def update_names(self, old_name, new_name):
+        self.model.update_names(old_name, new_name)
+
+    def reset(self):
+        self.model.reset()
