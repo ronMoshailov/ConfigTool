@@ -15,6 +15,7 @@ class PhueController:
         self.view.add_phue_method = self.add_phue
         self.view.remove_phue_method = self.remove_phue
         self.view.update_phue_method = self.update_phue
+        self.view.update_move_method = self.update_names
 
         self.all_images = None
         self.all_moves_names = None

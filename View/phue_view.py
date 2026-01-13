@@ -17,6 +17,7 @@ class PhueView(QWidget):
         self.add_phue_method = None
         self.remove_phue_method = None
         self.update_phue_method = None
+        self.update_move_method = None
 
         # =============== Data =============== #
         self.table_wrap_list = []
@@ -171,6 +172,7 @@ class PhueView(QWidget):
             combo_widget = QComboBox()
             combo_widget.addItems([name for name in all_moves_names])
             combo_widget.setCurrentText(transition.move)  # או combo_widget.setCurrentIndex(1)
+            combo_widget.currentTextChanged.connect(lambda text, m=transition.move: self.update_move_method(text, m))
 
             remove_btn = QPushButton("❌")
             remove_btn.clicked.connect(lambda _, t=tbl: self._remove_row(t))

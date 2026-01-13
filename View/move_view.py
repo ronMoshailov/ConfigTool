@@ -85,7 +85,7 @@ class MoveView(QWidget):
             combo = QComboBox()
             combo.addItems(all_types)
             combo.setCurrentText(move_type)
-            combo.currentTextChanged.connect(lambda text, m=move: self.update_type_method(text, m))
+            # combo.currentTextChanged.connect(lambda text, m=move: self.update_type_method(m, text))
             self.tbl.setCellWidget(idx, 2, combo)
 
             # add detector name (col 3)
