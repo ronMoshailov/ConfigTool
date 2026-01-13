@@ -12,7 +12,7 @@ class MoveController:
         self.model = model
 
         # Set View Methods
-        self.view.add_move_method = self.add_move
+        self.view.add_move_method = self.add_new_move
         self.view.remove_move_method = self.remove_move
         self.view.update_type_method = self.update_type
         self.view.update_min_green_method = self.update_min_green
@@ -95,6 +95,10 @@ class MoveController:
             return
 
         # refresh the view
+        self.show_view()
+
+    def add_new_move(self):
+        self.model.add_move("kNewMove", "Traffic", False, 0)
         self.show_view()
 
     def get_min_green(self, move):

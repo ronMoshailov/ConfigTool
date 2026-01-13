@@ -125,7 +125,6 @@ class MatrixController:
             if (move_in, move_out) not in pairs:
                 QMessageBox.critical(self.view, "הודעה", f"חסר תא במטריצה ב-[{move_in}, {move_out}]")
                 return False
-
         return True
 
     def update_names(self, old_name, new_name):

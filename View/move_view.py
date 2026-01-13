@@ -25,6 +25,7 @@ class MoveView(QWidget):
         self.tbl.verticalHeader().setDefaultSectionSize(100)
 
         # Controller methods
+        self.add_move_method = None
         self.remove_move_method = None
         self.update_detectors_method = None
         self.update_names_method = None
@@ -34,6 +35,7 @@ class MoveView(QWidget):
 
         # button
         add_detector_btn = QPushButton("הוסף מופע")
+        add_detector_btn.clicked.connect(lambda: self.add_move_method())
         add_detector_btn.setObjectName("add_button")
 
         # layout

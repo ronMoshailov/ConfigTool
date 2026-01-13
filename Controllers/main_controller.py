@@ -234,9 +234,7 @@ class MainController:
         self.schedule_controller.init_model(self.path_manager.path_init_tk1)                                        # init schedule
         self.parameters_ta_controller.init_model(self.path_manager.path_parameters_ta, len(self.image_model.all_images)) # init parameters ta
 
-    ####################################################################################
-    #                           Write to file                                          #
-    ####################################################################################
+    # ============================== Write to file ============================== #
     def write_to_code(self):
         if not self.matrix_controller.is_matrix_valid():
             return
