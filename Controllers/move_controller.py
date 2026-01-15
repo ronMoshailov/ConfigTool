@@ -119,17 +119,17 @@ class MoveController:
             self.model.update_name(old_name, new_name)
             if new_name.startswith("B"):
                 self.remove_move_from_matrix_method(new_name)
+                self.update_min_green(new_name, 0)
             self.show_view()
         except Exception as e:
             QMessageBox.critical(self.view, "שגיאה", str(e))
             self.show_view()
 
-
     def update_type(self, move_name,  new_type):
         self.model.update_type(move_name,  new_type)
 
     def update_min_green(self, move, time):
-        move.min_green = int(time)
+        self.model.update_min_green(move, time)
 
     def update_main(self, move, state):
         move.is_main = True if state == 2 else False

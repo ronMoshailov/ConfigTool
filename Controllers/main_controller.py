@@ -64,7 +64,6 @@ class MainController:
         self.navigator_view     = NavigatorView(self.show_view, self.print_all)
         self.settings_view      = SettingsView()
         self.detector_view      = DetectorView()
-        # self.min_green_view   = MinGreenView()
         self.matrix_view        = MatrixView()
         self.move_view          = MoveView()
         self.sk_view            = SkView()
@@ -85,7 +84,7 @@ class MainController:
         self.detector_controller        = DetectorController(self.detector_view, self.detector_model)
         self.parameters_ta_controller   = ParametersTaController(self.parameters_ta_view, self.parameters_ta_model)
 
-        #
+        # =============== managers =============== #
         self.path_manager = PathManager()
 
         # =============== layout =============== #
