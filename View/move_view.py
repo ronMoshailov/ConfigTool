@@ -22,7 +22,7 @@ class MoveView(QWidget):
             header.setSectionResizeMode(col, QHeaderView.ResizeMode.Stretch) # set each column to stretch
 
         self.tbl.verticalHeader().setVisible(False)
-        self.tbl.verticalHeader().setDefaultSectionSize(100)
+        self.tbl.verticalHeader().setDefaultSectionSize(50)
 
         # Controller methods
         self.add_move_method = None
@@ -85,7 +85,7 @@ class MoveView(QWidget):
             combo = QComboBox()
             combo.addItems(all_types)
             combo.setCurrentText(move_type)
-            # combo.currentTextChanged.connect(lambda text, m=move: self.update_type_method(m, text))
+            combo.currentTextChanged.connect(lambda text, m=move: self.update_type_method(m.name, text))
             self.tbl.setCellWidget(idx, 2, combo)
 
             # add detector name (col 3)

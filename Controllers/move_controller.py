@@ -19,6 +19,8 @@ class MoveController:
         self.view.update_main_method = self.update_main
         self.view.get_min_green_tooltip_method = self.get_min_green
 
+        self.remove_move_from_matrix_method = None
+
         #
         self.global_remove_move = None
 
@@ -98,7 +100,7 @@ class MoveController:
         self.show_view()
 
     def add_new_move(self):
-        self.model.add_move("kNewMove", "Traffic", False, 0)
+        self.model.add_move("k0", "Traffic", False, 0)
         self.show_view()
 
     def get_min_green(self, move):
@@ -108,10 +110,23 @@ class MoveController:
         return self.model.get_all_moves_names()
 
     def update_names(self, old_name, new_name):
-        self.model.update_name(old_name, new_name)
+        if old_name == new_name:
+            return
+        try:
+            if not new_name.startswith("k") and not new_name.startswith("p") and not new_name.startswith("B"):
+                raise Exception("מופע חייב להתחיל עם k/p/B")
 
-    def update_type(self, text,  move):
-        move.type=text
+            self.model.update_name(old_name, new_name)
+            if new_name.startswith("B"):
+                self.remove_move_from_matrix_method(new_name)
+            self.show_view()
+        except Exception as e:
+            QMessageBox.critical(self.view, "שגיאה", str(e))
+            self.show_view()
+
+
+    def update_type(self, move_name,  new_type):
+        self.model.update_type(move_name,  new_type)
 
     def update_min_green(self, move, time):
         move.min_green = int(time)

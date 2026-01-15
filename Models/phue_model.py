@@ -6,8 +6,8 @@ class Phue:
         self.transitions = transitions
 
 class Transition:
-    def __init__(self, move, state, duration):
-        self.move = move
+    def __init__(self, move_name, state, duration):
+        self.move_name = move_name
         self.state = state
         self.duration = duration
 
@@ -60,14 +60,45 @@ class PhueModel:
     def update_names(self, old_name, new_name):
         for phue in self.all_phue:
             for transition in phue.transitions:
-                if transition.move == old_name:
-                    transition.move = new_name
+                if transition.move_name == old_name:
+                    transition.move_name = new_name
 
     def remove_move(self, move_name):
         for phue in self.all_phue:
             for transition in phue.transitions:
-                if transition.move == move_name:
+                if transition.move_name == move_name:
                     phue.transitions.remove(transition)
+
+    def update_duration(self, img_out, img_in, move_name, duration):
+        for phue in self.all_phue:
+            if phue.image_out == img_out and phue.image_in == img_in:
+                for t in phue.transitions:
+                    if t.move_name == move_name:
+                        t.duration = duration
+
+    def update_move_name(self, image_out, image_in, old_name, new_name):
+        transition_to_change = None
+
+        for phue in self.all_phue:
+            if phue.image_out == image_out and phue.image_in == image_in:
+                for t in phue.transitions:
+                    if t.move_name == old_name:
+                        transition_to_change = t
+                    elif t.move_name == new_name:
+                        raise ValueError("המופע כבר קיים במעבר")
+                transition_to_change.move_name = new_name
+                return
+
+    def update_move_color(self, image_out, image_in, move_name):
+        for phue in self.all_phue:
+            if phue.image_out == image_out and phue.image_in == image_in:
+                for t in phue.transitions:
+                    if t.move_name == move_name:
+                        if t.state == "TurnOn":
+                            t.state = "TurnOff"
+                        else:
+                            t.state = "TurnOn"
+
 
 
 

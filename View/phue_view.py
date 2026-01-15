@@ -17,8 +17,9 @@ class PhueView(QWidget):
         self.add_phue_method = None
         self.remove_phue_method = None
         self.update_phue_method = None
-        self.update_move_method = None
+        self.update_transition_move_method = None
         self.update_duration_method = None
+        self.update_color_method = None
 
         # =============== Data =============== #
         self.table_wrap_list = []
@@ -38,17 +39,12 @@ class PhueView(QWidget):
         # =============== Scroll =============== #
         self.scroll_area = init_scroll(self.tables_layout)
 
-        # =============== QPushButton =============== #
-        btn = QPushButton("עדכן")
-        btn.clicked.connect(lambda _: self.update_phue_method(self.table_wrap_list))
-        btn.setObjectName("update_button")
 
         # =============== Root Layout =============== #
         root_layout.addLayout(top_layout)
         root_layout.addWidget(line)
         root_layout.addLayout(combo_layout)
         root_layout.addWidget(self.scroll_area)
-        root_layout.addWidget(btn)
 
         # =============== Self =============== #
         self.setLayout(root_layout)
@@ -159,7 +155,7 @@ class PhueView(QWidget):
         # הוספת כותרות לעמודות (לא חובה, אבל נוח)
         tbl.setHorizontalHeaderLabels(["Move", "State", "Duration", "Remove"])
         # tbl.verticalHeader().setVisible(False)
-        tbl.cellClicked.connect(self._toggle_state)
+        tbl.cellClicked.connect(lambda r, c, image_out = img_out, image_in = img_in: self._toggle_state(r, c, image_out, image_in))
         tbl.cellChanged.connect(self._validate_number_column)
 
         # set header
@@ -172,8 +168,8 @@ class PhueView(QWidget):
             # col 1
             combo_widget = QComboBox()
             combo_widget.addItems([name for name in all_moves_names])
-            combo_widget.setCurrentText(transition.move)  # או combo_widget.setCurrentIndex(1)
-            combo_widget.currentTextChanged.connect(lambda text, m=transition.move: self.update_move_method(m, text))
+            combo_widget.setCurrentText(transition.move_name)  # או combo_widget.setCurrentIndex(1)
+            combo_widget.currentTextChanged.connect(lambda text, image_out = img_out, image_in = img_in, m=transition.move_name: self.update_transition_move_method(image_out, image_in, m, text))
             tbl.setCellWidget(row, 0, combo_widget)
 
             # col 2
@@ -186,7 +182,7 @@ class PhueView(QWidget):
             duration_table_widget = QLineEdit(str(transition.duration))
             # duration_table_widget.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
             tbl.setCellWidget(row, 2, duration_table_widget)
-            # duration_table_widget.editingFinished.connect(lambda le=duration_table_widget, m=transition.move: self.update_duration_method(m, le.text()))
+            duration_table_widget.editingFinished.connect(lambda image_out = img_out, image_in = img_in, le=duration_table_widget, m=transition.move_name: self.update_duration_method(img_out, img_in, m, le.text()))
 
             # col 4
             remove_btn = QPushButton("❌")
@@ -277,7 +273,7 @@ class PhueView(QWidget):
 
         self.table_wrap_list.clear()  # לרוקן לגמרי
 
-    def _toggle_state(self, row, column):
+    def _toggle_state(self, row, column, image_out, image_in):
         # אם זו העמודה של מצב (במקרה שלך 1)
         if column != 1:
             return
@@ -287,12 +283,16 @@ class PhueView(QWidget):
         if not item:
             return
 
+        # get move name
+        move_name = tbl.cellWidget(row, 0).currentText()
         # מחליף בין הצבעים
         current = item.text()
         if current == "🔴":
             item.setText("🟢")
+            self.update_color_method(image_out, image_in, move_name)
         else:
             item.setText("🔴")
+            self.update_color_method(image_out, image_in, move_name)
 
     def _remove_row(self, tbl):
         btn = self.sender()  # הכפתור שנלחץ

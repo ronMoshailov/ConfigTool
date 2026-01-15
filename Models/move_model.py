@@ -40,23 +40,9 @@ class MoveModel:
 
         # create move
         new_move  = _Move(name, move_type, is_main, min_green)
+        self.all_moves.append(new_move)
+        self._sort_moves()
 
-        # data
-        priority_map = {"k": 0, "p": 1, "B": 2} # priority map
-        new_priority = priority_map[new_move.name[0]] # priority of the move
-        insert_index = len(self.all_moves)  # set default index in the end
-
-        # check which index need to be placed
-        for i, move in enumerate(self.all_moves):
-            existing_priority = priority_map[move.name[0]]
-            if existing_priority > new_priority:
-                insert_index = i
-                break
-
-        # add the move to the model
-        self.all_moves.insert(insert_index, new_move)
-
-        # return
         return True
 
     def is_move_exist(self, move_name):
@@ -108,7 +94,40 @@ class MoveModel:
         return ["Traffic", "Traffic_Flashing", "Pedestrian", "Blinker_Conditional", "Blinker"]
 
     def update_name(self, old_name, new_name):
+        move_to_change = None
+
         for move in self.all_moves:
             if move.name == old_name:
-                move.name = new_name
+                if not move_to_change:
+                    move_to_change = move
+            if move.name == new_name:
+                raise Exception("המופע כבר קיים")
+        move_to_change.name = new_name
+        if move_to_change.name.startswith("k") and (move_to_change.type != "Traffic" and move_to_change.type != "Traffic_Flashing"):
+            self.update_type(move_to_change.name, "Traffic")
+        if move_to_change.name.startswith("p") and move_to_change.type != "Pedestrian":
+            self.update_type(move_to_change.name, "Pedestrian")
+        if move_to_change.name.startswith("B") and (move_to_change.type != "Blinker_Conditional" and move_to_change.type != "Blinker"):
+            self.update_type(move_to_change.name, "Blinker")
+
+        self._sort_moves()
+        return
+
+    def _sort_moves(self):
+        traffic_list = [m for m in self.all_moves if m.name.startswith("k")]
+        pedestrian_list = [m for m in self.all_moves if m.name.startswith("p")]
+        blinker_list = [m for m in self.all_moves if m.name.startswith("B")]
+
+        traffic_list = sorted(traffic_list, key=lambda m: m.name)
+        pedestrian_list = sorted(pedestrian_list, key=lambda m: m.name)
+        blinker_list = sorted(blinker_list, key=lambda m: m.name)
+
+        self.all_moves = traffic_list + pedestrian_list + blinker_list
+
+    def update_type(self, move_name,  new_type):
+        for move in self.all_moves:
+            if move.name == move_name:
+                move.type = new_type
                 return
+
+

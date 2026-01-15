@@ -119,6 +119,9 @@ class MainController:
         self.navigator_view.write_to_code_method = self.write_to_code
         self.move_controller.global_remove_move = self.remove_move
 
+        #
+        self.move_controller.remove_move_from_matrix_method = self.matrix_controller.remove_move
+
     def show_view(self, act):
         """
         Determines which view should be displayed based on the given action.
@@ -341,7 +344,7 @@ class MainController:
         for phue in self.phue_model.all_phue:
             out.append(f"{phue.image_out:<4} → {phue.image_in:<4}, length: {phue.length:<3}")
             for tran in phue.transitions:
-                out.append(f"move: {tran.move:<4}, state: {tran.state:<5}, duration: {tran.duration:<5}")
+                out.append(f"move: {tran.move_name:<4}, state: {tran.state:<5}, duration: {tran.duration:<5}")
             out.append("")
 
         # out.append("\n============================== Parameters ==============================")

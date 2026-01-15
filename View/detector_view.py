@@ -1,7 +1,7 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont, QIntValidator
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QScrollArea, QPushButton, QLabel, QRadioButton, \
-    QLineEdit, QButtonGroup, QFrame, QTableWidget, QTableWidgetItem, QComboBox
+    QLineEdit, QButtonGroup, QFrame, QTableWidget, QTableWidgetItem, QComboBox, QHeaderView
 
 from Config.special import clear_widget_from_layout
 from Config.style import detector_panel_style
@@ -15,16 +15,14 @@ class DetectorView(QWidget):
         self.tbl = QTableWidget(0, 6, self)
         self.tbl.setHorizontalHeaderLabels(["מחיקה", "שם משתנה", "סוג גלאי", "שם גלאי", "מופע תנועה", "יח' הארכה"])
 
-        self.tbl.setColumnWidth(0,  50)  # שם משתנה
-        self.tbl.setColumnWidth(1, 100)  # סוג גלאי
-        self.tbl.setColumnWidth(2, 200)  # שם גלאי
-        self.tbl.setColumnWidth(3, 100)  # מופע תנועה
-        self.tbl.setColumnWidth(4, 200)  # יח' הארכה
-        self.tbl.setColumnWidth(5, 100)  # יח' הארכה
+        header = self.tbl.horizontalHeader()                            # get horizontal header
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)    # set fixed width to column 0
+
+        self.tbl.setColumnWidth(0, 80)                          # set column to width of 80px
+        for col in range(1, self.tbl.columnCount()):
+            header.setSectionResizeMode(col, QHeaderView.ResizeMode.Stretch) # set each column to stretch
 
         self.tbl.verticalHeader().setVisible(False)
-        # self.tbl.horizontalHeader().setStretchLastSection(True) # עמודה מסוימת מתרחבת אוטומטית
-        # self.tbl.resizeColumnsToContents() # width by content
         self.tbl.verticalHeader().setDefaultSectionSize(50)
 
         #
@@ -36,11 +34,7 @@ class DetectorView(QWidget):
         add_detector_btn = QPushButton("הוסף גלאי")
         add_detector_btn.setObjectName("add_button")
 
-        update_detector_btn = QPushButton("עדכן")
-        update_detector_btn.setObjectName("update_button")
-
         btn_layout.addWidget(add_detector_btn)
-        btn_layout.addWidget(update_detector_btn)
 
         # layout
         self.root_layout = QVBoxLayout()
@@ -53,7 +47,6 @@ class DetectorView(QWidget):
         #
 
         add_detector_btn.clicked.connect(self.add_detector)
-        update_detector_btn.clicked.connect(lambda: self.update_detectors_method(self.tbl))
 
         #
         self.setStyleSheet(detector_panel_style)

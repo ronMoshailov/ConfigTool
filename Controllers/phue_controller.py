@@ -15,8 +15,9 @@ class PhueController:
         self.view.add_phue_method = self.add_phue
         self.view.remove_phue_method = self.remove_phue
         self.view.update_phue_method = self.update_phue
-        self.view.update_move_method = self.update_transition_move
+        self.view.update_transition_move_method = self.update_transition_move
         self.view.update_duration_method = self.update_duration
+        self.view.update_color_method = self.update_color
 
         self.all_images = None
         self.all_moves_names = None
@@ -233,8 +234,20 @@ class PhueController:
     def update_names(self, old_name, new_name):
         self.model.update_names(old_name, new_name)
 
-    def update_transition_move(self, old_name, new_name):
-        self.model.update_names(old_name, new_name)
+    def update_transition_move(self, image_out, image_in, old_name, new_name):
+        try:
+            self.model.update_move_name(image_out, image_in, old_name, new_name)
+            self.show_view(self.all_images, self.all_moves_names)
+        except Exception as e:
+            QMessageBox.critical(self.view, "שגיאה", f"{e}")
+            self.show_view(self.all_images, self.all_moves_names)
+
+    def update_duration(self, img_out, img_in, move_name, duration):
+        self.model.update_duration(img_out, img_in, move_name, duration)
+
+    def update_color(self, img_out, img_in, move_name):
+        self.model.update_move_color(img_out, img_in, move_name)
         self.show_view(self.all_images, self.all_moves_names)
 
-    # def update_duration(self):
+
+
