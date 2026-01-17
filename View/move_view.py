@@ -75,7 +75,7 @@ class MoveView(QWidget):
             self.tbl.setCellWidget(idx, 0, remove_btn)
 
 
-            # name (col 1)
+            # move name (col 1)
             line_edit = QLineEdit()
             line_edit.setText(move_name)  # הערך ההתחלתי
             line_edit.editingFinished.connect(lambda le=line_edit, m=move: self.update_names_method(m.name, le.text()))
@@ -88,7 +88,7 @@ class MoveView(QWidget):
             combo.currentTextChanged.connect(lambda text, m=move: self.update_type_method(m.name, text))
             self.tbl.setCellWidget(idx, 2, combo)
 
-            # add detector name (col 3)
+            # is main (col 3)
             checkbox = QCheckBox()
             checkbox.setChecked(move_is_main)
             checkbox.stateChanged.connect(lambda state, m=move: self.update_main_method(m, state))
@@ -104,7 +104,7 @@ class MoveView(QWidget):
             # min green (col 4)
             line_edit = QLineEdit()
             line_edit.setText(str(move_min_green))  # הערך ההתחלתי
-            line_edit.editingFinished.connect(lambda le=line_edit, m=move: self.update_min_green_method(m, le.text()))
+            line_edit.editingFinished.connect(lambda le=line_edit, m=move.name: self.update_min_green_method(m, le.text()))
             self.tbl.setCellWidget(idx, 4, line_edit)
 
         self.show()
