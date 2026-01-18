@@ -20,7 +20,6 @@ class SettingsController(QWidget):
         self.view.update_version_method         = self.model.update_version
         self.view.update_first_cycle_ext_method = self.model.update_first_ext
 
-
     def init_model(self, path):
         # data
         pattern = settings_pattern
@@ -69,6 +68,7 @@ class SettingsController(QWidget):
     def hide_view(self):
         self.view.show_view()
 
+    # ============================== CRUD ============================== #
     def update_model(self, programmer_name, junction_num, junction_name, version, date, first_ext):
         self.model.programmer_name = programmer_name
         self.model.junction_num = junction_num
@@ -77,6 +77,7 @@ class SettingsController(QWidget):
         self.model.date = date
         self.model.first_ext = first_ext
 
+    # ============================== Logic ============================== #
     def change_state(self, btn):
         selected_btn = self.sender()  # מחזיר את ה־QPushButton שירה את הסיגנל
 
@@ -89,6 +90,10 @@ class SettingsController(QWidget):
         for btn in btn_list:
             btn.setCheckable(True)
 
+    def reset(self):
+        self.model.reset()
+
+    # ============================== Write To File ============================== #
     def write_to_file(self, path):
         # data
         code = []
@@ -135,5 +140,4 @@ class SettingsController(QWidget):
         # with open(path, 'w', encoding='utf-8') as f:
         #     f.writelines(code)
 
-    def reset(self):
-        self.model.reset()
+

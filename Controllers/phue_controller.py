@@ -1,6 +1,6 @@
 import re
 
-from PyQt6.QtWidgets import QWidget, QMessageBox
+from PyQt6.QtWidgets import QMessageBox
 from pathlib import Path
 
 import Config.constants
@@ -58,6 +58,12 @@ class PhueController:
                 length = match.group(3)
                 self.model.update_length(img_out, img_in, int(length))
 
+    def show_view(self, all_images, all_moves_names):
+        self.all_images = all_images
+        self.all_moves_names = all_moves_names
+        self.view.show_view(self.model.all_phue, self.all_images, self.all_moves_names)
+
+    # ============================== CRUD ============================== #
     def add_phue(self, img_out, img_in):
         if img_out == img_in:
             QMessageBox.critical(self.view, "שגיאה", f"מעבר לא תקין [{img_out} -> {img_in}]")
@@ -119,10 +125,29 @@ class PhueController:
         # success, message = self.data_controller.update_inter_stage(self.table_wrap_list)
         QMessageBox.information(self.view, "הודעה", "העדכון הצליח")
 
-    def show_view(self, all_images, all_moves_names):
-        self.all_images = all_images
-        self.all_moves_names = all_moves_names
-        self.view.show_view(self.model.all_phue, self.all_images, self.all_moves_names)
+    def update_names(self, old_name, new_name):
+        self.model.update_names(old_name, new_name)
+
+    def update_transition_move(self, image_out, image_in, old_name, new_name):
+        try:
+            self.model.update_move_name(image_out, image_in, old_name, new_name)
+            self.show_view(self.all_images, self.all_moves_names)
+        except Exception as e:
+            QMessageBox.critical(self.view, "שגיאה", f"{e}")
+            self.show_view(self.all_images, self.all_moves_names)
+
+    def update_duration(self, img_out, img_in, move_name, duration):
+        self.model.update_duration(img_out, img_in, move_name, duration)
+
+    def update_color(self, img_out, img_in, move_name):
+        self.model.update_move_color(img_out, img_in, move_name)
+        self.show_view(self.all_images, self.all_moves_names)
+
+    # ============================== Logic ============================== #
+    def reset(self):
+        self.model.reset()
+
+    # ============================== Write To File ============================== #
 
     def write_to_file(self, init_tk1_dst, phue_folder_dst):
         # create files
@@ -194,7 +219,7 @@ class PhueController:
 
         for transition in transitions:
             if transition.state == "TurnOff":
-                line += f"\t\t_tk.{transition.move}.TurnOff("
+                line += f"\t\t_tk.{transition.move_name}.TurnOff("
                 if int(transition.duration) >= 10:
                     line += f"{transition.duration});\n"
                 else:
@@ -204,7 +229,7 @@ class PhueController:
 
         for transition in transitions:
             if transition.state == "TurnOn":
-                line += f"\t\t_tk.{transition.move}.TurnOn ("
+                line += f"\t\t_tk.{transition.move_name}.TurnOn ("
                 if int(transition.duration) >= 10:
                     line += f"{transition.duration});\n"
                 else:
@@ -228,26 +253,7 @@ class PhueController:
 
         return line
 
-    def reset(self):
-        self.model.reset()
 
-    def update_names(self, old_name, new_name):
-        self.model.update_names(old_name, new_name)
-
-    def update_transition_move(self, image_out, image_in, old_name, new_name):
-        try:
-            self.model.update_move_name(image_out, image_in, old_name, new_name)
-            self.show_view(self.all_images, self.all_moves_names)
-        except Exception as e:
-            QMessageBox.critical(self.view, "שגיאה", f"{e}")
-            self.show_view(self.all_images, self.all_moves_names)
-
-    def update_duration(self, img_out, img_in, move_name, duration):
-        self.model.update_duration(img_out, img_in, move_name, duration)
-
-    def update_color(self, img_out, img_in, move_name):
-        self.model.update_move_color(img_out, img_in, move_name)
-        self.show_view(self.all_images, self.all_moves_names)
 
 
 

@@ -1,11 +1,11 @@
-class Phue:
+class _Phue:
     def __init__(self, move_out: str, move_in: str, length: int, transitions: list = []):
         self.image_out   = move_out
         self.image_in    = move_in
         self.length = length
         self.transitions = transitions
 
-class Transition:
+class _Transition:
     def __init__(self, move_name, state, duration):
         self.move_name = move_name
         self.state = state
@@ -17,6 +17,7 @@ class PhueModel:
         self.all_phue = []
         self.phue_paths = []
 
+    # ============================== CRUD ============================== #
     def new_phue(self, image_out_arg, image_in_arg, length = 0, transitions = []):
         for phue in self.all_phue:
             img_out = phue.image_out
@@ -24,12 +25,12 @@ class PhueModel:
             if img_out == image_out_arg and img_in == image_in_arg:
                 return False
 
-        phue = Phue(image_out_arg, image_in_arg, length, transitions)
+        phue = _Phue(image_out_arg, image_in_arg, length, transitions)
         self.all_phue.append(phue)
         return True
 
     def new_transition(self, move, state, duration):
-        transition = Transition(move, state, duration)
+        transition = _Transition(move, state, duration)
         return transition
 
     def remove_phue(self, img_out, img_in):
@@ -44,7 +45,7 @@ class PhueModel:
                 phue.length = length
                 phue.transitions.clear()
                 for move, color, time in zip(move_name_list, color_list, time_list):
-                    phue.transitions.append(Transition(move, color, time))
+                    phue.transitions.append(_Transition(move, color, time))
                 return
 
     def update_length(self, img_out, img_in, length):
@@ -52,10 +53,6 @@ class PhueModel:
             if phue.image_out == img_out and phue.image_in == img_in:
                 phue.length = length
                 return
-
-    def reset(self):
-        self.all_phue.clear()
-        self.phue_paths.clear()
 
     def update_names(self, old_name, new_name):
         for phue in self.all_phue:
@@ -99,6 +96,9 @@ class PhueModel:
                         else:
                             t.state = "TurnOn"
 
-
+    # ============================== Logic ============================== #
+    def reset(self):
+        self.all_phue.clear()
+        self.phue_paths.clear()
 
 

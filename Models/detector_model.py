@@ -1,4 +1,4 @@
-class Detector:
+class _Detector:
     def __init__(self, var_name: str, class_name: str, datector_name :str, move_name: str, ext_unit:int = 0):
         self.var_name = var_name
         self.class_name = class_name
@@ -10,18 +10,13 @@ class DetectorModel:
     def __init__(self):
         self.all_detectors = []
 
+    # ============================== CRUD ============================== #
     def new_detector(self, var_name: str, class_name: str, detector_name :str, move_name: str, ext_unit:int = 0):
         if self.is_detector_exist(var_name):
             return False
-        detector = Detector(var_name, class_name, detector_name, move_name, ext_unit)
+        detector = _Detector(var_name, class_name, detector_name, move_name, ext_unit)
         self.all_detectors.append(detector)
         return True
-
-    def is_detector_exist(self, var_name):
-        for detector in self.all_detectors:
-            if detector.var_name == var_name:
-                return True
-        return False
 
     def get_all_types(self):
         return ["DDetector", "EDetector", "DEDetector", "TPDetector", "QDetector"]
@@ -41,10 +36,18 @@ class DetectorModel:
     def get_all_q_detectors(self):
         return [detector for detector in self.all_detectors if detector.class_name == "QDetector"]
 
-    def reset(self):
-        self.all_detectors.clear()
-
-    def update_names(self, old_name, new_name):
+    def rename_move(self, old_name, new_name):
         for detector in self.all_detectors:
             if detector.move_name == old_name:
                 detector.move_name = new_name
+
+    # ============================== Logic ============================== #
+    def is_detector_exist(self, var_name):
+        for detector in self.all_detectors:
+            if detector.var_name == var_name:
+                return True
+        return False
+
+    def reset(self):
+        self.all_detectors.clear()
+

@@ -1,28 +1,31 @@
 import re
+import Config
 
 from PyQt6.QtWidgets import QCheckBox, QMessageBox
-
-import Config.constants
-from Config.patterns import image_pattern
-
 
 class ImageController:
     def __init__(self, view, model):
         self.view = view
         self.model = model
+
+        # Data
         self.all_moves_names = None
 
+        # Set View Methods
         self.view.add_image_method = self.add_image
         self.view.remove_image_method = self.remove_image
-        self.view.update_image_method = self.update_image
         self.view.on_sp_changed_method = self.on_sp_changed_method
+        self.view.update_skeleton_method = self.update_skeleton
+        self.view.update_image_number_method = self.update_image_number
+        self.view.on_checkbox_changed = self.toggle_move
+
 
     def init_model(self, path, all_moves_names):
 
-        pattern = image_pattern
+        pattern = Config.patterns.image_pattern
 
-        with open(path, "r", encoding="utf-8") as f:
-            for line in f:
+        with open(path, "r", encoding="utf-8") as file:
+            for line in file:
                 m = pattern.search(line)
                 if m:
                     image_name = m.group(1)
@@ -50,12 +53,7 @@ class ImageController:
         self.all_moves_names = all_moves_names
         self.view.show_view(self.model.all_images, self.all_moves_names)
 
-    def on_sp_changed_method(self, image_name, sp):
-        for image in self.model.all_images:
-            if image.image_name == image_name:
-                image.sp = int(sp)
-                break
-
+    # ============================== CRUD ============================== #
     def add_image(self, name):
         name = name.capitalize()
         name = "EQA" if name.lower == "Eqa" else name
@@ -64,6 +62,9 @@ class ImageController:
             QMessageBox.critical(self.view, "שגיאה", "התמונה כבר קיימת במערכת")
         self.show_view(self.all_moves_names)
 
+    def update_names(self, old_name, new_name):
+        self.model.update_names(old_name, new_name)
+
     def remove_image(self, name):
         self.model.remove_image(name)
         self.show_view(self.all_moves_names)
@@ -71,29 +72,26 @@ class ImageController:
     def remove_move(self, move_name):
         self.model.remove_move(move_name)
 
-    def update_image(self, table_dict):
-        for image_name, table in table_dict.items():
-            skeleton_num = int(table.skeleton_textbox.text())
-            image_number = int(table.image_number.text())
-            results = []
-            for row in range(table.rowCount()):
-                container = table.cellWidget(row, 1)
-                if not container:
-                    continue
+    def update_skeleton(self, image_name, skeleton):
+        self.model.update_skeleton(image_name, skeleton)
 
-                checkbox = container.findChild(QCheckBox)
-                if checkbox and checkbox.isChecked():
-                    label = table.cellWidget(row, 0)
-                    if label:
-                        for move_name in self.all_moves_names:
-                            if move_name == label.text():
-                                results.append(move_name)
-                                break
-            self.model.update_image(image_name, skeleton_num, image_number, results)
-        self.show_view(self.all_moves_names)
-        QMessageBox.information(self.view, "הודעה", "העדכון הצליח")
+    def update_image_number(self, image_name, skeleton):
+        self.model.update_image_number(image_name, skeleton)
 
+    def toggle_move(self, image_name, move_name):
+        self.model.toggle_move(image_name, move_name)
 
+    # ============================== Logic ============================== #
+    def on_sp_changed_method(self, image_name, sp):
+        for image in self.model.all_images:
+            if image.image_name == image_name:
+                image.sp = int(sp)
+                break
+
+    def reset(self):
+        self.model.reset()
+
+    # ============================== Write To File ============================== #
     def write_to_file(self, path_tk, path_init_tk, phase_folder_dst):
         # create files
         for image in self.model.all_images:
@@ -153,9 +151,6 @@ class ImageController:
         with open(path_init_tk, 'w', encoding='utf-8') as f:
             f.writelines(code)
 
-#          10        20        30        40        50        60        70        80        90       100       110       120       130       140
-#### tk.PhEQA       = new PhaseEQA     (tk, "PhaseEQA"  , 11  ,    3 ,  1 , true       , new Move[] {tk.k1, tk.pc, tk.pf});
-
     def add_tk_code(self, code):
         line = "\tpublic Stage "
         for image in self.model.all_images:
@@ -195,10 +190,6 @@ class ImageController:
                 line += f"tk.{move_name}, "
             line = line[:-2] + "});\n"
             code.append(line)                                   #
-
-    # def create_file(self):
-    #     pass
-
 
     def create_file(self, image_name, path_dst):
         line = ""
@@ -321,9 +312,4 @@ class ImageController:
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(line)
 
-    def update_names(self, old_name, new_name):
-        self.model.update_names(old_name, new_name)
-
-    def reset(self):
-        self.model.reset()
 

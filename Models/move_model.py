@@ -24,6 +24,7 @@ class MoveModel:
         """
         self.all_moves = []
 
+    # ============================== CRUD ============================== #
     def add_move(self, name: str, move_type: str, is_main: bool, min_green: int = 0):
         """
         This method adds a new move.
@@ -45,17 +46,11 @@ class MoveModel:
 
         return True
 
-    def is_move_exist(self, move_name):
-        """
-        This method checks if a move exists.
-
-        :param move_name: The name of the move
-        :return: True if move exists, False otherwise
-        """
+    def get_move_type(self, move_name):
         for move in self.all_moves:
             if move.name == move_name:
-                return True
-        return False
+                return move.type
+        return None
 
     def remove_move(self, move_name):
         """
@@ -87,9 +82,6 @@ class MoveModel:
     def get_all_moves_names(self):
         return [m.name for m in self.all_moves]
 
-    def reset(self):
-        self.all_moves.clear()
-
     def get_all_types(self):
         return ["Traffic", "Traffic_Flashing", "Pedestrian", "Blinker_Conditional", "Blinker"]
 
@@ -113,6 +105,28 @@ class MoveModel:
         self._sort_moves()
         return
 
+    def update_type(self, move_name,  new_type):
+        for move in self.all_moves:
+            if move.name == move_name:
+                move.type = new_type
+                return
+
+    # ============================== Logic ============================== #
+    def is_move_exist(self, move_name):
+        """
+        This method checks if a move exists.
+
+        :param move_name: The name of the move
+        :return: True if move exists, False otherwise
+        """
+        for move in self.all_moves:
+            if move.name == move_name:
+                return True
+        return False
+
+    def reset(self):
+        self.all_moves.clear()
+
     def _sort_moves(self):
         traffic_list = [m for m in self.all_moves if m.name.startswith("k")]
         pedestrian_list = [m for m in self.all_moves if m.name.startswith("p")]
@@ -124,10 +138,10 @@ class MoveModel:
 
         self.all_moves = traffic_list + pedestrian_list + blinker_list
 
-    def update_type(self, move_name,  new_type):
-        for move in self.all_moves:
-            if move.name == move_name:
-                move.type = new_type
-                return
+
+
+
+
+
 
 

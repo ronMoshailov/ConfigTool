@@ -1,9 +1,8 @@
+import Config
+
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QScrollArea, QHBoxLayout, QVBoxLayout, QPushButton, QLineEdit, QLabel, QCheckBox, \
     QAbstractItemView, QTableWidget
-
-from Config.special import clear_widget_from_layout
-from Config.style import image_panel_style
 
 
 class ImageView(QWidget):
@@ -14,17 +13,19 @@ class ImageView(QWidget):
     def __init__(self):
         super().__init__()
 
-        # =============== Controller Methods =============== #
+        # set controller methods
         self.add_image_method = None
         self.remove_image_method = None
-        self.update_image_method = None
         self.on_sp_changed_method = None
+        self.update_skeleton_method = None
+        self.update_image_number_method = None
+        self.on_checkbox_changed = None
 
-        # =============== scroll =============== #
+        # Scroll
         self.scroll_area = QScrollArea()            # create the container of the scroll bar. (get only widget)
         self.scroll_area.setWidgetResizable(True)   # it's needed and I don't know why and I don't even want to know, without this the scroll area size is like 0x0, fk chatGPT just confusing me
 
-        self.scroll_content = QWidget()     # create the widget that will be in the layout.
+        self.scroll_content = QWidget()             # create the widget that will be in the layout.
         self.scroll_content.setObjectName("scrollContent")
 
         self.scroll_layout = QHBoxLayout()
@@ -33,16 +34,11 @@ class ImageView(QWidget):
         self.scroll_content.setLayout(self.scroll_layout)
         self.table_dict = {}
 
-        # =============== self =============== #
+        # self
         self.root_layout = QVBoxLayout()
         self.btn_layout = QHBoxLayout()
 
-        # =============== Button =============== #
-        self.btn_update = QPushButton("עדכן")
-        self.btn_update.setFixedWidth(150)
-        self.btn_update.setObjectName("update_button")
-        self.btn_update.clicked.connect(lambda: self.update_image_method(self.table_dict))
-
+        # Button
         self.btn_add = QPushButton("הוסף")
         self.btn_add.setFixedWidth(150)
         self.btn_add.setObjectName("add_button")
@@ -57,7 +53,6 @@ class ImageView(QWidget):
         self.btn_layout.addStretch()
         self.btn_layout.addWidget(self.edit_add)
         self.btn_layout.addWidget(self.btn_add)
-        self.btn_layout.addWidget(self.btn_update)
 
         # =============== ****** =============== #
         self.root_layout.addWidget(self.scroll_area)
@@ -65,16 +60,13 @@ class ImageView(QWidget):
         self.setLayout(self.root_layout)
 
         self.setObjectName("imagePanel")
-        self.setStyleSheet(image_panel_style)
+        self.setStyleSheet(Config.style.image_panel_style)
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True) # ask from the engine style of Qt to color the background of the widget (QWidget not always active this)
 
         self.hide()
 
-    def hide_view(self):
-        self.hide()
-
     def show_view(self, all_images, all_moves_names):
-        clear_widget_from_layout([self.scroll_layout])
+        Config.special.clear_widget_from_layout([self.scroll_layout])
         self.table_dict.clear()
 
         # widget that holds title and table
@@ -86,7 +78,12 @@ class ImageView(QWidget):
         self.scroll_layout.addStretch()
         self.show()                                                         # show panel
 
+    def hide_view(self):
+        self.hide()
 
+    # ============================== CRUD ============================== #
+
+    # ============================== Logic ============================== #
     def _create_wrap(self, image, all_moves_names):
         """
         ניסיתי לאחד 2 מתודות וסתם יצאתי חכמולוג ואין לי כוח להחזיר, מה שעושה הפונקציה זה ליצור widget שכולל את כל העמודה כאשר כל עמודה זה תבלה וכל מה שיש בה ומחוץ לה
@@ -108,7 +105,7 @@ class ImageView(QWidget):
         wrap.title = image.image_name
 
         # table
-        table = self._init_table(all_moves_names)
+        table = self._init_table(image.image_name, all_moves_names)
 
         self._fill_table(table, image.move_names_list)
 
@@ -120,6 +117,7 @@ class ImageView(QWidget):
         # skeleton
         textbox_skeleton = QLineEdit()
         textbox_skeleton.setText(str(image.skeleton))
+        textbox_skeleton.editingFinished.connect(lambda textbox=textbox_skeleton, m=image.image_name: self.update_skeleton_method(m, textbox.text()))
 
         label = QLabel("שלד")
 
@@ -130,6 +128,7 @@ class ImageView(QWidget):
         # image number
         textbox_image_number = QLineEdit()
         textbox_image_number.setText(str(image.image_num))
+        textbox_image_number.editingFinished.connect(lambda textbox=textbox_image_number, m=image.image_name: self.update_image_number_method(m, textbox.text()))
 
         label = QLabel("מספר תמונה")
 
@@ -182,10 +181,11 @@ class ImageView(QWidget):
 
             for move_name in all_moves_names:
                 if move_name == table_move_name:
+                    checkbox.blockSignals(True)
                     checkbox.setChecked(True)
+                    checkbox.blockSignals(False)
 
-
-    def _init_table(self, all_moves_names):
+    def _init_table(self, image_name, all_moves_names):
         """
         Create table and config the table.
 
@@ -212,6 +212,7 @@ class ImageView(QWidget):
             check_box = QCheckBox()
             check_box.setChecked(False)
             check_box.setObjectName("checkbox_comment")
+            check_box.stateChanged.connect(lambda _, img=image_name, m=move_name: self.on_checkbox_changed(img, m))
 
             # wrapper קטן עם layout שמרכז את ה-checkbox
             container = QWidget()
@@ -222,6 +223,4 @@ class ImageView(QWidget):
             layout.setContentsMargins(0, 0, 0, 0)  # בלי margins מיותרים
             tbl.setCellWidget(row_num, 1, container)
 
-
         return tbl
-

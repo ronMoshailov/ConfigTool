@@ -42,6 +42,13 @@ class ImageModel:
         for image in self.all_images:
             if image.image_name == name:
                 image.skeleton = skeleton
+                return
+
+    def update_image_number(self, name, image_num):
+        for image in self.all_images:
+            if image.image_name == name:
+                image.image_num = image_num
+                return
 
     def get_images_by_sp(self):
         image_list = []
@@ -78,4 +85,16 @@ class ImageModel:
                 if move_name == new_move_name:
                     image.move_names_list.remove(move_name)
                     continue
+
+    def toggle_move(self, image_name, move_name_arg):
+        for image in self.all_images:
+            if image.image_name == image_name:
+                if move_name_arg in image.move_names_list:
+                    image.move_names_list.remove(move_name_arg)
+                else:
+                    image.move_names_list.append(move_name_arg)
+                return
+
+
+
 

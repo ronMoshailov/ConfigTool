@@ -1,6 +1,6 @@
-from PyQt6.QtWidgets import QMessageBox
+import Config
 
-from Config.patterns import matrix_pattern
+from PyQt6.QtWidgets import QMessageBox
 
 class MatrixController:
     """
@@ -10,25 +10,67 @@ class MatrixController:
         self.view = view
         self.model = model
 
+        # Set View Methods
         self.view.update_method = self.update_matrix
+
+        # Set Main Controller Methods
+        self.get_move_type = None
+
+    def init_model(self, path):
+        """
+        This method set from path the matrix cells in the app.
+
+        :param path: path to "InitTk1.java'
+        :return: None
+        """
+        pattern = Config.patterns.matrix_pattern
+
+        with open(path, "r", encoding="utf-8") as file:
+            for line in file:
+                line = line.split("//", 1)[0].strip() # ignore what after //, split maximum 1 time
+                if not line:
+                    continue
+
+                match = pattern.search(line)
+                if match:
+                    out = match.group("out")
+                    inn = match.group("inn")
+                    t1 = int(match.group("t1"))
+                    t2 = int(match.group("t2"))
+
+                    self.model.new_cell(out, inn, t1)
+                    self.model.new_cell(inn, out, t2)
 
     def show_view(self, all_moves):
         self.view.show_view(all_moves, self.model.all_cells)
 
-
-    ####################################################################################
-    #                                     CRUD                                         #
-    ####################################################################################
+    # ============================== CRUD ============================== #
     def update_matrix(self, out_name, in_name, val):
         self.model.update_matrix(out_name, in_name, int(val))
-        QMessageBox.information(self.view, "הודעה", "העדכון הצליח")
 
     def remove_from_matrix(self, move_name):
         self.model.all_cells = [cell for cell in self.model.all_cells if cell.move_in != move_name and cell.move_out != move_name]
 
-    ####################################################################################
-    #                           Write to file                                          #
-    ####################################################################################
+    def rename_move(self, old_name, new_name):
+        self.model.rename_move(old_name, new_name)
+
+    def remove_move(self, move_name):
+        self.model.remove_move(move_name)
+
+    # ============================== Logic ============================== #
+    def is_matrix_valid(self):
+        pairs = {(cell.move_out, cell.move_in) for cell in self.model.all_cells}
+
+        for move_out, move_in in pairs:
+            if (move_in, move_out) not in pairs:
+                QMessageBox.critical(self.view, "הודעה", f"חסר תא במטריצה ב-[{move_in}, {move_out}]")
+                return False
+        return True
+
+    def reset(self):
+        self.model.reset()
+
+    # ============================== Write To File ============================== #
     def write_to_file(self, path):
         # data
         code = []
@@ -64,19 +106,27 @@ class MatrixController:
             line += f", tk.{cell.move_in}"
             line += " " * (37 - len(line))                          # add spaces
             line += f", "
-            if int(cell.wait_time) >= 10:
-                line += f"   {cell.wait_time}"
+
+            time = int(cell.wait_time)
+            if self.get_move_type(cell.move_out) == "Traffic_Flashing":
+                time += 3
+
+            if time >= 10:
+                line += f"   {time}"
             else:
-                line += f"    {cell.wait_time}"
+                line += f"    {time}"
             line += "    ,  "
 
             # add opposite
             for c in all_cells:
                 if c.move_in == cell.move_out and c.move_out == cell.move_in:
-                    if int(c.wait_time) >= 10:
-                        line += f"{c.wait_time}"
+                    time = int(c.wait_time)
+                    if self.get_move_type(c.move_out) == "Traffic_Flashing":
+                        time += 3
+                    if time >= 10:
+                        line += f"{time}"
                     else:
-                        line += f" {c.wait_time}"
+                        line += f" {time}"
                     tuple_list.append((c.move_out, c.move_in))
                     break
             line += " );\n"
@@ -86,54 +136,5 @@ class MatrixController:
             line = ""
 
         new_lines.extend(code)
-
-    ####################################################################################
-    #                               Logic                                              #
-    ####################################################################################
-    def init_model(self, path):
-        """
-        This method set from path the matrix cells in the app.
-
-        :param path: path to "InitTk1.java'
-        :return: None
-        """
-        pattern = matrix_pattern
-
-        with open(path, "r", encoding="utf-8") as f:
-            for line in f:
-                line = line.split("//", 1)[0].strip() # ignore what after //, split maximum 1 time
-                if not line:
-                    continue
-
-                match = pattern.search(line)
-                if match:
-                    out = match.group("out")
-                    inn = match.group("inn")
-                    t1 = int(match.group("t1"))
-                    t2 = int(match.group("t2"))
-
-                    self.model.new_cell(out, inn, t1)
-                    self.model.new_cell(inn, out, t2)
-
-    ####################################################################################
-    #                               Logic                                              #
-    ####################################################################################
-    def is_matrix_valid(self):
-        pairs = {(cell.move_out, cell.move_in) for cell in self.model.all_cells}
-
-        for move_out, move_in in pairs:
-            if (move_in, move_out) not in pairs:
-                QMessageBox.critical(self.view, "הודעה", f"חסר תא במטריצה ב-[{move_in}, {move_out}]")
-                return False
-        return True
-
-    def update_names(self, old_name, new_name):
-        self.model.update_names(old_name, new_name)
-
-    def reset(self):
-        self.model.reset()
-
-    def remove_move(self, move_name):
-        self.model.remove_move(move_name)
 
 

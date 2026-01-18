@@ -19,17 +19,9 @@ class MoveController:
         self.view.update_main_method = self.update_main
         self.view.get_min_green_tooltip_method = self.get_min_green
 
+        # Set Main Controller Methods
         self.remove_move_from_matrix_method = None
-
-        #
         self.global_remove_move = None
-
-    def show_view(self):
-        """
-        This method show the view.
-        :return: None
-        """
-        self.view.show_view(self.model.all_moves, self.model.get_all_types())
 
     def init_model(self, path):
         """
@@ -50,6 +42,9 @@ class MoveController:
                 if match:
                     phase, move_type, min_green, is_main = match.groups()
                     self.model.add_move(phase, move_type, True if is_main == "true" else False, int(min_green))
+
+    def show_view(self):
+        self.view.show_view(self.model.all_moves, self.model.get_all_types())
 
     # ============================== CRUD ============================== #
     def add_move(self, move_name, move_type, is_main, min_green):
@@ -100,6 +95,9 @@ class MoveController:
     def add_new_move(self):
         self.model.add_move("k0", "Traffic", False, 0)
         self.show_view()
+
+    def get_move_type(self, move_name):
+        return self.model.get_move_type(move_name)
 
     def get_min_green(self, move):
         return str(move.min_green)
@@ -152,7 +150,6 @@ class MoveController:
     # ============================== Logic ============================== #
     def reset(self):
         self.model.reset()
-
 
     # ============================== Write To File ============================== #
     def write_to_file(self, path_tk, path_init_tk1):
@@ -223,6 +220,23 @@ class MoveController:
             moves_dictionary[name[0]].append(name)
 
         for move in self.model.all_moves:
+            # calc min green
+            min_green = move.min_green
+            if move.type == "Traffic":
+                if not move.is_main:
+                    if min_green > 5:
+                        min_green = 5
+            elif move.type == "Traffic_Flashing":
+                min_green -= 3
+                if not move.is_main:
+                    if min_green > 5:
+                        min_green = 5
+            elif move.type == "Pedestrian":
+                if min_green < 6:
+                    min_green = 6
+            else:
+                min_green = 0
+
             line = ""
             line += f"\t\ttk.{move.name}"
             line += " " * (12 - (len(line)))
@@ -231,10 +245,10 @@ class MoveController:
             line += f", MoveType.{move.type}"
             line += " " * (72 - (len(line)))
             line += ",     "
-            if move.min_green >= 10:
-                line += f"{move.min_green}"
+            if min_green >= 10:
+                line += f"{min_green}"
             else:
-                line += f" {move.min_green}"
+                line += f" {min_green}"
             line += " ,   0 , "
             if move.is_main:
                 line += "true "

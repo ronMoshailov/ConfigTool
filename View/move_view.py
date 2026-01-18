@@ -7,24 +7,7 @@ class MoveView(QWidget):
     def __init__(self):
         super().__init__()
 
-        # Table
-        self.tbl = QTableWidget(0, 5, self)
-
-        # Headers
-        self.tbl.setHorizontalHeaderLabels(["מחיקה", "שם מופע", "סוג", "מופע ראשי", "מינימום ירוק"])
-
-        header = self.tbl.horizontalHeader() # get horizontal header
-        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed) # set fixed width to column 0
-
-        self.tbl.setColumnWidth(0, 80) # set column to width of 80px
-
-        for col in range(1, self.tbl.columnCount()):
-            header.setSectionResizeMode(col, QHeaderView.ResizeMode.Stretch) # set each column to stretch
-
-        self.tbl.verticalHeader().setVisible(False)
-        self.tbl.verticalHeader().setDefaultSectionSize(50)
-
-        # Controller methods
+        # Controller Methods
         self.add_move_method = None
         self.remove_move_method = None
         self.update_detectors_method = None
@@ -33,32 +16,38 @@ class MoveView(QWidget):
         self.update_min_green_method = None
         self.update_main_method = None
 
-        # button
+        # Table
+        self.tbl = QTableWidget(0, 5, self)
+        self.tbl.setHorizontalHeaderLabels(["מחיקה", "שם מופע", "סוג", "מופע ראשי", "מינימום ירוק"])
+        self.tbl.setColumnWidth(0, 80) # set column to width of 80px
+        self.tbl.verticalHeader().setVisible(False)
+        self.tbl.verticalHeader().setDefaultSectionSize(50)
+
+        # Headers
+        header = self.tbl.horizontalHeader() # get horizontal header
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed) # set fixed width to column 0
+        for col in range(1, self.tbl.columnCount()):
+            header.setSectionResizeMode(col, QHeaderView.ResizeMode.Stretch) # set each column to stretch
+
+        # Button
         add_detector_btn = QPushButton("הוסף מופע")
         add_detector_btn.clicked.connect(lambda: self.add_move_method())
         add_detector_btn.setObjectName("add_button")
 
-        # layout
+        # Layout
         self.root_layout = QVBoxLayout()
         self.root_layout.addWidget(self.tbl)
         self.root_layout.addWidget(add_detector_btn)
 
+        # Self
         self.setLayout(self.root_layout)
-
         self.setStyleSheet(Config.style.move_panel_style)
-
         self.hide()
 
     def show_view(self, move_list, all_types):
-        """
-        Show the 'set move' panel.
-
-        :return: None
-        """
-        # self._show_scroll_bar(detector_list)
         self.tbl.setRowCount(0)
 
-        # fill table
+        # Fill Table
         for idx, move in enumerate (move_list):
             move_name      = move.name
             move_type      = move.type
@@ -67,13 +56,11 @@ class MoveView(QWidget):
 
             self.tbl.insertRow(self.tbl.rowCount())
 
-            # remove (col 0)
+            # Remove Button (col 0)
             remove_btn = QPushButton("X")
             remove_btn.setObjectName("remove_button")
-
             remove_btn.clicked.connect(lambda _, btn=remove_btn: self.remove_move_method(self.tbl, btn))
             self.tbl.setCellWidget(idx, 0, remove_btn)
-
 
             # move name (col 1)
             line_edit = QLineEdit()
@@ -104,7 +91,7 @@ class MoveView(QWidget):
             # min green (col 4)
             line_edit = QLineEdit()
             line_edit.setText(str(move_min_green))  # הערך ההתחלתי
-            line_edit.editingFinished.connect(lambda le=line_edit, m=move.name: self.update_min_green_method(m, le.text()))
+            line_edit.editingFinished.connect(lambda le=line_edit, m=move.name: self.update_min_green_method(m, int(le.text())))
             self.tbl.setCellWidget(idx, 4, line_edit)
 
         self.show()

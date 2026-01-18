@@ -15,12 +15,47 @@ class ScheduleController:
         self.view.add_row_method = self.add_row
         self.view.update_schedule_method = self.update_schedule
 
+    def init_model(self, path):
+        pattern = schedule_pattern
+        mapping_day = {"sun_thur": [1,2,3,4,5], "fr": [6],"sa": [7]}
+
+        with open(path, 'r', encoding='utf-8') as file:
+            for line in file:
+                line = line.strip()
+                match = pattern.match(line)
+                if not match:
+                    continue
+
+                if match.group(1):  # שורת TagesPlan
+                    var_name = match.group(1)
+                    if var_name in ["kipurEve", "kipur", "blink"]:
+                        return
+                    days = mapping_day[var_name]
+
+                    # if self.is_valid(var_name):
+                    program_number = int(match.group(2))
+                    for day in days:
+                        self.model.add_cell(day, 0, 0, program_number)
+
+                else:  # שורת initProgWunsch
+                    var_name = match.group(3)
+                    days = mapping_day[var_name]
+                    hour = int(match.group(4))
+                    minute = int(match.group(5))
+                    program_number = int(match.group(6))
+
+                    for day in days:
+                        self.model.add_cell(day, hour, minute, program_number)
+
+                    # if self.is_valid(var_name):
+                    #     program_number = int(match.group(6))
+                        # self.schedule_list.append(Schedule(hour, minute, program_number))
+                        # print(f"{var_name}: שעה {hour}, דקה {minute}, תוכנית {program_number}")
+
     def show_view(self):
         self.view.show_view()
 
-    ####################################################################################
-    #                                     CRUD                                         #
-    ####################################################################################
+    # ============================== CRUD ============================== #
     def get_all_channels(self, table_num):
         return self.model.get_all_channels(table_num)
 
@@ -42,9 +77,32 @@ class ScheduleController:
         self.show_view()
         QMessageBox.information(self.view, "הודעה", "העדכון הצליח")
 
-    ####################################################################################
-    #                           Write to file                                          #
-    ####################################################################################
+    # ============================== Logic ============================== #
+    def _check_time(self, table_list):
+        for idx, table in enumerate (table_list):      # for each table
+
+            prev = None                     # reset
+            current = None                  # reset
+            row_count = table.rowCount()    # get row count
+
+            for row in range(row_count):                    # for each row in table
+                prev = current
+                current = table.cellWidget(row, 1).time()
+
+                # if first iteration or if last iteration
+                if prev is None or current is None:
+                    continue
+
+                # compare
+                if current <= prev:
+                    QMessageBox.critical(self.view, "שגיאה", f"יש בעיה עם הזמנים בטבלה מספר {idx + 1}")
+                    return False
+        return True
+
+    def reset(self):
+        self.model.reset()
+
+    # ============================== Write To File ============================== #
     def write_to_file(self, path):
         with open(path, 'r', encoding='utf-8') as f:
             lines = f.readlines()
@@ -145,67 +203,4 @@ class ScheduleController:
             new_lines.append(line)
         new_lines.append("\n")
 
-    ####################################################################################
-    #                               Logic                                              #
-    ####################################################################################
-    def init_model(self, path):
-        pattern = schedule_pattern
-        mapping_day = {"sun_thur": [1,2,3,4,5], "fr": [6],"sa": [7]}
-
-        with open(path, 'r', encoding='utf-8') as file:
-            for line in file:
-                line = line.strip()
-                match = pattern.match(line)
-                if not match:
-                    continue
-
-                if match.group(1):  # שורת TagesPlan
-                    var_name = match.group(1)
-                    if var_name in ["kipurEve", "kipur", "blink"]:
-                        return
-                    days = mapping_day[var_name]
-
-                    # if self.is_valid(var_name):
-                    program_number = int(match.group(2))
-                    for day in days:
-                        self.model.add_cell(day, 0, 0, program_number)
-
-                else:  # שורת initProgWunsch
-                    var_name = match.group(3)
-                    days = mapping_day[var_name]
-                    hour = int(match.group(4))
-                    minute = int(match.group(5))
-                    program_number = int(match.group(6))
-
-                    for day in days:
-                        self.model.add_cell(day, hour, minute, program_number)
-
-                    # if self.is_valid(var_name):
-                    #     program_number = int(match.group(6))
-                        # self.schedule_list.append(Schedule(hour, minute, program_number))
-                        # print(f"{var_name}: שעה {hour}, דקה {minute}, תוכנית {program_number}")
-
-    def _check_time(self, table_list):
-        for idx, table in enumerate (table_list):      # for each table
-
-            prev = None                     # reset
-            current = None                  # reset
-            row_count = table.rowCount()    # get row count
-
-            for row in range(row_count):                    # for each row in table
-                prev = current
-                current = table.cellWidget(row, 1).time()
-
-                # if first iteration or if last iteration
-                if prev is None or current is None:
-                    continue
-
-                # compare
-                if current <= prev:
-                    QMessageBox.critical(self.view, "שגיאה", f"יש בעיה עם הזמנים בטבלה מספר {idx + 1}")
-                    return False
-        return True
-
-    def reset(self):
-        self.model.reset()
 

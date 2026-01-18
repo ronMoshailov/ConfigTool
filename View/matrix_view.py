@@ -1,11 +1,8 @@
+import Config
+
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QAbstractItemView, QTableWidget, QTableWidgetItem, \
-    QMessageBox
-
-from Config.constants import light_red_color
-from Config.style import matrix_panel_style
-
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QAbstractItemView, QTableWidget, QTableWidgetItem, QMessageBox
 
 class MatrixView(QWidget):
     def __init__(self):
@@ -32,15 +29,15 @@ class MatrixView(QWidget):
 
         # Self
         self.setLayout(root_layout)
-        self.setStyleSheet(matrix_panel_style)
+        self.setStyleSheet(Config.style.matrix_panel_style)
         self.hide()
 
     def show_view(self, all_moves, all_cells):
-        # =============== Data =============== #
+        # Data
         all_names           = [m.name for m in all_moves if not m.name.startswith("B")]
         self.moves_length   = len(all_names)
 
-        # =============== Set Matrix =============== #
+        # Set Matrix
         self.tbl.blockSignals(True)         # block signals
         self.changed_cells.clear()
         self._init_table(all_names)
@@ -53,9 +50,9 @@ class MatrixView(QWidget):
     def hide_view(self):
         self.hide()
 
-    ####################################################################################
-    #                                    Layout                                        #
-    ####################################################################################
+    # ============================== CRUD ============================== #
+
+    # ============================== Logic ============================== #
     def _init_table(self, all_moves_names):
         self.tbl.clear()  # clear content and headers
 
@@ -79,7 +76,7 @@ class MatrixView(QWidget):
             for j in p_cols:
                 item = self.tbl.item(i, j)
                 item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
-                item.setBackground(light_red_color)
+                item.setBackground(Config.constants.light_red_color)
 
     def _shade_diagonal(self):
         for i in range(self.moves_length):
@@ -88,9 +85,6 @@ class MatrixView(QWidget):
             item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)   # make it not editable
             item.setBackground(QColor(220, 220, 220))                   # light gray
 
-    ####################################################################################
-    #                                        Logic                                     #
-    ####################################################################################
     def _on_cell_changed(self, item: QTableWidgetItem):
         row_idx = item.row()        # get row index of the item
         col_idx = item.column()     # get column index of the item

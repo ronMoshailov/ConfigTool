@@ -12,6 +12,7 @@ class ParametersTaModel:
     def __init__(self):
         self.parameters = []
 
+    # ============================== CRUD ============================== #
     def add_program(self, program_number, min_list, max_list, type_list, str, cycle, is_copied):
         self.parameters.append(ParametersTaProgram(program_number, min_list, max_list, type_list, str, cycle, is_copied))
 
@@ -33,6 +34,7 @@ class ParametersTaModel:
         self.parameters[program_number].str = str
         self.parameters[program_number].cycle = cycle
 
+    # ============================== Logic ============================== #
     def is_equal(self, param1, param2):
         # check min
         for min1, min2 in zip (param1.min_list, param2.min_list):
@@ -59,7 +61,6 @@ class ParametersTaModel:
 
         # success
         return True
-
 
     def reset(self):
         self.parameters.clear()

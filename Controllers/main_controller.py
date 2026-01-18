@@ -44,11 +44,6 @@ class MainController:
     Holds all panels in a single layout.
     """
     def __init__(self):
-        self.root = QMainWindow()
-        self.root.setWindowTitle("Tel Aviv Version")
-
-        self.main_root = QWidget()
-
         # =============== models =============== #
         self.move_model             = MoveModel()
         self.detector_model         = DetectorModel()
@@ -87,9 +82,16 @@ class MainController:
         # =============== managers =============== #
         self.path_manager = PathManager()
 
-        # =============== layout =============== #
-        root_layout = QHBoxLayout()
+        # =============== Set Controllers Methods =============== #
+        self.move_controller.view.update_names_method = self.update_names
+        self.move_controller.remove_from_matrix_method = self.matrix_controller.remove_from_matrix
+        self.move_controller.global_remove_move = self.remove_move
+        self.move_controller.remove_move_from_matrix_method = self.matrix_controller.remove_move
+        self.matrix_controller.get_move_type = self.move_controller.get_move_type
+        self.navigator_view.write_to_code_method = self.write_to_code
 
+        # =============== Root Layout =============== #
+        root_layout = QHBoxLayout()
         root_layout.addWidget(self.move_view)
         root_layout.addWidget(self.detector_view)
         root_layout.addWidget(self.settings_view)
@@ -100,38 +102,24 @@ class MainController:
         root_layout.addWidget(self.phue_view)
         root_layout.addWidget(self.parameters_ta_view)
         root_layout.addWidget(self.navigator_view)
-
         root_layout.setAlignment(Qt.AlignmentFlag.AlignRight)
 
-        # =============== self =============== #
-        self.move_controller.view.update_names_method = self.update_names
-        self.move_controller.remove_from_matrix_method = self.matrix_controller.remove_from_matrix
-
-        # =============== self =============== #
+        # =============== Root Widget =============== #
+        self.main_root = QWidget()
         self.main_root.setLayout(root_layout)
 
+        # =============== Root Widget =============== #
+        self.root = QMainWindow()
+        self.root.setWindowTitle("Tel Aviv Version")
         self.root.setCentralWidget(self.main_root)
         self.root.setStyleSheet(Config.style.main_window_style)
         self.root.show()
         self.root.showMaximized()          # show in full-screen
 
-        self.navigator_view.write_to_code_method = self.write_to_code
-        self.move_controller.global_remove_move = self.remove_move
-
-        #
-        self.move_controller.remove_move_from_matrix_method = self.matrix_controller.remove_move
-
     def show_view(self, act):
-        """
-        Determines which view should be displayed based on the given action.
-
-        :param act: An action identifier that specifies which operation/view to perform.
-        :return: None
-        """
         # =============== Hide All Views =============== #
         self.settings_view.hide_view()
         self.move_view.hide_view()
-        # self.min_green_view.hide_view()
         self.matrix_view.hide_view()
         self.detector_view.hide_view()
         self.schedule_view.hide_view()
@@ -148,12 +136,8 @@ class MainController:
             QMessageBox.critical(self.main_root, "שגיאה", "פרויקט לא מאותחל")
             return
 
-        # if act == "settings":
-        # self.settings_controller.show_view()
         if act == "move":
             self.move_controller.show_view()
-        # elif act == "min_green":
-        #     self.min_green_controller.show_view()
         elif act == "matrix":
             self.matrix_controller.show_view(self.move_model.all_moves)
         elif act == "detector":
@@ -170,20 +154,17 @@ class MainController:
         elif act == "parameters_ta":
             if not self.image_model.is_sp_valid():
                 QMessageBox.critical(self.main_root, "שגיאה", "רצף נקודות ההחלטה לא תקינות")
-                self.image_controller.show_view(self.move_model.all_moves)
                 return
             self.parameters_ta_controller.show_view(self.image_model.all_images)
         else:
             self.settings_controller.show_view()
 
-    ####################################################################################
-    #                                     CRUD                                         #
-    ####################################################################################
+    # ============================== CRUD ============================== #
     def update_names(self, old_name, new_name):
-        self.matrix_controller.update_names(old_name, new_name)
+        self.matrix_controller.rename_move(old_name, new_name)
         self.move_controller.update_names(old_name, new_name)
         self.sk_controller.update_names(old_name, new_name)
-        self.detector_controller.update_names(old_name, new_name)
+        self.detector_controller.rename_move(old_name, new_name)
         self.image_controller.update_names(old_name, new_name)
         self.phue_controller.update_names(old_name, new_name)
 
@@ -195,8 +176,7 @@ class MainController:
         self.sk_controller.remove_move(move_name)
         pass
 
-
-
+    # ============================== Logic ============================== #
     def reset_all(self):
         self.sk_controller.reset()
         self.phue_controller.reset()
@@ -208,9 +188,6 @@ class MainController:
         self.settings_controller.reset()
         self.parameters_ta_controller.reset()
 
-    ####################################################################################
-    #                               Logic                                              #
-    ####################################################################################
     def _initialize_app(self):
         """
         Initialize all the data for the models.
@@ -279,10 +256,7 @@ class MainController:
         with open(self.path_manager.path_init_tk1_dst, 'w', encoding='utf-8') as f:
             f.writelines(code)
 
-
-    ####################################################################################
-    #                                       Debug                                      #
-    ####################################################################################
+    # ============================== Debug ============================== #
     def print_all(self):
         """
         This method prints all the data for the window.
@@ -328,16 +302,16 @@ class MainController:
         #     for cell in schedule_table.cell_list:
         #         out.append(f"hour: {cell.hour:<5}, minute: {cell.minute:<5}, program_num: {cell.prog_num:<5}")
         #
-        # out.append("\n============================== Image ==============================")
-        # for image in self.image_model.all_images:
-        #     if image.image_name == 'A':
-        #         out.append(
-        #             f"name: {image.image_name:<5}, number: {image.image_num:<5}, skeleton: {image.skeleton:<5}, is_police: {image.is_police:<5}")
-        #     else:
-        #         out.append(
-        #             f"name: {image.image_name:<5}, number: {image.image_num:<5}, skeleton: {image.skeleton:<5}, sp: {image.sp:<5}, is_police: {image.is_police:<5}")
-        #     move_str = ", ".join(image.move_names_list)
-        #     out.append(f"moves: {move_str}\n")
+        out.append("\n============================== Image ==============================")
+        for image in self.image_model.all_images:
+            if image.image_name == 'A':
+                out.append(
+                    f"name: {image.image_name:<5}, number: {image.image_num:<5}, skeleton: {image.skeleton:<5}, is_police: {image.is_police:<5}")
+            else:
+                out.append(
+                    f"name: {image.image_name:<5}, number: {image.image_num:<5}, skeleton: {image.skeleton:<5}, sp: {image.sp:<5}, is_police: {image.is_police:<5}")
+            move_str = ", ".join(image.move_names_list)
+            out.append(f"moves: {move_str}\n")
 
         out.append("\n============================== Phue ==============================")
         for phue in self.phue_model.all_phue:

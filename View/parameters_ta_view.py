@@ -134,7 +134,6 @@ class ParametersTaView(QWidget):
             # Min
             for i in range(images_len):
                 item = QTableWidgetItem(str(parameter.min_list[i]))
-                print(i)
                 item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
                 item.setBackground(QColor("#C7F3FF"))
                 self.tbl.setItem(row_num, i, item)

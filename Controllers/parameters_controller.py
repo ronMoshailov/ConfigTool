@@ -10,6 +10,9 @@ class ParametersTaController:
 
         self.view.update_parameters_method = self.update_parameters
 
+    def show_view(self, all_images):
+        self.view.show_view(all_images, self.model.get_parameters())
+
     def init_model(self, path, images_len):
 
         pattern = re.compile(r'^static int\[\]\s+DVI35_P(\d+)\s*=\s*\{([^}]*)\}', re.IGNORECASE)
@@ -35,12 +38,10 @@ class ParametersTaController:
 
                 self.model.add_program(index, min_list, max_list, type_list, str, cycle, not is_active)
 
-    def show_view(self, all_images):
-        self.view.show_view(all_images, self.model.get_parameters())
-
     def hide_view(self):
         self.view.hide_view()
 
+    # ============================== CRUD ============================== #
     def update_parameters(self, tbl):
         total_rows = tbl.rowCount() - 2
         total_cols = tbl.columnCount()
@@ -87,6 +88,11 @@ class ParametersTaController:
 
         # print(images_list)
 
+    # ============================== Logic ============================== #
+    def reset(self):
+        self.model.reset()
+
+    # ============================== Write To File ============================== #
     def write_to_file(self, path_parameters_ta_dst, img_list):
         # data
         code = []
@@ -242,10 +248,5 @@ class ParametersTaController:
 
             first_iteration = False
             code.append(line)
-
-    def reset(self):
-        self.model.reset()
-
-
 
 

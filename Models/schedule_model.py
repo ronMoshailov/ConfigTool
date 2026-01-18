@@ -21,6 +21,7 @@ class ScheduleModel:
         for i in range(7):
             self.all_schedule_tables.append(TableScheduleModel(i+1))
 
+    # ============================== CRUD ============================== #
     def add_cell(self, table_num, hour, minute, prog_num):
         for table in self.all_schedule_tables:
             if table.table_num == table_num:
@@ -70,6 +71,7 @@ class ScheduleModel:
 
                 self.all_schedule_tables[idx].add_cell(hours, minutes, num_prog)
 
+    # ============================== Logic ============================== #
     def reset(self):
         self.all_schedule_tables.clear()
         for i in range(7):
