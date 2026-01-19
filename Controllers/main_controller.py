@@ -1,7 +1,5 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QWidget, QHBoxLayout, QFileDialog, QMessageBox, QMainWindow, QTextEdit, QVBoxLayout, QDialog
-
-import os
+from PyQt6.QtWidgets import QWidget, QHBoxLayout, QMessageBox, QMainWindow, QTextEdit, QVBoxLayout, QDialog
 
 import Config
 
@@ -39,10 +37,6 @@ from Models.sk_model import SkModel
 from Managers.path_manager import PathManager
 
 class MainController:
-    """
-    Main application window for the Config Tool.
-    Holds all panels in a single layout.
-    """
     def __init__(self):
         # =============== models =============== #
         self.move_model             = MoveModel()
@@ -104,7 +98,7 @@ class MainController:
         root_layout.addWidget(self.navigator_view)
         root_layout.setAlignment(Qt.AlignmentFlag.AlignRight)
 
-        # =============== Root Widget =============== #
+        # =============== Main Root =============== #
         self.main_root = QWidget()
         self.main_root.setLayout(root_layout)
 
@@ -296,22 +290,22 @@ class MainController:
         # for detector in self.detector_model.all_detectors:
         #     out.append(f"var_name: {detector.var_name:<5}, class_name: {detector.class_name:<10}, datector_name: {detector.datector_name:<5}, move_name: {detector.move_name:<10}, ext_unit: {detector.ext_unit:<10}")
 
-        # out.append("\n============================== Schedule ==============================")
-        # for schedule_table in self.schedule_model.all_schedule_tables:
-        #     out.append(f"----- table: {schedule_table.table_num} -----")
-        #     for cell in schedule_table.cell_list:
-        #         out.append(f"hour: {cell.hour:<5}, minute: {cell.minute:<5}, program_num: {cell.prog_num:<5}")
+        out.append("\n============================== Schedule ==============================")
+        for schedule_table in self.schedule_model.all_schedule_tables:
+            out.append(f"----- table: {schedule_table.table_num} -----")
+            for cell in schedule_table.cell_list:
+                out.append(f"hour: {cell.hour:<5}, minute: {cell.minute:<5}, program_num: {cell.prog_num:<5}")
         #
-        out.append("\n============================== Image ==============================")
-        for image in self.image_model.all_images:
-            if image.image_name == 'A':
-                out.append(
-                    f"name: {image.image_name:<5}, number: {image.image_num:<5}, skeleton: {image.skeleton:<5}, is_police: {image.is_police:<5}")
-            else:
-                out.append(
-                    f"name: {image.image_name:<5}, number: {image.image_num:<5}, skeleton: {image.skeleton:<5}, sp: {image.sp:<5}, is_police: {image.is_police:<5}")
-            move_str = ", ".join(image.move_names_list)
-            out.append(f"moves: {move_str}\n")
+        # out.append("\n============================== Image ==============================")
+        # for image in self.image_model.all_images:
+        #     if image.image_name == 'A':
+        #         out.append(
+        #             f"name: {image.image_name:<5}, number: {image.image_num:<5}, skeleton: {image.skeleton:<5}, is_police: {image.is_police:<5}")
+        #     else:
+        #         out.append(
+        #             f"name: {image.image_name:<5}, number: {image.image_num:<5}, skeleton: {image.skeleton:<5}, sp: {image.sp:<5}, is_police: {image.is_police:<5}")
+        #     move_str = ", ".join(image.move_names_list)
+        #     out.append(f"moves: {move_str}\n")
 
         out.append("\n============================== Phue ==============================")
         for phue in self.phue_model.all_phue:

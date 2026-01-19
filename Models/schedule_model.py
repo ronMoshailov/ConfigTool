@@ -44,32 +44,10 @@ class ScheduleModel:
             if table.table_num == table_num:
                 table.add_cell(0, 0, 1)
 
-    def update_schedule(self, is_copy_sunday, table_list):
-        if not is_copy_sunday:
-            return
-
-        for idx, table in enumerate(table_list):
-            self.all_schedule_tables[idx].cell_list.clear() # clear previous cell list
-            if is_copy_sunday and 1 <= idx <= 4:
-                for row_num in range(table_list[0].rowCount()):
-                    time_edit = table_list[0].cellWidget(row_num, 1)
-                    hours = time_edit.time().hour()
-                    minutes = time_edit.time().minute()
-
-                    combo = table_list[0].cellWidget(row_num, 2)
-                    num_prog = int(combo.currentText())
-
-                    self.all_schedule_tables[idx].add_cell(hours, minutes, num_prog)
-                continue
-            for row_num in range(table.rowCount()):
-                time_edit = table.cellWidget(row_num, 1)
-                hours = time_edit.time().hour()
-                minutes = time_edit.time().minute()
-
-                combo = table.cellWidget(row_num, 2)
-                num_prog = int(combo.currentText())
-
-                self.all_schedule_tables[idx].add_cell(hours, minutes, num_prog)
+    def update_schedule(self, idx, data_list):
+        self.all_schedule_tables[idx].cell_list.clear()
+        for (hour, minute, prog_num) in data_list:
+            self.all_schedule_tables[idx].add_cell(hour, minute, prog_num)
 
     # ============================== Logic ============================== #
     def reset(self):

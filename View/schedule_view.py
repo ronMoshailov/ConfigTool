@@ -12,10 +12,10 @@ class ScheduleView(QWidget):
         super().__init__()
 
         # =============== Controller Methods =============== #
-        self.get_all_channels_method = None
-        self.remove_row_method = None
-        self.add_row_method = None
-        self.update_schedule_method = None
+        self.get_all_channels_method    = None
+        self.remove_row_method          = None
+        self.add_row_method             = None
+        self.update_schedule_method     = None
 
         # =============== QPushButton =============== #
         self.btn_add = QPushButton("עדכן")
@@ -72,46 +72,7 @@ class ScheduleView(QWidget):
     def hide_view(self):
         self.hide()
 
-    ####################################################################################
-    #                                    Layout                                        #
-    ####################################################################################
-    def _initialize_schedule_column(self, table_num: int):
-        """
-        This method initialize column that contain the elements (no values of the elements).
-
-        :param table_num: number of the table
-        :return: column widget, table widget
-        """
-        # widget that holds title and table
-        wrap = QWidget()
-        wrap.setObjectName("column_wrap")
-        day = {1: "ראשון", 2: "שני", 3: "שלישי", 4: "רביעי", 5: "חמישי", 6: "שישי", 7: "שבת"}.get(table_num, "לא קיים")
-
-        # title
-        title = QLabel(f"{day}")
-        title.setObjectName("title")
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        # set table
-        tbl = self._create_table()
-
-        #  button
-        btn_add = QPushButton("הוסף שורה")
-        self.add_row_btn_list.append(btn_add)
-        btn_add.clicked.connect(lambda: self.add_row_method(table_num))
-        btn_add.setProperty("class", "add_row_button")
-
-        # set layout
-        column_layout = QVBoxLayout()
-        column_layout.addWidget(title)
-        column_layout.addWidget(tbl)
-        column_layout.addWidget(btn_add, alignment=Qt.AlignmentFlag.AlignHCenter)
-
-        # set root
-        wrap.setLayout(column_layout)
-
-        return wrap, tbl
-
+    # ============================== CRUD ============================== #
     def _create_table(self):
         """
         Create the table with no values
@@ -120,20 +81,20 @@ class ScheduleView(QWidget):
         """
         tbl = QTableWidget(0, 3)
         tbl.setObjectName("tbl")
-        tbl.setColumnCount(3)
-        tbl.setRowCount(0)
-        tbl.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)
-        tbl.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-        tbl.verticalHeader().setVisible(False)
-        tbl.setHorizontalHeaderLabels(["", "שעה", "מס' תוכנית"])
-        tbl.setColumnWidth(0, 10)  # עמודה 0 ברוחב 60px
-        tbl.setColumnWidth(1, 65)  # עמודה 1 ברוחב 60px
+        tbl.setColumnCount(3)                                                   # set 3 columns
+        tbl.setRowCount(0)                                                      # reset rows
+        tbl.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)       # disable visual elements when clicked on table
+        tbl.setFocusPolicy(Qt.FocusPolicy.NoFocus)                              #
+        tbl.verticalHeader().setVisible(False)                                  #
+        tbl.setHorizontalHeaderLabels(["", "שעה", "מס' תוכנית"])                # set headers
+        tbl.setColumnWidth(0, 10)                                  # עמודה 0 ברוחב 60px
+        tbl.setColumnWidth(1, 65)                                  # עמודה 1 ברוחב 60px
         tbl.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
         return tbl
 
-    ####################################################################################
-    #                                        Logic                                     #
-    ####################################################################################
+    # ============================== Layout ============================== #
+
+    # ============================== Logic ============================== #
     def _fill_table(self,table_num, table):
         """
         This method fill the table with all the schedules of this day
@@ -171,7 +132,6 @@ class ScheduleView(QWidget):
             table.setCellWidget(row, 1, time_edit)
             table.setCellWidget(row, 2, combo_num_prog)
 
-
     def _enable_mon_thu(self):
         for table in self.table_list[1:5]:
             table.setDisabled(self.check_box.isChecked())
@@ -179,8 +139,40 @@ class ScheduleView(QWidget):
         for btn in self.add_row_btn_list[1:5]:
             btn.setDisabled(self.check_box.isChecked())
 
+    def _initialize_schedule_column(self, table_num: int):
+        """
+        This method initialize column that contain the elements (no values of the elements).
 
+        :param table_num: number of the table
+        :return: column widget, table widget
+        """
+        # widget that holds title and table
+        wrap = QWidget()
+        wrap.setObjectName("column_wrap")
+        day = {1: "ראשון", 2: "שני", 3: "שלישי", 4: "רביעי", 5: "חמישי", 6: "שישי", 7: "שבת"}.get(table_num, "לא קיים")
 
+        # title
+        title = QLabel(f"{day}")
+        title.setObjectName("title")
+        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
+        # Set Table
+        tbl = self._create_table()
 
+        # Add Row Button
+        btn_add = QPushButton("הוסף שורה")
+        btn_add.clicked.connect(lambda: self.add_row_method(table_num))
+        btn_add.setProperty("class", "add_row_button")
+        self.add_row_btn_list.append(btn_add)
+
+        # set layout
+        column_layout = QVBoxLayout()
+        column_layout.addWidget(title)
+        column_layout.addWidget(tbl)
+        column_layout.addWidget(btn_add, alignment=Qt.AlignmentFlag.AlignHCenter)
+
+        # set root
+        wrap.setLayout(column_layout)
+
+        return wrap, tbl
 

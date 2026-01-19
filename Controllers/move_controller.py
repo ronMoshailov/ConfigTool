@@ -1,3 +1,5 @@
+import re
+
 from PyQt6.QtWidgets import QMessageBox
 
 from Config.patterns import move_pattern
@@ -109,8 +111,10 @@ class MoveController:
         if old_name == new_name:
             return
         try:
-            if not new_name.startswith("k") and not new_name.startswith("p") and not new_name.startswith("B"):
+            if not (new_name.startswith("k") or new_name.startswith("p") or new_name.startswith("B")):
                 raise Exception("מופע חייב להתחיל עם k/p/B")
+            if not re.fullmatch(r"[A-Za-z0-9]+", new_name):
+                raise ValueError("השם יכול להכיל רק אותיות, מספרים")
 
             self.model.update_name(old_name, new_name)
             if new_name.startswith("B"):

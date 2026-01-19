@@ -302,7 +302,8 @@ public class InitTk1 extends InitTk {
 		TagesPlan blink = new TagesPlan("Blink", tk.blinkprog);
 		blink.initProgWunsch( 0 , 01,  tk.blinkprog );
 
-		new WochenPlan("time table", sun_thur, sun_thur, sun_thur, sun_thur, fr, sa, sun_thur);
+        // write schedule order here
+
 
 		//                       Friday | Saturday | Kipur Eve| Kipur    | All Day | Is Kipur | Is Saturday
 		//                       Sched. | Sched.   | Sched.   | Sched.   | Blink   | Blink    | Blink (Haifa)

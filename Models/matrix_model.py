@@ -27,10 +27,16 @@ class MatrixModel:
                 cell.move_in = new_name
             if cell.move_out == old_name:
                 cell.move_out = new_name
+        if new_name.startswith('p'):
+            self.clear_cells()
 
     def remove_move(self, move_name):
         # O(n)
         self.all_cells = [cell for cell in self.all_cells if cell.move_out != move_name and cell.move_in != move_name]
+
+    def clear_cells(self):
+        # O(n)
+        self.all_cells = [cell for cell in self.all_cells if not (cell.move_out.startswith("p") and cell.move_in.startswith("p"))]
 
     # ============================== Logic ============================== #
     def reset(self):
