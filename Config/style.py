@@ -326,7 +326,6 @@ matrix_panel_style = """
             padding: 10px;
         }
 
-        /* cells */
 
         QTableWidget::item:hover {
             background: #c2eaff;
@@ -393,30 +392,6 @@ matrix_panel_style = """
         /* remove the scrollbar buttons */
         QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
             width: 0;
-        }
-
-        /* ********************************* QPushButton ********************************* */
-        QPushButton#update_button {
-            background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #4CAF50, stop:1 #388E3C);
-            color: white;
-            border: 2px solid #2e7d32;
-            border-radius: 15px;
-            padding: 6px 12px;
-            font-size: 22px;
-            font-weight: bold;
-        }
-
-        QPushButton#update_button:hover {
-            background-color: qlineargradient(
-                x1:0, y1:0, x2:0, y2:1,
-                stop:0 #66BB6A,   /* ירוק יותר בהיר */
-                stop:1 #43A047
-            );
-        }
-
-        QPushButton#update_button:pressed {
-            background-color: #2e7d32;
-            border: 2px solid #1b5e20;
         }
         """
 sk_panel_style = """

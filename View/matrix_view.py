@@ -1,7 +1,7 @@
 import Config
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QColor
+from PyQt6.QtGui import QColor, QFont
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QAbstractItemView, QTableWidget, QTableWidgetItem, QMessageBox
 
 class MatrixView(QWidget):
@@ -20,7 +20,8 @@ class MatrixView(QWidget):
         self.tbl.setAlternatingRowColors(True)                                  # allows every even row to be colored in different color
         self.tbl.setFocusPolicy(Qt.FocusPolicy.NoFocus)                         # disable the focus
         self.tbl.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)  # disable the choosing
-        self.tbl.verticalHeader().setDefaultSectionSize(50)                     # set height of each row
+        self.tbl.verticalHeader().setDefaultSectionSize(40)                     # set height of each row
+        self.tbl.horizontalHeader().setDefaultSectionSize(60)                     # set height of each row
         self.tbl.itemChanged.connect(self._on_cell_changed)                     # fire a function in every change on the table (by the code and the user)
 
         # Root Layout
@@ -67,6 +68,12 @@ class MatrixView(QWidget):
             for j in range(self.moves_length):
                 item = QTableWidgetItem("")
                 item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+
+                font = QFont()
+                font.setPointSize(22)  # גודל
+                # font.setBold(True)  # מודגש
+                item.setFont(font)
+
                 self.tbl.setItem(i, j, item)
 
     def _disable_pedestrian(self):

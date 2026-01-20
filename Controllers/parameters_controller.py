@@ -9,6 +9,7 @@ class ParametersTaController:
         self.model = model
 
         self.view.update_parameters_method = self.update_parameters
+        self.get_sp_by_image_method = None
 
     def show_view(self, all_images):
         self.view.show_view(all_images, self.model.get_parameters())
@@ -93,7 +94,7 @@ class ParametersTaController:
         self.model.reset()
 
     # ============================== Write To File ============================== #
-    def write_to_file(self, path_parameters_ta_dst, img_list):
+    def write_to_file(self, path_parameters_ta_dst, path_init_tk1, img_list):
         # data
         code = []
 
@@ -109,6 +110,23 @@ class ParametersTaController:
             code.append(line)
 
         with open(path_parameters_ta_dst, 'w', encoding='utf-8') as f:
+            f.writelines(code)
+        #########################
+        # data
+        code = []
+
+        # update tk1.java file
+        with open(path_init_tk1, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+
+        for line in lines:
+            if "write sy here" in line:
+                self.add_sy_code(code)
+                continue
+
+            code.append(line)
+
+        with open(path_init_tk1, 'w', encoding='utf-8') as f:
             f.writelines(code)
 
     def add_lines(self, code, img_list):
@@ -249,4 +267,70 @@ class ParametersTaController:
             first_iteration = False
             code.append(line)
 
+    def add_sy_code(self, code):
+        for i in range(32):
+            # data
+            program = self.model.get_program(i)
+            sy_num = program.max_list[self.get_sp_by_image_method("A")]
 
+            # write line
+            line = "\t\ttk.p"
+            if program.program_number >= 10:
+                line += f"{program.program_number}"
+            else:
+                line += f"0{program.program_number}"
+
+            line += "         = new VAProg(  tk , "
+
+            if program.program_number >= 10:
+                line += f"\"P{program.program_number}\""
+            else:
+                line += f"\"P0{program.program_number}\""
+
+            line += " , "
+
+            if program.program_number >= 10:
+                line += f"{program.program_number}"
+            else:
+                line += f" {program.program_number}"
+
+            line += "  ,   "
+
+            if program.cycle >= 100:
+                line += f"{program.cycle}"
+            elif 10 <= program.cycle <= 99:
+                line += f" {program.cycle}"
+            else:
+                line += f"  {program.cycle}"
+
+            line += " ,   "
+
+            if sy_num >= 100:
+                line += f"{sy_num}"
+            elif 10 <= sy_num <= 99:
+                line += f" {sy_num}"
+            else:
+                line += f"  {sy_num}"
+
+            line += " ,   "
+
+            if sy_num >= 100:
+                line += f"{sy_num}"
+            elif 10 <= sy_num <= 99:
+                line += f" {sy_num}"
+            else:
+                line += f"  {sy_num}"
+
+            line += f" ,      999 ,   0 ); //"
+
+            if program.program_number >= 10:
+                line += f"{program.program_number} - "
+            else:
+                line += f" {program.program_number} - "
+
+            if program.is_copied:
+                line += "P01\n"
+            else:
+                line += "ACTIVE\n"
+
+            code.append(line)

@@ -2,8 +2,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QFrame, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QComboBox, QMessageBox, \
     QTableWidgetItem, QLineEdit, QHeaderView, QAbstractItemView, QTableWidget
 
-from Config.special import init_scroll
-from Config.style import inter_stage_panel_style
+import Config
 
 
 class PhueView(QWidget):
@@ -20,6 +19,7 @@ class PhueView(QWidget):
         self.update_transition_move_method = None
         self.update_duration_method = None
         self.update_color_method = None
+        self.update_phue_len_method = None
 
         # Data
         self.table_wrap_list = []
@@ -37,7 +37,7 @@ class PhueView(QWidget):
         self.tables_layout  = QHBoxLayout()
 
         # Scroll
-        self.scroll_area = init_scroll(self.tables_layout)
+        self.scroll_area = Config.special.init_scroll(self.tables_layout)
 
         # Root Layout
         root_layout.addLayout(top_layout)
@@ -49,11 +49,12 @@ class PhueView(QWidget):
         self.setLayout(root_layout)
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.setObjectName("root")
-        self.setStyleSheet(inter_stage_panel_style)
+        self.setStyleSheet(Config.style.inter_stage_panel_style)
         self.hide()
 
     def show_view(self, all_phue, all_images, all_moves_names):
         self._reset()
+        Config.special.clear_widget_from_layout([self.tables_layout])
 
         # fill the combos with values
         all_images_name_list = [image.image_name for image in all_images]
@@ -174,6 +175,7 @@ class PhueView(QWidget):
         len_textbox = QLineEdit()
         len_textbox.setText(str(length))
         len_textbox.setPlaceholderText("אורך מעבר")
+        len_textbox.editingFinished.connect(lambda image_out = img_out, image_in = img_in, le=len_textbox: self.update_phue_len_method(image_out, image_in, le.text()))
 
         length_layout.addWidget(len_textbox)
         length_layout.addWidget(len_label)

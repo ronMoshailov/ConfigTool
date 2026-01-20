@@ -60,6 +60,12 @@ class ImageModel:
                     break
         return image_list
 
+    def get_sp_by_image(self, image_name):
+        for image in self.all_images:
+            if image.image_name == image_name:
+                return image.sp
+        return None
+
     def is_sp_valid(self):
         highest_sp = 0
         for image in self.all_images:

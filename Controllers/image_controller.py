@@ -81,6 +81,9 @@ class ImageController:
     def toggle_move(self, image_name, move_name):
         self.model.toggle_move(image_name, move_name)
 
+    def get_sp_by_image(self, image_name):
+        return self.model.get_sp_by_image(image_name)
+
     # ============================== Logic ============================== #
     def on_sp_changed_method(self, image_name, sp):
         for image in self.model.all_images:

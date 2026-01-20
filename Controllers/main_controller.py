@@ -83,6 +83,7 @@ class MainController:
         self.move_controller.remove_move_from_matrix_method = self.matrix_controller.remove_move
         self.matrix_controller.get_move_type = self.move_controller.get_move_type
         self.navigator_view.write_to_code_method = self.write_to_code
+        self.parameters_ta_controller.get_sp_by_image_method = self.image_controller.get_sp_by_image
 
         # =============== Root Layout =============== #
         root_layout = QHBoxLayout()
@@ -225,7 +226,7 @@ class MainController:
         self.sk_controller.write_to_file(self.path_manager.path_init_dst)
         self.image_controller.write_to_file(self.path_manager.path_tk1_dst, self.path_manager.path_init_tk1_dst, self.path_manager.path_phase_folder_dst)
         self.phue_controller.write_to_file(self.path_manager.path_init_tk1_dst, self.path_manager.path_phue_folder_dst)
-        self.parameters_ta_controller.write_to_file(self.path_manager.path_parameters_ta_dst, self.image_model.get_images_by_sp())
+        self.parameters_ta_controller.write_to_file(self.path_manager.path_parameters_ta_dst, self.path_manager.path_init_tk1_dst, self.image_model.get_images_by_sp())
         self.detector_controller.write_to_file(self.path_manager.path_init_tk1_dst, self.path_manager.path_tk1_dst)
 
     def write_imports(self):

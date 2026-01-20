@@ -145,39 +145,7 @@ public class InitTk1 extends InitTk {
 		tk.blinkprog   = new MyBlinkProgramm(tk, "BlinkProg", SpecialProgram.Flash.getProgramNumber(), 5 );
 		
 		//                          node | name  | num | cycle | syncA | syncB | waitTime | offset
-		tk.p01         = new VAProg(  tk , "P01" ,  1  ,   110 ,    84 ,    84 ,      999 ,   0 ); // 1 - ACTIVE
-		tk.p02         = new VAProg(  tk , "P02" ,  2  ,   100 ,    84 ,    84 ,      999 ,   0 ); // 2 - ACTIVE
-		tk.p03         = new VAProg(  tk , "P03" ,  3  ,   110 ,    84 ,    84 ,      999 ,   0 ); // 3 - ACTIVE
-		tk.p04         = new VAProg(  tk , "P04" ,  4  ,    85 ,    68 ,    68 ,      999 ,   0 ); // 4 - ACTIVE
-		tk.p05         = new VAProg(  tk , "P05" ,  5  ,   120 ,    84 ,    84 ,      999 ,   0 ); // 5 - ACTIVE
-		tk.p06         = new VAProg(  tk , "P06" ,  6  ,   127 ,   115 ,   115 ,      999 ,   0 ); // 6 - ACTIVE
-		tk.p07         = new VAProg(  tk , "P07" ,  7  ,   120 ,    84 ,    84 ,      999 ,   0 ); // 7 - ACTIVE
-		tk.p08         = new VAProg(  tk , "P08" ,  8  ,   120 ,    84 ,    84 ,      999 ,   0 ); // 8 - ACTIVE
-		tk.p09         = new VAProg(  tk , "P09" ,  9  ,   100 ,    84 ,    84 ,      999 ,   0 ); // 9 - ACTIVE
-		tk.p10         = new VAProg(  tk , "P10" , 10  ,   110 ,    84 ,    84 ,      999 ,   0 ); //10 - ACTIVE
-		tk.p11         = new VAProg(  tk , "P11" , 11  ,   120 ,    84 ,    84 ,      999 ,   0 ); //11 - ACTIVE
-		tk.p12         = new VAProg(  tk , "P12" , 12  ,   127 ,     8 ,     8 ,      999 ,   0 ); //12 - ACTIVE
-		tk.p13         = new VAProg(  tk , "P13" , 13  ,   110 ,    84 ,    84 ,      999 ,   0 ); //13 - P01
-		tk.p14         = new VAProg(  tk , "P14" , 14  ,   110 ,    84 ,    84 ,      999 ,   0 ); //14 - P01   
-		tk.p15         = new VAProg(  tk , "P15" , 15  ,   110 ,    84 ,    84 ,      999 ,   0 ); //15 - P01   
-		tk.p16         = new VAProg(  tk , "P16" , 16  ,   110 ,    84 ,    84 ,      999 ,   0 ); //16 - P01   
-		tk.p17         = new VAProg(  tk , "P17" , 17  ,   110 ,    84 ,    84 ,      999 ,   0 ); //17 - P01
-		tk.p18         = new VAProg(  tk , "P18" , 18  ,   110 ,    84 ,    84 ,      999 ,   0 ); //18 - P01
-		tk.p19         = new VAProg(  tk , "P19" , 19  ,   110 ,    84 ,    84 ,      999 ,   0 ); //19 - P01  
-		tk.p20         = new VAProg(  tk , "P20" , 20  ,   110 ,    84 ,    84 ,      999 ,   0 ); //20 - P01
-		tk.p21         = new VAProg(  tk , "P21" , 21  ,   110 ,    84 ,    84 ,      999 ,   0 ); //21 - P01   
-		tk.p22         = new VAProg(  tk , "P22" , 22  ,   110 ,    84 ,    84 ,      999 ,   0 ); //22 - P01   
-		tk.p23         = new VAProg(  tk , "P23" , 23  ,   110 ,    84 ,    84 ,      999 ,   0 ); //23 - P01   
-		tk.p24         = new VAProg(  tk , "P24" , 24  ,   110 ,    84 ,    84 ,      999 ,   0 ); //24 - P01   
-		tk.p25         = new VAProg(  tk , "P25" , 25  ,   110 ,    84 ,    84 ,      999 ,   0 ); //25 - P01   
-		tk.p26         = new VAProg(  tk , "P26" , 26  ,   110 ,    84 ,    84 ,      999 ,   0 ); //26 - P01   
-		tk.p27         = new VAProg(  tk , "P27" , 27  ,   110 ,    84 ,    84 ,      999 ,   0 ); //27 - P01   
-		tk.p28         = new VAProg(  tk , "P28" , 28  ,   110 ,    84 ,    84 ,      999 ,   0 ); //28 - P01   
-		tk.p29         = new VAProg(  tk , "P29" , 29  ,   110 ,    84 ,    84 ,      999 ,   0 ); //29 - P01   
-		tk.p30         = new VAProg(  tk , "P30" , 30  ,   110 ,    84 ,    84 ,      999 ,   0 ); //30 - P01   
-		tk.p31         = new VAProg(  tk , "P31" , 31  ,   110 ,    84 ,    84 ,      999 ,   0 ); //31 - P01   
-		tk.p32         = new VAProg(  tk , "P32" , 32  ,   110 ,    84 ,    84 ,      999 ,   0 ); //32 - P01    
-//		tk.p31         = new VAProg(  tk , "P31" , 31  ,    80 ,     8 ,     8 ,      999 ,   0 ); //31 - SK   
+		// write sy here
 
 		if (Var.controller.isMaintenance()) {
 			tk.p01MO   = new VAProg(tk, "P01MO", 51, tk.p01.getUmlaufZeit(), tk.p01.getGwpA(), tk.p01.getGwpB(), tk.p01.getWarteZeit(), tk.p01.getVersatzZeit());

@@ -16,6 +16,7 @@ class ScheduleView(QWidget):
         self.remove_row_method          = None
         self.add_row_method             = None
         self.update_schedule_method     = None
+        self.is_copied_sunday_method    = None
 
         # =============== QPushButton =============== #
         self.btn_add = QPushButton("עדכן")
@@ -26,7 +27,6 @@ class ScheduleView(QWidget):
         self.check_box = QCheckBox("ראשון עד חמישי")
         self.check_box.setObjectName("check_box")
         self.check_box.clicked.connect(lambda: self._enable_mon_thu())
-        self.check_box.setChecked(True)
 
         # =============== Button Layout =============== #
         self.bottom_layout = QHBoxLayout()
@@ -133,11 +133,14 @@ class ScheduleView(QWidget):
             table.setCellWidget(row, 2, combo_num_prog)
 
     def _enable_mon_thu(self):
-        for table in self.table_list[1:5]:
-            table.setDisabled(self.check_box.isChecked())
+        if self.is_copied_sunday_method():
+            for table in self.table_list[1:5]:
+                table.setDisabled(self.check_box.isChecked())
 
-        for btn in self.add_row_btn_list[1:5]:
-            btn.setDisabled(self.check_box.isChecked())
+            for btn in self.add_row_btn_list[1:5]:
+                btn.setDisabled(self.check_box.isChecked())
+
+            self.check_box.setChecked(True)
 
     def _initialize_schedule_column(self, table_num: int):
         """

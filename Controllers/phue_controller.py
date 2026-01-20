@@ -18,13 +18,14 @@ class PhueController:
         self.view.update_transition_move_method = self.update_transition_move
         self.view.update_duration_method = self.update_duration
         self.view.update_color_method = self.update_color
+        self.view.update_phue_len_method = self.update_phue_len
 
         self.all_images = None
         self.all_moves_names = None
 
     def init_model(self, phue_paths, path_init_tk1): # self.phue_model.phue_paths, self.path_init_tk1
 
-        class_pattern = re.compile(r"public\s+class\s+Phue([A-Za-z0-9]+)_([A-Za-z0-9]+)")
+        class_pattern = re.compile(r"public\s+class\s+Phue([A-Za-z0-9]+)_?([A-Za-z0-9]+)")
         sg_pattern = re.compile( r"_tk\.(\w+)\.(TurnOn|TurnOff)\s*\(\s*(\d+)\s*\)")
         phue_len_pattern = re.compile(r'tk\.Phue([A-Za-z0-9]+)_([A-Za-z0-9]+)\s*=.*?\(\s*tk\s*,\s*"[^"]+"\s*,\s*([0-9]+)')
 
@@ -128,6 +129,9 @@ class PhueController:
     def update_names(self, old_name, new_name):
         self.model.update_names(old_name, new_name)
 
+    def update_phue_len(self, img_out, img_in, new_len):
+        self.model.update_phue_len(img_out, img_in, new_len)
+
     def update_transition_move(self, image_out, image_in, old_name, new_name):
         try:
             self.model.update_move_name(image_out, image_in, old_name, new_name)
@@ -148,7 +152,6 @@ class PhueController:
         self.model.reset()
 
     # ============================== Write To File ============================== #
-
     def write_to_file(self, init_tk1_dst, phue_folder_dst):
         # create files
         for phue in self.model.all_phue:

@@ -96,6 +96,11 @@ class PhueModel:
                         else:
                             t.state = "TurnOn"
 
+    def update_phue_len(self, img_out, img_in, length):
+        for phue in self.all_phue:
+            if phue.image_out == img_out and phue.image_in == img_in:
+                phue.length = length
+
     # ============================== Logic ============================== #
     def reset(self):
         self.all_phue.clear()

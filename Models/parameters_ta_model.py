@@ -34,6 +34,9 @@ class ParametersTaModel:
         self.parameters[program_number].str = str
         self.parameters[program_number].cycle = cycle
 
+    def get_program(self, prog_number):
+        return self.parameters[prog_number]
+
     # ============================== Logic ============================== #
     def is_equal(self, param1, param2):
         # check min

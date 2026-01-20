@@ -14,10 +14,11 @@ class ScheduleController:
         self.view.remove_row_method = self.remove_row
         self.view.add_row_method = self.add_row
         self.view.update_schedule_method = self.update_schedule
+        self.view.is_copied_sunday_method = self.is_copied_sunday
 
     def init_model(self, path):
         pattern = schedule_pattern
-        mapping_day = {"sun_thur": [1,2,3,4,5], "fr": [6],"sa": [7]}
+        mapping_day = {"sun_thur": [1,2,3,4,5], "sunday":[1], "monday":[2], "tuesday":[3], "wednesday":[4], "thursday":[5], "fr": [6],"sa": [7]}
 
         with open(path, 'r', encoding='utf-8') as file:
             for line in file:
@@ -31,6 +32,8 @@ class ScheduleController:
                     if var_name in ["kipurEve", "kipur", "blink"]:
                         return
                     days = mapping_day[var_name]
+
+                    self.is_copy_sunday = True if not self.is_copy_sunday or (var_name == "monday") else False
 
                     # if self.is_valid(var_name):
                     program_number = int(match.group(2))
@@ -138,6 +141,9 @@ class ScheduleController:
 
     def reset(self):
         self.model.reset()
+
+    def is_copied_sunday(self):
+        return self.is_copy_sunday
 
     # ============================== Write To File ============================== #
     def write_to_file(self, path):
