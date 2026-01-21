@@ -77,6 +77,7 @@ class ImageController:
 
     def update_image_number(self, image_name, skeleton):
         self.model.update_image_number(image_name, skeleton)
+        self.show_view(self.all_moves_names)
 
     def toggle_move(self, image_name, move_name):
         self.model.toggle_move(image_name, move_name)

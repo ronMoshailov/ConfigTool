@@ -19,41 +19,47 @@ class MoveView(QWidget):
         # Table
         self.tbl = QTableWidget(0, 5, self)
         self.tbl.setHorizontalHeaderLabels(["מחיקה", "שם מופע", "סוג", "מופע ראשי", "מינימום ירוק"])
-        self.tbl.setColumnWidth(0, 80) # set column to width of 80px
+        self.tbl.setColumnWidth(0, 90) # set column to width of 80px
         self.tbl.verticalHeader().setVisible(False)
-        self.tbl.verticalHeader().setDefaultSectionSize(50)
+        self.tbl.verticalHeader().setDefaultSectionSize(60)
+        self.tbl.setObjectName("RootTable")
 
         # Headers
-        header = self.tbl.horizontalHeader() # get horizontal header
-        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed) # set fixed width to column 0
+        header = self.tbl.horizontalHeader()                                    # get horizontal header
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)            # set fixed width to column 0
         for col in range(1, self.tbl.columnCount()):
-            header.setSectionResizeMode(col, QHeaderView.ResizeMode.Stretch) # set each column to stretch
+            header.setSectionResizeMode(col, QHeaderView.ResizeMode.Stretch)    # set each column to stretch
 
-        # Button
+        # Add Move Button
         add_detector_btn = QPushButton("הוסף מופע")
         add_detector_btn.clicked.connect(lambda: self.add_move_method())
         add_detector_btn.setObjectName("add_button")
 
-        # Layout
+        # Root Layout
         self.root_layout = QVBoxLayout()
         self.root_layout.addWidget(self.tbl)
         self.root_layout.addWidget(add_detector_btn)
 
         # Self
         self.setLayout(self.root_layout)
+        self.setObjectName("RootWidget")
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.setStyleSheet(Config.style.move_panel_style)
         self.hide()
 
     def show_view(self, move_list, all_types):
+        # Clear Table Rows
         self.tbl.setRowCount(0)
 
         # Fill Table
         for idx, move in enumerate (move_list):
+            # Data
             move_name      = move.name
             move_type      = move.type
             move_is_main   = move.is_main
             move_min_green = move.min_green
 
+            # Add New Row
             self.tbl.insertRow(self.tbl.rowCount())
 
             # Remove Button (col 0)
@@ -64,7 +70,7 @@ class MoveView(QWidget):
 
             # move name (col 1)
             line_edit = QLineEdit()
-            line_edit.setText(move_name)  # הערך ההתחלתי
+            line_edit.setText(move_name)
             line_edit.editingFinished.connect(lambda le=line_edit, m=move: self.update_names_method(m.name, le.text()))
             self.tbl.setCellWidget(idx, 1, line_edit)
 
@@ -73,24 +79,23 @@ class MoveView(QWidget):
             combo.addItems(all_types)
             combo.setCurrentText(move_type)
             combo.currentTextChanged.connect(lambda text, m=move: self.update_type_method(m.name, text))
+            combo.wheelEvent = lambda event: None
             self.tbl.setCellWidget(idx, 2, combo)
 
             # is main (col 3)
             checkbox = QCheckBox()
             checkbox.setChecked(move_is_main)
             checkbox.stateChanged.connect(lambda state, m=move: self.update_main_method(m, state))
-
             container = QWidget()
             layout = QHBoxLayout(container)
             layout.addWidget(checkbox)
             layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
             layout.setContentsMargins(0, 0, 0, 0)
-
             self.tbl.setCellWidget(idx, 3, container)
 
             # min green (col 4)
             line_edit = QLineEdit()
-            line_edit.setText(str(move_min_green))  # הערך ההתחלתי
+            line_edit.setText(str(move_min_green))
             line_edit.editingFinished.connect(lambda le=line_edit, m=move.name: self.update_min_green_method(m, int(le.text())))
             self.tbl.setCellWidget(idx, 4, line_edit)
 

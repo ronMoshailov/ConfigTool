@@ -15,6 +15,7 @@ class ScheduleController:
         self.view.add_row_method = self.add_row
         self.view.update_schedule_method = self.update_schedule
         self.view.is_copied_sunday_method = self.is_copied_sunday
+        self.view.toggle_copy_sunday_method = self.toggle_copy_sunday
 
     def init_model(self, path):
         pattern = schedule_pattern
@@ -33,9 +34,14 @@ class ScheduleController:
                         return
                     days = mapping_day[var_name]
 
-                    self.is_copy_sunday = True if not self.is_copy_sunday or (var_name == "monday") else False
-
+                    if not self.is_copy_sunday or (var_name == "monday"):
+                        self.is_copy_sunday = False
+                    else:
+                        self.is_copy_sunday = True
+                    # self.is_copy_sunday = False if not self.is_copy_sunday or (var_name == "monday") else True
+                    # print(self.is_copy_sunday)
                     # if self.is_valid(var_name):
+                    print(self.is_copy_sunday)
                     program_number = int(match.group(2))
                     for day in days:
                         self.model.add_cell(day, 0, 0, program_number)
@@ -145,6 +151,9 @@ class ScheduleController:
     def is_copied_sunday(self):
         return self.is_copy_sunday
 
+    def toggle_copy_sunday(self):
+        self.is_copy_sunday = not self.is_copy_sunday
+
     # ============================== Write To File ============================== #
     def write_to_file(self, path):
         with open(path, 'r', encoding='utf-8') as f:
@@ -196,9 +205,10 @@ class ScheduleController:
                     line += f" {cell.hour}, "
 
                 if cell.minute >= 10:
-                    line += f"{cell.minute}, "
+                    line += f"{cell.minute},  tk.p{prog_num} );\n"
                 else:
                     line += f" {cell.minute},  tk.p{prog_num} );\n"
+
                 new_lines.append(line)
             new_lines.append("\n")
 

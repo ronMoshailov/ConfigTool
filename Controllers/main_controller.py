@@ -141,7 +141,6 @@ class MainController:
             self.sk_controller.show_view(self.move_model.all_moves)
         elif act == "schedule":
             self.schedule_controller.show_view()
-            self.schedule_view.show_view()
         elif act == "image":
             self.image_controller.show_view(self.move_model.get_all_moves_names())
         elif act == "phue":

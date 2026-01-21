@@ -1,3 +1,4 @@
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QTableWidget, QTableWidgetItem, QComboBox, QHeaderView
 
 from Config.style import detector_panel_style
@@ -16,7 +17,8 @@ class DetectorView(QWidget):
         self.tbl.setHorizontalHeaderLabels(["מחיקה", "שם משתנה", "סוג גלאי", "שם גלאי", "מופע תנועה", "יח' הארכה"])
         self.tbl.setColumnWidth(0, 80)                            # set column to width of 80px
         self.tbl.verticalHeader().setVisible(False)
-        self.tbl.verticalHeader().setDefaultSectionSize(50)                     # default row size
+        self.tbl.verticalHeader().setDefaultSectionSize(60)                     # default row size
+        self.tbl.setObjectName("RootTable")
 
         header = self.tbl.horizontalHeader()                                    # get horizontal header
         header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)            # set fixed width to column 0
@@ -40,6 +42,8 @@ class DetectorView(QWidget):
         # Self
         self.setLayout(self.root_layout)
         self.setStyleSheet(detector_panel_style)
+        self.setObjectName("RootWidget")
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.hide()
 
     def show_view(self, detector_list, all_types, all_moves_names):
@@ -72,6 +76,7 @@ class DetectorView(QWidget):
             combo = QComboBox()
             combo.addItems(self.all_types)
             combo.setCurrentText(class_name)
+            combo.wheelEvent = lambda event: None
             self.tbl.setCellWidget(idx, 2, combo)
 
             # Add "detector name" (col 3)
@@ -81,6 +86,7 @@ class DetectorView(QWidget):
             # Add "move name" (col 4)
             combo = QComboBox()
             combo.addItems(self.all_moves_names)
+            combo.wheelEvent = lambda event: None
 
             if move_name in self.all_moves_names:
                 combo.setCurrentText(move_name)
@@ -118,6 +124,7 @@ class DetectorView(QWidget):
         combo = QComboBox()
         combo.addItems(self.all_types)
         combo.setCurrentIndex(0)
+        combo.wheelEvent = lambda event: None
         self.tbl.setCellWidget(idx, 2, combo)
 
         # add detector name (col 3)
@@ -128,6 +135,7 @@ class DetectorView(QWidget):
         combo = QComboBox()
         combo.addItems(self.all_moves_names)
         combo.setCurrentIndex(0)
+        combo.wheelEvent = lambda event: None
         self.tbl.setCellWidget(idx, 4, combo)
 
         # add ext unit

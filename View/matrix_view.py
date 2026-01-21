@@ -2,7 +2,9 @@ import Config
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor, QFont
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QAbstractItemView, QTableWidget, QTableWidgetItem, QMessageBox
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QAbstractItemView, QTableWidget, QTableWidgetItem, QMessageBox, \
+    QHeaderView
+
 
 class MatrixView(QWidget):
     def __init__(self):
@@ -17,12 +19,14 @@ class MatrixView(QWidget):
 
         # Table
         self.tbl = QTableWidget(self)
-        self.tbl.setAlternatingRowColors(True)                                  # allows every even row to be colored in different color
-        self.tbl.setFocusPolicy(Qt.FocusPolicy.NoFocus)                         # disable the focus
-        self.tbl.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)  # disable the choosing
-        self.tbl.verticalHeader().setDefaultSectionSize(40)                     # set height of each row
-        self.tbl.horizontalHeader().setDefaultSectionSize(60)                     # set height of each row
-        self.tbl.itemChanged.connect(self._on_cell_changed)                     # fire a function in every change on the table (by the code and the user)
+        self.tbl.setAlternatingRowColors(True)                                              # allows every even row to be colored in different color
+        self.tbl.setFocusPolicy(Qt.FocusPolicy.NoFocus)                                     # disable the focus
+        self.tbl.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)              # disable the choosing
+        self.tbl.itemChanged.connect(self._on_cell_changed)                                 # fire a function in every change on the table (by the code and the user)
+        self.tbl.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)    # Stretch the horizontal header
+        self.tbl.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)      # Stretch the vertical header
+        self.tbl.horizontalHeader().setMinimumSectionSize(80)                               # Set minimum size
+        self.tbl.verticalHeader().setMinimumSectionSize(50)                                 # Set minimum size
 
         # Root Layout
         root_layout = QVBoxLayout()
@@ -31,6 +35,8 @@ class MatrixView(QWidget):
         # Self
         self.setLayout(root_layout)
         self.setStyleSheet(Config.style.matrix_panel_style)
+        self.setObjectName("RootWidget")
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.hide()
 
     def show_view(self, all_moves, all_cells):
@@ -51,31 +57,31 @@ class MatrixView(QWidget):
     def hide_view(self):
         self.hide()
 
-    # ============================== CRUD ============================== #
-
-    # ============================== Logic ============================== #
+    # ============================== Layout ============================== #
     def _init_table(self, all_moves_names):
-        self.tbl.clear()  # clear content and headers
+        self.tbl.clear()                                        # clear content and headers
 
-        # set headers
+        # Set headers
         self.tbl.setRowCount(self.moves_length)                 # set how many rows the table will have
         self.tbl.setColumnCount(self.moves_length)              # set how many columns the table will have
         self.tbl.setHorizontalHeaderLabels(all_moves_names)     # set headers
         self.tbl.setVerticalHeaderLabels(all_moves_names)       # set headers
 
-        # set empty cells in all the table
+        # Set empty cells in all the table
         for i in range(self.moves_length):
             for j in range(self.moves_length):
                 item = QTableWidgetItem("")
                 item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
 
+                # Set font
                 font = QFont()
-                font.setPointSize(22)  # גודל
-                # font.setBold(True)  # מודגש
+                font.setPointSize(22)
                 item.setFont(font)
 
+                # Add item
                 self.tbl.setItem(i, j, item)
 
+    # ============================== Logic ============================== #
     def _disable_pedestrian(self):
         p_rows = p_cols = [i for i in range(self.tbl.rowCount()) if self.tbl.verticalHeaderItem(i).text().strip().lower().startswith('p')]
 

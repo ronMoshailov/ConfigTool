@@ -50,7 +50,7 @@ detectors_pattern = re.compile(
 schedule_pattern = re.compile(
     r'(?:TagesPlan\s+(\w+)\s*=\s*new\s+TagesPlan\("[^"]+",\s*tk\.p(\d{2}))'
     r'|'
-    r'(?:([a-zA-Z_]\w*)\.initProgWunsch\(\s*(\d{1,2})\s*,\s*(\d{2})\s*,\s*tk\.p(\d{2})\s*\);)'
+    r'(?:([a-zA-Z_]\w*)\.initProgWunsch\(\s*(\d{1,2})\s*,\s*(\d{1,2})\s*,\s*tk\.p(\d{2})\s*\);)'
 )
 
 image_pattern = re.compile(

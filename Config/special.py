@@ -14,12 +14,13 @@ def init_scroll(scroll_layout):
     scroll_area.setObjectName("scroll_area")  #
 
     scroll_content = QWidget()                     # create the widget that will be in the layout.
-    scroll_content.setObjectName("scrollContent")  #
+    scroll_content.setObjectName("ScrollContent")  #
 
     scroll_area.setWidget(scroll_content)     # set 'scroll_area' as father of 'scroll_content'
     scroll_content.setLayout(scroll_layout)        # set the widget as the father of the layout
 
     return scroll_area
+
 
 def clear_widget_from_layout(layout_list):
     """

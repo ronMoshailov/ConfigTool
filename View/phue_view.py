@@ -124,7 +124,7 @@ class PhueView(QWidget):
         """
         # widget that holds title and table
         wrap = QWidget()
-
+        wrap.setObjectName("Wrap")
         # set title
         title = QLabel(f"{img_out} → {img_in}")
         title.setObjectName("title")
@@ -135,6 +135,7 @@ class PhueView(QWidget):
         tbl.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)
         tbl.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         tbl.verticalHeader().setVisible(False)
+        tbl.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)    # Stretch the horizontal header
 
         # Set Headers
         tbl.setHorizontalHeaderLabels(["Move", "State", "Duration", "Remove"])
@@ -149,6 +150,7 @@ class PhueView(QWidget):
             combo_widget.addItems([name for name in all_moves_names])
             combo_widget.setCurrentText(transition.move_name)  # או combo_widget.setCurrentIndex(1)
             combo_widget.currentTextChanged.connect(lambda text, image_out = img_out, image_in = img_in, m=transition.move_name: self.update_transition_move_method(image_out, image_in, m, text))
+            combo_widget.wheelEvent = lambda event: None
             tbl.setCellWidget(row, 0, combo_widget)
 
             # col 2
@@ -222,12 +224,14 @@ class PhueView(QWidget):
         self.move_out_combo_top = QComboBox()
         move_out_layout.addWidget(move_out_label)
         move_out_layout.addWidget(self.move_out_combo_top)
+        self.move_out_combo_top.wheelEvent = lambda event: None
 
         move_in_layout = QVBoxLayout()
         move_in_label = QLabel("מופע נכנס")
         self.move_in_combo_top = QComboBox()
         move_in_layout.addWidget(move_in_label)
         move_in_layout.addWidget(self.move_in_combo_top)
+        self.move_in_combo_top.wheelEvent = lambda event: None
 
         layout.addStretch()
         layout.addWidget(btn)
@@ -244,6 +248,7 @@ class PhueView(QWidget):
         move_in_label = QLabel("מופע נכנס")
         self.move_in_combo_center = QComboBox()
         self.move_in_combo_center.currentTextChanged.connect(self._filter)
+        self.move_in_combo_center.wheelEvent = lambda event: None
         move_in_layout.addWidget(move_in_label)
         move_in_layout.addWidget(self.move_in_combo_center)
 
@@ -252,6 +257,7 @@ class PhueView(QWidget):
         move_out_label = QLabel("מופע יוצא")
         self.move_out_combo_center = QComboBox()
         self.move_out_combo_center.currentTextChanged.connect(self._filter)
+        self.move_out_combo_center.wheelEvent = lambda event: None
 
         move_out_layout.addWidget(move_out_label)
         move_out_layout.addWidget(self.move_out_combo_center)

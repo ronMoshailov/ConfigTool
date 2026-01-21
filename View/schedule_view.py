@@ -11,48 +11,55 @@ class ScheduleView(QWidget):
     def __init__(self):
         super().__init__()
 
-        # =============== Controller Methods =============== #
+        # Controller Methods
         self.get_all_channels_method    = None
         self.remove_row_method          = None
         self.add_row_method             = None
         self.update_schedule_method     = None
         self.is_copied_sunday_method    = None
+        self.toggle_copy_sunday_method  = None
 
-        # =============== QPushButton =============== #
+        # QPushButton Update
         self.btn_add = QPushButton("עדכן")
         self.btn_add.setObjectName("update_button")
         self.btn_add.clicked.connect(lambda: self.update_schedule_method(self.check_box.isChecked(), self.table_list))
 
-        # =============== CheckBox =============== #
+        # CheckBox
         self.check_box = QCheckBox("ראשון עד חמישי")
         self.check_box.setObjectName("check_box")
-        self.check_box.clicked.connect(lambda: self._enable_mon_thu())
+        self.check_box.clicked.connect(lambda: self._toggle_button())
 
-        # =============== Button Layout =============== #
+        # Button Layout
         self.bottom_layout = QHBoxLayout()
         self.bottom_layout.addWidget(self.check_box, alignment=Qt.AlignmentFlag.AlignCenter)
         self.bottom_layout.addWidget(self.btn_add)
 
-        # =============== Schedule Layout =============== #
+        # Button Widget
+        bottom_widget = QWidget()
+        bottom_widget.setLayout(self.bottom_layout)
+        bottom_widget.setObjectName("bottom_widget")
+
+        # Schedule Layout
         self.schedule_layout = QHBoxLayout()
 
-        # =============== Root Layout =============== #
+        # Root Layout
         self.root_layout = QVBoxLayout()
         self.root_layout.addLayout(self.schedule_layout)
-        self.root_layout.addLayout(self.bottom_layout)
+        # self.root_layout.addLayout(self.bottom_layout)
+        self.root_layout.addWidget(bottom_widget)
 
-        # =============== Data =============== #
+        # Data
         self.table_list = []
         self.add_row_btn_list = []
 
-        # =============== Self =============== #
-        self.setLayout(self.root_layout)
-        self.hide()
-
-        # =============== Style =============== #
-        self.setObjectName("schedulePanel")
+        # Style
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.setStyleSheet(schedule_panel_style)
+        self.setObjectName("RootWidget")
+
+        # Self
+        self.setLayout(self.root_layout)
+        self.hide()
 
     def show_view(self):
         # clear the table
@@ -60,7 +67,7 @@ class ScheduleView(QWidget):
         self.table_list.clear()
         self.add_row_btn_list.clear()
 
-        # self.btn_add.setObjectName("add_button")
+        # Build the tables
         for idx in range (0, 7):
             schedule_column, table = self._initialize_schedule_column(idx + 1)      # create schedule_column
             self.table_list.append(table)
@@ -79,20 +86,56 @@ class ScheduleView(QWidget):
 
         :return: Table QTableWidget
         """
-        tbl = QTableWidget(0, 3)
-        tbl.setObjectName("tbl")
+        tbl = QTableWidget(0, 3)                                                # Set 0 rows and 3 columns
+        tbl.setObjectName("tbl")                                                # Set object name
         tbl.setColumnCount(3)                                                   # set 3 columns
         tbl.setRowCount(0)                                                      # reset rows
         tbl.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)       # disable visual elements when clicked on table
         tbl.setFocusPolicy(Qt.FocusPolicy.NoFocus)                              #
-        tbl.verticalHeader().setVisible(False)                                  #
-        tbl.setHorizontalHeaderLabels(["", "שעה", "מס' תוכנית"])                # set headers
-        tbl.setColumnWidth(0, 10)                                  # עמודה 0 ברוחב 60px
-        tbl.setColumnWidth(1, 65)                                  # עמודה 1 ברוחב 60px
+        tbl.verticalHeader().setVisible(False)                                  # Remove the vertical headers
+        tbl.setHorizontalHeaderLabels(["", "שעה", "מס' תוכנית"])                # Set headers
+        tbl.setColumnWidth(0, 10)                                  # Set width
+        tbl.setColumnWidth(1, 65)                                  # Set width
         tbl.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
         return tbl
 
     # ============================== Layout ============================== #
+    def _initialize_schedule_column(self, table_num: int):
+        """
+        This method initialize column that contain the elements (no values of the elements).
+
+        :param table_num: number of the table
+        :return: column widget, table widget
+        """
+        # widget that holds title and table
+        wrap = QWidget()
+        wrap.setObjectName("column_wrap")
+        day = {1: "ראשון", 2: "שני", 3: "שלישי", 4: "רביעי", 5: "חמישי", 6: "שישי", 7: "שבת"}.get(table_num, "לא קיים")
+
+        # title
+        title = QLabel(f"{day}")
+        title.setObjectName("title")
+        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        # Set Table
+        tbl = self._create_table()
+
+        # Add Row Button
+        btn_add = QPushButton("הוסף שורה")
+        btn_add.clicked.connect(lambda: self.add_row_method(table_num))
+        btn_add.setObjectName("add_row_button")
+        self.add_row_btn_list.append(btn_add)
+
+        # set layout
+        column_layout = QVBoxLayout()
+        column_layout.addWidget(title)
+        column_layout.addWidget(tbl)
+        column_layout.addWidget(btn_add, alignment=Qt.AlignmentFlag.AlignHCenter)
+
+        # set root
+        wrap.setLayout(column_layout)
+
+        return wrap, tbl
 
     # ============================== Logic ============================== #
     def _fill_table(self,table_num, table):
@@ -121,61 +164,30 @@ class ScheduleView(QWidget):
             time_edit.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.NoButtons)
             time_edit.setTime(QTime(schedule.hour, schedule.minute))
             time_edit.setFont(font)
+            time_edit.wheelEvent = lambda event: None
 
             combo_num_prog = QComboBox()
             combo_num_prog.setObjectName("combo_num_prog")
             combo_num_prog.addItems([str(i) for i in range(1, 33)])
             combo_num_prog.setCurrentText(str(schedule.prog_num))
             combo_num_prog.setFont(font)
+            combo_num_prog.wheelEvent = lambda event: None
 
             table.setCellWidget(row, 0, btn_remove)
             table.setCellWidget(row, 1, time_edit)
             table.setCellWidget(row, 2, combo_num_prog)
 
+    def _toggle_button(self):
+        self.toggle_copy_sunday_method()
+        self._enable_mon_thu()
+
     def _enable_mon_thu(self):
-        if self.is_copied_sunday_method():
-            for table in self.table_list[1:5]:
-                table.setDisabled(self.check_box.isChecked())
+        self.check_box.setChecked(self.is_copied_sunday_method())
 
-            for btn in self.add_row_btn_list[1:5]:
-                btn.setDisabled(self.check_box.isChecked())
+        for table in self.table_list[1:5]:
+            table.setDisabled(self.check_box.isChecked())
 
-            self.check_box.setChecked(True)
+        for btn in self.add_row_btn_list[1:5]:
+            btn.setDisabled(self.check_box.isChecked())
 
-    def _initialize_schedule_column(self, table_num: int):
-        """
-        This method initialize column that contain the elements (no values of the elements).
-
-        :param table_num: number of the table
-        :return: column widget, table widget
-        """
-        # widget that holds title and table
-        wrap = QWidget()
-        wrap.setObjectName("column_wrap")
-        day = {1: "ראשון", 2: "שני", 3: "שלישי", 4: "רביעי", 5: "חמישי", 6: "שישי", 7: "שבת"}.get(table_num, "לא קיים")
-
-        # title
-        title = QLabel(f"{day}")
-        title.setObjectName("title")
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        # Set Table
-        tbl = self._create_table()
-
-        # Add Row Button
-        btn_add = QPushButton("הוסף שורה")
-        btn_add.clicked.connect(lambda: self.add_row_method(table_num))
-        btn_add.setProperty("class", "add_row_button")
-        self.add_row_btn_list.append(btn_add)
-
-        # set layout
-        column_layout = QVBoxLayout()
-        column_layout.addWidget(title)
-        column_layout.addWidget(tbl)
-        column_layout.addWidget(btn_add, alignment=Qt.AlignmentFlag.AlignHCenter)
-
-        # set root
-        wrap.setLayout(column_layout)
-
-        return wrap, tbl
 

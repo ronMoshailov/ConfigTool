@@ -44,7 +44,7 @@ public class InitTk1 extends InitTk {
 		tk.pa     =  new Move(   tk    , "_a"   , MoveType.Pedestrian         ,      6 ,   0 , false); 
 		tk.pc     =  new Move(   tk    , "_c"   , MoveType.Pedestrian         ,      9 ,   0 , true); 
 		tk.pf     =  new Move(   tk    , "_f"   , MoveType.Pedestrian         ,      6 ,   0 , true);
-                                                                                                      
+
 //		tk.Bc     =  new Move(   tk    , "_Bc"  , MoveType.Blinker_Conditional,      0 ,   0 , false);
 //		tk.Be     =  new Move(   tk    , "_Be"  , MoveType.Blinker_Conditional,      0 ,   0 , false);
 		tk.Bf     =  new Move(   tk    , "_Bf"  , MoveType.Blinker_Conditional,      0 ,   0 , false);
