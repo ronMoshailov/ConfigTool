@@ -77,13 +77,13 @@ class MainController:
         self.path_manager = PathManager()
 
         # =============== Set Controllers Methods =============== #
-        self.move_controller.view.update_names_method = self.update_names
-        self.move_controller.remove_from_matrix_method = self.matrix_controller.remove_from_matrix
-        self.move_controller.global_remove_move = self.remove_move
-        self.move_controller.remove_move_from_matrix_method = self.matrix_controller.remove_move
-        self.matrix_controller.get_move_type = self.move_controller.get_move_type
-        self.navigator_view.write_to_code_method = self.write_to_code
-        self.parameters_ta_controller.get_sp_by_image_method = self.image_controller.get_sp_by_image
+        self.move_controller.view.update_names_method           = self.update_names
+        self.move_controller.remove_from_matrix_method          = self.matrix_controller.remove_from_matrix
+        self.move_controller.global_remove_move                 = self.remove_move
+        self.move_controller.remove_move_from_matrix_method     = self.matrix_controller.remove_move
+        self.matrix_controller.get_move_type                    = self.move_controller.get_move_type
+        self.navigator_view.write_to_code_method                = self.write_to_code
+        self.parameters_ta_controller.get_sp_by_image_method    = self.image_controller.get_sp_by_image
 
         # =============== Root Layout =============== #
         root_layout = QHBoxLayout()
@@ -156,7 +156,7 @@ class MainController:
     # ============================== CRUD ============================== #
     def update_names(self, old_name, new_name):
         self.matrix_controller.rename_move(old_name, new_name)
-        self.move_controller.update_names(old_name, new_name)
+        self.move_controller.rename_move(old_name, new_name)
         self.sk_controller.update_names(old_name, new_name)
         self.detector_controller.rename_move(old_name, new_name)
         self.image_controller.update_names(old_name, new_name)

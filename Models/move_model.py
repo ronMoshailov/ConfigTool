@@ -79,6 +79,9 @@ class MoveModel:
                 return True
         return False
 
+    def update_main(self, move, state):
+        move.is_main = True if state == 2 else False
+
     def get_all_moves_names(self):
         return [m.name for m in self.all_moves]
 

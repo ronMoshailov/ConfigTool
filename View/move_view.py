@@ -8,18 +8,17 @@ class MoveView(QWidget):
         super().__init__()
 
         # Controller Methods
-        self.add_move_method = None
-        self.remove_move_method = None
-        self.update_detectors_method = None
-        self.update_names_method = None
-        self.update_type_method = None
-        self.update_min_green_method = None
-        self.update_main_method = None
+        self.add_move_method            = None
+        self.remove_move_method         = None
+        self.update_names_method        = None
+        self.update_type_method         = None
+        self.update_min_green_method    = None
+        self.update_main_method         = None
 
         # Table
         self.tbl = QTableWidget(0, 5, self)
         self.tbl.setHorizontalHeaderLabels(["מחיקה", "שם מופע", "סוג", "מופע ראשי", "מינימום ירוק"])
-        self.tbl.setColumnWidth(0, 90) # set column to width of 80px
+        self.tbl.setColumnWidth(0, 90) # set column width of 80px
         self.tbl.verticalHeader().setVisible(False)
         self.tbl.verticalHeader().setDefaultSectionSize(60)
         self.tbl.setObjectName("RootTable")

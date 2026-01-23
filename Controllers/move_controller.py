@@ -14,24 +14,18 @@ class MoveController:
         self.model = model
 
         # Set View Methods
-        self.view.add_move_method = self.add_new_move
-        self.view.remove_move_method = self.remove_move
-        self.view.update_type_method = self.update_type
-        self.view.update_min_green_method = self.update_min_green
-        self.view.update_main_method = self.update_main
-        self.view.get_min_green_tooltip_method = self.get_min_green
+        self.view.add_move_method               = self.add_new_move
+        self.view.remove_move_method            = self.remove_move
+        self.view.update_type_method            = self.update_type
+        self.view.update_min_green_method       = self.update_min_green
+        self.view.update_main_method            = self.update_main
 
         # Set Main Controller Methods
-        self.remove_move_from_matrix_method = None
-        self.global_remove_move = None
+        self.remove_move_from_matrix_method     = None
+        self.global_remove_move                 = None
 
     def init_model(self, path):
-        """
-        This method set from path the moves in the app.
-
-        :param path: path to "InitTk1.java'
-        :return: None
-        """
+        # path: initTk1.java
 
         pattern = move_pattern
 
@@ -43,71 +37,26 @@ class MoveController:
                 match = pattern.match(line)
                 if match:
                     phase, move_type, min_green, is_main = match.groups()
-                    self.model.add_move(phase, move_type, True if is_main == "true" else False, int(min_green))
+                    is_main = True if is_main == "true" else False
+
+                    # Add move to the model
+                    self.model.add_move(phase, move_type, is_main, int(min_green))
 
     def show_view(self):
         self.view.show_view(self.model.all_moves, self.model.get_all_types())
 
     # ============================== CRUD ============================== #
-    def add_move(self, move_name, move_type, is_main, min_green):
-        """
-        This method add a move.
-
-        :param move_name: Move name without [k, p, B].
-        :param move_type: Move type.
-        :param is_main: Move is main or not.
-        :param min_green: Move minimum green time.
-        :return:
-        """
-        # check if the name is empty
-        if move_name.strip() == '':
-            QMessageBox.critical(self.view, "שגיאה", f"שם ריק")
-            return
-
-        # check if move name contain numbers and digits
-        if any(c.isalpha() for c in move_name) and any(c.isdigit() for c in move_name):
-            QMessageBox.critical(self.view, "שגיאה", f"שם המופע לא תקין [{move_name}]")
-            return
-
-        # fix 'name' depend on 'type'
-        if move_type == "Traffic" or move_type == "Traffic_Flashing":
-            if move_name[0].isalpha():
-                QMessageBox.critical(self.view, "שגיאה", "מופע תנועה לא יכול להיות עם אות בשם")
-                return
-            move_name = "k" + move_name
-        elif move_type == "Pedestrian":
-            if move_name[0].isdigit():
-                QMessageBox.critical(self.view, "שגיאה", "מופע הולך רגל לא יכול להיות עם מספר בשם")
-                return
-            move_name = "p" + move_name
-        elif move_type == "Blinker" or move_type == "Blinker_Conditional":
-            if move_name[0].isdigit():
-                QMessageBox.critical(self.view, "שגיאה", "בלינקר לא יכול להיות עם מספר בשם")
-                return
-            move_name = "B" + move_name
-
-        # add move (if failed it's because the move already exist)
-        if not self.model.add_move(move_name, move_type, is_main, min_green):
-            QMessageBox.critical(self.view, "שגיאה", "מופע כבר קיים במערכת")
-            return
-
-        # refresh the view
-        self.show_view()
-
     def add_new_move(self):
         self.model.add_move("k0", "Traffic", False, 0)
         self.show_view()
 
-    def get_move_type(self, move_name):
+    def get_move_type(self, move_name): # Used by Matrix Controller for fixing matrix time
         return self.model.get_move_type(move_name)
-
-    def get_min_green(self, move):
-        return str(move.min_green)
 
     def get_all_moves_names(self):
         return self.model.get_all_moves_names()
 
-    def update_names(self, old_name, new_name):
+    def rename_move(self, old_name, new_name):
         if old_name == new_name:
             return
         try:
@@ -128,19 +77,14 @@ class MoveController:
     def update_type(self, move_name,  new_type):
         self.model.update_type(move_name,  new_type)
 
+    def update_main(self, move, state):
+        self.model.update_main(move, state)
+        move.is_main = True if state == 2 else False
+
     def update_min_green(self, move, time):
         self.model.update_min_green(move, time)
 
-    def update_main(self, move, state):
-        move.is_main = True if state == 2 else False
-
     def remove_move(self, table, btn):
-        """
-        This method remove a move.
-
-        :param move_name: Move name.
-        :return: None
-        """
         row_count = table.rowCount()
         for row in range(row_count):
             item = table.cellWidget(row, 0)
