@@ -10,6 +10,7 @@ class MoveController:
     This class represents controller of a traffic signal move.
     """
     def __init__(self, view, model):
+        # Fields
         self.view = view
         self.model = model
 
@@ -26,15 +27,12 @@ class MoveController:
 
     def init_model(self, path):
         # path: initTk1.java
-
-        pattern = move_pattern
-
         with open(path, 'r', encoding='utf-8') as file:
             for line in file:
                 line = line.strip()
                 if line.startswith("//") or not line.startswith("tk."):
                     continue
-                match = pattern.match(line)
+                match = move_pattern.match(line)
                 if match:
                     phase, move_type, min_green, is_main = match.groups()
                     is_main = True if is_main == "true" else False
@@ -50,39 +48,58 @@ class MoveController:
         self.model.add_move("k0", "Traffic", False, 0)
         self.show_view()
 
-    def get_move_type(self, move_name): # Used by Matrix Controller for fixing matrix time
+    def get_move_type(self, move_name):
+        # Used by Matrix Controller
         return self.model.get_move_type(move_name)
 
     def get_all_moves_names(self):
+        # Used also in Main Controller
         return self.model.get_all_moves_names()
 
     def rename_move(self, old_name, new_name):
+        # Used By Main Controller
         if old_name == new_name:
             return
-        try:
-            if not (new_name.startswith("k") or new_name.startswith("p") or new_name.startswith("B")):
-                raise Exception("מופע חייב להתחיל עם k/p/B")
-            if not re.fullmatch(r"[A-Za-z0-9]+", new_name):
-                raise ValueError("השם יכול להכיל רק אותיות, מספרים")
 
-            self.model.update_name(old_name, new_name)
-            if new_name.startswith("B"):
-                self.remove_move_from_matrix_method(new_name)
-                self.update_min_green(new_name, 0)
+        # Check if start with k/p/B
+        if not (new_name.startswith("k") or new_name.startswith("p") or new_name.startswith("B")):
+            QMessageBox.critical(self.view, "שגיאה", "מופע חייב להתחיל עם k/p/B")
             self.show_view()
+            return
+
+        # Check if new name contain just words and numbers
+        if not re.fullmatch(r"[A-Za-z0-9]+", new_name):
+            QMessageBox.critical(self.view, "שגיאה", "השם יכול להכיל רק אותיות, מספרים")
+            self.show_view()
+
+        # Update model
+        try:
+            self.model.update_name(old_name, new_name)
         except Exception as e:
             QMessageBox.critical(self.view, "שגיאה", str(e))
             self.show_view()
+            raise e
+
+        # If it's blinker fix the matrix and min green time
+        if new_name.startswith("B"):
+            self.remove_move_from_matrix_method(new_name)
+            self.model.update_min_green(new_name, 0)
+
+        # Refresh view
+        self.show_view()
 
     def update_type(self, move_name,  new_type):
         self.model.update_type(move_name,  new_type)
 
-    def update_main(self, move, state):
-        self.model.update_main(move, state)
-        move.is_main = True if state == 2 else False
+    def update_main(self, move_name, new_state):
+        self.model.update_main(move_name, new_state)
 
     def update_min_green(self, move, time):
-        self.model.update_min_green(move, time)
+        if not time.isdigit():
+            QMessageBox.critical(self.view, "שגיאה", "ערך לא תקין")
+            self.show_view()
+        else:
+            self.model.update_min_green(move, int(time))
 
     def remove_move(self, table, btn):
         row_count = table.rowCount()
@@ -102,36 +119,30 @@ class MoveController:
     # ============================== Write To File ============================== #
     def write_to_file(self, path_tk, path_init_tk1):
         # data
-        code = []
+        tk1_code = []
+        init_tk1_code = []
 
         # update tk1.java file
-        with open(path_tk, 'r', encoding='utf-8') as f:
-            lines = f.readlines()
-
-        for line in lines:
-            if "write moves here" in line:
-                self.add_tk1_lines(code)
-                continue
-            code.append(line)
+        with open(path_tk, 'r', encoding='utf-8') as file:
+            for line in file:
+                if "write moves here" in line:
+                    self.add_tk1_lines(tk1_code)
+                    continue
+                tk1_code.append(line)
 
         with open(path_tk, 'w', encoding='utf-8') as f:
-            f.writelines(code)
-
-        # data
-        code = []
+            f.writelines(tk1_code)
 
         # update initTk1.java file
-        with open(path_init_tk1, 'r', encoding='utf-8') as f:
-            lines = f.readlines()
-
-        for line in lines:
-            if "write moves here" in line:
-                self.add_initTk1_lines(code)
-                continue
-            code.append(line)
+        with open(path_init_tk1, 'r', encoding='utf-8') as file:
+            for line in file:
+                if "write moves here" in line:
+                    self.add_initTk1_lines(init_tk1_code)
+                    continue
+                init_tk1_code.append(line)
 
         with open(path_init_tk1, 'w', encoding='utf-8') as f:
-            f.writelines(code)
+            f.writelines(init_tk1_code)
 
     def add_tk1_lines(self, new_lines):
         cars_line = "\tpublic Move "
@@ -139,7 +150,7 @@ class MoveController:
         blinkers_line = "\tpublic Move "
 
         moves_dictionary = {"k": [], "p": [], "B": []}
-        for name in self.model.get_all_moves_names():
+        for name in self.get_all_moves_names():
             moves_dictionary[name[0]].append(name)
 
         for item in moves_dictionary["k"]:
@@ -164,7 +175,7 @@ class MoveController:
         blinkers_lines = []
 
         moves_dictionary = {"k": [], "p": [], "B": []}
-        for name in self.model.get_all_moves_names():
+        for name in self.get_all_moves_names():
             moves_dictionary[name[0]].append(name)
 
         for move in self.model.all_moves:

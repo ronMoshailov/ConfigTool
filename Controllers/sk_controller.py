@@ -63,8 +63,8 @@ class SkController:
         self.model.remove_sk(card_num)
         self.view.show_view(self.model.sk_list, self.all_moves)
 
-    def update_names(self, old_name, new_name):
-        self.model.update_names(old_name, new_name)
+    def rename_move(self, old_name, new_name):
+        self.model.rename_move(old_name, new_name)
 
     def remove_move(self, move_name):
         self.model.remove_move(move_name)

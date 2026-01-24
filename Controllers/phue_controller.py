@@ -126,8 +126,8 @@ class PhueController:
         # success, message = self.data_controller.update_inter_stage(self.table_wrap_list)
         QMessageBox.information(self.view, "הודעה", "העדכון הצליח")
 
-    def update_names(self, old_name, new_name):
-        self.model.update_names(old_name, new_name)
+    def rename_move(self, old_name, new_name):
+        self.model.rename_move(old_name, new_name)
 
     def update_phue_len(self, img_out, img_in, new_len):
         self.model.update_phue_len(img_out, img_in, new_len)

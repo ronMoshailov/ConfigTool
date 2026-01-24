@@ -10,7 +10,7 @@ class MoveView(QWidget):
         # Controller Methods
         self.add_move_method            = None
         self.remove_move_method         = None
-        self.update_names_method        = None
+        self.rename_move_method        = None
         self.update_type_method         = None
         self.update_min_green_method    = None
         self.update_main_method         = None
@@ -18,7 +18,7 @@ class MoveView(QWidget):
         # Table
         self.tbl = QTableWidget(0, 5, self)
         self.tbl.setHorizontalHeaderLabels(["מחיקה", "שם מופע", "סוג", "מופע ראשי", "מינימום ירוק"])
-        self.tbl.setColumnWidth(0, 90) # set column width of 80px
+        self.tbl.setColumnWidth(0, 90)
         self.tbl.verticalHeader().setVisible(False)
         self.tbl.verticalHeader().setDefaultSectionSize(60)
         self.tbl.setObjectName("RootTable")
@@ -70,21 +70,21 @@ class MoveView(QWidget):
             # move name (col 1)
             line_edit = QLineEdit()
             line_edit.setText(move_name)
-            line_edit.editingFinished.connect(lambda le=line_edit, m=move: self.update_names_method(m.name, le.text()))
+            line_edit.editingFinished.connect(lambda le=line_edit, m=move.name: self.rename_move_method(m, le.text()))
             self.tbl.setCellWidget(idx, 1, line_edit)
 
             # type (col 2)
             combo = QComboBox()
             combo.addItems(all_types)
             combo.setCurrentText(move_type)
-            combo.currentTextChanged.connect(lambda text, m=move: self.update_type_method(m.name, text))
+            combo.currentTextChanged.connect(lambda text, m=move.name: self.update_type_method(m, text))
             combo.wheelEvent = lambda event: None
             self.tbl.setCellWidget(idx, 2, combo)
 
             # is main (col 3)
             checkbox = QCheckBox()
             checkbox.setChecked(move_is_main)
-            checkbox.stateChanged.connect(lambda state, m=move: self.update_main_method(m, state))
+            checkbox.stateChanged.connect(lambda state, m=move.name: self.update_main_method(m, state))
             container = QWidget()
             layout = QHBoxLayout(container)
             layout.addWidget(checkbox)
@@ -95,7 +95,7 @@ class MoveView(QWidget):
             # min green (col 4)
             line_edit = QLineEdit()
             line_edit.setText(str(move_min_green))
-            line_edit.editingFinished.connect(lambda le=line_edit, m=move.name: self.update_min_green_method(m, int(le.text())))
+            line_edit.editingFinished.connect(lambda le=line_edit, m=move.name: self.update_min_green_method(m, le.text()))
             self.tbl.setCellWidget(idx, 4, line_edit)
 
         self.show()

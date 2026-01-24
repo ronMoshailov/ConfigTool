@@ -41,7 +41,7 @@ class ScheduleController:
                     # self.is_copy_sunday = False if not self.is_copy_sunday or (var_name == "monday") else True
                     # print(self.is_copy_sunday)
                     # if self.is_valid(var_name):
-                    print(self.is_copy_sunday)
+                    # print(self.is_copy_sunday)
                     program_number = int(match.group(2))
                     for day in days:
                         self.model.add_cell(day, 0, 0, program_number)

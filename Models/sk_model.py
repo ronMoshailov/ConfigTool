@@ -52,7 +52,7 @@ class SkModel:
 
         self.sk_list.remove(sk_to_remove)
 
-    def update_names(self, old_name, new_name):
+    def rename_move(self, old_name, new_name):
         for sk in self.sk_list:
             all_channels = sk.all_channels
             for channel in all_channels:

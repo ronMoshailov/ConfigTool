@@ -62,8 +62,8 @@ class ImageController:
             QMessageBox.critical(self.view, "שגיאה", "התמונה כבר קיימת במערכת")
         self.show_view(self.all_moves_names)
 
-    def update_names(self, old_name, new_name):
-        self.model.update_names(old_name, new_name)
+    def rename_move(self, old_name, new_name):
+        self.model.rename_move(old_name, new_name)
 
     def remove_image(self, name):
         self.model.remove_image(name)

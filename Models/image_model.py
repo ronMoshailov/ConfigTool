@@ -79,11 +79,11 @@ class ImageModel:
     def reset(self):
         self.all_images.clear()
 
-    def update_names(self, old_name, new_name):
+    def rename_move(self, old_name, new_name):
         for image in self.all_images:
-            for move_name in image.move_names_list:
+            for i, move_name in enumerate(image.move_names_list):
                 if move_name == old_name:
-                    move_name = new_name
+                    image.move_names_list[i] = new_name
 
     def remove_move(self, new_move_name):
         for image in self.all_images:

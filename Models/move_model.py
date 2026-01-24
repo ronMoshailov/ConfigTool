@@ -1,10 +1,7 @@
 class _Move:
-    """
-    Represents a traffic signal move.
-    """
-    def __init__(self, name: str, move_type: str, is_main: bool, min_green: int = 0):
+    def __init__(self, name: str, move_type: str, is_main: bool, min_green: int):
         """
-        :param name: name   of the move                                     e.g., 'k1', 'k2', 'pa', 'Bd'.
+        :param name:        name of the move                                e.g., 'k1', 'k2', 'pa', 'Bd'.
         :param move_type:   The category/type of move                       e.g., 'Traffic', 'Pedestrian', 'Blinker_Conditional'.
         :param is_main:     Indicates whether this is a main move           e.g., (True/False)
         :param min_green:   Minimum green time for this move (in seconds)   e.g., default is 0.
@@ -15,28 +12,13 @@ class _Move:
         self.min_green = min_green
 
 class MoveModel:
-    """
-    Represents a model of all the moves.
-    """
     def __init__(self):
-        """
-        Constructor.
-        """
         self.all_moves = []
 
     # ============================== CRUD ============================== #
     def add_move(self, name: str, move_type: str, is_main: bool, min_green: int = 0):
-        """
-        This method adds a new move.
-
-        :param name: Name of the move.
-        :param move_type: The type of move.
-        :param is_main: Indicates whether this is a main move.
-        :param min_green: Minimum green time for this move (in seconds)   e.g., default is 0.
-        :return: True if successful, False otherwise
-        """
-        # check if the move already exist
-        if self.is_move_exist(name):
+        # Check if the move already exist
+        if self._is_move_exist(name):
             return False
 
         # create move
@@ -53,34 +35,22 @@ class MoveModel:
         return None
 
     def remove_move(self, move_name):
-        """
-        This method removes a move if exists.
-
-        :param move_name: The name of the move.
-        :return: True if move removed, False otherwise.
-        """
         for move in self.all_moves:
             if move.name == move_name:
                 self.all_moves.remove(move)
                 return True
         return False
 
-    def update_min_green(self, name, min_green):
-        """
-        This method updates the minimum green time for this move.
-
-        :param name: Name of the move.
-        :param min_green: Minimum green time.
-        :return: True if successful, False otherwise
-        """
+    def update_min_green(self, move_name, min_green):
         for move in self.all_moves:
-            if move.name == name:
+            if move.name == move_name:
                 move.min_green = min_green
-                return True
-        return False
+                return
 
-    def update_main(self, move, state):
-        move.is_main = True if state == 2 else False
+    def update_main(self, move_name, new_state):
+        for move in self.all_moves:
+            if move.name == move_name:
+                move.is_main = True if new_state == 2 else False
 
     def get_all_moves_names(self):
         return [m.name for m in self.all_moves]
@@ -89,15 +59,21 @@ class MoveModel:
         return ["Traffic", "Traffic_Flashing", "Pedestrian", "Blinker_Conditional", "Blinker"]
 
     def update_name(self, old_name, new_name):
+        # Data
         move_to_change = None
 
+        # Check if move name already exist
         for move in self.all_moves:
             if move.name == old_name:
                 if not move_to_change:
                     move_to_change = move
             if move.name == new_name:
                 raise Exception("המופע כבר קיים")
+
+        # Rename the move
         move_to_change.name = new_name
+
+        # Update type depend on the name
         if move_to_change.name.startswith("k") and (move_to_change.type != "Traffic" and move_to_change.type != "Traffic_Flashing"):
             self.update_type(move_to_change.name, "Traffic")
         if move_to_change.name.startswith("p") and move_to_change.type != "Pedestrian":
@@ -105,8 +81,8 @@ class MoveModel:
         if move_to_change.name.startswith("B") and (move_to_change.type != "Blinker_Conditional" and move_to_change.type != "Blinker"):
             self.update_type(move_to_change.name, "Blinker")
 
+        # Sort the moves
         self._sort_moves()
-        return
 
     def update_type(self, move_name,  new_type):
         for move in self.all_moves:
@@ -115,13 +91,7 @@ class MoveModel:
                 return
 
     # ============================== Logic ============================== #
-    def is_move_exist(self, move_name):
-        """
-        This method checks if a move exists.
-
-        :param move_name: The name of the move
-        :return: True if move exists, False otherwise
-        """
+    def _is_move_exist(self, move_name):
         for move in self.all_moves:
             if move.name == move_name:
                 return True
@@ -131,13 +101,13 @@ class MoveModel:
         self.all_moves.clear()
 
     def _sort_moves(self):
-        traffic_list = [m for m in self.all_moves if m.name.startswith("k")]
+        traffic_list    = [m for m in self.all_moves if m.name.startswith("k")]
         pedestrian_list = [m for m in self.all_moves if m.name.startswith("p")]
-        blinker_list = [m for m in self.all_moves if m.name.startswith("B")]
+        blinker_list    = [m for m in self.all_moves if m.name.startswith("B")]
 
-        traffic_list = sorted(traffic_list, key=lambda m: m.name)
+        traffic_list    = sorted(traffic_list,    key=lambda m: m.name)
         pedestrian_list = sorted(pedestrian_list, key=lambda m: m.name)
-        blinker_list = sorted(blinker_list, key=lambda m: m.name)
+        blinker_list    = sorted(blinker_list,    key=lambda m: m.name)
 
         self.all_moves = traffic_list + pedestrian_list + blinker_list
 

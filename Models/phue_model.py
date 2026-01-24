@@ -54,7 +54,7 @@ class PhueModel:
                 phue.length = length
                 return
 
-    def update_names(self, old_name, new_name):
+    def rename_move(self, old_name, new_name):
         for phue in self.all_phue:
             for transition in phue.transitions:
                 if transition.move_name == old_name:
