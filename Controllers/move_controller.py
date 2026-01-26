@@ -2,13 +2,9 @@ import re
 
 from PyQt6.QtWidgets import QMessageBox
 
-from Config.patterns import move_pattern
-
+import Config
 
 class MoveController:
-    """
-    This class represents controller of a traffic signal move.
-    """
     def __init__(self, view, model):
         # Fields
         self.view = view
@@ -32,7 +28,8 @@ class MoveController:
                 line = line.strip()
                 if line.startswith("//") or not line.startswith("tk."):
                     continue
-                match = move_pattern.match(line)
+
+                match = Config.patterns.move_pattern.match(line)
                 if match:
                     phase, move_type, min_green, is_main = match.groups()
                     is_main = True if is_main == "true" else False
@@ -170,31 +167,19 @@ class MoveController:
         new_lines.append(blinkers_line)
 
     def add_initTk1_lines(self, new_lines):
-        car_lines = []
-        pedestrians_lines = []
-        blinkers_lines = []
+        car_lines           = []
+        pedestrians_lines   = []
+        blinkers_lines      = []
+        moves_dictionary    = {"k": [], "p": [], "B": []}
 
-        moves_dictionary = {"k": [], "p": [], "B": []}
+        # Get all moves names
         for name in self.get_all_moves_names():
             moves_dictionary[name[0]].append(name)
 
         for move in self.model.all_moves:
             # calc min green
-            min_green = move.min_green
-            if move.type == "Traffic":
-                if not move.is_main:
-                    if min_green > 5:
-                        min_green = 5
-            elif move.type == "Traffic_Flashing":
-                min_green -= 3
-                if not move.is_main:
-                    if min_green > 5:
-                        min_green = 5
-            elif move.type == "Pedestrian":
-                if min_green < 6:
-                    min_green = 6
-            else:
-                min_green = 0
+            min_green = self._calc_min_green(move)
+
 
             line = ""
             line += f"\t\ttk.{move.name}"
@@ -228,3 +213,21 @@ class MoveController:
         new_lines.append("\n")
         new_lines.extend(blinkers_lines)
 
+    def _calc_min_green(self, move):
+        min_green = move.min_green
+        if move.type == "Traffic":
+            if not move.is_main:
+                if min_green > 5:
+                    min_green = 5
+        elif move.type == "Traffic_Flashing":
+            min_green -= 3
+            if not move.is_main:
+                if min_green > 5:
+                    min_green = 5
+        elif move.type == "Pedestrian":
+            if min_green < 6:
+                min_green = 6
+        else:
+            min_green = 0
+
+        return min_green

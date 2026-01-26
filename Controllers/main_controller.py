@@ -84,6 +84,7 @@ class MainController:
         self.matrix_controller.get_move_type                    = self.move_controller.get_move_type
         self.navigator_view.write_to_code_method                = self.write_to_code
         self.parameters_ta_controller.get_sp_by_image_method    = self.image_controller.get_sp_by_image
+        self.detector_controller.get_all_moves_names            = self.move_controller.get_all_moves_names
 
         # =============== Root Layout =============== #
         root_layout = QHBoxLayout()
@@ -138,7 +139,7 @@ class MainController:
         elif act == "matrix":
             self.matrix_controller.show_view(self.move_model.all_moves)
         elif act == "detector":
-            self.detector_controller.show_view(self.move_controller.get_all_moves_names())
+            self.detector_controller.show_view()
         elif act == "sk":
             self.sk_controller.show_view(self.move_model.all_moves)
         elif act == "schedule":
@@ -220,6 +221,7 @@ class MainController:
 
         self.write_phase_imports()
 
+        self.settings_controller.write_to_file(self.path_manager.path_init_dst)
         self.move_controller.write_to_file(self.path_manager.path_tk1_dst, self.path_manager.path_init_tk1_dst)
         self.matrix_controller.write_to_file(self.path_manager.path_init_tk1_dst)
         self.schedule_controller.write_to_file(self.path_manager.path_init_tk1_dst)

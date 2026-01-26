@@ -1,11 +1,5 @@
 class _Move:
     def __init__(self, name: str, move_type: str, is_main: bool, min_green: int):
-        """
-        :param name:        name of the move                                e.g., 'k1', 'k2', 'pa', 'Bd'.
-        :param move_type:   The category/type of move                       e.g., 'Traffic', 'Pedestrian', 'Blinker_Conditional'.
-        :param is_main:     Indicates whether this is a main move           e.g., (True/False)
-        :param min_green:   Minimum green time for this move (in seconds)   e.g., default is 0.
-        """
         self.name = name
         self.type = move_type
         self.is_main = is_main
@@ -21,11 +15,12 @@ class MoveModel:
         if self._is_move_exist(name):
             return False
 
-        # create move
+        # Create move
         new_move  = _Move(name, move_type, is_main, min_green)
         self.all_moves.append(new_move)
         self._sort_moves()
 
+        # Return
         return True
 
     def get_move_type(self, move_name):

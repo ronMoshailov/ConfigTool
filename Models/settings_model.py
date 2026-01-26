@@ -1,20 +1,21 @@
 class SettingsModel:
     def __init__(self):
-        # self.programmer_name = None
-        self.junction_num = None
-        self.junction_name = None     # anlagenName
-        self.version = None
-        # self.date = None
-        self.first_ext = None
-        self.history = []
+        self.junction_num   = None
+        self.junction_name  = None     # anlagenName
+        self.version        = None
+        self.first_ext      = None
+        self.history        = []
 
     # ============================== CRUD ============================== #
     def set(self, junction_num, junction_name, version, versions, first_ext):
-        self.junction_num = junction_num
-        self.junction_name = junction_name
-        self.version = version
-        self.first_ext = first_ext
-        self.history = versions
+        self.junction_num   = junction_num
+        self.junction_name  = junction_name
+        self.version        = version
+        self.first_ext      = first_ext
+        self.history        = versions
+
+    def add_to_history(self, date, author):
+        self.history.append((date, author))
 
     def update_junction_number(self, junction_num):
         self.junction_num = junction_num
@@ -30,13 +31,9 @@ class SettingsModel:
 
     # ============================== Logic ============================== #
     def reset(self):
-        # self.programmer_name = None
         self.junction_num = None
         self.junction_name = None
         self.version = None
-        # self.date = None
         self.first_ext = None
-
-
-
+        self.history.clear()
 

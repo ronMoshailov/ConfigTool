@@ -8,9 +8,9 @@ class DetectorView(QWidget):
     def __init__(self):
         super().__init__()
 
-        # Set Controller Methods
+        # Controller Methods
         self.remove_detector_method = None
-        self.update_detectors_method = None
+        self.add_detector_method = None
 
         # Table
         self.tbl = QTableWidget(0, 6, self)
@@ -28,7 +28,7 @@ class DetectorView(QWidget):
         # Button
         add_detector_btn = QPushButton("הוסף גלאי")
         add_detector_btn.setObjectName("add_button")
-        add_detector_btn.clicked.connect(self.add_detector)
+        add_detector_btn.clicked.connect(lambda: self.add_detector_method("Variable Name", "DDetector", "Detector Name", "k0", 0))
 
         # Button Layout
         btn_layout = QHBoxLayout()
@@ -103,44 +103,6 @@ class DetectorView(QWidget):
 
     def hide_view(self):
         self.hide()
-
-    # ============================== CRUD ============================== #
-    def add_detector(self):
-        idx = self.tbl.rowCount()
-        self.tbl.insertRow(idx)
-
-        # add var name (col 0)
-        remove_btn = QPushButton("X")
-        remove_btn.setObjectName("remove_button")
-
-        remove_btn.clicked.connect(lambda _, btn=remove_btn: self.remove_detector_method(self.tbl, btn))
-        self.tbl.setCellWidget(idx, 0, remove_btn)
-
-        # add var name (col 1)
-        item = QTableWidgetItem("")
-        self.tbl.setItem(idx, 1, item)
-
-        # add class name (col 2)
-        combo = QComboBox()
-        combo.addItems(self.all_types)
-        combo.setCurrentIndex(0)
-        combo.wheelEvent = lambda event: None
-        self.tbl.setCellWidget(idx, 2, combo)
-
-        # add detector name (col 3)
-        item = QTableWidgetItem("")
-        self.tbl.setItem(idx, 3, item)
-
-        # add move name (col 4)
-        combo = QComboBox()
-        combo.addItems(self.all_moves_names)
-        combo.setCurrentIndex(0)
-        combo.wheelEvent = lambda event: None
-        self.tbl.setCellWidget(idx, 4, combo)
-
-        # add ext unit
-        item = QTableWidgetItem(str(0))
-        self.tbl.setItem(idx, 5, item)
 
 
 

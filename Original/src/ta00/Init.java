@@ -25,18 +25,6 @@ import tk.Var;
 public class Init implements enp.Initialisierung {
 
     // write settings here
-	public static String anlagenName = "Tel-Aviv Junc. 118";
-	public static String tk1Name     = "Yitzhak Sadeh - Tversky";
-	public static String version     = "V1.4.1e G5tf.7";
-//	public static String date        = " 04/11/2024";
-//	public static String editor      = " Sergei V.";
-	public static String[] versions = {
-		"26/11/2023 - Basic - Kmahya",
-		"04/11/2024 - UPDATE - Sergei V.",
-		"05/01/2025 - Hesder 250 - Kmahya",
-		"11/06/2025 - Hesder 282 - Shachar G.",
-		"13/08/2025 - Hesder 278 - Ron M."
-	};
 
 	public static void main(String[] args) {
 		System.out.println(anlagenName + " " + tk1Name + " " + version + " " + versions[versions.length - 1]);

@@ -11,11 +11,10 @@ class MatrixView(QWidget):
         super().__init__()
 
         # Controller Methods
-        self.update_method = None
+        self.update_cell = None
 
         # Data
         self.moves_length = None
-        self.changed_cells = []
 
         # Table
         self.tbl = QTableWidget(self)
@@ -46,7 +45,6 @@ class MatrixView(QWidget):
 
         # Set Matrix
         self.tbl.blockSignals(True)         # block signals
-        self.changed_cells.clear()
         self._init_table(all_names)
         self._fill_values(all_cells)        # set values from DB
         self._disable_pedestrian()          # disable pedestrian cells
@@ -102,10 +100,9 @@ class MatrixView(QWidget):
         row_idx = item.row()        # get row index of the item
         col_idx = item.column()     # get column index of the item
 
-        row_name = self.tbl.verticalHeaderItem(row_idx).text().strip()      # get row header name
-        col_name = self.tbl.horizontalHeaderItem(col_idx).text().strip()    # get column header name
-
-        val = item.text().strip()
+        row_name    = self.tbl.verticalHeaderItem(row_idx).text().strip()      # get row header name
+        col_name    = self.tbl.horizontalHeaderItem(col_idx).text().strip()    # get column header name
+        val         = item.text().strip()
 
         if val == "":
             item.setText("")
@@ -116,7 +113,7 @@ class MatrixView(QWidget):
             item.setText("")
             return
 
-        self.update_method(row_name, col_name, val)
+        self.update_cell(row_name, col_name, val)
 
     def _fill_values(self, all_cells):
         # data
