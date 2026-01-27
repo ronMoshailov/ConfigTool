@@ -5,28 +5,25 @@ from PyQt6.QtWidgets import QCheckBox, QMessageBox
 
 class ImageController:
     def __init__(self, view, model):
+        # Fields
         self.view = view
         self.model = model
+
+        # Set View Methods
+        self.view.add_image_method                  = self.add_image
+        self.view.remove_image_method               = self.remove_image
+        self.view.update_stop_point_method          = self.update_stop_point
+        self.view.update_skeleton_method            = self.update_skeleton
+        self.view.update_image_number_method        = self.update_image_number
+        self.view.update_move_assignment_method     = self.update_move_assignment
 
         # Data
         self.all_moves_names = None
 
-        # Set View Methods
-        self.view.add_image_method = self.add_image
-        self.view.remove_image_method = self.remove_image
-        self.view.on_sp_changed_method = self.on_sp_changed_method
-        self.view.update_skeleton_method = self.update_skeleton
-        self.view.update_image_number_method = self.update_image_number
-        self.view.on_checkbox_changed = self.toggle_move
-
-
     def init_model(self, path, all_moves_names):
-
-        pattern = Config.patterns.image_pattern
-
         with open(path, "r", encoding="utf-8") as file:
             for line in file:
-                m = pattern.search(line)
+                m = Config.patterns.image_pattern.search(line)
                 if m:
                     image_name = m.group(1)
                     image_num = int(m.group(2).strip())
@@ -47,7 +44,6 @@ class ImageController:
                         if move_name in image_moves:
                             collection.append(move_name)
                     self.model.new_image(image_name, image_num, int(image_skeleton), int(image_sp), is_police, collection)
-                    # self.image_model.new_image(image_name, image_num, image_skeleton, image_sp, is_police)
 
     def show_view(self, all_moves_names):
         self.all_moves_names = all_moves_names
@@ -55,6 +51,9 @@ class ImageController:
 
     # ============================== CRUD ============================== #
     def add_image(self, name):
+        """
+        This method add new image to the model
+        """
         name = name.capitalize()
         name = "EQA" if name.lower == "Eqa" else name
 
@@ -62,46 +61,87 @@ class ImageController:
             QMessageBox.critical(self.view, "שגיאה", "התמונה כבר קיימת במערכת")
         self.show_view(self.all_moves_names)
 
+    def fetch_images_by_sp(self):
+        # Used By Parameters ta Controller
+        """
+        This method fetch all the images from the model in the order of SP
+        """
+        self.model.get_images_by_sp()
+
     def rename_move(self, old_name, new_name):
+        # Used By Main Controller
+        """
+        This method rename a move
+        """
         self.model.rename_move(old_name, new_name)
 
     def remove_image(self, name):
+        """
+        This method removes image from the model
+        """
         self.model.remove_image(name)
         self.show_view(self.all_moves_names)
 
     def remove_move(self, move_name):
+        # Used By Main Controller
+        """
+        This method removes a move from all the images of the model
+        """
         self.model.remove_move(move_name)
 
     def update_skeleton(self, image_name, skeleton):
+        """
+        This method update the skeleton number of the image
+        """
         self.model.update_skeleton(image_name, skeleton)
 
     def update_image_number(self, image_name, skeleton):
+        """
+        This method update the image number of the image
+        """
         self.model.update_image_number(image_name, skeleton)
         self.show_view(self.all_moves_names)
 
-    def toggle_move(self, image_name, move_name):
-        self.model.toggle_move(image_name, move_name)
+    def update_move_assignment(self, image_name, move_name):
+        """
+        This method toggle the assignment of a move to the image
+        """
+        self.model.update_move_assignment(image_name, move_name)
 
     def get_sp_by_image(self, image_name):
+        # Used By Parameters ta Controller
+        """
+        This method returns a stop point by the image name
+        """
         return self.model.get_sp_by_image(image_name)
 
-    # ============================== Logic ============================== #
-    def on_sp_changed_method(self, image_name, sp):
+    def update_stop_point(self, image_name, sp):
+        """
+        This method updates the stop point of the image
+        """
         for image in self.model.all_images:
             if image.image_name == image_name:
                 image.sp = int(sp)
                 break
 
+    # ============================== Logic ============================== #
+
     def reset(self):
+        """
+        This method clear all the data in the model
+        """
         self.model.reset()
 
     # ============================== Write To File ============================== #
     def write_to_file(self, path_tk, path_init_tk, phase_folder_dst):
+        """
+        This method write the data from the model to the project
+        """
         # create files
         for image in self.model.all_images:
             if image.image_name == "A":
                 continue
-            self.create_file(image.image_name, phase_folder_dst)
+            self._create_file(image.image_name, phase_folder_dst)
 
         # data
         code = []
@@ -195,7 +235,7 @@ class ImageController:
             line = line[:-2] + "});\n"
             code.append(line)                                   #
 
-    def create_file(self, image_name, path_dst):
+    def _create_file(self, image_name, path_dst):
         line = ""
 
         line += "package phase;\n"

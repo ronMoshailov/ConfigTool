@@ -11,7 +11,7 @@ class MatrixView(QWidget):
         super().__init__()
 
         # Controller Methods
-        self.update_cell = None
+        self.update_wait_time_method = None
 
         # Data
         self.moves_length = None
@@ -113,7 +113,7 @@ class MatrixView(QWidget):
             item.setText("")
             return
 
-        self.update_cell(row_name, col_name, val)
+        self.update_wait_time_method(row_name, col_name, val)
 
     def _fill_values(self, all_cells):
         # data

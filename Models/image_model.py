@@ -1,4 +1,4 @@
-class Image:
+class _Image:
     def __init__(self, name: str, num: str, skeleton: str, sp: str, is_police: bool, move_names_list: list):
         self.image_name = name
         self.image_num = num
@@ -12,17 +12,51 @@ class ImageModel:
     def __init__(self):
         self.all_images = []
 
+    # ============================== CRUD ============================== #
     def new_image(self, name, num, skeleton, sp, is_police = False, move_names_list = []):
         for image in self.all_images:
             if image.image_name == name:
                 return False
-        image = Image(name, num, skeleton, sp, is_police, move_names_list)
+        image = _Image(name, num, skeleton, sp, is_police, move_names_list)
         self.all_images.append(image)
         return True
 
-    # def add_image(self, name, num, skeleton, sp):
-    #     image = Image(name, num, skeleton, sp,  False, [])
-    #     self.all_images.append(image)
+    def get_images_by_sp(self):
+        image_list = []
+
+        for i in range(len(self.all_images)):
+            for image in self.all_images:
+                if image.sp == i:
+                    image_list.append(image.image_name)
+                    break
+        return image_list
+
+    def get_sp_by_image(self, image_name):
+        for image in self.all_images:
+            if image.image_name == image_name:
+                return image.sp
+        return None
+
+
+
+
+
+
+
+
+
+
+
+
+
+    def update_move_assignment(self, image_name, move_name_arg):
+        for image in self.all_images:
+            if image.image_name == image_name:
+                if move_name_arg in image.move_names_list:
+                    image.move_names_list.remove(move_name_arg)
+                else:
+                    image.move_names_list.append(move_name_arg)
+                return
 
     def remove_image(self, name):
         for image in self.all_images:
@@ -50,22 +84,8 @@ class ImageModel:
                 image.image_num = image_num
                 return
 
-    def get_images_by_sp(self):
-        image_list = []
 
-        for i in range(len(self.all_images)):
-            for image in self.all_images:
-                if image.sp == i:
-                    image_list.append(image.image_name)
-                    break
-        return image_list
-
-    def get_sp_by_image(self, image_name):
-        for image in self.all_images:
-            if image.image_name == image_name:
-                return image.sp
-        return None
-
+    # ============================== Logic ============================== #
     def is_sp_valid(self):
         highest_sp = 0
         for image in self.all_images:
@@ -92,14 +112,6 @@ class ImageModel:
                     image.move_names_list.remove(move_name)
                     continue
 
-    def toggle_move(self, image_name, move_name_arg):
-        for image in self.all_images:
-            if image.image_name == image_name:
-                if move_name_arg in image.move_names_list:
-                    image.move_names_list.remove(move_name_arg)
-                else:
-                    image.move_names_list.append(move_name_arg)
-                return
 
 
 

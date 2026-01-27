@@ -14,7 +14,7 @@ class MatrixModel:
         cell = _MatrixCell(move_out, move_in, wait_time)
         self.all_cells.append(cell)
 
-    def update_matrix(self, out_name, in_name, val):
+    def set_wait_time(self, out_name, in_name, val):
         for cell in self.all_cells:
             if cell.move_out == out_name and cell.move_in== in_name:
                 cell.wait_time = val

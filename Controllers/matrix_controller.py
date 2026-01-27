@@ -9,7 +9,7 @@ class MatrixController:
         self.model = model
 
         # Set View Methods
-        self.view.update_cell = self.update_matrix
+        self.view.update_wait_time_method = self.update_wait_time
 
         # Set Main Controller Methods
         self.get_move_type = None
@@ -37,20 +37,26 @@ class MatrixController:
         self.view.show_view(all_moves, self.model.all_cells)
 
     # ============================== CRUD ============================== #
-    def update_matrix(self, out_name, in_name, val):
-        self.model.update_matrix(out_name, in_name, int(val))
-
-    def remove_from_matrix(self, move_name):
-        # Used by Move Controller
-        self.model.all_cells = [cell for cell in self.model.all_cells if cell.move_in != move_name and cell.move_out != move_name]
+    def update_wait_time(self, out_name, in_name, val):
+        """
+        This method update the cell
+        """
+        self.model.set_wait_time(out_name, in_name, int(val))
 
     def rename_move(self, old_name, new_name):
         # Used By Main Controller
+        """
+        This method rename a move in all the cells
+        """
         self.model.rename_move(old_name, new_name)
 
     def remove_move(self, move_name):
         # Used by Move Controller
+        """
+
+        """
         self.model.remove_move(move_name)
+        # self.model.all_cells = [cell for cell in self.model.all_cells if cell.move_in != move_name and cell.move_out != move_name]
 
     # ============================== Logic ============================== #
     def is_matrix_valid(self):

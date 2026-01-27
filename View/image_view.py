@@ -6,9 +6,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QPushButton, QLineEdit, QLabel, QCheckBox, \
     QAbstractItemView, QTableWidget, QHeaderView, QSizePolicy
 
-
 class ImageView(QWidget):
-
     MOVE_NAME_WIDTH = 70
     CHECKBOX_WIDTH = 70
 
@@ -18,10 +16,10 @@ class ImageView(QWidget):
         # Set Controller Methods
         self.add_image_method               = None
         self.remove_image_method            = None
-        self.on_sp_changed_method           = None
+        self.update_stop_point_method       = None
         self.update_skeleton_method         = None
         self.update_image_number_method     = None
-        self.on_checkbox_changed            = None
+        self.update_move_assignment_method  = None
 
         # Data
         self.table_dict = {}
@@ -81,8 +79,6 @@ class ImageView(QWidget):
     def hide_view(self):
         self.hide()
 
-    # ============================== CRUD ============================== #
-
     # ============================== Layout ============================== #
     def _create_wrap(self, image, all_moves_names):
         # warp
@@ -131,7 +127,7 @@ class ImageView(QWidget):
 
         # sp
         textbox_sp = QLineEdit()
-        textbox_sp.textChanged.connect(lambda text, name=image.image_name: self.on_sp_changed_method(name, text))
+        textbox_sp.textChanged.connect(lambda text, name=image.image_name: self.update_stop_point_method(name, text))
         textbox_sp.setText(str(image.sp))
 
         label = QLabel("נקודת החלטה")
@@ -215,7 +211,7 @@ class ImageView(QWidget):
             check_box = QCheckBox()
             check_box.setChecked(False)
             check_box.setObjectName("checkbox_comment")
-            check_box.stateChanged.connect(lambda _, img=image_name, m=move_name: self.on_checkbox_changed(img, m))
+            check_box.stateChanged.connect(lambda _, img=image_name, m=move_name: self.update_move_assignment_method(img, m))
 
             container = QWidget()
             layout = QHBoxLayout(container)

@@ -8,7 +8,6 @@ class DetectorController:
         self.all_moves_names = None
 
         # Set View Methods
-        # self.view.update_detectors_method = self.update_detectors
         self.view.remove_detector_method = self.remove_row
         self.view.add_detector_method = self.add_detector
 

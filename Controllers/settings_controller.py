@@ -66,23 +66,41 @@ class SettingsController:
         self.show_view()
 
     def update_junction_number(self, text):
+        """
+        This method update the junction number
+        """
         self.model.update_junction_number(text)
 
     def update_junction_name(self, text):
+        """
+        This method update the junction name
+        """
         self.model.update_junction_name(text)
 
     def update_version(self, text):
+        """
+        This method update the version of the app
+        """
         self.model.update_version(text)
 
     def update_update_first_ext(self, text):
+        """
+        This method update the first extension
+        """
         self.model.update_first_ext(text)
 
     # ============================== Logic ============================== #
     def reset(self):
+        """
+        This method clear all the data in the model
+        """
         self.model.reset()
 
     # ============================== Write To File ============================== #
     def write_to_file(self, path):
+        """
+        This method write the data from the model to the project
+        """
         # data
         code = []
 
