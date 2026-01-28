@@ -4,6 +4,7 @@ from PyQt6.QtWidgets import QMessageBox
 
 import Config
 
+
 class MoveController:
     def __init__(self, view, model):
         # Fields
@@ -42,19 +43,31 @@ class MoveController:
 
     # ============================== CRUD ============================== #
     def add_new_move(self):
+        """
+        This method add new move to the model
+        """
         self.model.add_move("k0", "Traffic", False, 0)
         self.show_view()
 
     def get_move_type(self, move_name):
         # Used by Matrix Controller
+        """
+        This method return the type of the move
+        """
         return self.model.get_move_type(move_name)
 
     def get_all_moves_names(self):
         # Used also in Main Controller
+        """
+        This method return all the moves names
+        """
         return self.model.get_all_moves_names()
 
     def rename_move(self, old_name, new_name):
         # Used By Main Controller
+        """
+        This method rename a move
+        """
         if old_name == new_name:
             return
 
@@ -86,17 +99,20 @@ class MoveController:
         self.show_view()
 
     def update_type(self, move_name,  new_type):
-        self.model.update_type(move_name,  new_type)
+        """
+        This method set a type to move
+        """
+        self.model.set_type(move_name,  new_type)
 
     def update_main(self, move_name, new_state):
-        self.model.update_main(move_name, new_state)
+        self.model.set_main(move_name, new_state)
 
     def update_min_green(self, move, time):
         if not time.isdigit():
             QMessageBox.critical(self.view, "שגיאה", "ערך לא תקין")
             self.show_view()
         else:
-            self.model.update_min_green(move, int(time))
+            self.model.set_min_green(move, int(time))
 
     def remove_move(self, table, btn):
         row_count = table.rowCount()

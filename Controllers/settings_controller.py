@@ -1,6 +1,7 @@
 import re
 import Config
 
+
 class SettingsController:
     def __init__(self, view, model):
         # Fields
@@ -20,7 +21,7 @@ class SettingsController:
         self.view.update_junction_name_method   = self.update_junction_name
         self.view.update_version_method         = self.update_version
         self.view.update_first_cycle_ext_method = self.update_update_first_ext
-        self.view.add_to_history_method         = self.add_history
+        self.view.add_to_history_method         = self.add_to_history
 
     def init_model(self, path):
         # Read
@@ -61,40 +62,43 @@ class SettingsController:
         self.view.show_view()
 
     # ============================== CRUD ============================== #
-    def add_history(self, date, author):
-        self.model.add_to_history(date, author)
+    def add_to_history(self, date, author):
+        """
+        This method add to the history and date and the author
+        """
+        self.model.append_to_history(date, author)
         self.show_view()
 
     def update_junction_number(self, text):
         """
         This method update the junction number
         """
-        self.model.update_junction_number(text)
+        self.model.set_junction_number(text)
 
     def update_junction_name(self, text):
         """
         This method update the junction name
         """
-        self.model.update_junction_name(text)
+        self.model.set_junction_name(text)
 
     def update_version(self, text):
         """
         This method update the version of the app
         """
-        self.model.update_version(text)
+        self.model.set_version(text)
 
     def update_update_first_ext(self, text):
         """
         This method update the first extension
         """
-        self.model.update_first_ext(text)
+        self.model.set_first_ext(text)
 
     # ============================== Logic ============================== #
     def reset(self):
         """
         This method clear all the data in the model
         """
-        self.model.reset()
+        self.model.reset_settings_model()
 
     # ============================== Write To File ============================== #
     def write_to_file(self, path):

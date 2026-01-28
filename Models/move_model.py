@@ -5,6 +5,7 @@ class _Move:
         self.is_main = is_main
         self.min_green = min_green
 
+
 class MoveModel:
     def __init__(self):
         self.all_moves = []
@@ -36,13 +37,13 @@ class MoveModel:
                 return True
         return False
 
-    def update_min_green(self, move_name, min_green):
+    def set_min_green(self, move_name, min_green):
         for move in self.all_moves:
             if move.name == move_name:
                 move.min_green = min_green
                 return
 
-    def update_main(self, move_name, new_state):
+    def set_main(self, move_name, new_state):
         for move in self.all_moves:
             if move.name == move_name:
                 move.is_main = True if new_state == 2 else False
@@ -79,7 +80,7 @@ class MoveModel:
         # Sort the moves
         self._sort_moves()
 
-    def update_type(self, move_name,  new_type):
+    def set_type(self, move_name,  new_type):
         for move in self.all_moves:
             if move.name == move_name:
                 move.type = new_type
