@@ -1,7 +1,7 @@
 import re
 import Config
 
-from PyQt6.QtWidgets import QCheckBox, QMessageBox
+from PyQt6.QtWidgets import QMessageBox
 
 class ImageController:
     def __init__(self, view, model):
@@ -130,7 +130,7 @@ class ImageController:
         """
         This method clear all the data in the model
         """
-        self.model.reset()
+        self.model.reset_image_model()
 
     # ============================== Write To File ============================== #
     def write_to_file(self, path_tk, path_init_tk, phase_folder_dst):

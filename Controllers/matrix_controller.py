@@ -53,13 +53,17 @@ class MatrixController:
     def remove_move(self, move_name):
         # Used by Move Controller
         """
-
+        This method remove all cells that related to the move
         """
         self.model.remove_move(move_name)
         # self.model.all_cells = [cell for cell in self.model.all_cells if cell.move_in != move_name and cell.move_out != move_name]
 
     # ============================== Logic ============================== #
     def is_matrix_valid(self):
+        """
+        This method check if the matrix has valid logic
+        * if (x,y) has value so the method check if (y,x) has also value
+        """
         # Get cell's moves
         pairs = {(cell.move_out, cell.move_in) for cell in self.model.all_cells}
 
@@ -71,7 +75,10 @@ class MatrixController:
         return True
 
     def reset(self):
-        self.model.reset()
+        """
+        This method clear all the data from the model
+        """
+        self.model.reset_matrix_model()
 
     # ============================== Write To File ============================== #
     def write_to_file(self, path_init_tk1):

@@ -1,30 +1,30 @@
 from PyQt6.QtWidgets import QMessageBox
 
-from Config.patterns import schedule_pattern
-from Config.special import get_space
+import Config
 
 
 class ScheduleController:
     def __init__(self, view, model):
+        # Fields
         self.view = view
         self.model = model
         self.is_copy_sunday = True
 
-        self.view.get_all_channels_method = self.get_all_channels
-        self.view.remove_row_method = self.remove_row
-        self.view.add_row_method = self.add_row
-        self.view.update_schedule_method = self.update_schedule
-        self.view.is_copied_sunday_method = self.is_copied_sunday
-        self.view.toggle_copy_sunday_method = self.toggle_copy_sunday
+        # Set View Methods
+        self.view.get_all_channels_method       = self.get_all_channels
+        self.view.remove_row_method             = self.remove_row
+        self.view.add_row_method                = self.add_row
+        self.view.update_schedule_method        = self.update_schedule
+        self.view.is_copied_sunday_method       = self.is_copied_sunday
+        self.view.toggle_copy_sunday_method     = self.toggle_copy_sunday
 
     def init_model(self, path):
-        pattern = schedule_pattern
         mapping_day = {"sun_thur": [1,2,3,4,5], "sunday":[1], "monday":[2], "tuesday":[3], "wednesday":[4], "thursday":[5], "fr": [6],"sa": [7]}
 
         with open(path, 'r', encoding='utf-8') as file:
             for line in file:
                 line = line.strip()
-                match = pattern.match(line)
+                match = Config.patterns.schedule_pattern.match(line)
                 if not match:
                     continue
 
@@ -38,10 +38,6 @@ class ScheduleController:
                         self.is_copy_sunday = False
                     else:
                         self.is_copy_sunday = True
-                    # self.is_copy_sunday = False if not self.is_copy_sunday or (var_name == "monday") else True
-                    # print(self.is_copy_sunday)
-                    # if self.is_valid(var_name):
-                    # print(self.is_copy_sunday)
                     program_number = int(match.group(2))
                     for day in days:
                         self.model.add_cell(day, 0, 0, program_number)
@@ -55,11 +51,6 @@ class ScheduleController:
 
                     for day in days:
                         self.model.add_cell(day, hour, minute, program_number)
-
-                    # if self.is_valid(var_name):
-                    #     program_number = int(match.group(6))
-                        # self.schedule_list.append(Schedule(hour, minute, program_number))
-                        # print(f"{var_name}: שעה {hour}, דקה {minute}, תוכנית {program_number}")
 
     def show_view(self):
         self.view.show_view()
@@ -270,8 +261,8 @@ class ScheduleController:
 
             #
             line = (f"\t\tfr.initProgWunsch("
-                    f"{get_space(0, 1, str(cell.hour))}{cell.hour} ,"
-                    f"{get_space(1, 2, str(cell.minute))}{cell.minute},  tk.p{prog_num} );\n")
+                    f"{Config.special.get_space(0, 1, str(cell.hour))}{cell.hour} ,"
+                    f"{Config.special.get_space(1, 2, str(cell.minute))}{cell.minute},  tk.p{prog_num} );\n")
             new_lines.append(line)
         new_lines.append("\n")
 
@@ -295,8 +286,8 @@ class ScheduleController:
 
             #
             line = (f"\t\tsa.initProgWunsch("
-                    f"{get_space(0, 1, str(cell.hour))}{cell.hour} ,"
-                    f"{get_space(1, 2, str(cell.minute))}{cell.minute},  tk.p{prog_num} );\n")
+                    f"{Config.special.get_space(0, 1, str(cell.hour))}{cell.hour} ,"
+                    f"{Config.special.get_space(1, 2, str(cell.minute))}{cell.minute},  tk.p{prog_num} );\n")
             new_lines.append(line)
         new_lines.append("\n")
 

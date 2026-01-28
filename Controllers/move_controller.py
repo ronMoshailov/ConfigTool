@@ -93,7 +93,7 @@ class MoveController:
         # If it's blinker fix the matrix and min green time
         if new_name.startswith("B"):
             self.remove_move_from_matrix_method(new_name)
-            self.model.update_min_green(new_name, 0)
+            self.model.set_min_green(new_name, 0)
 
         # Refresh view
         self.show_view()
@@ -105,9 +105,15 @@ class MoveController:
         self.model.set_type(move_name,  new_type)
 
     def update_main(self, move_name, new_state):
+        """
+        This method set the new state to the move
+        """
         self.model.set_main(move_name, new_state)
 
     def update_min_green(self, move, time):
+        """
+        This method set the new min green time to the move
+        """
         if not time.isdigit():
             QMessageBox.critical(self.view, "שגיאה", "ערך לא תקין")
             self.show_view()
@@ -115,6 +121,9 @@ class MoveController:
             self.model.set_min_green(move, int(time))
 
     def remove_move(self, table, btn):
+        """
+        This method removes the move from all the models
+        """
         row_count = table.rowCount()
         for row in range(row_count):
             item = table.cellWidget(row, 0)
@@ -127,7 +136,10 @@ class MoveController:
 
     # ============================== Logic ============================== #
     def reset(self):
-        self.model.reset()
+        """
+        This method clear all the data in the model
+        """
+        self.model.reset_move_model()
 
     # ============================== Write To File ============================== #
     def write_to_file(self, path_tk, path_init_tk1):
@@ -230,6 +242,9 @@ class MoveController:
         new_lines.extend(blinkers_lines)
 
     def _calc_min_green(self, move):
+        """
+        This method calculate the minimum green time depend on the type and if the move is main
+        """
         min_green = move.min_green
         if move.type == "Traffic":
             if not move.is_main:

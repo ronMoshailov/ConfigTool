@@ -10,7 +10,7 @@ class MoveView(QWidget):
         # Controller Methods
         self.add_move_method            = None
         self.remove_move_method         = None
-        self.rename_move_method        = None
+        self.rename_move_method         = None
         self.update_type_method         = None
         self.update_min_green_method    = None
         self.update_main_method         = None

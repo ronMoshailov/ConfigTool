@@ -19,27 +19,54 @@ class DetectorModel:
         return True
 
     def get_all_types(self):
+        """
+        This method return all the possible types of the detectors
+        """
         return ["DDetector", "EDetector", "DEDetector", "TPDetector", "QDetector"]
 
     def get_all_d_detectors(self):
+        """
+        This method return all the detectors that are demand detector
+        """
         return [detector for detector in self.all_detectors if detector.class_name == "DDetector"]
 
     def get_all_e_detectors(self):
+        """
+        This method return all the detectors that are extension detector
+        """
         return [detector for detector in self.all_detectors if detector.class_name == "EDetector"]
 
     def get_all_de_detectors(self):
+        """
+        This method return all the detectors that are demand & extension detector
+        """
         return [detector for detector in self.all_detectors if detector.class_name == "DEDetector"]
 
     def get_all_tp_detectors(self):
+        """
+        This method return all the detectors that are pedestrian detector
+        """
         return [detector for detector in self.all_detectors if detector.class_name == "TPDetector"]
 
     def get_all_q_detectors(self):
+        """
+        This method return all the detectors that are queue detector
+        """
         return [detector for detector in self.all_detectors if detector.class_name == "QDetector"]
 
     def rename_move(self, old_name, new_name):
         for detector in self.all_detectors:
             if detector.move_name == old_name:
                 detector.move_name = new_name
+
+    def remove_detector(self, detector_name):
+        """
+        This method remove a detector from the model
+        """
+        for detector in self.all_detectors:
+            if detector.var_name == detector_name:
+                self.all_detectors.remove(detector)
+                return
 
     # ============================== Logic ============================== #
     def is_detector_exist(self, var_name):

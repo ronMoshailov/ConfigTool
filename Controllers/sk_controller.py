@@ -3,19 +3,16 @@ from PyQt6.QtGui import QBrush
 from PyQt6.QtWidgets import QMessageBox, QTableWidget, QTableWidgetItem
 
 import Config
-from Config.patterns import sk_pattern
 
 
 class SkController:
-    """
-    This class is used to represent a sk channel.
-    """
     def __init__(self, view, model):
+        # Fields
         self.view = view
         self.model = model
         self.all_moves = None
 
-        # =============== Controller Methods =============== #
+        # Controller Methods
         self.view.add_sk_method = self.add_sk_card
         self.view.remove_sk_method = self.remove_sk_card
         self.view.change_color_method = self.change_color
@@ -24,14 +21,12 @@ class SkController:
         self.view.update_data_method = self.update_data
 
     def init_model(self, path):
-
         with open(path, 'r', encoding='utf-8') as file:
             for line in file:
                 line = line.strip()
                 if "SK24 sk" in line and not line.startswith("//"):
                     self.model.add_sk()
 
-        pattern = sk_pattern
         with open(path, 'r', encoding='utf-8') as file:
             for line in file:
                 if line.startswith("package"):
@@ -39,7 +34,7 @@ class SkController:
                 line = line.strip()
                 if "new SchaltKanal" not in line:
                     continue
-                match = pattern.match(line)
+                match = Config.patterns.sk_pattern.match(line)
                 if match:
                     is_commented = bool(match.group(1))
                     name = match.group(2)
@@ -56,20 +51,35 @@ class SkController:
 
     # ============================== CRUD ============================== #
     def add_sk_card(self):
+        """
+        This method add new sk card to the model
+        """
         self.model.add_sk()
         self.view.show_view(self.model.sk_list, self.all_moves)
 
     def remove_sk_card(self, card_num):
+        """
+        This method remove sk card from the model
+        """
         self.model.remove_sk(card_num)
         self.view.show_view(self.model.sk_list, self.all_moves)
 
     def rename_move(self, old_name, new_name):
+        """
+        This method rename a move from all the sk cards in the model
+        """
         self.model.rename_move(old_name, new_name)
 
     def remove_move(self, move_name):
+        """
+        This method set a removed move as comment
+        """
         self.model.remove_move(move_name)
 
     def change_color(self, table: QTableWidget, row: int, col: int, fix_color = False):
+        """
+        This method manages the change of the color of the channel
+        """
         if col != 2:
             return
 
@@ -103,6 +113,9 @@ class SkController:
         item.setText(nxt_color)
 
     def change_name(self, table: QTableWidget, row: int, col: int):
+        """
+        This method manages the change of the name of the channel
+        """
         combo = table.cellWidget(row, col)
         move_name = combo.currentText()
 
@@ -128,11 +141,6 @@ class SkController:
         """
         This method manage the logic of the comment checkbox.
         Color the row and check if the row can be in comment.
-
-        :param table: The table.
-        :param row_number: row number (channel) of the SK card.
-        :param state: state of the checkbox
-        :return: None
         """
         # disable the option to check if there is no move
         if table.cellWidget(row_number, 1).currentText() == "-":

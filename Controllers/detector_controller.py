@@ -28,11 +28,17 @@ class DetectorController:
 
     # ============================== CRUD ============================== #
     def add_detector(self, var_name, class_name, detector_name, move_name, ext_unit):
+        """
+        This method add new move to the model
+        """
         self.model.new_detector(var_name=var_name, class_name=class_name, detector_name=detector_name, move_name=move_name, ext_unit=ext_unit)
         self.show_view()
 
     def rename_move(self, old_name, new_name):
         # Used By Main Controller
+        """
+        This method rename a move that belong to detector
+        """
         self.model.rename_move(old_name, new_name)
 
     def remove_row(self, tbl, btn):

@@ -1,7 +1,4 @@
 class _SkChannel:
-    """
-    This class is used to represent a sk channel.
-    """
     def __init__(self, name: str = "", color: str = "", channel: int = None, is_comment: bool = False):
         self.name = name
         self.color = color
@@ -35,10 +32,16 @@ class SkModel:
 
     # ============================== CRUD ============================== #
     def add_sk(self):
+        """
+        This method add new sk card to the model
+        """
         sk_card = _SkCard(len(self.sk_list) + 1)
         self.sk_list.append(sk_card)
 
     def remove_sk(self, card_num):
+        """
+        This method removes sk card from the model
+        """
         is_removed = False
         sk_to_remove = None
 
@@ -53,6 +56,9 @@ class SkModel:
         self.sk_list.remove(sk_to_remove)
 
     def rename_move(self, old_name, new_name):
+        """
+        This method rename a move from all the sk cards in the model
+        """
         for sk in self.sk_list:
             all_channels = sk.all_channels
             for channel in all_channels:
@@ -60,6 +66,9 @@ class SkModel:
                     channel.name = new_name
 
     def remove_move(self, move_name):
+        """
+        This method set a removed move as comment
+        """
         for sk in self.sk_list:
             for channel in sk.all_channels:
                 if channel.name == move_name:
@@ -67,10 +76,16 @@ class SkModel:
 
     # ============================== Logic ============================== #
     def set_channel(self, sk_num, name, color, channel, is_comment):
+        """
+        This method set channel of a sk card
+        """
         for sk_card in self.sk_list:
             if sk_card.card_number == sk_num:
                 sk_card.set_channel(name, color, channel, is_comment)
 
     def reset(self):
+        """
+        This method removes all the data in the model
+        """
         self.sk_list.clear()
 

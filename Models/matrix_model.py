@@ -11,34 +11,53 @@ class MatrixModel:
 
     # ============================== CRUD ============================== #
     def new_cell(self, move_out, move_in, wait_time):
+        """
+        This method create new cell to the model
+        """
         cell = _MatrixCell(move_out, move_in, wait_time)
         self.all_cells.append(cell)
 
     def set_wait_time(self, out_name, in_name, val):
+        """
+        This method set new value to cell
+        """
         for cell in self.all_cells:
             if cell.move_out == out_name and cell.move_in== in_name:
                 cell.wait_time = val
                 return
-        self.all_cells.append(_MatrixCell(out_name, in_name, val))
+        self.new_cell(out_name, in_name, val)
 
     def rename_move(self, old_name, new_name):
+        """
+        This method rename move name in all cells
+        """
         for cell in self.all_cells:
             if cell.move_in == old_name:
                 cell.move_in = new_name
             if cell.move_out == old_name:
                 cell.move_out = new_name
-        if new_name.startswith('p'):
+        if new_name.startswith('p') or new_name.startswith('B'):
             self.clear_cells()
 
     def remove_move(self, move_name):
+        """
+        This method remove all cells that related to the move
+        """
         # O(n)
         self.all_cells = [cell for cell in self.all_cells if cell.move_out != move_name and cell.move_in != move_name]
 
     def clear_cells(self):
+        """
+        This method clear all values from pedestrian and blinkers
+        """
         # O(n)
         self.all_cells = [cell for cell in self.all_cells if not (cell.move_out.startswith("p") and cell.move_in.startswith("p"))]
+        self.all_cells = [cell for cell in self.all_cells if not (cell.move_out.startswith("B") or cell.move_in.startswith("B"))]
 
     # ============================== Logic ============================== #
-    def reset(self):
+    def reset_matrix_model(self):
+        """
+        This method clear all the data in the model
+        """
         self.all_cells.clear()
 

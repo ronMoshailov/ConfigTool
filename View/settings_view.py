@@ -15,6 +15,7 @@ class SettingsView(QWidget):
         self.update_version_method          = None
         self.update_first_cycle_ext_method  = None
         self.add_to_history_method          = None
+        self.remove_from_history_method     = None
 
         # Root Layouts
         root_layout = QVBoxLayout()
@@ -22,6 +23,7 @@ class SettingsView(QWidget):
         left_side_layout = QVBoxLayout()
         right_side_layout = QVBoxLayout()
 
+        # Content Layout
         content_layout.addLayout(left_side_layout)
         content_layout.addLayout(right_side_layout)
 
@@ -55,8 +57,6 @@ class SettingsView(QWidget):
         update_btn = QPushButton("הוסף")
         update_btn.setProperty("class", "settings_button")
         update_btn.clicked.connect(self._add_to_history)
-
-        # =========================== Set View ============================ #
 
         # Left Side Layout
         left_side_layout.addWidget(history_title)
@@ -104,24 +104,24 @@ class SettingsView(QWidget):
     def hide_view(self):
         self.hide()
 
+    # ============================== Layout ============================== #
     def _create_labeled_line_edit(self, label_text):
-        # Label
-        label = QLabel(label_text)
-        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        label = QLabel(label_text)                              # Label
+        label.setAlignment(Qt.AlignmentFlag.AlignCenter)        # Label
 
-        # Textbox
-        textbox = QLineEdit()
+        textbox = QLineEdit()                                   # Textbox
 
-        # Layout
-        layout = QHBoxLayout()
-        layout.addWidget(textbox)
-        layout.addWidget(label)
+        layout = QHBoxLayout()                                  # Layout
+        layout.addWidget(textbox)                               # Layout
+        layout.addWidget(label)                                 # Layout
 
         return textbox, layout
 
+    # ============================== CRUD ============================== #
     def _remove_item_from_list(self, item: QListWidgetItem):
-        row = self.list_widget.row(item)
-        self.list_widget.takeItem(row)
+        value = item.text()
+        date, author = value.split(" - ", 1)
+        self.remove_from_history_method(date, author)
 
     def _add_to_history(self):
         self.add_to_history_method(self.date_textbox.text(), self.name_textbox.text())

@@ -1,5 +1,6 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QTableWidget, QTableWidgetItem, QComboBox, QHeaderView
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QTableWidget, QTableWidgetItem, QComboBox, \
+    QHeaderView, QLineEdit
 
 from Config.style import detector_panel_style
 
@@ -11,6 +12,7 @@ class DetectorView(QWidget):
         # Controller Methods
         self.remove_detector_method = None
         self.add_detector_method = None
+        self.rename_detector_variable_method = None
 
         # Table
         self.tbl = QTableWidget(0, 6, self)
@@ -69,8 +71,10 @@ class DetectorView(QWidget):
             self.tbl.setCellWidget(idx, 0, remove_btn)
 
             # Add "var name" (col 1)
-            item = QTableWidgetItem(var_name)
-            self.tbl.setItem(idx, 1, item)
+            variable_line_edit = QLineEdit()
+            variable_line_edit.setText(move_name)
+            # variable_line_edit.editingFinished.connect(lambda le=variable_line_edit: self.rename_detector_variable_method(le.text()))
+            self.tbl.setCellWidget(idx, 1, variable_line_edit)
 
             # Add "class name" (col 2)
             combo = QComboBox()

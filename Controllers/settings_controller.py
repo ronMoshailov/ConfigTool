@@ -7,14 +7,6 @@ class SettingsController:
         # Fields
         self.view           = view
         self.model          = model
-        self.is_old         = None
-
-        # Data
-        self.anlagenName    = None
-        self.tk1Name        = None
-        self.version        = None
-        self.first_time_ext = None
-        self.history       = []
 
         # Controller Methods
         self.view.update_junction_number_method = self.update_junction_number
@@ -22,8 +14,16 @@ class SettingsController:
         self.view.update_version_method         = self.update_version
         self.view.update_first_cycle_ext_method = self.update_update_first_ext
         self.view.add_to_history_method         = self.add_to_history
+        self.view.remove_from_history_method    = self.remove_from_history
 
     def init_model(self, path):
+        # Data
+        anlagenName    = None
+        tk1Name        = None
+        version        = None
+        first_time_ext = None
+        history       = []
+
         # Read
         with open(path, "r", encoding="utf-8") as f:
             content = f.read() # read all the data from the file
@@ -36,11 +36,11 @@ class SettingsController:
                     continue
 
                 if key == "anlagenName": # junction number
-                    self.anlagenName = value
+                    anlagenName = value
                 elif key == "tk1Name": # junction name
-                    self.tk1Name = value
+                    tk1Name = value
                 elif key == "version": #
-                    self.version = value
+                    version = value
                 elif key == "versionsInside":
                     version_items = re.findall(r'"([^"]+)"', value)
 
@@ -49,11 +49,11 @@ class SettingsController:
                         if m:
                             date = m.group("date")
                             author = m.group("author")
-                            self.history.append((date, author))
+                            history.append((date, author))
                 elif key == "tk1Arg":
-                    self.first_time_ext = value
+                    first_time_ext = value
 
-        self.model.set(self.anlagenName, self.tk1Name, self.version, self.history, self.first_time_ext)
+        self.model.set(anlagenName, tk1Name, version, history, first_time_ext)
 
     def show_view(self):
         self.view.show_view(self.model.junction_num, self.model.junction_name, self.model.version, self.model.first_ext, self.model.history)
@@ -67,6 +67,13 @@ class SettingsController:
         This method add to the history and date and the author
         """
         self.model.append_to_history(date, author)
+        self.show_view()
+
+    def remove_from_history(self, date, author):
+        """
+        This method removes date and author from the history
+        """
+        self.model.pop_from_history(date, author)
         self.show_view()
 
     def update_junction_number(self, text):
@@ -116,7 +123,7 @@ class SettingsController:
                     code.append(f"\tpublic static String tk1Name     = \"{self.model.junction_name}\";\n")
                     code.append(f"\tpublic static String version     = \" {self.model.version}\";")
                     code.append( "\tpublic static String[] versions = {\n")
-                    for date, author in self.history:
+                    for date, author in self.model.history:
                         code.append(f"\t\t\"{date} - {author}\",\n")
                     code[-1] = code[-1][:-2]
                     code.append("\n};\n")
