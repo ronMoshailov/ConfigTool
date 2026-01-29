@@ -13,13 +13,15 @@ class PhueView(QWidget):
         super().__init__()
 
         # Controller Methods
-        self.add_phue_method = None
-        self.remove_phue_method = None
-        self.update_phue_method = None
-        self.update_transition_move_method = None
-        self.update_duration_method = None
-        self.update_color_method = None
-        self.update_phue_len_method = None
+        self.add_phue_method                = None
+        self.add_transition_method          = None
+        self.remove_phue_method             = None
+        self.remove_transition_method       = None
+        # self.update_phue_method             = None
+        self.update_transition_move_method  = None
+        self.update_color_method            = None
+        self.update_duration_method         = None
+        self.update_phue_len_method         = None
 
         # Data
         self.table_wrap_list = []
@@ -79,40 +81,43 @@ class PhueView(QWidget):
         self.hide()
 
     # ============================== CRUD ============================== #
-    def _add_row(self, tbl, all_moves):
-        row = tbl.rowCount()
-        tbl.insertRow(row)
+    def _add_row(self, img_out, img_in):
+        self.add_transition_method(img_out, img_in)
+        # row = tbl.rowCount()
+        # tbl.insertRow(row)
+        #
+        # combo_widget = QComboBox()
+        # combo_widget.addItems([move.name for move in all_moves])
+        # combo_widget.setCurrentIndex(0)
+        #
+        # remove_btn = QPushButton("❌")
+        # remove_btn.clicked.connect(lambda _, image_out = img_out, image_in = img_in, t=tbl: self._remove_row(img_out, img_in, t))
+        #
+        # tbl.setCellWidget(row, 0, combo_widget)
+        # widget_color = QTableWidgetItem("🔴")
+        # widget_color.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+        # tbl.setItem(row, 1, widget_color)
+        # number_color = QTableWidgetItem("0")
+        # number_color.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+        # tbl.setItem(row, 2, number_color)
+        # tbl.setCellWidget(row, 3, remove_btn)
 
-        combo_widget = QComboBox()
-        combo_widget.addItems([move.name for move in all_moves])
-        combo_widget.setCurrentIndex(0)
-
-        remove_btn = QPushButton("❌")
-        remove_btn.clicked.connect(lambda _, t=tbl: self._remove_row(tbl))
-
-        tbl.setCellWidget(row, 0, combo_widget)
-        widget_color = QTableWidgetItem("🔴")
-        widget_color.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-        tbl.setItem(row, 1, widget_color)
-        number_color = QTableWidgetItem("0")
-        number_color.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-        tbl.setItem(row, 2, number_color)
-        tbl.setCellWidget(row, 3, remove_btn)
-
-    def _remove_row(self, tbl):
-        btn = self.sender()  # הכפתור שנלחץ
+    def _remove_row(self, img_out, img_in, tbl):
+        # get selected button
+        btn = self.sender()
         if btn is None:
             return
 
-        # מצא את השורה שהכפתור נמצא בה
+        # find the selected row
         row = -1
         for r in range(tbl.rowCount()):
-            if tbl.cellWidget(r, 3) == btn:  # נניח שהכפתור בעמודה 3
+            if tbl.cellWidget(r, 3) == btn:
                 row = r
                 break
 
         if row != -1:
-            tbl.removeRow(row)
+            self.remove_transition_method(img_out, img_in, tbl.cellWidget(row, 0).currentText())
+            # tbl.removeRow(row)
 
     # ============================== Logic ============================== #
     def _init_table(self, img_out, img_in, length, transitions, all_moves_names):
@@ -167,7 +172,7 @@ class PhueView(QWidget):
 
             # col 4
             remove_btn = QPushButton("❌")
-            remove_btn.clicked.connect(lambda _, t=tbl: self._remove_row(t))
+            remove_btn.clicked.connect(lambda _, image_out = img_out, image_in = img_in, t=tbl: self._remove_row(img_out, img_in, t))
             tbl.setCellWidget(row, 3, remove_btn)
 
         length_layout = QHBoxLayout()
@@ -183,7 +188,7 @@ class PhueView(QWidget):
         length_layout.addWidget(len_label)
 
         add_action_btn = QPushButton("הוסף פעולה")
-        add_action_btn.clicked.connect(lambda _, t=tbl: self._add_row(t, all_moves_names))
+        add_action_btn.clicked.connect(lambda _, image_out = img_out, image_in = img_in: self._add_row(image_out, image_in))
         add_action_btn.setObjectName("add_action_button")
 
         remove_btn = QPushButton("מחק מעבר")

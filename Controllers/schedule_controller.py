@@ -6,12 +6,12 @@ import Config
 class ScheduleController:
     def __init__(self, view, model):
         # Fields
-        self.view = view
-        self.model = model
-        self.is_copy_sunday = True
+        self.view               = view
+        self.model              = model
+        self.is_copy_sunday     = True
 
         # Set View Methods
-        self.view.get_all_channels_method       = self.get_all_channels
+        self.view.fetch_all_channels_method     = self.fetch_all_channels
         self.view.remove_row_method             = self.remove_row
         self.view.add_row_method                = self.add_row
         self.view.update_schedule_method        = self.update_schedule
@@ -23,26 +23,30 @@ class ScheduleController:
 
         with open(path, 'r', encoding='utf-8') as file:
             for line in file:
-                line = line.strip()
-                match = Config.patterns.schedule_pattern.match(line)
+                line    = line.strip()
+                match   = Config.patterns.schedule_pattern.match(line)
                 if not match:
                     continue
 
-                if match.group(1):  # שורת TagesPlan
+                # line with "TagesPlan" (first set of hour-program)
+                if match.group(1):
                     var_name = match.group(1)
-                    if var_name in ["kipurEve", "kipur", "blink"]:
+                    if match.group(1) in ["kipurEve", "kipur", "blink"]:
                         return
-                    days = mapping_day[var_name]
 
+                    # check if each day have different schedule
                     if not self.is_copy_sunday or (var_name == "monday"):
                         self.is_copy_sunday = False
                     else:
                         self.is_copy_sunday = True
-                    program_number = int(match.group(2))
-                    for day in days:
-                        self.model.add_cell(day, 0, 0, program_number)
 
-                else:  # שורת initProgWunsch
+                    #
+                    program_number = int(match.group(2))
+                    for day in mapping_day[var_name]:
+                        self.model.create_cell(day, 0, 0, program_number)
+
+                # line with "initProgWunsch" (not first set of hour-program)
+                else:
                     var_name = match.group(3)
                     days = mapping_day[var_name]
                     hour = int(match.group(4))
@@ -50,35 +54,46 @@ class ScheduleController:
                     program_number = int(match.group(6))
 
                     for day in days:
-                        self.model.add_cell(day, hour, minute, program_number)
+                        self.model.create_cell(day, hour, minute, program_number)
 
     def show_view(self):
         self.view.show_view()
 
     # ============================== CRUD ============================== #
-    def get_all_channels(self, table_num):
+    def fetch_all_channels(self, table_num):
+        """
+        This method return all the channels of the table number
+        """
         return self.model.get_all_channels(table_num)
 
     def remove_row(self, table_number, table, btn):
+        """
+        This method removes a row (time & program number) from the table
+        """
         for row_index in range(table.rowCount()):
             if table.cellWidget(row_index, 0) is btn:
-                self.model.remove_row(table_number, row_index)
-        self.show_view()
+                table.removeRow(row_index)
+                self.model.remove_cell_from_table(table_number, row_index)
+        # self.show_view()
 
     def add_row(self, table_number):
-        self.model.add_row(table_number)
+        """
+        This method add new row (time & program number) to the table
+        """
+        self.model.add_cell_to_table(table_number)
         self.show_view()
 
     def update_schedule(self, is_copy_sunday, table_list):
+        """
+        This method update the model with the new data
+        """
         # check data
         if not self._check_time(table_list):
             return
 
         # save data
-        self.is_copy_sunday = is_copy_sunday
-
-        # prepare data for model
-        data_list = []
+        self.is_copy_sunday     = is_copy_sunday
+        data_list               = []
 
         for idx, table in enumerate(table_list):
             if 1 <= idx <= 4 and self.is_copy_sunday:
@@ -92,7 +107,7 @@ class ScheduleController:
                     combo = table_list[0].cellWidget(row_num, 2)
                     num_prog = int(combo.currentText())
                     data_list.append((hours, minutes, num_prog))
-                self.model.update_schedule(idx, data_list)
+                self.model.set_new_cells(idx, data_list)
                 data_list.clear()
             else:
                 for row_num in range(table_list[idx].rowCount()):
@@ -105,17 +120,17 @@ class ScheduleController:
                     combo = table_list[idx].cellWidget(row_num, 2)
                     num_prog = int(combo.currentText())
                     data_list.append((hours, minutes, num_prog))
-                self.model.update_schedule(idx, data_list)
+                self.model.set_new_cells(idx, data_list)
                 data_list.clear()
-            #
 
-
-        # self.model.update_schedule(is_copy_sunday, table_list)
         self.show_view()
         QMessageBox.information(self.view, "הודעה", "העדכון הצליח")
 
     # ============================== Logic ============================== #
     def _check_time(self, table_list):
+        """
+        This method check if the logic of the time is valid
+        """
         for idx, table in enumerate (table_list):      # for each table
 
             prev = None                     # reset
@@ -137,12 +152,22 @@ class ScheduleController:
         return True
 
     def reset(self):
-        self.model.reset()
+        # Used By Main Controller
+        """
+        This method clear all the data in the model
+        """
+        self.model.reset_schedule_model()
 
     def is_copied_sunday(self):
+        """
+        This method check if the model copied the schedule
+        """
         return self.is_copy_sunday
 
     def toggle_copy_sunday(self):
+        """
+        This method swap the value of the variable "is_copy_sunday"
+        """
         self.is_copy_sunday = not self.is_copy_sunday
 
     # ============================== Write To File ============================== #

@@ -246,6 +246,10 @@ class SkController:
         return True
 
     def reset(self):
+        # Used By Main Controller
+        """
+        This method clear all the data in the model
+        """
         self.model.reset()
 
     # ============================== Write To File ============================== #

@@ -75,6 +75,7 @@ class MatrixController:
         return True
 
     def reset(self):
+        # Used By Main Controller
         """
         This method clear all the data from the model
         """

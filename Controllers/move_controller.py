@@ -8,8 +8,8 @@ import Config
 class MoveController:
     def __init__(self, view, model):
         # Fields
-        self.view = view
-        self.model = model
+        self.view   = view
+        self.model  = model
 
         # Set View Methods
         self.view.add_move_method               = self.add_new_move
@@ -136,6 +136,7 @@ class MoveController:
 
     # ============================== Logic ============================== #
     def reset(self):
+        # Used By Main Controller
         """
         This method clear all the data in the model
         """

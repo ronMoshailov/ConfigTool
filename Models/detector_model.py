@@ -1,10 +1,10 @@
 class _Detector:
     def __init__(self, var_name: str, class_name: str, datector_name :str, move_name: str, ext_unit:int = 0):
-        self.var_name = var_name
-        self.class_name = class_name
-        self.datector_name = datector_name
-        self.move_name = move_name
-        self.ext_unit = ext_unit
+        self.var_name       = var_name
+        self.class_name     = class_name
+        self.datector_name  = datector_name
+        self.move_name      = move_name
+        self.ext_unit       = ext_unit
 
 class DetectorModel:
     def __init__(self):
@@ -54,10 +54,50 @@ class DetectorModel:
         """
         return [detector for detector in self.all_detectors if detector.class_name == "QDetector"]
 
-    def rename_move(self, old_name, new_name):
+    def set_variable_name(self, old_var_name, new_var_name):
+        """
+        This method set the new variable name
+        """
         for detector in self.all_detectors:
-            if detector.move_name == old_name:
-                detector.move_name = new_name
+            if detector.var_name == old_var_name:
+                detector.var_name = new_var_name
+                return
+
+    def set_detector_type(self, new_value, variable_name):
+        """
+        This method set the new variable name
+        """
+        for detector in self.all_detectors:
+            if detector.var_name == variable_name:
+                detector.class_name = new_value
+                return
+
+    def set_move_name(self, new_value, variable_name):
+        """
+        This method set new move name that belong to the detector
+        """
+        for detector in self.all_detectors:
+            if detector.var_name == variable_name:
+                detector.move_name = new_value
+                return
+
+    def set_detector_name(self, variable_name, new_value):
+        """
+        This method set new name for the detector
+        """
+        for detector in self.all_detectors:
+            if detector.var_name == variable_name:
+                detector.datector_name = new_value
+                return
+
+    def set_ext_unit(self, variable_name, new_value):
+        """
+        This method set new value for the extension unit
+        """
+        for detector in self.all_detectors:
+            if detector.var_name == variable_name:
+                detector.ext_unit = new_value
+                return
 
     def remove_detector(self, detector_name):
         """
@@ -70,11 +110,22 @@ class DetectorModel:
 
     # ============================== Logic ============================== #
     def is_detector_exist(self, var_name):
+        """
+        This method check if a detector already exists in the model
+        """
         for detector in self.all_detectors:
             if detector.var_name == var_name:
                 return True
         return False
 
-    def reset(self):
+    def rename_move(self, old_name, new_name):
+        for detector in self.all_detectors:
+            if detector.move_name == old_name:
+                detector.move_name = new_name
+
+    def reset_detector_model(self):
+        """
+        This method reset the data of the model
+        """
         self.all_detectors.clear()
 

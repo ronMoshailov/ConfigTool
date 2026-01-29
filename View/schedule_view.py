@@ -12,7 +12,7 @@ class ScheduleView(QWidget):
         super().__init__()
 
         # Controller Methods
-        self.get_all_channels_method    = None
+        self.fetch_all_channels_method  = None
         self.remove_row_method          = None
         self.add_row_method             = None
         self.update_schedule_method     = None
@@ -146,7 +146,7 @@ class ScheduleView(QWidget):
         :param table: Table QTableWidget
         :return: None
         """
-        schedule_list = self.get_all_channels_method(table_num)
+        schedule_list = self.fetch_all_channels_method(table_num)
         for schedule in schedule_list:
             row = table.rowCount() # get the number of rows
             table.insertRow(row)   # add new row in the end

@@ -9,19 +9,26 @@ import Config.constants
 class PhueController:
 
     def __init__(self, view, model):
-        self.view = view
-        self.model = model
+        # Fields
+        self.view               = view
+        self.model              = model
 
-        self.view.add_phue_method = self.add_phue
-        self.view.remove_phue_method = self.remove_phue
-        self.view.update_phue_method = self.update_phue
-        self.view.update_transition_move_method = self.update_transition_move
-        self.view.update_duration_method = self.update_duration
-        self.view.update_color_method = self.update_color
-        self.view.update_phue_len_method = self.update_phue_len
+        # Data
+        self.all_images         = None
+        self.all_moves_names    = None
 
-        self.all_images = None
-        self.all_moves_names = None
+        # Set View Methods
+        self.view.add_phue_method                   = self.add_phue
+        self.view.add_transition_method             = self.add_transition
+        self.view.remove_phue_method                = self.remove_phue
+        self.view.remove_transition_method          = self.remove_transition
+        # self.view.update_phue_method                = self.update_phue
+        self.view.update_transition_move_method     = self.update_transition_move
+        self.view.update_color_method               = self.update_color
+        self.view.update_duration_method            = self.update_duration
+        self.view.update_phue_len_method            = self.update_phue_len
+
+
 
     def init_model(self, phue_paths, path_init_tk1): # self.phue_model.phue_paths, self.path_init_tk1
 
@@ -46,9 +53,9 @@ class PhueController:
             # find turn of and turn off moves
             for m in sg_pattern.finditer(content):
                 move, state, time = m.groups()
-                transition = self.model.new_transition(move, state, time)
+                transition = self.model.create_new_transition(move, state, time)
                 transitions.append(transition)
-            self.model.new_phue(img_out, img_in, 0, transitions)
+            self.model.create_new_phue(img_out, img_in, 0, transitions)
 
         with open(path_init_tk1, "r", encoding="utf-8") as f:
             content = f.read()
@@ -57,7 +64,7 @@ class PhueController:
                 img_out = match.group(1)
                 img_in = match.group(2)
                 length = match.group(3)
-                self.model.update_length(img_out, img_in, int(length))
+                self.model.set_phue_len(img_out, img_in, int(length))
 
     def show_view(self, all_images, all_moves_names):
         self.all_images = all_images
@@ -66,90 +73,96 @@ class PhueController:
 
     # ============================== CRUD ============================== #
     def add_phue(self, img_out, img_in):
+        """
+        This method add new phue to the model
+        """
+        # check if image out or image out is empty
+        if img_out == "-" or img_in == "-":
+            QMessageBox.critical(self.view, "שגיאה", f"מעבר לא יכול להיות ריק")
+            return
+
+        # check if image out is the same as image out
         if img_out == img_in:
             QMessageBox.critical(self.view, "שגיאה", f"מעבר לא תקין [{img_out} -> {img_in}]")
             return
-        if not self.model.new_phue(img_out, img_in, 0, []):
+
+        # add the new phue
+        if not self.model.create_new_phue(img_out, img_in, 0, []):
             QMessageBox.critical(self.view, "שגיאה", "המעבר כבר קיים במערכת")
             return
+
+        # refresh the view
+        self.show_view(self.all_images, self.all_moves_names)
+
+    def add_transition(self, img_out, img_in):
+        self.model.add_transition(img_out, img_in)
         self.show_view(self.all_images, self.all_moves_names)
 
     def remove_phue(self, img_out, img_in):
+        """
+        This method remove phue from the model
+        """
         self.model.remove_phue(img_out, img_in)
         self.show_view(self.all_images, self.all_moves_names)
 
-    def update_phue(self, table_wrap_list):
-    # check if move exist twice
-        for wrap in table_wrap_list:
-            img_out = wrap.img_out
-            img_in = wrap.img_in
-            table = wrap.table
+    def remove_transition(self, img_out, img_in, move_name):
+        """
+        This method removes transition from a phue
+        """
+        self.model.remove_transition(img_out, img_in, move_name)
+        self.show_view(self.all_images, self.all_moves_names)
 
-            seen = set()  # מאגר של ערכים שכבר הופיעו
-            row_count = table.rowCount()
-            for row in range(row_count):
-                combo = table.cellWidget(row, 0)  # נניח שזה QComboBox
-                value = combo.currentText()  # הערך הנבחר
-                if value in seen:
-                    QMessageBox.critical(self.view, "שגיאה", f"המופע [{value}] מופיע לפחות פעמיים במעבר [{img_out} → {img_in}]")
-                    return
-                seen.add(value)
-
-        for wrap in table_wrap_list:
-            img_out = wrap.img_out
-            img_in = wrap.img_in
-            table = wrap.table
-            row_count = table.rowCount()
-            length = int(wrap.len_textbox.text())
-
-            move_name_list = []
-            color_list = []
-            time_list = []
-
-            for row in range(row_count):
-                # move_name
-                combo = table.cellWidget(row, 0)
-                move_name = combo.currentText()  # הערך הנבחר
-                move_name_list.append(move_name)
-
-                # color
-                color_mapping = {"🔴": "ROT", "🟢": "GRUEN"}
-                color = color_mapping[table.item(row, 1).text()]
-                color_list.append(color)
-
-                time = table.item(row, 2).text()
-                time_list.append(time)
-
-            self.model.update_phue(img_out, img_in, length, move_name_list, color_list, time_list)
-
-        # update the DB
-        # success, message = self.data_controller.update_inter_stage(self.table_wrap_list)
-        QMessageBox.information(self.view, "הודעה", "העדכון הצליח")
-
-    def rename_move(self, old_name, new_name):
-        self.model.rename_move(old_name, new_name)
-
-    def update_phue_len(self, img_out, img_in, new_len):
-        self.model.update_phue_len(img_out, img_in, new_len)
+    def remove_move(self, move_name):
+        # Used By Main Controller
+        """
+        This method remove all transitions that has the same 'move_name'
+        """
+        self.model.rename_move(move_name)
 
     def update_transition_move(self, image_out, image_in, old_name, new_name):
+        """
+        This method update the transition move
+        """
         try:
-            self.model.update_move_name(image_out, image_in, old_name, new_name)
+            self.model.set_transition_move(image_out, image_in, old_name, new_name)
             self.show_view(self.all_images, self.all_moves_names)
         except Exception as e:
             QMessageBox.critical(self.view, "שגיאה", f"{e}")
             self.show_view(self.all_images, self.all_moves_names)
 
     def update_duration(self, img_out, img_in, move_name, duration):
-        self.model.update_duration(img_out, img_in, move_name, duration)
+        """
+        This method set a new value for the duration
+        """
+        self.model.set_duration(img_out, img_in, move_name, duration)
 
     def update_color(self, img_out, img_in, move_name):
-        self.model.update_move_color(img_out, img_in, move_name)
+        """
+        This method swap the value for the color
+        """
+        self.model.swap_move_color(img_out, img_in, move_name)
         self.show_view(self.all_images, self.all_moves_names)
+
+    def update_phue_len(self, img_out, img_in, new_len):
+        """
+        This method set a new value for the phue length
+        """
+        self.model.set_phue_len(img_out, img_in, new_len)
 
     # ============================== Logic ============================== #
     def reset(self):
-        self.model.reset()
+        # Used By Main Controller
+        """
+        This method clear all the data in the model
+        """
+        self.model.reset_phue_model()
+
+    def rename_move(self, old_name, new_name):
+        # Used By Main Controller
+        """
+        This method rename a move in all the cells
+        """
+        self.model.rename_move(old_name, new_name)
 
     # ============================== Write To File ============================== #
     def write_to_file(self, init_tk1_dst, phue_folder_dst):
@@ -255,6 +268,87 @@ class PhueController:
             f.write(line)
 
         return line
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    # def update_phue(self, table_wrap_list):
+    #     # check if move exist twice
+    #     for wrap in table_wrap_list:
+    #         img_out     = wrap.img_out
+    #         img_in      = wrap.img_in
+    #         table       = wrap.table
+    #
+    #         seen        = set()
+    #         row_count   = table.rowCount()
+    #
+    #         for row in range(row_count):
+    #             value = table.cellWidget(row, 0).currentText()
+    #             if value in seen:
+    #                 QMessageBox.critical(self.view, "שגיאה", f"המופע [{value}] מופיע לפחות פעמיים במעבר [{img_out} → {img_in}]")
+    #                 return
+    #             seen.add(value)
+    #     #
+    #     for wrap in table_wrap_list:
+    #         # Data
+    #         img_out     = wrap.img_out
+    #         img_in      = wrap.img_in
+    #         table       = wrap.table
+    #         row_count   = table.rowCount()
+    #         length      = int(wrap.len_textbox.text())
+    #
+    #         move_name_list  = []
+    #         color_list      = []
+    #         time_list       = []
+    #
+    #         for row in range(row_count):
+    #             # move_name
+    #             combo       = table.cellWidget(row, 0)
+    #             move_name   = combo.currentText()
+    #             move_name_list.append(move_name)
+    #
+    #             # color
+    #             color_mapping = {"🔴": "ROT", "🟢": "GRUEN"}
+    #             color = color_mapping[table.item(row, 1).text()]
+    #             color_list.append(color)
+    #
+    #             time = table.item(row, 2).text()
+    #             time_list.append(time)
+    #
+    #         self.model.update_phue(img_out, img_in, length, move_name_list, color_list, time_list)
+    #
+    #     # update the DB
+    #     # success, message = self.data_controller.update_inter_stage(self.table_wrap_list)
+    #     QMessageBox.information(self.view, "הודעה", "העדכון הצליח")
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,6 +1,5 @@
 import re
-import Config
-
+from Config.patterns import settings_pattern
 
 class SettingsController:
     def __init__(self, view, model):
@@ -28,7 +27,7 @@ class SettingsController:
         with open(path, "r", encoding="utf-8") as f:
             content = f.read() # read all the data from the file
 
-        for match in Config.patterns.settings_pattern.finditer(content):  # return iterator each match
+        for match in settings_pattern.finditer(content):  # return iterator each match
             gd = match.groupdict() # get dictionary from match [variable name, value of the variable]
 
             for key, value in gd.items():
@@ -102,6 +101,7 @@ class SettingsController:
 
     # ============================== Logic ============================== #
     def reset(self):
+        # Used By Main Controller
         """
         This method clear all the data in the model
         """

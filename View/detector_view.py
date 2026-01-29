@@ -10,9 +10,13 @@ class DetectorView(QWidget):
         super().__init__()
 
         # Controller Methods
-        self.remove_detector_method = None
-        self.add_detector_method = None
-        self.rename_detector_variable_method = None
+        self.remove_detector_method         = None
+        self.add_detector_method            = None
+        self.update_variable_name_method    = None
+        self.update_detector_type_method    = None
+        self.update_move_name_method        = None
+        self.update_detector_name_method    = None
+        self.update_ext_unit_method         = None
 
         # Table
         self.tbl = QTableWidget(0, 6, self)
@@ -56,24 +60,24 @@ class DetectorView(QWidget):
 
         # Fill Table
         for idx, detector in enumerate (detector_list):
-            var_name = detector.var_name                # str
-            class_name = detector.class_name            # str
-            detector_name = detector.datector_name      # str
-            move_name = detector.move_name              # str
-            ext_unit = detector.ext_unit                # int
+            var_name        = detector.var_name         # str
+            class_name      = detector.class_name       # str
+            detector_name   = detector.datector_name    # str
+            move_name       = detector.move_name        # str
+            ext_unit        = detector.ext_unit         # int
 
             self.tbl.insertRow(self.tbl.rowCount())     # add new row
 
             # Add Remove Button (col 0)
             remove_btn = QPushButton("X")
             remove_btn.setObjectName("remove_button")
-            remove_btn.clicked.connect(lambda _, btn=remove_btn: self.remove_detector_method(self.tbl, btn))
+            remove_btn.clicked.connect(lambda _, var=var_name: self.remove_detector_method(var))
             self.tbl.setCellWidget(idx, 0, remove_btn)
 
             # Add "var name" (col 1)
             variable_line_edit = QLineEdit()
-            variable_line_edit.setText(move_name)
-            # variable_line_edit.editingFinished.connect(lambda le=variable_line_edit: self.rename_detector_variable_method(le.text()))
+            variable_line_edit.setText(var_name)
+            variable_line_edit.textChanged.connect(lambda le=variable_line_edit, var=var_name: self.update_variable_name_method(var, le.text()))
             self.tbl.setCellWidget(idx, 1, variable_line_edit)
 
             # Add "class name" (col 2)
@@ -81,16 +85,20 @@ class DetectorView(QWidget):
             combo.addItems(self.all_types)
             combo.setCurrentText(class_name)
             combo.wheelEvent = lambda event: None
+            combo.currentIndexChanged.connect(lambda _, c=combo, var=var_name: self.update_detector_type_method(c.currentText(), var))
             self.tbl.setCellWidget(idx, 2, combo)
 
             # Add "detector name" (col 3)
-            item = QTableWidgetItem(detector_name)
-            self.tbl.setItem(idx, 3, item)
+            line_edit = QLineEdit()
+            line_edit.setText(detector_name)
+            line_edit.textChanged.connect(lambda le=line_edit, var=var_name: self.update_detector_name_method(var, le.text()))
+            self.tbl.setCellWidget(idx, 3, line_edit)
 
             # Add "move name" (col 4)
             combo = QComboBox()
             combo.addItems(self.all_moves_names)
             combo.wheelEvent = lambda event: None
+            combo.currentIndexChanged.connect(lambda _, c=combo, var=var_name: self.update_move_name_method(c.currentText(), var))
 
             if move_name in self.all_moves_names:
                 combo.setCurrentText(move_name)
@@ -100,8 +108,10 @@ class DetectorView(QWidget):
             self.tbl.setCellWidget(idx, 4, combo)
 
             # add ext unit (col 5)
-            item = QTableWidgetItem(str(ext_unit))
-            self.tbl.setItem(idx, 5, item)
+            line_edit = QLineEdit()
+            line_edit.setText(str(ext_unit))
+            line_edit.textChanged.connect(lambda le=line_edit, var=var_name: self.update_ext_unit_method(var, int(le.text())))
+            self.tbl.setCellWidget(idx, 5, line_edit)
 
         self.show()
 

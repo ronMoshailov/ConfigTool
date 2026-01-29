@@ -5,17 +5,20 @@ from PyQt6.QtWidgets import QCheckBox
 
 class ParametersTaController:
     def __init__(self, view, model):
+        # Fields
         self.view = view
         self.model = model
 
-        self.view.update_parameters_method = self.update_parameters
-        self.get_sp_by_image_method = None
+        # Data
+        self.all_images = None
 
-    def show_view(self, all_images):
-        self.view.show_view(all_images, self.model.get_parameters())
+        # Set View Methods
+        self.view.update_parameters_method  = self.update_parameters
+
+        # Set Main Controller Methods
+        self.get_sp_by_image_method         = None
 
     def init_model(self, path, images_len):
-
         pattern = re.compile(r'^static int\[\]\s+DVI35_P(\d+)\s*=\s*\{([^}]*)\}', re.IGNORECASE)
         with open(path, 'r', encoding='utf-8') as file:
             for line in file:
@@ -39,21 +42,28 @@ class ParametersTaController:
 
                 self.model.add_program(index, min_list, max_list, type_list, str, cycle, not is_active)
 
+    def show_view(self, all_images):
+        self.all_images = all_images
+        self.view.show_view(self.all_images, self.model.get_parameters())
+
     def hide_view(self):
         self.view.hide_view()
 
     # ============================== CRUD ============================== #
     def update_parameters(self, tbl):
-        total_rows = tbl.rowCount() - 2
-        total_cols = tbl.columnCount()
+        """
+        This method update the parameters model from the data in the table
+        """
+        total_rows  = tbl.rowCount() - 2
+        total_cols  = tbl.columnCount()
         images_list = []
 
         # col 0 - skip
 
         # col 1 - get image list for the comments
         for col in range(0, total_cols):
-            combo = tbl.cellWidget(1, col)
-            value = combo.currentText()
+            line = tbl.cellWidget(1, col)
+            value = line.text()
             if value in images_list:
                 break
             images_list.append(value)
@@ -78,20 +88,15 @@ class ParametersTaController:
 
             self.model.update_parameters(row_num-2, min_list, max_list, type_list, struct, cycle, to_copy)
 
-            # print(f"row_num: {row_num-1}")
-            # print(f"min_list: {min_list}")
-            # print(f"max_list: {max_list}")
-            # print(f"type_list: {type_list}")
-            # print(f"str: {struct}")
-            # print(f"cycle: {cycle}")
-            # print(f"to_copy: {str(to_copy)}")
-        # update parameters
-
-        # print(images_list)
+        # Show view
+        self.show_view(self.all_images)
 
     # ============================== Logic ============================== #
     def reset(self):
-        self.model.reset()
+        """
+        This method clear all the data in the model
+        """
+        self.model.reset_parameters_model()
 
     # ============================== Write To File ============================== #
     def write_to_file(self, path_parameters_ta_dst, path_init_tk1, img_list):
