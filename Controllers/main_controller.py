@@ -213,6 +213,10 @@ class MainController:
         if not self.matrix_controller.is_matrix_valid():
             return
 
+        if not self.phue_controller.is_names_valid():
+            self.show_view("phue")
+            return
+
         if self.image_model.is_sp_valid():
             print("sp valid")
         if not self.path_manager.create_copy(self.root):

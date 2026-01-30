@@ -165,6 +165,15 @@ class PhueController:
         """
         self.model.rename_move(old_name, new_name)
 
+    def is_names_valid(self):
+        """
+        This method check if the names contain "-"
+        """
+        if not self.model.is_names_valid():
+            QMessageBox.critical(self.view, "הודעה", "המעברים כוללים שם מופע לא תקין")
+            return False
+        return True
+
     # ============================== Write To File ============================== #
     def write_to_file(self, init_tk1_dst, phue_folder_dst):
         # create files

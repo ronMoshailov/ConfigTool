@@ -44,7 +44,7 @@ class PhueModel:
         """
         for phue in self.all_phue:
             if phue.image_out == img_out and phue.image_in == img_in:
-                t = self.create_new_transition("k0", "TurnOff", 0)
+                t = self.create_new_transition("-", "TurnOff", 0)
                 phue.transitions.append(t)
 
     def remove_move(self, move_name):
@@ -143,3 +143,12 @@ class PhueModel:
                 if transition.move_name == old_name:
                     transition.move_name = new_name
 
+    def is_names_valid(self):
+        """
+        This method check if the names contain "-"
+        """
+        for phue in self.all_phue:
+            for transition in phue.transitions:
+                if transition.move_name == "-":
+                    return False
+        return True

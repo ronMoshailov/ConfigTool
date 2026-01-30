@@ -51,7 +51,7 @@ class PhueView(QWidget):
         self.hide()
 
     def show_view(self, all_phue, all_images, all_moves_names):
-        self._reset()
+        self._reset_view()
         Config.special.clear_widget_from_layout([self.tables_layout])
 
         # fill the combos with values
@@ -127,7 +127,7 @@ class PhueView(QWidget):
         for row, transition in enumerate(transitions):
             # col 1
             combo_widget = QComboBox()
-            combo_widget.addItems([name for name in all_moves_names])
+            combo_widget.addItems(["-"] + [name for name in all_moves_names])
             combo_widget.setCurrentText(transition.move_name)  # או combo_widget.setCurrentIndex(1)
             combo_widget.currentTextChanged.connect(lambda text, image_out = img_out, image_in = img_in, m=transition.move_name: self.update_transition_move_method(image_out, image_in, m, text))
             combo_widget.wheelEvent = lambda event: None
@@ -250,17 +250,17 @@ class PhueView(QWidget):
         return layout
 
     def _validate_number_column(self, row, column):
-        # נבדוק אם זו העמודה 2
+        # check if it is column 2
         if column != 2:
             return
 
-        tbl = self.sender()  # שולף את הטבלה
-        item = tbl.item(row, column)
-        text = item.text()
+        tbl = self.sender()             # get table
+        item = tbl.item(row, column)    # get item
+        text = item.text()              # get item value
 
-        # אם זה לא מספר, החזר את הערך הקודם
+        # check if it is number
         try:
-            int(text)  # אם רוצים מספר שלם השתמשו ב int(text)
+            int(text)
         except ValueError:
             QMessageBox.critical(self, "שגיאה", "ערך לא תקין, אנה הכנס מספר")
             item.setText("0")
@@ -282,7 +282,7 @@ class PhueView(QWidget):
             if show_wrap:
                 wrap.show()
 
-    def _reset(self):
+    def _reset_view(self):
         # Block Signals
         self.move_out_combo_top.blockSignals(True)
         self.move_in_combo_top.blockSignals(True)
@@ -308,26 +308,26 @@ class PhueView(QWidget):
             # table.setParent(None)  # release the child from the father (helps in the child removed before the father now)
             table.deleteLater()
 
-        self.table_wrap_list.clear()  # לרוקן לגמרי
+        self.table_wrap_list.clear()
 
     def _toggle_state(self, row, column, image_out, image_in):
-        # אם זו העמודה של מצב (במקרה שלך 1)
+        # check if it is column 1
         if column != 1:
             return
 
-        tbl = self.sender()  # שולף את הטבלה שהוציאה את האירוע
-        item = tbl.item(row, column)
-        if not item:
-            return
+        tbl = self.sender()             # get table
+        item = tbl.item(row, column)    # get item
+        # if not item:
+        #     return
 
         # get move name
         move_name = tbl.cellWidget(row, 0).currentText()
-        # מחליף בין הצבעים
+
+        # change color
         current = item.text()
         if current == "🔴":
             item.setText("🟢")
-            self.update_color_method(image_out, image_in, move_name)
         else:
             item.setText("🔴")
-            self.update_color_method(image_out, image_in, move_name)
+        self.update_color_method(image_out, image_in, move_name)
 
