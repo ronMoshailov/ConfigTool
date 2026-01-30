@@ -93,6 +93,7 @@ class ParametersTaController:
 
     # ============================== Logic ============================== #
     def reset(self):
+        # Used By Main Controller
         """
         This method clear all the data in the model
         """

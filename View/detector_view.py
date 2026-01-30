@@ -77,7 +77,7 @@ class DetectorView(QWidget):
             # Add "var name" (col 1)
             variable_line_edit = QLineEdit()
             variable_line_edit.setText(var_name)
-            variable_line_edit.textChanged.connect(lambda le=variable_line_edit, var=var_name: self.update_variable_name_method(var, le.text()))
+            variable_line_edit.editingFinished.connect(lambda le=variable_line_edit, var=var_name: self.update_variable_name_method(var, le.text()))
             self.tbl.setCellWidget(idx, 1, variable_line_edit)
 
             # Add "class name" (col 2)
@@ -91,7 +91,7 @@ class DetectorView(QWidget):
             # Add "detector name" (col 3)
             line_edit = QLineEdit()
             line_edit.setText(detector_name)
-            line_edit.textChanged.connect(lambda le=line_edit, var=var_name: self.update_detector_name_method(var, le.text()))
+            line_edit.editingFinished.connect(lambda le=line_edit, var=var_name: self.update_detector_name_method(var, le.text()))
             self.tbl.setCellWidget(idx, 3, line_edit)
 
             # Add "move name" (col 4)
@@ -110,7 +110,7 @@ class DetectorView(QWidget):
             # add ext unit (col 5)
             line_edit = QLineEdit()
             line_edit.setText(str(ext_unit))
-            line_edit.textChanged.connect(lambda le=line_edit, var=var_name: self.update_ext_unit_method(var, int(le.text())))
+            line_edit.editingFinished.connect(lambda le=line_edit, var=var_name: self.update_ext_unit_method(var, int(le.text())))
             self.tbl.setCellWidget(idx, 5, line_edit)
 
         self.show()

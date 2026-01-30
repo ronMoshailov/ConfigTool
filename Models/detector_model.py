@@ -12,6 +12,9 @@ class DetectorModel:
 
     # ============================== CRUD ============================== #
     def new_detector(self, var_name: str, class_name: str, detector_name :str, move_name: str, ext_unit:int = 0):
+        """
+        This method add new detector to the model
+        """
         if self.is_detector_exist(var_name):
             return False
         detector = _Detector(var_name, class_name, detector_name, move_name, ext_unit)
@@ -119,6 +122,9 @@ class DetectorModel:
         return False
 
     def rename_move(self, old_name, new_name):
+        """
+        This method rename the name of the move from the model
+        """
         for detector in self.all_detectors:
             if detector.move_name == old_name:
                 detector.move_name = new_name

@@ -65,12 +65,14 @@ class SkController:
         self.view.show_view(self.model.sk_list, self.all_moves)
 
     def rename_move(self, old_name, new_name):
+        # Used By Main Controller
         """
         This method rename a move from all the sk cards in the model
         """
         self.model.rename_move(old_name, new_name)
 
     def remove_move(self, move_name):
+        # Used By Main Controller
         """
         This method set a removed move as comment
         """

@@ -44,6 +44,7 @@ class DetectorController:
         This method update the variable name
         """
         self.model.set_variable_name(old_var_name, new_var_name)
+        self.show_view()
 
     def update_detector_type(self, new_value, variable_name):
         """

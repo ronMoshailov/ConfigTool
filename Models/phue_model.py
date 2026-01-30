@@ -112,6 +112,7 @@ class PhueModel:
                             t.state = "TurnOff"
                         else:
                             t.state = "TurnOn"
+                        return
 
     def set_phue_len(self, img_out, img_in, length):
         """
