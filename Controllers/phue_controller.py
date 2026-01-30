@@ -22,7 +22,6 @@ class PhueController:
         self.view.add_transition_method             = self.add_transition
         self.view.remove_phue_method                = self.remove_phue
         self.view.remove_transition_method          = self.remove_transition
-        # self.view.update_phue_method                = self.update_phue
         self.view.update_transition_move_method     = self.update_transition_move
         self.view.update_color_method               = self.update_color
         self.view.update_duration_method            = self.update_duration
@@ -31,7 +30,6 @@ class PhueController:
 
 
     def init_model(self, phue_paths, path_init_tk1): # self.phue_model.phue_paths, self.path_init_tk1
-
         class_pattern = re.compile(r"public\s+class\s+Phue([A-Za-z0-9]+)_?([A-Za-z0-9]+)")
         sg_pattern = re.compile( r"_tk\.(\w+)\.(TurnOn|TurnOff)\s*\(\s*(\d+)\s*\)")
         phue_len_pattern = re.compile(r'tk\.Phue([A-Za-z0-9]+)_([A-Za-z0-9]+)\s*=.*?\(\s*tk\s*,\s*"[^"]+"\s*,\s*([0-9]+)')
@@ -95,6 +93,9 @@ class PhueController:
         self.show_view(self.all_images, self.all_moves_names)
 
     def add_transition(self, img_out, img_in):
+        """
+        This method add new transition to the phue
+        """
         self.model.add_transition(img_out, img_in)
         self.show_view(self.all_images, self.all_moves_names)
 
@@ -169,7 +170,6 @@ class PhueController:
         # create files
         for phue in self.model.all_phue:
             self.create_file(phue.image_out, phue.image_in, phue.transitions, phue_folder_dst)
-
 
         with open(init_tk1_dst, 'r', encoding='utf-8') as f:
             lines = f.readlines()
@@ -268,89 +268,5 @@ class PhueController:
             f.write(line)
 
         return line
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    # def update_phue(self, table_wrap_list):
-    #     # check if move exist twice
-    #     for wrap in table_wrap_list:
-    #         img_out     = wrap.img_out
-    #         img_in      = wrap.img_in
-    #         table       = wrap.table
-    #
-    #         seen        = set()
-    #         row_count   = table.rowCount()
-    #
-    #         for row in range(row_count):
-    #             value = table.cellWidget(row, 0).currentText()
-    #             if value in seen:
-    #                 QMessageBox.critical(self.view, "שגיאה", f"המופע [{value}] מופיע לפחות פעמיים במעבר [{img_out} → {img_in}]")
-    #                 return
-    #             seen.add(value)
-    #     #
-    #     for wrap in table_wrap_list:
-    #         # Data
-    #         img_out     = wrap.img_out
-    #         img_in      = wrap.img_in
-    #         table       = wrap.table
-    #         row_count   = table.rowCount()
-    #         length      = int(wrap.len_textbox.text())
-    #
-    #         move_name_list  = []
-    #         color_list      = []
-    #         time_list       = []
-    #
-    #         for row in range(row_count):
-    #             # move_name
-    #             combo       = table.cellWidget(row, 0)
-    #             move_name   = combo.currentText()
-    #             move_name_list.append(move_name)
-    #
-    #             # color
-    #             color_mapping = {"🔴": "ROT", "🟢": "GRUEN"}
-    #             color = color_mapping[table.item(row, 1).text()]
-    #             color_list.append(color)
-    #
-    #             time = table.item(row, 2).text()
-    #             time_list.append(time)
-    #
-    #         self.model.update_phue(img_out, img_in, length, move_name_list, color_list, time_list)
-    #
-    #     # update the DB
-    #     # success, message = self.data_controller.update_inter_stage(self.table_wrap_list)
-    #     QMessageBox.information(self.view, "הודעה", "העדכון הצליח")
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

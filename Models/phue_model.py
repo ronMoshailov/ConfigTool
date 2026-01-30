@@ -1,20 +1,20 @@
 class _Phue:
     def __init__(self, move_out: str, move_in: str, length: int, transitions: list = []):
-        self.image_out   = move_out
-        self.image_in    = move_in
-        self.length = length
-        self.transitions = transitions
+        self.image_out      = move_out
+        self.image_in       = move_in
+        self.length         = length
+        self.transitions    = transitions
 
 class _Transition:
     def __init__(self, move_name, state, duration):
-        self.move_name = move_name
-        self.state = state
-        self.duration = duration
+        self.move_name      = move_name
+        self.state          = state
+        self.duration       = duration
 
 class PhueModel:
     def __init__(self):
-        self.all_phue = []
-        self.phue_paths = []
+        self.all_phue       = []
+        self.phue_paths     = []
 
     # ============================== CRUD ============================== #
     def create_new_phue(self, image_out_arg, image_in_arg, length = 0, transitions = []):
@@ -67,6 +67,9 @@ class PhueModel:
                 return
 
     def remove_transition(self, img_out, img_in, move_name):
+        """
+        This method removes a transition from the phue
+        """
         for phue in self.all_phue:
             if phue.image_out == img_out and phue.image_in == img_in:
                 for t in phue.transitions:
@@ -122,28 +125,6 @@ class PhueModel:
             if phue.image_out == img_out and phue.image_in == img_in:
                 phue.length = length
                 return
-
-
-
-
-
-
-
-    # def update_phue(self, img_out, img_in, length, move_name_list, color_list, time_list):
-    #     for phue in self.all_phue:
-    #         if phue.image_out == img_out and phue.image_in == img_in:
-    #             phue.length = length
-    #             phue.transitions.clear()
-    #             for move, color, time in zip(move_name_list, color_list, time_list):
-    #                 phue.transitions.append(_Transition(move, color, time))
-    #             return
-
-
-
-
-
-
-
 
     # ============================== Logic ============================== #
     def reset_phue_model(self):

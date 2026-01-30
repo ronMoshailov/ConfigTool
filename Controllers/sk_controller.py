@@ -13,8 +13,8 @@ class SkController:
         self.all_moves = None
 
         # Controller Methods
-        self.view.add_sk_method = self.add_sk_card
-        self.view.remove_sk_method = self.remove_sk_card
+        self.view.add_sk_card_method = self.add_sk_card
+        self.view.remove_sk_card_method = self.remove_sk_card_card
         self.view.change_color_method = self.change_color
         self.view.change_name_method = self.change_name
         self.view.update_comment_method = self.update_comment
@@ -25,7 +25,7 @@ class SkController:
             for line in file:
                 line = line.strip()
                 if "SK24 sk" in line and not line.startswith("//"):
-                    self.model.add_sk()
+                    self.model.add_sk_card()
 
         with open(path, 'r', encoding='utf-8') as file:
             for line in file:
@@ -54,14 +54,14 @@ class SkController:
         """
         This method add new sk card to the model
         """
-        self.model.add_sk()
+        self.model.add_sk_card()
         self.view.show_view(self.model.sk_list, self.all_moves)
 
-    def remove_sk_card(self, card_num):
+    def remove_sk_card_card(self, card_num):
         """
         This method remove sk card from the model
         """
-        self.model.remove_sk(card_num)
+        self.model.remove_sk_card(card_num)
         self.view.show_view(self.model.sk_list, self.all_moves)
 
     def rename_move(self, old_name, new_name):
@@ -78,6 +78,7 @@ class SkController:
         """
         self.model.remove_move(move_name)
 
+    # ============================== Logic ============================== #
     def change_color(self, table: QTableWidget, row: int, col: int, fix_color = False):
         """
         This method manages the change of the color of the channel
@@ -85,9 +86,9 @@ class SkController:
         if col != 2:
             return
 
-        combo = table.cellWidget(row, 1)
-        item = table.item(row, 2)
-        move_name = combo.currentText()
+        combo       = table.cellWidget(row, 1)
+        item        = table.item(row, 2)
+        move_name   = combo.currentText()
 
         with QSignalBlocker(combo), QSignalBlocker(table):
             if move_name == "-":
@@ -96,30 +97,22 @@ class SkController:
         cur = item.text()
 
         if move_name.startswith("k"):
-            if fix_color:
-                if cur == "":
-                    item.setText("🔴")
-                return
             nxt_color = {"🔴": "🟡", "🟡": "🟢", "🟢": "🔴", "": "🔴"}.get(cur, "🔴")
+
         elif move_name.startswith("p"):
-            if fix_color:
-                if cur == "🟡" or cur == "":
-                    item.setText("🔴")
-                return
             nxt_color = {"🔴": "🟢", "🟢": "🔴", "": "🔴"}.get(cur, "🔴")
+
         elif move_name.startswith("B"):
-            if fix_color:
-                item.setText("🟡")
-                return
             nxt_color = {"🟡": "🟡"}.get(cur, "🟡")
+
         item.setText(nxt_color)
 
     def change_name(self, table: QTableWidget, row: int, col: int):
         """
         This method manages the change of the name of the channel
         """
-        combo = table.cellWidget(row, col)
-        move_name = combo.currentText()
+        combo       = table.cellWidget(row, col)
+        move_name   = combo.currentText()
 
         white = QBrush(Config.constants.white_color)
         gray = QBrush(Config.constants.gray_color)
@@ -137,7 +130,6 @@ class SkController:
                 table.cellWidget(row, 3).setCheckState(Qt.CheckState.Unchecked)
             else:
                 self.change_color(table, row, 2, True)
-        return True
 
     def update_comment(self, table, row_number, state):
         """
@@ -192,12 +184,9 @@ class SkController:
 
             QMessageBox.information(self.view, "SK כרטיס", "העדכון הצליח")
 
-    # ============================== Logic ============================== #
     def _is_names_valid(self, tables_list):
         """
         This method check if names has exactly the count instances he needs.
-
-        :return: True if succeeded, False otherwise
         """
         dict_count = {}
 
@@ -252,7 +241,7 @@ class SkController:
         """
         This method clear all the data in the model
         """
-        self.model.reset()
+        self.model.reset_sk_model()
 
     # ============================== Write To File ============================== #
     def write_to_file(self, path):

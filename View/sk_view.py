@@ -1,6 +1,6 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QBrush
-from PyQt6.QtWidgets import QWidget, QPushButton, QScrollArea, QVBoxLayout, QHBoxLayout, QLabel, QAbstractItemView, \
+from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel, QAbstractItemView, \
     QTableWidget, QTableWidgetItem, QComboBox, QCheckBox, QHeaderView
 
 from Config.constants import gray_color, light_green_color
@@ -14,15 +14,15 @@ class SkView(QWidget):
     def __init__(self):
         super().__init__()
         # Controller Methods
-        self.add_sk_method = None
-        self.remove_sk_method = None
-        self.change_color_method = None
-        self.change_name_method = None
-        self.update_comment_method = None
-        self.update_data_method = None
+        self.add_sk_card_method     = None
+        self.remove_sk_method       = None
+        self.change_color_method    = None
+        self.change_name_method     = None
+        self.update_comment_method  = None
+        self.update_data_method     = None
 
         # Data
-        self.tables_list = []
+        self.tables_list            = []
 
         # Cards Layout
         self.cards_layout = QHBoxLayout()
@@ -33,8 +33,8 @@ class SkView(QWidget):
         scroll_area = Config.special.init_scroll(self.cards_layout)
 
         # Add Buttons
-        self.btn_add = QPushButton("SK הוסף")
-        self.btn_add.clicked.connect(lambda: self.add_sk_method())
+        self.btn_add = QPushButton("הוסף כרטיס")
+        self.btn_add.clicked.connect(lambda: self.add_sk_card_method())
         self.btn_add.setObjectName("add_button")
 
         # Update Buttons
@@ -69,10 +69,7 @@ class SkView(QWidget):
     # ============================== Layout ============================== #
     def _build_table_layout(self, card_number: int, all_moves, sk_list):
         """
-        This method initialize the widget of the table (title, table with values and signals)
-
-        :param card_number: number of the SK card
-        :return: QTableWidget object that holds everything
+        This method initialize the table (title, table with values and signals)
         """
         # Widget That Holds a Card
         wrap = QWidget()
@@ -126,9 +123,6 @@ class SkView(QWidget):
     def _init_table(self, tbl: QTableWidget, all_moves):
         """
         This method create the table with all the rows and columns (without values).
-
-        :param tbl: The 'QTableWidget' to create.
-        :return: None
         """
         # Data
         all_moves_names = ["-"] + [m.name for m in all_moves]
@@ -176,14 +170,9 @@ class SkView(QWidget):
     def _fill_table(self, tbl: QTableWidget, card_number: int, sk_list):
         """
         This method fill the tables with values from DB.
-
-        :param tbl: The table to fill.
-        :param card_number: number of the SK card
-        :return: None
         """
-
-        all_channels_list = sk_list[card_number - 1].all_channels
-        green_bg = QBrush(light_green_color)
+        all_channels_list   = sk_list[card_number - 1].all_channels
+        green_bg            = QBrush(light_green_color)
 
         for ch in all_channels_list:
             # get data
@@ -219,8 +208,6 @@ class SkView(QWidget):
     def _refresh_tables(self, sk_list, all_moves):
         """
         This method clears the main layout and build back with data from DB.
-
-        :return: None
         """
         # refresh the table
         clear_widget_from_layout([self.cards_layout])

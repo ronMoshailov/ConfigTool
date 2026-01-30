@@ -6,9 +6,6 @@ import Config
 
 
 class PhueView(QWidget):
-    """
-    This class present the panel of the inter stage panel.
-    """
     def __init__(self):
         super().__init__()
 
@@ -17,7 +14,6 @@ class PhueView(QWidget):
         self.add_transition_method          = None
         self.remove_phue_method             = None
         self.remove_transition_method       = None
-        # self.update_phue_method             = None
         self.update_transition_move_method  = None
         self.update_color_method            = None
         self.update_duration_method         = None
@@ -83,24 +79,6 @@ class PhueView(QWidget):
     # ============================== CRUD ============================== #
     def _add_row(self, img_out, img_in):
         self.add_transition_method(img_out, img_in)
-        # row = tbl.rowCount()
-        # tbl.insertRow(row)
-        #
-        # combo_widget = QComboBox()
-        # combo_widget.addItems([move.name for move in all_moves])
-        # combo_widget.setCurrentIndex(0)
-        #
-        # remove_btn = QPushButton("❌")
-        # remove_btn.clicked.connect(lambda _, image_out = img_out, image_in = img_in, t=tbl: self._remove_row(img_out, img_in, t))
-        #
-        # tbl.setCellWidget(row, 0, combo_widget)
-        # widget_color = QTableWidgetItem("🔴")
-        # widget_color.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-        # tbl.setItem(row, 1, widget_color)
-        # number_color = QTableWidgetItem("0")
-        # number_color.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-        # tbl.setItem(row, 2, number_color)
-        # tbl.setCellWidget(row, 3, remove_btn)
 
     def _remove_row(self, img_out, img_in, tbl):
         # get selected button
@@ -123,9 +101,6 @@ class PhueView(QWidget):
     def _init_table(self, img_out, img_in, length, transitions, all_moves_names):
         """
         This method initialize the widget of the table (title, table with values and signals)
-
-        :param card_number: number of the SK card
-        :return: QTableWidget object that holds everything
         """
         # widget that holds title and table
         wrap = QWidget()
