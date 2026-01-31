@@ -66,7 +66,7 @@ class ImageController:
         """
         This method fetch all the images from the model in the order of SP
         """
-        self.model.get_images_by_sp()
+        return self.model.get_images_by_sp()
 
     def rename_move(self, old_name, new_name):
         # Used By Main Controller

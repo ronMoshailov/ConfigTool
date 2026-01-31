@@ -196,8 +196,6 @@ class PhueController:
     def get_code(self, code):
         """
         This method create a code of all phues for InitTk1
-
-        :return: List of code of the phues
         """
         # code = []
         line = ""

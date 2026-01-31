@@ -188,8 +188,7 @@ class MainController:
 
     def _initialize_app(self):
         # Set Project Path
-        self.path_manager.set_folder_path()
-        if self.path_manager.path_project is None:
+        if not self.path_manager.set_folder_path():
             QMessageBox.critical(self.main_root, "שגיאה", "לא נבחרה תיקייה")
             return
 
@@ -219,7 +218,7 @@ class MainController:
 
         if self.image_model.is_sp_valid():
             print("sp valid")
-        if not self.path_manager.create_copy(self.root):
+        if not self.path_manager.create_project(self.root):
             return
 
         self.write_phase_imports()
