@@ -79,7 +79,7 @@ class SkController:
         self.model.remove_move(move_name)
 
     # ============================== Logic ============================== #
-    def change_color(self, table: QTableWidget, row: int, col: int, fix_color = False):
+    def change_color(self, table: QTableWidget, row: int, col: int):
         """
         This method manages the change of the color of the channel
         """
