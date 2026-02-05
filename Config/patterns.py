@@ -1,4 +1,29 @@
 import re
+#
+# ^     - start of a row
+# $     - end of a row
+# .     - every char
+# /d    - number
+# /w    - char or number
+# /s    - space
+# +     - 1 or more
+# *     - 0 or more
+# ?     - optional
+# ()    - group
+#
+
+
+
+move_pattern = re.compile(
+    r'\s*tk\.(k\d+|p[a-zA-Z]|B[a-zA-Z])'        # שם המונע אחרי tk.
+    r'\s*=\s*new\s+Move\('                      # התחלה של new Move
+    r'\s*tk\s*,\s*'                             # הטק tk,
+    r'"[^"]+"\s*,\s*'                           # השם בתוך גרשיים כפולים
+    r'MoveType\.([A-Za-z_]+)\s*,\s*'            # MoveType
+    r'(\d+)\s*,\s*'                             # מספר ראשון (min_green)
+    r'\d+\s*,\s*'                               # המספר הבא (לא רלוונטי כרגע)
+    r'(true|false)'                             # true/false
+)
 
 move_pattern = re.compile(r"""^                          # התחלה
             \s*tk\.(k\d+|p[a-zA-Z]|B[a-zA-Z])     # שם המונע אחרי tk.

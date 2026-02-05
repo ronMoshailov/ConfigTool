@@ -2,7 +2,7 @@ import re
 
 from PyQt6.QtWidgets import QMessageBox
 
-import Config
+from Config.patterns import move_pattern
 
 
 class MoveController:
@@ -30,7 +30,7 @@ class MoveController:
                 if line.startswith("//") or not line.startswith("tk."):
                     continue
 
-                match = Config.patterns.move_pattern.match(line)
+                match = move_pattern.match(line)
                 if match:
                     phase, move_type, min_green, is_main = match.groups()
                     is_main = True if is_main == "true" else False
@@ -171,11 +171,11 @@ class MoveController:
             f.writelines(init_tk1_code)
 
     def add_tk1_lines(self, new_lines):
-        cars_line = "\tpublic Move "
-        pedestrians_line = "\tpublic Move "
-        blinkers_line = "\tpublic Move "
+        cars_line           = "\tpublic Move "
+        pedestrians_line    = "\tpublic Move "
+        blinkers_line       = "\tpublic Move "
+        moves_dictionary    = {"k": [], "p": [], "B": []}
 
-        moves_dictionary = {"k": [], "p": [], "B": []}
         for name in self.get_all_moves_names():
             moves_dictionary[name[0]].append(name)
 
