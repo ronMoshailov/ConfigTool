@@ -32,11 +32,11 @@ class MoveController:
 
                 match = move_pattern.match(line)
                 if match:
-                    phase, move_type, min_green, is_main = match.groups()
+                    variable_name, move_name, move_type, min_green, is_main = match.groups()
                     is_main = True if is_main == "true" else False
 
                     # Add move to the model
-                    self.model.add_move(phase, move_type, is_main, int(min_green))
+                    self.model.add_move(variable_name, move_type, is_main, int(min_green))
 
     def show_view(self):
         self.view.show_view(self.model.all_moves, self.model.get_all_types())

@@ -22,16 +22,13 @@ class MatrixController:
                 if not line:
                     continue
 
-                match = Config.patterns.matrix_pattern.search(line)
+                match = Config.patterns.matrix_pattern.match(line)
                 if match:
-                    out = match.group("out")
-                    inn = match.group("inn")
-                    t1 = int(match.group("t1"))
-                    t2 = int(match.group("t2"))
+                    move_out, move_in, t1, t2 = match.groups()
 
                     # Add cells to the model
-                    self.model.new_cell(out, inn, t1)
-                    self.model.new_cell(inn, out, t2)
+                    self.model.new_cell(move_out, move_in, t1)
+                    self.model.new_cell(move_in, move_out, t2)
 
     def show_view(self, all_moves):
         self.view.show_view(all_moves, self.model.all_cells)

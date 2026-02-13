@@ -31,45 +31,47 @@ move_pattern = re.compile(
     r'p[a-z]'                       # then should be "p" with at least lowercase letters
     r'|'                            # or
     r'B[a-z])'                      # then should be "B" with at least lowercase letters
-    r'\s*'                          # then should 0 or more spaces
+    r'\s*'                          # then should be 0 or more spaces
     r'='                            # then should be '='
     r'\s*'                          # then should be 0 or more spaces
-    r'new\s+Move\(\s*tk\s*,\s*'     # then should be 'new Move( tk,'
-    r'\s*"_([1-9]+|[a-zA-Z]+)'      # then should be 'new Move( tk,'
-    
-    
-    
-    r'"[^"]+"\s*,\s*'                           # השם בתוך גרשיים כפולים
-    r'MoveType\.([A-Za-z_]+)\s*,\s*'            # MoveType
-    r'(\d+)\s*,\s*'                             # מספר ראשון (min_green)
-    r'\d+\s*,\s*'                               # המספר הבא (לא רלוונטי כרגע)
-    
+    r'new\s+Move\('                 # then should be 'new Move( tk,'
+    r'\s*'                          # then should be 0 or more spaces
+    r'tk'                           # then should be tk
+    r'\s*'                          # then should be 0 or more spaces
+    r','                            # then should be ,
+    r'\s*'                          # then should be 0 or more spaces
+    r'"_([1-9]+|[a-zA-Z]+)"'        # then should be "_#]" when # is any number or letter
+    r'\s*'                          # then should be 0 or more spaces
+    r','                            # then should be ,
+    r'\s*'                          # then should be 0 or more spaces
+    r'MoveType\.'                   # then should be "MoveType."
+    r'([A-Za-z_]+)'                 # catch the move type 
+    r'\s*'                          # then should be 0 or more spaces
+    r','                            # then should be ,
+    r'\s*'                          # then should be 0 or more spaces
+    r'(\d+)'                        # then should be any number
+    r'\s*,\s*\d+\s*,\s*'            # then skip this section
     r'(true|false)'                 # then should be true or false
+    r'\s*\);'                       # then should be the end of the line
 )
 
-# move_pattern = re.compile(r"""^                          # התחלה
-#             \s*tk\.(k\d+|p[a-zA-Z]|B[a-zA-Z])     # שם המונע אחרי tk.
-#             \s*=\s*new\s+Move\(                   # התחלה של new Move
-#             \s*tk\s*,\s*                          # הטק tk,
-#             "[^"]+"\s*,\s*                      # השם בתוך גרשיים כפולים
-#             MoveType\.([A-Za-z_]+)\s*,\s*        # MoveType
-#             (\d+)\s*,\s*                          # מספר ראשון (min_green)
-#             \d+\s*,\s*                            # המספר הבא (לא רלוונטי כרגע)
-#             (true|false)                          # true/false
-#             """, re.VERBOSE
-#         )
-
-matrix_pattern = re.compile(r"""
-            tk\.zwz\.setzeZwz                      # קריאת הפונקציה
-            \(\s*                                   # (
-            tk\.(?P<out>[A-Za-z_]\w*)\s*,          # out
-            \s*tk\.(?P<inn>[A-Za-z_]\w*)\s*,       # in
-            \s*(?P<t1>-?\d+)\s*,                   # זמן 1
-            \s*(?P<t2>-?\d+)\s*                    # זמן 2
-            \)\s*;                                  # );
-            """,
-            re.VERBOSE
-        )
+matrix_pattern = re.compile(
+    # target: tk.zwz.setzeZwz( tk.k1    , tk.pb     ,  7  ,  10);
+    r'\s*'                          # start with 0 or more spaces
+    r'tk.zwz.setzeZwz\('            # then should be "tk.zwz.setzeZwz("
+    r'\s*'                          # then should be 0 or more spaces
+    r'tk\.'                         # then should be "tk."
+    r'(k\d+'                        # then should be "k" with at least 1 number after the 'k'
+    r'|'                            # or
+    r'p[a-z])'                      # then should be "p" with at least lowercase letters
+    r'\s*,\s*'
+    r'tk\.'                         # then should be "tk."
+    r'(k\d+'                        # then should be "k" with at least 1 number after the 'k'
+    r'|'                            # or
+    r'p[a-z])'                      # then should be "p" with at least lowercase letters
+    r'\s*,\s*'
+    r'(\d+)\s*,\s*(\d+)\);'
+)
 
 sk_pattern = re.compile(
             r'^\s*(//)?\s*'  # 1) האם מתחיל ב-// (הערה)
