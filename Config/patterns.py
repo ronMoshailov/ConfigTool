@@ -1,5 +1,5 @@
 import re
-###########################################
+
 ############### Explanation ###############
 # *     - 0 or more
 # +     - 1 or more
@@ -8,18 +8,10 @@ import re
 # []    - group that possible characters
 # [^]   - group with impossible characters
 
-
-
+############### xxx ###############
 # /s    - space
 # /d    - number
-
-
-
-
-
-
-
-# 'r' before sentence is raw string. it means that it's relate to \ as normal char
+# r     - before sentence is raw string. it means that it's relate to \ as normal char
 
 move_pattern = re.compile(
     # target: tk.k1   	=  new Move(     tk  , "_1"  , MoveType.Traffic			,	    5 ,   0 , false );
@@ -57,6 +49,7 @@ move_pattern = re.compile(
 
 matrix_pattern = re.compile(
     # target: tk.zwz.setzeZwz( tk.k1    , tk.pb     ,  7  ,  10);
+
     r'\s*'                          # start with 0 or more spaces
     r'tk.zwz.setzeZwz\('            # then should be "tk.zwz.setzeZwz("
     r'\s*'                          # then should be 0 or more spaces
@@ -85,16 +78,18 @@ sk_pattern = re.compile(
 
 # detectors_pattern = re.compile(r'^(?!\s*//)\s*public\s+(DEDetector|DDetector|EDetector|TPDetector|QDetector)\s+([^;]+);')
 detectors_pattern = re.compile(
-    r"""
-    tk\.(\w+)              # 1) e1
-    \s*=\s*new\s+
-    (\w+)                  # 2) EDetector
-    \s*\(\s*
-    "([^"]+)"              # 3) E1
-    \s*,\s*
-    tk\.(\w+)              # 4) k1
-    """,
-    re.VERBOSE
+    # target: tk.d_3	  = new DDetector ("D-3"   , tk.k3 ,    true ,        true ,                  true );
+
+    r'\s*'                          # start with 0 or more spaces
+    r'tk\.'                         # then should be "tk."
+    r'(\w+)'                        # catch any word until space (d_3)
+    r'\s*=\s*new\s+'                # than should be " = new "
+    r'(\w+)'                        # catch detector type
+    r'\s*\('
+    r'"([^"]+)"'                    # 3) E1
+    r'\s*,\s*'
+    r'tk\.(\w+)'
+    r'\s*,\s*true\s*,\s*true\s*,\s*true\s*\);'
 )
 
 schedule_pattern = re.compile(

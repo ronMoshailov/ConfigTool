@@ -24,8 +24,10 @@ class DetectorController:
             for line in file:
                 if line.startswith("//"):
                     continue
-                matches = Config.patterns.detectors_pattern.findall(line)
-                for var_name, class_name, detector_name, move_name in matches:
+
+                match = Config.patterns.detectors_pattern.match(line)
+                if match:
+                    var_name, class_name, detector_name, move_name = match.groups()
                     self.model.new_detector(var_name=var_name, class_name=class_name, detector_name=detector_name, move_name=move_name, ext_unit=0)
 
     def show_view(self):
