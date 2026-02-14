@@ -67,14 +67,25 @@ matrix_pattern = re.compile(
 )
 
 sk_pattern = re.compile(
-            r'^\s*(//)?\s*'  # 1) האם מתחיל ב-// (הערה)
-            r'new\s+SchaltKanal\('
-            r'\s*Var\.tk1\.([A-Za-z0-9]+)\s*,'  # 2) שם המופע אחרי Var.tk1.  → group(2)
-            r'\s*Move\.[^,]+,\s*'  # הצבע הלוגי (לא מעניין אותנו)
-            r'(hwGreen200|hwAmber200|hwRed200)\s*,'  # 3) color גולמי → group(3)
-            r'\s*[^,]*,\s*sk(\d+)\s*,'  # 4) מספר כרטיס אחרי sk → group(4)
-            r'\s*(\d+)\s*,'  # 5) המספר הבא (בין שני הפסיקים) → group(5)
-        )
+    # target: new SchaltKanal(Var.tk1.k5     , Move.lred,   hwRed200  , Hw.HF, sk1, 7, Hw.SK);
+
+    r'\s*'                              # start with 0 or more spaces
+    r'new SchaltKanal\(Var\.tk1\.'      # then should be "new SchaltKanal(Var.tk1."
+    r'(k\d+|p[a-z]|B[a-z])'             # then should be "k" with at least 1 number after the 'k'
+    r'\s*,\s*'                          # then skip to the next argument
+    r'Move\.(?:lred|lamber|lgreen)'     # then should be "Move.lred" or "Move.lamber" or "Move.lgreen"
+    r'\s*,\s*'                          # then skip to the next argument
+    r'(hwGreen200|hwAmber200|hwRed200)' # then catch "hwGreen200" or "hwAmber200" or "hwRed200"
+    r'\s*,\s*'                          # then skip to the next argument
+    r'Hw.HF'                            # then should be "Hw.HF"
+    r'\s*,\s*'                          # then skip to the next argument
+    r'sk(\d+)'                          # then catch the number sk card
+    r'\s*,\s*'                          # then skip to the next argument
+    r'(\d+)'                            # then catch the number channel
+    r'\s*,\s*'                          # then skip to the next argument
+    r'Hw.SK\);'                         # then should be the end of the line
+)
+
 
 # detectors_pattern = re.compile(r'^(?!\s*//)\s*public\s+(DEDetector|DDetector|EDetector|TPDetector|QDetector)\s+([^;]+);')
 detectors_pattern = re.compile(

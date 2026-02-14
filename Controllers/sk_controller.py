@@ -36,6 +36,7 @@ class SkController:
                     continue
                 match = Config.patterns.sk_pattern.match(line)
                 if match:
+
                     is_commented = bool(match.group(1))
                     name = match.group(2)
                     color = match.group(3)
