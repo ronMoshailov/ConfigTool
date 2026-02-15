@@ -31,18 +31,15 @@ class SkController:
             for line in file:
                 if line.startswith("package"):
                     Config.constants.PROJECT_NUMBER = line.replace("package", "").replace(";", "").strip()
+                    continue
                 line = line.strip()
                 if "new SchaltKanal" not in line:
                     continue
                 match = Config.patterns.sk_pattern.match(line)
                 if match:
-
-                    is_commented = bool(match.group(1))
-                    name = match.group(2)
-                    color = match.group(3)
-                    card_number = int(match.group(4))
-                    channel = int(match.group(5))
-                    self.model.set_channel(card_number, name, color, channel, is_commented)
+                    move_name, color, card_number, channel = match.groups()
+                    is_commented = line.startswith("//")
+                    self.model.set_channel(int(card_number), move_name, color, int(channel), is_commented)
                     # if card == self.number_card:
                     #     self.sk_channel_list.append(SkChannel(name, color, channel, is_commented))
 

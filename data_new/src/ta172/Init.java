@@ -189,9 +189,9 @@ public class Init implements enp.Initialisierung {
 		}
 
 		//switch channels
-		new SchaltKanal(Var.tk1.k1     , Move.lred,   hwRed200  , Hw.HF, sk1, 1, Hw.SK);
-		new SchaltKanal(Var.tk1.k1     , Move.lamber, hwAmber200, Hw.HF, sk1, 2, Hw.SK);
-		new SchaltKanal(Var.tk1.k1     , Move.lgreen, hwGreen200, Hw.HF, sk1, 3, Hw.SK);
+// 		new SchaltKanal(Var.tk1.k1     , Move.lred,   hwRed200  , Hw.HF, sk1, 1, Hw.SK);
+// 		new SchaltKanal(Var.tk1.k1     , Move.lamber, hwAmber200, Hw.HF, sk1, 2, Hw.SK);
+// 		new SchaltKanal(Var.tk1.k1     , Move.lgreen, hwGreen200, Hw.HF, sk1, 3, Hw.SK);
 		new SchaltKanal(Var.tk1.k3     , Move.lred,   hwRed200  , Hw.HF, sk1, 4, Hw.SK);
 		new SchaltKanal(Var.tk1.k3     , Move.lamber, hwAmber200, Hw.HF, sk1, 5, Hw.SK);
 		new SchaltKanal(Var.tk1.k3     , Move.lgreen, hwGreen200, Hw.HF, sk1, 6, Hw.SK);

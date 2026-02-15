@@ -70,6 +70,8 @@ sk_pattern = re.compile(
     # target: new SchaltKanal(Var.tk1.k5     , Move.lred,   hwRed200  , Hw.HF, sk1, 7, Hw.SK);
 
     r'\s*'                              # start with 0 or more spaces
+    r'(?://)?'
+    r'\s*'
     r'new SchaltKanal\(Var\.tk1\.'      # then should be "new SchaltKanal(Var.tk1."
     r'(k\d+|p[a-z]|B[a-z])'             # then should be "k" with at least 1 number after the 'k'
     r'\s*,\s*'                          # then skip to the next argument
