@@ -1,21 +1,8 @@
 import re
 
-############### Explanation ###############
-# *     - 0 or more
-# +     - 1 or more
-# |     - or
-# ()    - group
-# []    - group that possible characters
-# [^]   - group with impossible characters
-
-############### xxx ###############
-# /s    - space
-# /d    - number
-# r     - before sentence is raw string. it means that it's relate to \ as normal char
-
+# ===================== move pattern ==================== #
+# target: tk.k1   	=  new Move(     tk  , "_1"  , MoveType.Traffic			,	    5 ,   0 , false );
 move_pattern = re.compile(
-    # target: tk.k1   	=  new Move(     tk  , "_1"  , MoveType.Traffic			,	    5 ,   0 , false );
-
     r'\s*'                          # start with 0 or more spaces
     r'tk\.'                         # then should be "tk."
     r'(k\d+'                        # then should be "k" with at least 1 number after the 'k'
@@ -47,9 +34,9 @@ move_pattern = re.compile(
     r'\s*\);'                       # then should be the end of the line
 )
 
+# ===================== matrix pattern ==================== #
+# target: tk.zwz.setzeZwz( tk.k1    , tk.pb     ,  7  ,  10);
 matrix_pattern = re.compile(
-    # target: tk.zwz.setzeZwz( tk.k1    , tk.pb     ,  7  ,  10);
-
     r'\s*'                          # start with 0 or more spaces
     r'tk.zwz.setzeZwz\('            # then should be "tk.zwz.setzeZwz("
     r'\s*'                          # then should be 0 or more spaces
@@ -57,21 +44,24 @@ matrix_pattern = re.compile(
     r'(k\d+'                        # then should be "k" with at least 1 number after the 'k'
     r'|'                            # or
     r'p[a-z])'                      # then should be "p" with at least lowercase letters
-    r'\s*,\s*'
+    r'\s*,\s*'                      # then skip to the next argument
     r'tk\.'                         # then should be "tk."
     r'(k\d+'                        # then should be "k" with at least 1 number after the 'k'
     r'|'                            # or
     r'p[a-z])'                      # then should be "p" with at least lowercase letters
-    r'\s*,\s*'
-    r'(\d+)\s*,\s*(\d+)\);'
+    r'\s*,\s*'                      # then skip to the next argument
+    r'(\d+)'                        # catch the time when the first argument out
+    r'\s*,\s*'                      # then skip to the next argument
+    r'(\d+)'                        # catch the time when the second argument out
+    r'\);'                          # then should be " );"
 )
 
+# ===================== sk channel pattern ==================== #
+# target: new SchaltKanal(Var.tk1.k5     , Move.lred,   hwRed200  , Hw.HF, sk1, 7, Hw.SK);
 sk_pattern = re.compile(
-    # target: new SchaltKanal(Var.tk1.k5     , Move.lred,   hwRed200  , Hw.HF, sk1, 7, Hw.SK);
-
     r'\s*'                              # start with 0 or more spaces
-    r'(?://)?'
-    r'\s*'
+    r'(?://)?'                          # maybe will be here //
+    r'\s*'                              # then should be 0 or more spaces
     r'new SchaltKanal\(Var\.tk1\.'      # then should be "new SchaltKanal(Var.tk1."
     r'(k\d+|p[a-z]|B[a-z])'             # then should be "k" with at least 1 number after the 'k'
     r'\s*,\s*'                          # then skip to the next argument
@@ -88,39 +78,42 @@ sk_pattern = re.compile(
     r'Hw.SK\);'                         # then should be the end of the line
 )
 
-
-# detectors_pattern = re.compile(r'^(?!\s*//)\s*public\s+(DEDetector|DDetector|EDetector|TPDetector|QDetector)\s+([^;]+);')
+# ===================== detector pattern ==================== #
+# target: tk.d_3	  = new DDetector ("D-3"   , tk.k3 ,    true ,        true ,                  true );
 detectors_pattern = re.compile(
-    # target: tk.d_3	  = new DDetector ("D-3"   , tk.k3 ,    true ,        true ,                  true );
-
     r'\s*'                          # start with 0 or more spaces
     r'tk\.'                         # then should be "tk."
-    r'(\w+)'                        # catch any word until space (d_3)
+    r'(\w+)'                        # catch any word until space (the variable name d_3)
     r'\s*=\s*new\s+'                # than should be " = new "
-    r'(\w+)'                        # catch detector type
-    r'\s*\('
-    r'"([^"]+)"'                    # 3) E1
+    r'(\w+)'                        # catch detector type (DDetector|EDetector|QDetector|DEDetector|TPDetector)
+    r'\s*\('                        # then skip to the next argument
+    r'"([^"]+)"'                    # catch  the name of the detector "D-3"
     r'\s*,\s*'
     r'tk\.(\w+)'
     r'\s*,\s*true\s*,\s*true\s*,\s*true\s*\);'
 )
 
+# ===================== schedule pattern ==================== #
 schedule_pattern = re.compile(
-    r'(?:TagesPlan\s+(\w+)\s*=\s*new\s+TagesPlan\("[^"]+",\s*tk\.p(\d{2}))'
+    # target: TagesPlan sun_thur = new TagesPlan("Sunday_Thurday", tk.p06);
+    r'(?:TagesPlan\s*(\w+)\s*=\s*new\s*TagesPlan\("[^"]+",\s*tk\.p(\d{2}))'
     r'|'
+    # target: sun_thur.initProgWunsch(  6, 00,  tk.p07 );
     r'(?:([a-zA-Z_]\w*)\.initProgWunsch\(\s*(\d{1,2})\s*,\s*(\d{1,2})\s*,\s*tk\.p(\d{2})\s*\);)'
 )
 
+# ===================== image pattern ==================== #
 image_pattern = re.compile(
     r'Phase([A-Za-z0-9_]+)\s*'              # שם הפאזה (EQA)
     r'\([^,]*,\s*[^,]*,\s*'                 # דילוג על tk, "PhaseEQA"
     r'([^,]+),\s*'                          # 11
     r'([^,]+),\s*'                          # 4
     r'([^,]+),\s*'                          # 1
-    r'([^,\)]+).*?'                          # true
+    r'([^,\)]+).*?'                         # true
     r'Move\[\]\s*\{([^}]*)\}'               # כל מה שבתוך {} של Move[]
 )
 
+# ===================== settings pattern ==================== #
 settings_pattern = re.compile(
     r'public\s+static\s+String\s+anlagenName\s*=\s*"(?P<anlagenName>[^"]+)"|'
     r'public\s+static\s+String\s+tk1Name\s*=\s*"(?P<tk1Name>[^"]+)"|'
@@ -130,10 +123,18 @@ settings_pattern = re.compile(
     re.MULTILINE
 )
 
+# ===================== Explanation ==================== #
+# *     - 0 or more
+# +     - 1 or more
+# |     - or
+# ()    - group
+# []    - group that possible characters
+# [^x]  - group of any character instead of 'x'
 
-
-# ^     - start of a row
-# $     - end of a row
-# .     - every char
-# ?     - optional
-#
+# ===================== xxx ==================== #
+# \s    - space
+# \d    - number
+# \d{x} - exactly x digits
+# r     - before sentence is raw string. it means that it's relate to \ as normal char
+# (?:xx)    - group without catching
+# (?:xx)?   - group without catching and optional
