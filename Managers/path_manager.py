@@ -57,6 +57,10 @@ class PathManager:
         # Copy the template project
         shutil.copytree(source_folder, dst)
 
+        #
+        self.path_phue_folder_dst.mkdir(parents=True, exist_ok=True)
+        self.path_phase_folder_dst.mkdir(parents=True, exist_ok=True)
+
         # rename
         old_path = dst / "src" / "ta00"
         new_path = dst / "src" / f"{Config.constants.PROJECT_NUMBER}"

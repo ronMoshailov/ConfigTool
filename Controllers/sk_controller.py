@@ -105,6 +105,34 @@ class SkController:
 
         item.setText(nxt_color)
 
+    def fix_color(self, table: QTableWidget, row: int, col: int):
+        """
+        This method fixthe color of the channel
+        """
+        if col != 2:
+            return
+
+        combo       = table.cellWidget(row, 1)
+        item        = table.item(row, 2)
+        move_name   = combo.currentText()
+
+        with QSignalBlocker(combo), QSignalBlocker(table):
+            if move_name == "-":
+                return
+
+        cur = item.text()
+
+        if move_name.startswith("k"):
+            return
+
+        elif move_name.startswith("p"):
+            nxt_color = {"🟢": "🔴"}.get(cur, "🔴")
+
+        elif move_name.startswith("B"):
+            nxt_color = {"🔴": "🟡", "🟢": "🟡"}.get(cur, "🟡")
+
+        item.setText(nxt_color)
+
     def change_name(self, table: QTableWidget, row: int, col: int):
         """
         This method manages the change of the name of the channel
@@ -127,7 +155,7 @@ class SkController:
                 table.cellWidget(row, 3).setStyleSheet("margin-left:auto; margin-right:auto;")
                 table.cellWidget(row, 3).setCheckState(Qt.CheckState.Unchecked)
             else:
-                self.change_color(table, row, 2)
+                self.fix_color(table, row, 2)
 
     def update_comment(self, table, row_number, state):
         """

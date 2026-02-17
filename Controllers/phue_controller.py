@@ -207,7 +207,7 @@ class PhueController:
             line += " " * (36 - len(line))                                  # add spaces
             line += f"(tk, \"Phue{phue.image_out}_{phue.image_in}\""        # add code
             line += " " * (53 - len(line))                                  # add spaces
-            if phue.length >= 10:
+            if int(phue.length) >= 10:
                 line += f",  {phue.length}"                                 # add code
             else:
                 line += f",   {phue.length}"                                # add code

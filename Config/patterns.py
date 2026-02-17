@@ -55,7 +55,7 @@ matrix_pattern = re.compile(
     r'(\d+)'                        # catch the time when the first argument out
     r'\s*,\s*'                      # then skip to the next argument
     r'(\d+)'                        # catch the time when the second argument out
-    r'\);'                          # then should be " );"
+    r'\s*\);'                          # then should be " );"
 )
 
 # ===================== sk channel pattern ==================== #

@@ -93,13 +93,13 @@ class ImageController:
         """
         This method update the skeleton number of the image
         """
-        self.model.update_skeleton(image_name, skeleton)
+        self.model.set_skeleton(image_name, skeleton)
 
     def update_image_number(self, image_name, skeleton):
         """
         This method update the image number of the image
         """
-        self.model.update_image_number(image_name, skeleton)
+        self.model.set_image_number(image_name, skeleton)
         self.show_view(self.all_moves_names)
 
     def update_move_assignment(self, image_name, move_name):
