@@ -127,7 +127,7 @@ class SkController:
                 table.cellWidget(row, 3).setStyleSheet("margin-left:auto; margin-right:auto;")
                 table.cellWidget(row, 3).setCheckState(Qt.CheckState.Unchecked)
             else:
-                self.change_color(table, row, 2, True)
+                self.change_color(table, row, 2)
 
     def update_comment(self, table, row_number, state):
         """

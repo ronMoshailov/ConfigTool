@@ -1,8 +1,9 @@
 import re
 
 # ===================== move pattern ==================== #
-# target: tk.k1   	=  new Move(     tk  , "_1"  , MoveType.Traffic			,	    5 ,   0 , false );
 move_pattern = re.compile(
+    # target: tk.k1   	=  new Move(     tk  , "_1"  , MoveType.Traffic			,	    5 ,   0 , false );
+    # should be used with "match"
     r'\s*'                          # start with 0 or more spaces
     r'tk\.'                         # then should be "tk."
     r'(k\d+'                        # then should be "k" with at least 1 number after the 'k'
@@ -35,8 +36,9 @@ move_pattern = re.compile(
 )
 
 # ===================== matrix pattern ==================== #
-# target: tk.zwz.setzeZwz( tk.k1    , tk.pb     ,  7  ,  10);
 matrix_pattern = re.compile(
+    # target: tk.zwz.setzeZwz( tk.k1    , tk.pb     ,  7  ,  10);
+    # should be used with "match"
     r'\s*'                          # start with 0 or more spaces
     r'tk.zwz.setzeZwz\('            # then should be "tk.zwz.setzeZwz("
     r'\s*'                          # then should be 0 or more spaces
@@ -57,8 +59,9 @@ matrix_pattern = re.compile(
 )
 
 # ===================== sk channel pattern ==================== #
-# target: new SchaltKanal(Var.tk1.k5     , Move.lred,   hwRed200  , Hw.HF, sk1, 7, Hw.SK);
 sk_pattern = re.compile(
+    # target: new SchaltKanal(Var.tk1.k5     , Move.lred,   hwRed200  , Hw.HF, sk1, 7, Hw.SK);
+    # should be used with "match"
     r'\s*'                              # start with 0 or more spaces
     r'(?://)?'                          # maybe will be here //
     r'\s*'                              # then should be 0 or more spaces
@@ -79,22 +82,25 @@ sk_pattern = re.compile(
 )
 
 # ===================== detector pattern ==================== #
-# target: tk.d_3	  = new DDetector ("D-3"   , tk.k3 ,    true ,        true ,                  true );
 detectors_pattern = re.compile(
-    r'\s*'                          # start with 0 or more spaces
-    r'tk\.'                         # then should be "tk."
-    r'(\w+)'                        # catch any word until space (the variable name d_3)
-    r'\s*=\s*new\s+'                # than should be " = new "
-    r'(\w+)'                        # catch detector type (DDetector|EDetector|QDetector|DEDetector|TPDetector)
-    r'\s*\('                        # then skip to the next argument
-    r'"([^"]+)"'                    # catch  the name of the detector "D-3"
-    r'\s*,\s*'
-    r'tk\.(\w+)'
-    r'\s*,\s*true\s*,\s*true\s*,\s*true\s*\);'
+    # target: tk.d_3	  = new DDetector ("D-3"   , tk.k3 ,    true ,        true ,                  true );
+    # should be used with "match"
+    r'\s*'                                      # start with 0 or more spaces
+    r'tk\.'                                     # then should be "tk."
+    r'(\w+)'                                    # catch any word until space (the variable name d_3)
+    r'\s*=\s*new\s+'                            # than should be " = new "
+    r'(\w+)'                                    # catch detector type (DDetector|EDetector|QDetector|DEDetector|TPDetector)
+    r'\s*\('                                    # then skip to the next argument
+    r'"([^"]+)"'                                # catch  the name of the detector "D-3"
+    r'\s*,\s*'                                  # then skip to the next argument
+    r'tk\.'                                     # then should be "th."
+    r'(\w+)'                                    # then catch the move that related to the detector
+    r'\s*,\s*true\s*,\s*true\s*,\s*true\s*\);'  # then should be the end of the line
 )
 
 # ===================== schedule pattern ==================== #
 schedule_pattern = re.compile(
+    # should be used with "match"
     # target: TagesPlan sun_thur = new TagesPlan("Sunday_Thurday", tk.p06);
     r'(?:TagesPlan\s*(\w+)\s*=\s*new\s*TagesPlan\("[^"]+",\s*tk\.p(\d{2}))'
     r'|'
@@ -104,13 +110,28 @@ schedule_pattern = re.compile(
 
 # ===================== image pattern ==================== #
 image_pattern = re.compile(
-    r'Phase([A-Za-z0-9_]+)\s*'              # שם הפאזה (EQA)
-    r'\([^,]*,\s*[^,]*,\s*'                 # דילוג על tk, "PhaseEQA"
-    r'([^,]+),\s*'                          # 11
-    r'([^,]+),\s*'                          # 4
-    r'([^,]+),\s*'                          # 1
-    r'([^,\)]+).*?'                         # true
-    r'Move\[\]\s*\{([^}]*)\}'               # כל מה שבתוך {} של Move[]
+    # target number 1: tk.PhEQA     =          new PhaseEQA   (tk, "PhaseEQA"	,    11  ,    3            ,  1              , true       , new Move[] {tk.k5, tk.k7, tk.pa, tk.pb, tk.pe, tk.pf       });
+    # target number 2: tk.MainPhase = tk.PhA = new PhaseA     (tk, "PhaseA"     ,    10  , new int[] { 3 } , new int[] { 0 } , false      , new Move[] {tk.k5, tk.k7, tk.pa, tk.pb, tk.pe, tk.pf});
+    # should be used with "search"
+    r'Phase'                    # seach for "Phase"
+    r'([A-Za-z0-9_]+)'          # than search for any word (The name of the image)
+    r'\s*'                      # then should be 0 or more spaces
+    r'\('                       # "\("
+    r'[^,]*'                    # then should be the first argument(tk)
+    r',\s*'                     # then skip to the next argument
+    r'[^,]*'                    # then should be the second argument (PhaseXxX)
+    r',\s*'                     # then skip to the next argument
+    r'([^,]+)'                  # then catch the third argument (image number)
+    r',\s*'                     # then skip to the next argument
+    r'([^,]+)'                  # then catch the fourth argument (skeleton time) 
+    r',\s*'                     # then skip to the next argument
+    r'([^,]+)'                  # then catch the fifth argument (stop point)
+    r',\s*'                     # then skip to the next argument
+    r'(true|false)'             # the catch the sixth argument (true or false)
+    r'\s*,\s*'                  # then skip to the next argument
+    r'new Move\[\]\s*\{'        # then should be "new Move[] {"
+    r'([^}]*)'                  # catch everything until you reach to "}"
+    r'\}'                       # end of the line
 )
 
 # ===================== settings pattern ==================== #
@@ -129,7 +150,7 @@ settings_pattern = re.compile(
 # |     - or
 # ()    - group
 # []    - group that possible characters
-# [^x]  - group of any character instead of 'x'
+# [^x]  - group of any character until reached to 'x'
 
 # ===================== xxx ==================== #
 # \s    - space
