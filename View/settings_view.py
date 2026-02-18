@@ -18,10 +18,10 @@ class SettingsView(QWidget):
         self.remove_from_history_method     = None
 
         # Root Layouts
-        root_layout = QVBoxLayout()
-        content_layout = QHBoxLayout()
-        left_side_layout = QVBoxLayout()
-        right_side_layout = QVBoxLayout()
+        root_layout         = QVBoxLayout()
+        content_layout      = QHBoxLayout()
+        left_side_layout    = QVBoxLayout()
+        right_side_layout   = QVBoxLayout()
 
         # Content Layout
         content_layout.addLayout(left_side_layout)

@@ -1,9 +1,9 @@
 class _Move:
     def __init__(self, name: str, move_type: str, is_main: bool, min_green: int):
-        self.name = name
-        self.type = move_type
-        self.is_main = is_main
-        self.min_green = min_green
+        self.name       = name
+        self.type       = move_type
+        self.is_main    = is_main
+        self.min_green  = min_green
 
 
 class MoveModel:

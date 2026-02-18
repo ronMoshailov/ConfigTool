@@ -27,15 +27,10 @@ class MoveController:
         with open(path, 'r', encoding='utf-8') as file:
             for line in file:
                 line = line.strip()
-                if line.startswith("//") or not line.startswith("tk."):
-                    continue
-
                 match = move_pattern.match(line)
                 if match:
                     variable_name, move_name, move_type, min_green, is_main = match.groups()
                     is_main = True if is_main == "true" else False
-
-                    # Add move to the model
                     self.model.add_move(variable_name, move_type, is_main, int(min_green))
 
     def show_view(self):
@@ -81,6 +76,7 @@ class MoveController:
         if not re.fullmatch(r"[A-Za-z0-9]+", new_name):
             QMessageBox.critical(self.view, "שגיאה", "השם יכול להכיל רק אותיות, מספרים")
             self.show_view()
+            return
 
         # Update model
         try:
