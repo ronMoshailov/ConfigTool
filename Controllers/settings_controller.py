@@ -7,7 +7,7 @@ class SettingsController:
         self.view           = view
         self.model          = model
 
-        # Controller Methods
+        # Set View Methods
         self.view.update_junction_number_method = self.update_junction_number
         self.view.update_junction_name_method   = self.update_junction_name
         self.view.update_version_method         = self.update_version
@@ -25,24 +25,23 @@ class SettingsController:
 
         # Read
         with open(path, "r", encoding="utf-8") as f:
-            content = f.read() # read all the data from the file
+            content = f.read()                              # read all the data from the file
 
-        for match in settings_pattern.finditer(content):  # return iterator each match
-            gd = match.groupdict() # get dictionary from match [variable name, value of the variable]
+        for match in settings_pattern.finditer(content):    # return iterator each match
+            gd = match.groupdict()                          # get dictionary from match [variable name, value of the variable]
 
             for key, value in gd.items():
                 if not value:
                     continue
 
-                if key == "anlagenName": # junction number
+                if key == "anlagenName":        # junction number
                     anlagenName = value
-                elif key == "tk1Name": # junction name
+                elif key == "tk1Name":          # junction name
                     tk1Name = value
-                elif key == "version": #
+                elif key == "version":          # version
                     version = value
-                elif key == "versionsInside":
+                elif key == "versionsInside":   #
                     version_items = re.findall(r'"([^"]+)"', value)
-
                     for item in version_items:
                         m = re.match(r'(?P<date>\d{2}/\d{2}/\d{4})\s*-\s*(?P<author>.+)', item)
                         if m:
@@ -108,20 +107,24 @@ class SettingsController:
         self.model.reset_settings_model()
 
     # ============================== Write To File ============================== #
-    def write_to_file(self, path):
+    def write_settings_to_project(self, path):
         """
         This method write the data from the model to the project
         """
         # data
         code = []
 
+        self._create_code(path, code)
+        self._write_code(path, code)
+
+    def _create_code(self, path, code):
         # read the code from the file
         with open(path, 'r', encoding='utf-8') as file:
             for line in file:
                 if "write settings here" in line:
                     code.append(f"\tpublic static String anlagenName = \"{self.model.junction_num}\";\n")
                     code.append(f"\tpublic static String tk1Name     = \"{self.model.junction_name}\";\n")
-                    code.append(f"\tpublic static String version     = \" {self.model.version}\";")
+                    code.append(f"\tpublic static String version     = \" {self.model.version}\";\n")
                     code.append( "\tpublic static String[] versions = {\n")
                     for date, author in self.model.history:
                         code.append(f"\t\t\"{date} - {author}\",\n")
@@ -130,7 +133,9 @@ class SettingsController:
                     continue
                 code.append(line)
 
+    def _write_code(self, path, code):
         with open(path, 'w', encoding='utf-8') as f:
             f.writelines(code)
+
 
 
