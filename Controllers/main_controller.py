@@ -113,8 +113,10 @@ class MainController:
 
     def show_view(self, act):
         # Hide All Views
-        self.settings_view.hide_view()
-        self.move_view.hide_view()
+        self.settings_controller.hide_view()
+        self.move_controller.hide_view()
+        self.matrix_controller.hide_view()
+
         self.matrix_view.hide_view()
         self.detector_view.hide_view()
         self.schedule_view.hide_view()
@@ -198,12 +200,13 @@ class MainController:
         # Initialize Controllers
         self.path_manager.set_files_path(self.phue_model.phue_paths)
         self.settings_controller.init_model(self.path_manager.path_init)
-        self.sk_controller.init_model(self.path_manager.path_init)
         self.move_controller.init_model(self.path_manager.path_init_tk1)
+        self.matrix_controller.init_model(self.path_manager.path_init_tk1)
+        self.sk_controller.init_model(self.path_manager.path_init)
+
         self.detector_controller.init_model(self.path_manager.path_init_tk1)
         self.image_controller.init_model(self.path_manager.path_init_tk1, self.move_controller.get_all_moves_names())
         self.phue_controller.init_model(self.phue_model.phue_paths, self.path_manager.path_init_tk1)
-        self.matrix_controller.init_model(self.path_manager.path_init_tk1)
         self.schedule_controller.init_model(self.path_manager.path_init_tk1)
         self.parameters_ta_controller.init_model(self.path_manager.path_parameters_ta, len(self.image_model.all_images))
 
@@ -223,11 +226,12 @@ class MainController:
 
         self.write_phase_imports()
 
-        self.settings_controller.write_to_file(self.path_manager.path_init_dst)
-        self.move_controller.write_to_file(self.path_manager.path_tk1_dst, self.path_manager.path_init_tk1_dst)
-        self.matrix_controller.write_to_file(self.path_manager.path_init_tk1_dst)
-        self.schedule_controller.write_to_file(self.path_manager.path_init_tk1_dst)
+        self.settings_controller.write_settings_to_project(self.path_manager.path_init_dst)
+        self.move_controller.write_moves_to_project(self.path_manager.path_tk1_dst, self.path_manager.path_init_tk1_dst)
+        self.matrix_controller.write_matrix_to_file(self.path_manager.path_init_tk1_dst)
         self.sk_controller.write_to_file(self.path_manager.path_init_dst)
+
+        self.schedule_controller.write_to_file(self.path_manager.path_init_tk1_dst)
         self.image_controller.write_to_file(self.path_manager.path_tk1_dst, self.path_manager.path_init_tk1_dst, self.path_manager.path_phase_folder_dst)
         self.phue_controller.write_to_file(self.path_manager.path_init_tk1_dst, self.path_manager.path_phue_folder_dst)
         self.parameters_ta_controller.write_to_file(self.path_manager.path_parameters_ta_dst, self.path_manager.path_init_tk1_dst, self.image_controller.fetch_images_by_sp())

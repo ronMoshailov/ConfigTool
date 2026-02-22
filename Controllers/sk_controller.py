@@ -47,6 +47,9 @@ class SkController:
         self.all_moves = all_moves
         self.view.show_view(self.model.sk_list, all_moves)
 
+    def hide_view(self):
+        self.view.show_view()
+
     # ============================== CRUD ============================== #
     def add_sk_card(self):
         """
