@@ -148,6 +148,7 @@ public class Init implements enp.Initialisierung {
 
 	protected void initialisiereHW(){
 		//initialize device
+        int cardsIndex = 1;
 
 		Var.device = new Anlage(Var.tk1/*, Var.tk2*/);
 		Var.device.setName(anlagenName);
@@ -174,10 +175,10 @@ public class Init implements enp.Initialisierung {
         // write sk cards here
 
 		//input/output-cards
-		IO24 io1  = new IO24(3); 
+		IO24 io1  = new IO24(cardsIndex++);
 		IO64 io64 = null;
 		if (Var.controller.isPoliceDoor() || Var.controller.isSynopticMap()) {
-			io64 = new IO64(4);
+			io64 = new IO64(cardsIndex++);
 		}
 
 		//switch channels

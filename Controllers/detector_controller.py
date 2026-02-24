@@ -1,5 +1,6 @@
 import Config
 from Managers.load_data_manager import LoadDataManager
+from Managers.write_data_manager import WriteDataManager
 
 
 class DetectorController:
@@ -90,88 +91,9 @@ class DetectorController:
 
     # ============================== Write To File ============================== #
     def write_to_file(self, path_init_tk1, path_tk1):
-        self._write_to_init_tk1(path_init_tk1)
-        self._write_to_tk1(path_tk1)
+        code = WriteDataManager.create_detectors_init_tk1_code(path_init_tk1, self.model.all_detectors)
+        WriteDataManager.write_code(path_init_tk1, code)
 
-    def _write_to_init_tk1(self, path):
-        code = []
-        with open(path, 'r', encoding='utf-8') as file:
-            for line in file:
-                if "write detectors here" in line:
-                    for detector in self.model.all_detectors:
-                        line = ""
-                        line += f"\t\ttk.{detector.var_name}"                   # add code
-                        line += " " * (12 - len(line))                          # add spaces
-                        line += f"= new {detector.class_name}"                  # add code
-                        line += " " * (28 - len(line))                          # add spaces
-                        line += f"( \"{detector.datector_name}\""               # add code
-                        line += " " * (38 - len(line))                          # add spaces
-                        line += f", tk.{detector.move_name}"                    # add code
-                        line += " " * (46 - len(line))                          # add spaces
-                        line += ", true    , true        , true );\n"           # add code
-                        code.append(line)
-                    continue
-                code.append(line)
+        code = WriteDataManager.create_detectors_tk1_code(path_tk1, self.model.get_all_d_detectors(), self.model.get_all_e_detectors(), self.model.get_all_de_detectors(), self.model.get_all_tp_detectors(), self.model.get_all_q_detectors())
+        WriteDataManager.write_code(path_tk1, code)
 
-        with open(path, 'w', encoding='utf-8') as f:
-            f.writelines(code)
-
-    def _write_to_tk1(self, path):
-        code = []
-        with open(path, 'r', encoding='utf-8') as file:
-            for line in file:
-                if "write detectors here" in line:
-                    # DDETECTOR
-                    if len(self.model.get_all_d_detectors()) > 0:
-                        line = "\t"
-                        line += "public DDetector "
-                        for detector in self.model.get_all_d_detectors():
-                            line += f"{detector.var_name}, "
-                        line = line[:-2]
-                        line += ";\n"
-                        code.append(line)
-
-                    # EDETECTOR
-                    if len(self.model.get_all_e_detectors()) > 0:
-                        line = "\t"
-                        line += "public EDetector "
-                        for detector in self.model.get_all_e_detectors():
-                            line += f"{detector.var_name}, "
-                        line = line[:-2]
-                        line += ";\n"
-                        code.append(line)
-
-                    # DE_DETECTOR
-                    if len(self.model.get_all_de_detectors()) > 0:
-                        line = "\t"
-                        line += "public DEDetector "
-                        for detector in self.model.get_all_de_detectors():
-                            line += f"{detector.var_name}, "
-                        line = line[:-2]
-                        line += ";\n"
-                        code.append(line)
-
-                    # TPDETECTOR
-                    if len(self.model.get_all_tp_detectors()) > 0:
-                        line = "\t"
-                        line += "public TPDetector "
-                        for detector in self.model.get_all_tp_detectors():
-                            line += f"{detector.var_name}, "
-                        line = line[:-2]
-                        line += ";\n"
-                        code.append(line)
-
-                    # QDETECTOR
-                    if len(self.model.get_all_q_detectors()) > 0:
-                        line = "\t"
-                        line += "public QDetector "
-                        for detector in self.model.get_all_q_detectors():
-                            line += f"{detector.var_name}, "
-                        line = line[:-2]
-                        line += ";\n"
-                        code.append(line)
-                    continue
-                code.append(line)
-
-        with open(path, 'w', encoding='utf-8') as f:
-            f.writelines(code)

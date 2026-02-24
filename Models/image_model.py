@@ -45,6 +45,9 @@ class ImageModel:
                 return image.sp
         return None
 
+    def get_all_images_names(self):
+        return [i.image_name for i in self.all_images]
+
     def update_move_assignment(self, image_name, move_name_arg):
         """
         This method append/remove move from image

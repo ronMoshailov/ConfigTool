@@ -18,10 +18,8 @@ public class Tk1 extends Node {
 	// write moves here
 
 	//inputs
-//	public DEDetector de_4, de_5;
-	public DDetector d_3, d_6;
-	public EDetector e_3, e_6;
-//	public TPDetector tp_c, tp_d, tp_g,tp_h;
+	// write detectors here
+
 //	public Input de, dp;
 
 	//outputs

@@ -2,6 +2,7 @@ from PyQt6.QtWidgets import QMessageBox
 
 import Config
 from Managers.load_data_manager import LoadDataManager
+from Managers.write_data_manager import WriteDataManager
 
 
 class ScheduleController:
@@ -140,148 +141,10 @@ class ScheduleController:
 
     # ============================== Write To File ============================== #
     def write_to_file(self, path):
-        with open(path, 'r', encoding='utf-8') as f:
-            lines = f.readlines()
+        """
+        This method write the data from the model to the project
+        """
+        code = WriteDataManager.create_schedule_init_tk1_code(path, self.is_copy_sunday, self.model.all_schedule_tables)
 
-        new_lines = []
-        for line in lines:
-            if "write schedule here" in line:
-                self.add_new_lines(new_lines)
-                continue
-            if "write schedule order here" in line:
-                if self.is_copy_sunday:
-                    new_lines.append("\t\tnew WochenPlan(\"time table\", sun_thur, sun_thur, sun_thur, sun_thur, fr, sa, sun_thur);")
-                else:
-                    new_lines.append("\t\tnew WochenPlan(\"time table\", monday, tuesday, wednesday, thursday, fr, sa, sunday);")
-                continue
-
-            new_lines.append(line)
-
-        with open(path, 'w', encoding='utf-8') as f:
-            f.writelines(new_lines)
-
-    def add_new_lines(self, new_lines):
-        first_row = True
-
-        # sunday - thursday
-        if self.is_copy_sunday:
-            table = self.model.all_schedule_tables[0]
-            cell_list = table.cell_list                 # get schedule cells
-            for cell in cell_list:                      #
-                # prepare data
-                if cell.prog_num < 10:
-                    prog_num = f"0{cell.prog_num}"
-                else:
-                    prog_num = f"{cell.prog_num}"
-
-                # first row
-                if first_row:
-                    first_row = False
-                    line = f"\t\tTagesPlan sun_thur = new TagesPlan(\"Sun_Thur\", tk.p{prog_num});\n"
-                    new_lines.append(line)
-                    continue
-
-                # all other rows
-                line = f"\t\tsun_thur.initProgWunsch("
-                if cell.hour >= 10:
-                    line += f"{cell.hour}, "
-                else:
-                    line += f" {cell.hour}, "
-
-                if cell.minute >= 10:
-                    line += f"{cell.minute},  tk.p{prog_num} );\n"
-                else:
-                    line += f" {cell.minute},  tk.p{prog_num} );\n"
-
-                new_lines.append(line)
-            new_lines.append("\n")
-
-        else:
-            for i in range(5):
-                table = self.model.all_schedule_tables[i]   # get table
-                cell_list = table.cell_list                 # get schedule cells
-                day = {0: "sunday", 1: "monday", 2: "tuesday", 3: "wednesday", 4: "thursday"}.get(i, "לא קיים")
-                for cell in cell_list:                      #
-                    # prepare data
-                    if cell.prog_num < 10:
-                        prog_num = f"0{cell.prog_num}"
-                    else:
-                        prog_num = f"{cell.prog_num}"
-
-                    # first row
-                    if first_row:
-                        first_row = False
-                        line = f"\t\tTagesPlan {day} = new TagesPlan(\"{day}\", tk.p{prog_num});\n"
-                        new_lines.append(line)
-                        continue
-
-                    # all other rows
-                    line = f"\t\t{day}.initProgWunsch("
-                    if cell.hour >= 10:
-                        line += f"{cell.hour}, "
-                    else:
-                        line += f" {cell.hour}, "
-
-                    if cell.minute >= 10:
-                        line += f"{cell.minute},  tk.p{prog_num} );\n"
-                    else:
-                        line += f" {cell.minute},  tk.p{prog_num} );\n"
-                        print(f"{day}, {prog_num}")
-                    new_lines.append(line)
-                new_lines.append("\n")
-                first_row = True
-
-
-        # friday
-        new_lines.append("\n")
-
-        friday_table = self.model.all_schedule_tables[5]
-        first_row = True
-        cell_list = friday_table.cell_list
-        for cell in cell_list:
-            # make program number for the line
-            if cell.prog_num < 10:
-                prog_num = f"0{cell.prog_num}"
-            else:
-                prog_num = f"{cell.prog_num}"
-
-            # if it's the first row
-            if first_row:
-                first_row = False
-                line = f"\t\tTagesPlan fr = new TagesPlan(\"Fr\",  tk.p{prog_num});\n"
-                new_lines.append(line)
-                continue
-
-            #
-            line = (f"\t\tfr.initProgWunsch("
-                    f"{Config.special.get_space(0, 1, str(cell.hour))}{cell.hour} ,"
-                    f"{Config.special.get_space(1, 2, str(cell.minute))}{cell.minute},  tk.p{prog_num} );\n")
-            new_lines.append(line)
-        new_lines.append("\n")
-
-        # saturday
-        saturday_table = self.model.all_schedule_tables[6]
-        first_row = True
-        cell_list = saturday_table.cell_list
-        for cell in cell_list:
-            # make program number for the line
-            if cell.prog_num < 10:
-                prog_num = f"0{cell.prog_num}"
-            else:
-                prog_num = f"{cell.prog_num}"
-
-            # if it's the first row
-            if first_row:
-                first_row = False
-                line = f"\t\tTagesPlan sa = new TagesPlan(\"Sat\",  tk.p{prog_num});\n"
-                new_lines.append(line)
-                continue
-
-            #
-            line = (f"\t\tsa.initProgWunsch("
-                    f"{Config.special.get_space(0, 1, str(cell.hour))}{cell.hour} ,"
-                    f"{Config.special.get_space(1, 2, str(cell.minute))}{cell.minute},  tk.p{prog_num} );\n")
-            new_lines.append(line)
-        new_lines.append("\n")
-
-
+        with open(path, 'w', encoding='utf-8') as file:
+            file.writelines(code)
