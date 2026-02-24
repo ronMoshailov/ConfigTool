@@ -7,7 +7,7 @@ class SettingsModel:
         self.history        = []
 
     # ============================== CRUD ============================== #
-    def set(self, junction_num, junction_name, version, versions, first_ext):
+    def set(self, junction_num, junction_name, version, first_ext, history):
         """
         This method set the data of the model
         """
@@ -15,7 +15,7 @@ class SettingsModel:
         self.junction_name  = junction_name
         self.version        = version
         self.first_ext      = first_ext
-        self.history        = versions
+        self.history        = history
 
     def append_to_history(self, date, author):
         """
@@ -67,3 +67,11 @@ class SettingsModel:
         self.first_ext = None
         self.history.clear()
 
+    def to_dict(self):
+        return {
+            'junction_num': self.junction_num,
+            'junction_name': self.junction_name,
+            'version': self.version,
+            'first_ext': self.first_ext,
+            'history': self.history
+        }

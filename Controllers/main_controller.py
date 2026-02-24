@@ -35,46 +35,56 @@ from Models.settings_model import SettingsModel
 from Models.sk_model import SkModel
 
 from Managers.path_manager import PathManager
+from Managers.load_data_manager import LoadDataManager
 
 class MainController:
     def __init__(self):
+        # =============== Managers =============== #
+        self.path_manager       = PathManager()
+
         # =============== Models =============== #
+        self.settings_model         = SettingsModel()
         self.move_model             = MoveModel()
+        self.matrix_model           = MatrixModel()
+        self.sk_model               = SkModel()
         self.detector_model         = DetectorModel()
+        self.schedule_model         = ScheduleModel()
         self.image_model            = ImageModel()
         self.phue_model             = PhueModel()
-        self.matrix_model           = MatrixModel()
-        self.schedule_model         = ScheduleModel()
-        self.settings_model         = SettingsModel()
-        self.sk_model               = SkModel()
         self.parameters_ta_model    = ParametersTaModel()
 
+
+
+
         # =============== Views =============== #
-        self.navigator_view     = NavigatorView(self.show_view, self.print_all)
         self.settings_view      = SettingsView()
-        self.detector_view      = DetectorView()
-        self.matrix_view        = MatrixView()
         self.move_view          = MoveView()
+        self.matrix_view        = MatrixView()
         self.sk_view            = SkView()
+        self.detector_view      = DetectorView()
         self.schedule_view      = ScheduleView()
         self.image_view         = ImageView()
         self.phue_view          = PhueView()
         self.parameters_ta_view = ParametersTaView()
 
+
+
+        self.navigator_view     = NavigatorView(self.show_view, self.print_all)
+
         # =============== Controllers =============== #
-        self.image_controller           = ImageController(self.image_view, self.image_model)
-        # self.io_controller            = IoController(root)
-        self.matrix_controller          = MatrixController(self.matrix_view, self.matrix_model)
-        self.move_controller            = MoveController(self.move_view, self.move_model)
-        self.phue_controller            = PhueController(self.phue_view, self.phue_model)
-        self.schedule_controller        = ScheduleController(self.schedule_view, self.schedule_model)
         self.settings_controller        = SettingsController(self.settings_view, self.settings_model)
+        self.move_controller            = MoveController(self.move_view, self.move_model)
+        self.matrix_controller          = MatrixController(self.matrix_view, self.matrix_model)
         self.sk_controller              = SkController(self.sk_view, self.sk_model)
         self.detector_controller        = DetectorController(self.detector_view, self.detector_model)
+        self.schedule_controller        = ScheduleController(self.schedule_view, self.schedule_model)
+        self.image_controller           = ImageController(self.image_view, self.image_model)
+        self.phue_controller            = PhueController(self.phue_view, self.phue_model)
         self.parameters_ta_controller   = ParametersTaController(self.parameters_ta_view, self.parameters_ta_model)
 
-        # =============== Managers =============== #
-        self.path_manager = PathManager()
+
+
+        # self.io_controller            = IoController(root)
 
         # =============== Set Controllers Methods =============== #
         self.move_controller.view.rename_move_method           = self.rename_move

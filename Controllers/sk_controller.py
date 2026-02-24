@@ -3,6 +3,7 @@ from PyQt6.QtGui import QBrush
 from PyQt6.QtWidgets import QMessageBox, QTableWidget, QTableWidgetItem
 
 import Config
+from Managers.load_data_manager import LoadDataManager
 
 
 class SkController:
@@ -21,27 +22,13 @@ class SkController:
         self.view.update_data_method = self.update_data
 
     def init_model(self, path):
-        with open(path, 'r', encoding='utf-8') as file:
-            for line in file:
-                line = line.strip()
-                if "SK24 sk" in line and not line.startswith("//"):
-                    self.model.add_sk_card()
+        sk_count = LoadDataManager.check_sk_count(path)
+        for _ in range(sk_count):
+            self.model.add_sk_card()
 
-        with open(path, 'r', encoding='utf-8') as file:
-            for line in file:
-                if line.startswith("package"):
-                    Config.constants.PROJECT_NUMBER = line.replace("package", "").replace(";", "").strip()
-                    continue
-                line = line.strip()
-                if "new SchaltKanal" not in line:
-                    continue
-                match = Config.patterns.sk_pattern.match(line)
-                if match:
-                    move_name, color, card_number, channel = match.groups()
-                    is_commented = line.startswith("//")
-                    self.model.set_channel(int(card_number), move_name, color, int(channel), is_commented)
-                    # if card == self.number_card:
-                    #     self.sk_channel_list.append(SkChannel(name, color, channel, is_commented))
+        all_cells = LoadDataManager.load_sk_data(path)
+        for card_number, move_name, color, channel, is_commented in all_cells:
+            self.model.set_channel(card_number, move_name, color, channel, is_commented)
 
     def show_view(self, all_moves):
         self.all_moves = all_moves

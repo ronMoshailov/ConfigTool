@@ -1,5 +1,6 @@
-import re
-from Config.patterns import settings_pattern
+from Managers.load_data_manager import LoadDataManager
+from Managers.write_data_manager import WriteDataManager
+
 
 class SettingsController:
     def __init__(self, view, model):
@@ -11,53 +12,19 @@ class SettingsController:
         self.view.update_junction_number_method = self.update_junction_number
         self.view.update_junction_name_method   = self.update_junction_name
         self.view.update_version_method         = self.update_version
-        self.view.update_first_cycle_ext_method = self.update_update_first_ext
+        self.view.update_first_cycle_ext_method = self.update_first_ext
         self.view.add_to_history_method         = self.add_to_history
         self.view.remove_from_history_method    = self.remove_from_history
 
     def init_model(self, path):
-        # Data
-        anlagenName    = None
-        tk1Name        = None
-        version        = None
-        first_time_ext = None
-        history       = []
-
-        # Read
-        with open(path, "r", encoding="utf-8") as f:
-            content = f.read()                              # read all the data from the file
-
-        for match in settings_pattern.finditer(content):    # return iterator each match
-            gd = match.groupdict()                          # get dictionary from match [variable name, value of the variable]
-
-            for key, value in gd.items():
-                if not value:
-                    continue
-
-                if key == "anlagenName":        # junction number
-                    anlagenName = value
-                elif key == "tk1Name":          # junction name
-                    tk1Name = value
-                elif key == "version":          # version
-                    version = value
-                elif key == "versionsInside":   #
-                    version_items = re.findall(r'"([^"]+)"', value)
-                    for item in version_items:
-                        m = re.match(r'(?P<date>\d{2}/\d{2}/\d{4})\s*-\s*(?P<author>.+)', item)
-                        if m:
-                            date = m.group("date")
-                            author = m.group("author")
-                            history.append((date, author))
-                elif key == "tk1Arg":
-                    first_time_ext = value
-
-        self.model.set(anlagenName, tk1Name, version, history, first_time_ext)
+        anlagenName, tk1Name, version, first_time_ext, history = LoadDataManager.load_settings_data(path)
+        self.model.set(anlagenName, tk1Name, version, first_time_ext, history)
 
     def show_view(self):
         self.view.show_view(self.model.junction_num, self.model.junction_name, self.model.version, self.model.first_ext, self.model.history)
 
     def hide_view(self):
-        self.view.show_view()
+        self.view.hide_view()
 
     # ============================== CRUD ============================== #
     def add_to_history(self, date, author):
@@ -92,7 +59,7 @@ class SettingsController:
         """
         self.model.set_version(text)
 
-    def update_update_first_ext(self, text):
+    def update_first_ext(self, text):
         """
         This method update the first extension
         """
@@ -111,31 +78,6 @@ class SettingsController:
         """
         This method write the data from the model to the project
         """
-        # data
-        code = []
-
-        self._create_code(path, code)
-        self._write_code(path, code)
-
-    def _create_code(self, path, code):
-        # read the code from the file
-        with open(path, 'r', encoding='utf-8') as file:
-            for line in file:
-                if "write settings here" in line:
-                    code.append(f"\tpublic static String anlagenName = \"{self.model.junction_num}\";\n")
-                    code.append(f"\tpublic static String tk1Name     = \"{self.model.junction_name}\";\n")
-                    code.append(f"\tpublic static String version     = \" {self.model.version}\";\n")
-                    code.append( "\tpublic static String[] versions = {\n")
-                    for date, author in self.model.history:
-                        code.append(f"\t\t\"{date} - {author}\",\n")
-                    code[-1] = code[-1][:-2]
-                    code.append("\n};\n")
-                    continue
-                code.append(line)
-
-    def _write_code(self, path, code):
-        with open(path, 'w', encoding='utf-8') as f:
-            f.writelines(code)
-
-
+        code = WriteDataManager.create_settings_init_code(path, self.model.to_dict())
+        WriteDataManager.write_code(path, code)
 

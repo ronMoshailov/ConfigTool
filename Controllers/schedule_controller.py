@@ -1,6 +1,7 @@
 from PyQt6.QtWidgets import QMessageBox
 
 import Config
+from Managers.load_data_manager import LoadDataManager
 
 
 class ScheduleController:
@@ -19,42 +20,9 @@ class ScheduleController:
         self.view.toggle_copy_sunday_method     = self.toggle_copy_sunday
 
     def init_model(self, path):
-        mapping_day = {"sun_thur": [1,2,3,4,5], "sunday":[1], "monday":[2], "tuesday":[3], "wednesday":[4], "thursday":[5], "fr": [6],"sa": [7]}
-
-        with open(path, 'r', encoding='utf-8') as file:
-            for line in file:
-                line    = line.strip()
-                match   = Config.patterns.schedule_pattern.match(line)
-                if not match:
-                    continue
-
-                # line with "TagesPlan" (first set of hour-program)
-                if match.group(1):
-                    var_name = match.group(1)
-                    if match.group(1) in ["kipurEve", "kipur", "blink"]:
-                        return
-
-                    # check if each day have different schedule
-                    if not self.is_copy_sunday or (var_name == "monday"):
-                        self.is_copy_sunday = False
-                    else:
-                        self.is_copy_sunday = True
-
-                    #
-                    program_number = int(match.group(2))
-                    for day in mapping_day[var_name]:
-                        self.model.create_cell(day, 0, 0, program_number)
-
-                # line with "initProgWunsch" (not first set of hour-program)
-                else:
-                    var_name = match.group(3)
-                    days = mapping_day[var_name]
-                    hour = int(match.group(4))
-                    minute = int(match.group(5))
-                    program_number = int(match.group(6))
-
-                    for day in days:
-                        self.model.create_cell(day, hour, minute, program_number)
+        data = LoadDataManager.load_schedule_data(path, self.is_copy_sunday)
+        for day, hour, minute, program_number in data:
+            self.model.create_cell(day, hour, minute, program_number)
 
     def show_view(self):
         self.view.show_view()

@@ -3,6 +3,9 @@ import Config
 
 from PyQt6.QtWidgets import QMessageBox
 
+from Managers.load_data_manager import LoadDataManager
+
+
 class ImageController:
     def __init__(self, view, model):
         # Fields
@@ -21,29 +24,10 @@ class ImageController:
         self.all_moves_names = None
 
     def init_model(self, path, all_moves_names):
-        with open(path, "r", encoding="utf-8") as file:
-            for line in file:
-                m = Config.patterns.image_pattern.search(line)
-                if m:
-                    image_name = m.group(1)
-                    image_num = int(m.group(2).strip())
-                    image_skeleton = m.group(3).strip()
-                    image_sp = m.group(4).strip()
-                    is_police = True if m.group(5).strip() == 'true' else False
-                    moves_raw = m.group(6)
-                    image_moves = re.findall(r'tk\.([A-Za-z0-9_]+)', moves_raw)
+        all_images_data = LoadDataManager.load_images_data(path, all_moves_names)
 
-                    if image_name == 'A':
-                        image_num = 10
-                        image_skeleton = int(re.search(r'\{([^}]*)\}', m.group(3)).group(1).strip())
-                        image_sp = 0
-
-                    collection = []
-
-                    for move_name in all_moves_names:
-                        if move_name in image_moves:
-                            collection.append(move_name)
-                    self.model.new_image(image_name, image_num, int(image_skeleton), int(image_sp), is_police, collection)
+        for image_name, image_num, image_skeleton, image_sp, is_police, collection in all_images_data:
+            self.model.new_image(image_name, image_num, image_skeleton, image_sp, is_police, collection)
 
     def show_view(self, all_moves_names):
         self.all_moves_names = all_moves_names

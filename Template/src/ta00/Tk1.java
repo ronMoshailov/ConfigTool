@@ -15,9 +15,7 @@ import ta172.Preemptiontk1;
 public class Tk1 extends Node {
 
 	//signal groups
-	public Move k1, k3, k5, k6, k7, k8;	// traffic
-	public Move pa, pb, pc, pd, pe, pf, pg, ph; // pedestrians
-	public Move Bb, Bi, Bj, Bk;	// blinkers
+	// write moves here
 
 	//inputs
 //	public DEDetector de_4, de_5;

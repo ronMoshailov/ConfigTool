@@ -1,4 +1,6 @@
 import Config
+from Managers.load_data_manager import LoadDataManager
+
 
 class DetectorController:
     def __init__(self, view, model):
@@ -20,15 +22,10 @@ class DetectorController:
         self.get_all_moves_names            = None
 
     def init_model(self, path):
-        with open(path, "r", encoding="utf-8") as file:
-            for line in file:
-                if line.startswith("//"):
-                    continue
+        all_detectors = LoadDataManager.load_detectors_data(path)
 
-                match = Config.patterns.detectors_pattern.match(line)
-                if match:
-                    var_name, class_name, detector_name, move_name = match.groups()
-                    self.model.new_detector(var_name=var_name, class_name=class_name, detector_name=detector_name, move_name=move_name, ext_unit=0)
+        for var_name, class_name, detector_name, move_name in all_detectors:
+            self.model.new_detector(var_name=var_name, class_name=class_name, detector_name=detector_name, move_name=move_name, ext_unit=0)
 
     def show_view(self):
         self.view.show_view(self.model.all_detectors, self.model.get_all_types(), self.get_all_moves_names())

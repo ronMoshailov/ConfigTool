@@ -2,7 +2,8 @@ import re
 
 from PyQt6.QtWidgets import QMessageBox
 
-from Config.patterns import move_pattern
+from Managers.load_data_manager import LoadDataManager
+from Managers.write_data_manager import WriteDataManager
 
 
 class MoveController:
@@ -23,21 +24,15 @@ class MoveController:
         self.global_remove_move                 = None
 
     def init_model(self, path):
-        # path: initTk1.java
-        with open(path, 'r', encoding='utf-8') as file:
-            for line in file:
-                line = line.strip()
-                match = move_pattern.match(line)
-                if match:
-                    variable_name, move_name, move_type, min_green, is_main = match.groups()
-                    is_main = True if is_main == "true" else False
-                    self.model.add_move(variable_name, move_type, is_main, int(min_green))
+        all_moves = LoadDataManager.load_moves_data(path)
+        for variable_name, move_type, is_main, min_green in all_moves:
+            self.model.add_move(variable_name, move_type, is_main, int(min_green))
 
     def show_view(self):
         self.view.show_view(self.model.all_moves, self.model.get_all_types())
 
     def hide_view(self):
-        self.view.show_view()
+        self.view.hide_view()
 
     # ============================== CRUD ============================== #
     def add_new_move(self):
@@ -133,7 +128,7 @@ class MoveController:
                 table.removeRow(row)
                 break
 
-    def _calc_min_green(self, move):
+    def calc_min_green(self, move):
         """
         This method calculate the minimum green time depend on the type and if the move is main
         """
@@ -166,97 +161,11 @@ class MoveController:
     # ============================== Write To File ============================== #
     def write_moves_to_project(self, path_tk1, path_init_tk1):
         # update tk1.java file
-        code = []
-        self._create_code_tk1(path_tk1, code)
-        self._write_code(path_tk1, code)
+        code = WriteDataManager.create_moves_tk1_code(path_tk1, self.model.get_all_moves_names())
+        WriteDataManager.write_code(path_tk1, code)
 
         # update init_tk1.java file
-        code = []
-        self._create_code_init_tk1(path_init_tk1, code)
-        self._write_code(path_init_tk1, code)
+        code = WriteDataManager.create_moves_init_tk1_code(path_init_tk1, self.model.all_moves, self.calc_min_green)
+        WriteDataManager.write_code(path_init_tk1, code)
 
-    def _create_code_tk1(self, path, code):
-        with open(path, 'r', encoding='utf-8') as file:
-            for line in file:
-                if "write moves here" in line:
-                    cars_line = "\tpublic Move "
-                    pedestrians_line = "\tpublic Move "
-                    blinkers_line = "\tpublic Move "
-                    moves_dictionary = {"k": [], "p": [], "B": []}
-
-                    for name in self.get_all_moves_names():
-                        moves_dictionary[name[0]].append(name)
-
-                    for item in moves_dictionary["k"]:
-                        cars_line += f"{item}, "
-                    cars_line = cars_line[:-2] + ";  // traffic\n"
-
-                    for item in moves_dictionary["p"]:
-                        pedestrians_line += f"{item}, "
-                    pedestrians_line = pedestrians_line[:-2] + "; // pedestrians\n"
-
-                    for item in moves_dictionary["B"]:
-                        blinkers_line += f"{item}, "
-                    blinkers_line = blinkers_line[:-2] + ";	// blinkers\n"
-
-                    code.append(cars_line)
-                    code.append(pedestrians_line)
-                    code.append(blinkers_line)
-                    continue
-                code.append(line)
-
-    def _create_code_init_tk1(self, path, code):
-        with open(path, 'r', encoding='utf-8') as file:
-            for line in file:
-                if "write moves here" in line:
-                    car_lines = []
-                    pedestrians_lines = []
-                    blinkers_lines = []
-                    moves_dictionary = {"k": [], "p": [], "B": []}
-
-                    # Get all moves names
-                    for name in self.get_all_moves_names():
-                        moves_dictionary[name[0]].append(name)
-
-                    for move in self.model.all_moves:
-                        # calc min green
-                        min_green = self._calc_min_green(move)
-
-                        line = ""
-                        line += f"\t\ttk.{move.name}"
-                        line += " " * (12 - (len(line)))
-                        line += f"=  new Move(   tk    , \"_{move.name}\""
-                        line += " " * (42 - (len(line)))
-                        line += f", MoveType.{move.type}"
-                        line += " " * (72 - (len(line)))
-                        line += ",     "
-                        if min_green >= 10:
-                            line += f"{min_green}"
-                        else:
-                            line += f" {min_green}"
-                        line += " ,   0 , "
-                        if move.is_main:
-                            line += "true "
-                        else:
-                            line += "false"
-                        line += ");\n"
-
-                        if move.name.startswith("k"):
-                            car_lines.append(line)
-                        elif move.name.startswith("p"):
-                            pedestrians_lines.append(line)
-                        else:
-                            blinkers_lines.append(line)
-
-                    code.extend(car_lines)
-                    code.append("\n")
-                    code.extend(pedestrians_lines)
-                    code.append("\n")
-                    code.extend(blinkers_lines)
-                    continue
-                code.append(line)
-
-    def _write_code(self, path, code):
-        with open(path, 'w', encoding='utf-8') as f:
-            f.writelines(code)
 

@@ -4,6 +4,7 @@ from PyQt6.QtWidgets import QMessageBox
 from pathlib import Path
 
 import Config.constants
+from Managers.load_data_manager import LoadDataManager
 
 
 class PhueController:
@@ -30,39 +31,18 @@ class PhueController:
 
 
     def init_model(self, phue_paths, path_init_tk1): # self.phue_model.phue_paths, self.path_init_tk1
-        class_pattern       = re.compile(r"public\s+class\s+Phue([A-Za-z0-9]+)_?([A-Za-z0-9]+)")
-        sg_pattern          = re.compile( r"_tk\.(\w+)\.(TurnOn|TurnOff)\s*\(\s*(\d+)\s*\)")
-        phue_len_pattern    = re.compile(r'tk\.Phue([A-Za-z0-9]+)_([A-Za-z0-9]+)\s*=.*?\(\s*tk\s*,\s*"[^"]+"\s*,\s*([0-9]+)')
 
-        for path in phue_paths:
-            path = Path(path)
-            with open(path, "r", encoding="utf-8", errors="ignore") as f:
-                content = f.read()
-
-            # find image_out and image_in
-            class_match = class_pattern.search(content)
-            if not class_match:
-                continue
-            img_out, img_in = class_match.groups()
-
+        data = LoadDataManager.load_phue_paths(phue_paths)
+        for img_out, img_in, transitions_data in data:
             transitions = []
-            # new_interstage = InterStage(img_out, img_in, 0)
-
-            # find turn of and turn off moves
-            for m in sg_pattern.finditer(content):
-                move, state, time = m.groups()
+            for move, state, time in transitions_data:
                 transition = self.model.create_new_transition(move, state, time)
                 transitions.append(transition)
             self.model.create_new_phue(img_out, img_in, 0, transitions)
 
-        with open(path_init_tk1, "r", encoding="utf-8") as f:
-            content = f.read()
-
-            for match in phue_len_pattern.finditer(content):
-                img_out = match.group(1)
-                img_in = match.group(2)
-                length = match.group(3)
-                self.model.set_phue_len(img_out, img_in, int(length))
+        data = LoadDataManager.load_phue_length(path_init_tk1)
+        for img_out, img_in, length in data:
+            self.model.set_phue_len(img_out, img_in, length)
 
     def show_view(self, all_images, all_moves_names):
         self.all_images = all_images
@@ -135,7 +115,16 @@ class PhueController:
         """
         This method set a new value for the duration
         """
-        self.model.set_duration(img_out, img_in, move_name, duration)
+        if '-' in duration:
+            first, second = duration.split("-")
+            first = int(first)
+            second = int(second)
+            value = first - second
+        else:
+            value = int(duration)
+
+        self.model.set_duration(img_out, img_in, move_name, value)
+        self.show_view(self.all_images, self.all_moves_names)
 
     def update_color(self, img_out, img_in, move_name):
         """

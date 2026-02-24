@@ -1,3 +1,5 @@
+from functools import partial
+
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLineEdit, QTableWidget, QComboBox, QCheckBox, QHeaderView
 
@@ -64,7 +66,7 @@ class MoveView(QWidget):
             # Remove Button (col 0)
             remove_btn = QPushButton("X")
             remove_btn.setObjectName("remove_button")
-            remove_btn.clicked.connect(lambda _, btn=remove_btn: self.remove_move_method(self.tbl, btn))
+            remove_btn.clicked.connect(partial(self.remove_move_method, self.tbl, remove_btn))
             self.tbl.setCellWidget(idx, 0, remove_btn)
 
             # move name (col 1)
