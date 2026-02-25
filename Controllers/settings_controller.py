@@ -17,6 +17,9 @@ class SettingsController:
         self.view.remove_from_history_method    = self.remove_from_history
 
     def init_model(self, path):
+        """
+        This method initialize the settings model
+        """
         anlagenName, tk1Name, version, first_time_ext, history = LoadDataManager.load_settings_data(path)
         self.model.set(anlagenName, tk1Name, version, first_time_ext, history)
 
@@ -80,4 +83,3 @@ class SettingsController:
         """
         code = WriteDataManager.create_settings_init_code(path, self.model.to_dict())
         WriteDataManager.write_code(path, code)
-

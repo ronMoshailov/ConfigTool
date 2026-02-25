@@ -5,6 +5,7 @@ from pathlib import Path
 
 import Config.constants
 from Managers.load_data_manager import LoadDataManager
+from Managers.write_data_manager import WriteDataManager
 
 
 class PhueController:
@@ -166,48 +167,8 @@ class PhueController:
     # ============================== Write To File ============================== #
     def write_to_file(self, init_tk1_dst, phue_folder_dst):
         # create files
-        for phue in self.model.all_phue:
-            self.create_file(phue.image_out, phue.image_in, phue.transitions, phue_folder_dst)
+        WriteDataManager.create_phue_file_code(self.model.all_phue, phue_folder_dst)
 
-        with open(init_tk1_dst, 'r', encoding='utf-8') as f:
-            lines = f.readlines()
-
-        code = []
-        for line in lines:
-            if "write phues here" in line:
-                self.get_code(code)
-                continue
-            code.append(line)
-
-        with open(init_tk1_dst, 'w', encoding='utf-8') as f:
-            f.writelines(code)
-
-    def get_code(self, code):
-        """
-        This method create a code of all phues for InitTk1
-        """
-        # code = []
-        line = ""
-
-        for phue in self.model.all_phue:
-            line += f"\t\ttk.Phue{phue.image_out}_{phue.image_in}"          # add code
-            line += " " * (16 - len(line))                                  # add spaces
-            line += f"= new Phue{phue.image_out}_{phue.image_in}"           # add code
-            line += " " * (36 - len(line))                                  # add spaces
-            line += f"(tk, \"Phue{phue.image_out}_{phue.image_in}\""        # add code
-            line += " " * (53 - len(line))                                  # add spaces
-            if int(phue.length) >= 10:
-                line += f",  {phue.length}"                                 # add code
-            else:
-                line += f",   {phue.length}"                                # add code
-            line += f" , tk.Ph{phue.image_out}"                             # add code
-            line += " " * (71 - len(line))                                  # add spaces
-            line += f", tk.Ph{phue.image_in}"                               # add code
-            line += " " * (84 - len(line))                                  # add spaces
-            line += ");\n"
-
-            code.append(line)
-            line = ""
-
-
+        code = WriteDataManager.create_phue_tk1_code(init_tk1_dst, self.model.all_phue)
+        WriteDataManager.write_code(init_tk1_dst, code)
 
