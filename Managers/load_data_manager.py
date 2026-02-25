@@ -177,6 +177,8 @@ class LoadDataManager:
 
         with open(path, "r", encoding="utf-8") as file:
             for line in file:
+                if line.startswith("//"):
+                    continue
                 m = Config.patterns.image_pattern.search(line)
                 if m:
                     image_name = m.group(1)
@@ -273,7 +275,7 @@ class LoadDataManager:
                 str = values[3 * images_len]
                 cycle = values[ 3 * images_len + 1]
 
-                data.append((index, min_list, max_list, type_list, str, cycle, is_active))
+                data.append((index, min_list, max_list, type_list, str, cycle, not is_active))
 
             return data
 
