@@ -1,5 +1,6 @@
 import Config
 
+
 class WriteDataManager:
     # ============================================================================== #
     # ---------------------------------- Settings ---------------------------------- #
@@ -14,7 +15,7 @@ class WriteDataManager:
                     code.append(f"\tpublic static String anlagenName = \"{model_dict['junction_num']}\";\n")
                     code.append(f"\tpublic static String tk1Name     = \"{model_dict['junction_name']}\";\n")
                     code.append(f"\tpublic static String version     = \" {model_dict['version']}\";\n")
-                    code.append( "\tpublic static String[] versions = {\n")
+                    code.append("\tpublic static String[] versions = {\n")
                     for date, author in model_dict['history']:
                         code.append(f"\t\t\"{date} - {author}\",\n")
                     code[-1] = code[-1][:-2]
@@ -61,7 +62,7 @@ class WriteDataManager:
         return code
 
     @staticmethod
-    def create_moves_init_tk1_code(path, all_moves, calc_min_green):
+    def create_moves_init_tk1_code(path, all_moves):
         all_moves_names = [m.name for m in all_moves]
         code = []
 
@@ -79,7 +80,7 @@ class WriteDataManager:
 
                     for move in all_moves:
                         # calc min green
-                        min_green = calc_min_green(move)
+                        min_green = move.min_green
 
                         line = ""
                         line += f"\t\ttk.{move.name}"
@@ -187,7 +188,7 @@ class WriteDataManager:
         for line in lines:
             if "write sk cards here" in line:
                 for idx, card in enumerate(sk_list):
-                    code.append(f"\t\tSK24 sk{idx+1} = new SK24(cardsIndex++, (HwTeilknoten)Var.hwTk1);\n")
+                    code.append(f"\t\tSK24 sk{idx + 1} = new SK24(cardsIndex++, (HwTeilknoten)Var.hwTk1);\n")
 
             if "write sk channels here" in line:
                 for sk_card in sk_list:
@@ -231,22 +232,23 @@ class WriteDataManager:
                 if "write detectors here" in line:
                     for detector in all_detectors:
                         line = ""
-                        line += f"\t\ttk.{detector.var_name}"                   # add code
-                        line += " " * (12 - len(line))                          # add spaces
-                        line += f"= new {detector.class_name}"                  # add code
-                        line += " " * (28 - len(line))                          # add spaces
-                        line += f"( \"{detector.datector_name}\""               # add code
-                        line += " " * (38 - len(line))                          # add spaces
-                        line += f", tk.{detector.move_name}"                    # add code
-                        line += " " * (46 - len(line))                          # add spaces
-                        line += ", true    , true        , true );\n"           # add code
+                        line += f"\t\ttk.{detector.var_name}"  # add code
+                        line += " " * (12 - len(line))  # add spaces
+                        line += f"= new {detector.class_name}"  # add code
+                        line += " " * (28 - len(line))  # add spaces
+                        line += f"( \"{detector.datector_name}\""  # add code
+                        line += " " * (38 - len(line))  # add spaces
+                        line += f", tk.{detector.move_name}"  # add code
+                        line += " " * (46 - len(line))  # add spaces
+                        line += ", true    , true        , true );\n"  # add code
                         code.append(line)
                     continue
                 code.append(line)
         return code
 
     @staticmethod
-    def create_detectors_tk1_code(path, all_d_detectors, all_e_detectors, all_de_detectors, all_tp_detectors, all_q_detectors):
+    def create_detectors_tk1_code(path, all_d_detectors, all_e_detectors, all_de_detectors, all_tp_detectors,
+                                  all_q_detectors):
         code = []
 
         with open(path, 'r', encoding='utf-8') as file:
@@ -441,9 +443,11 @@ class WriteDataManager:
 
             if "write schedule order here" in line:
                 if is_copy_sunday:
-                    new_lines.append("\t\tnew WochenPlan(\"time table\", sun_thur, sun_thur, sun_thur, sun_thur, fr, sa, sun_thur);")
+                    new_lines.append(
+                        "\t\tnew WochenPlan(\"time table\", sun_thur, sun_thur, sun_thur, sun_thur, fr, sa, sun_thur);")
                 else:
-                    new_lines.append("\t\tnew WochenPlan(\"time table\", monday, tuesday, wednesday, thursday, fr, sa, sunday);")
+                    new_lines.append(
+                        "\t\tnew WochenPlan(\"time table\", monday, tuesday, wednesday, thursday, fr, sa, sunday);")
                 continue
 
             new_lines.append(line)
@@ -991,4 +995,3 @@ class WriteDataManager:
     def write_code(path, code):
         with open(path, 'w', encoding='utf-8') as f:
             f.writelines(code)
-

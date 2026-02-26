@@ -24,9 +24,15 @@ class SettingsController:
         self.model.set(anlagenName, tk1Name, version, first_time_ext, history)
 
     def show_view(self):
+        """
+        This method show the view
+        """
         self.view.show_view(self.model.junction_num, self.model.junction_name, self.model.version, self.model.first_ext, self.model.history)
 
     def hide_view(self):
+        """
+        This method hide the view
+        """
         self.view.hide_view()
 
     # ============================== CRUD ============================== #

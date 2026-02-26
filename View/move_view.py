@@ -1,7 +1,8 @@
 from functools import partial
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLineEdit, QTableWidget, QComboBox, QCheckBox, QHeaderView
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLineEdit, QTableWidget, QComboBox, \
+    QCheckBox, QHeaderView, QMessageBox
 
 import Config
 
@@ -72,7 +73,8 @@ class MoveView(QWidget):
             # move name (col 1)
             line_edit = QLineEdit()
             line_edit.setText(move_name)
-            line_edit.editingFinished.connect(lambda le=line_edit, m=move.name: self.rename_move_method(m, le.text()))
+            self.handle_rename(line_edit, move_name)
+            # line_edit.editingFinished.connect(self.handle_rename(line_edit, move_name))
             self.tbl.setCellWidget(idx, 1, line_edit)
 
             # type (col 2)
@@ -105,3 +107,10 @@ class MoveView(QWidget):
     def hide_view(self):
         self.hide()
 
+    def handle_rename(self, line_edit, move_name):
+        def handler():
+            error = self.rename_move_method(move_name, line_edit.text())
+            if error:
+                QMessageBox.critical(self, "שגיאה", error)
+
+        line_edit.editingFinished.connect(handler)

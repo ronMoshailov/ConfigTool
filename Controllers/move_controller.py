@@ -62,19 +62,17 @@ class MoveController:
         This method rename a move
         """
         if old_name == new_name:
-            return
+            return None
 
         # Check if start with k/p/B
         if not (new_name.startswith("k") or new_name.startswith("p") or new_name.startswith("B")):
-            QMessageBox.critical(self.view, "שגיאה", "מופע חייב להתחיל עם k/p/B")
             self.show_view()
-            return
+            return "מופע חייב להתחיל עם k/p/B"
 
         # Check if new name contain just words and numbers
         if not re.fullmatch(r"[A-Za-z0-9]+", new_name):
-            QMessageBox.critical(self.view, "שגיאה", "השם יכול להכיל רק אותיות, מספרים")
             self.show_view()
-            return
+            return "השם יכול להכיל רק אותיות, מספרים"
 
         # Update model
         try:
@@ -128,27 +126,27 @@ class MoveController:
                 table.removeRow(row)
                 break
 
-    def calc_min_green(self, move):
-        """
-        This method calculate the minimum green time depend on the type and if the move is main
-        """
-        min_green = move.min_green
-        if move.type == "Traffic":
-            if not move.is_main:
-                if min_green > 5:
-                    min_green = 5
-        elif move.type == "Traffic_Flashing":
-            min_green -= 3
-            if not move.is_main:
-                if min_green > 5:
-                    min_green = 5
-        elif move.type == "Pedestrian":
-            if min_green < 6:
-                min_green = 6
-        else:
-            min_green = 0
-
-        return min_green
+    # def calc_min_green(self, move):
+    #     """
+    #     This method calculate the minimum green time depend on the type and if the move is main
+    #     """
+    #     min_green = move.min_green
+    #     if move.type == "Traffic":
+    #         if not move.is_main:
+    #             if min_green > 5:
+    #                 min_green = 5
+    #     elif move.type == "Traffic_Flashing":
+    #         min_green -= 3
+    #         if not move.is_main:
+    #             if min_green > 5:
+    #                 min_green = 5
+    #     elif move.type == "Pedestrian":
+    #         if min_green < 6:
+    #             min_green = 6
+    #     else:
+    #         min_green = 0
+    #
+    #     return min_green
 
     # ============================== Logic ============================== #
     def reset(self):
@@ -165,7 +163,7 @@ class MoveController:
         WriteDataManager.write_code(path_tk1, code)
 
         # update init_tk1.java file
-        code = WriteDataManager.create_moves_init_tk1_code(path_init_tk1, self.model.all_moves, self.calc_min_green)
+        code = WriteDataManager.create_moves_init_tk1_code(path_init_tk1, self.model.all_moves)
         WriteDataManager.write_code(path_init_tk1, code)
 
 
