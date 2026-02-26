@@ -99,7 +99,8 @@ class MoveView(QWidget):
             # min green (col 4)
             line_edit = QLineEdit()
             line_edit.setText(str(move_min_green))
-            line_edit.editingFinished.connect(lambda le=line_edit, m=move.name: self.update_min_green_method(m, le.text()))
+            self.handle_min_green_update(line_edit, move_name)
+            # line_edit.editingFinished.connect(lambda le=line_edit, m=move.name: self.update_min_green_method(m, le.text()))
             self.tbl.setCellWidget(idx, 4, line_edit)
 
         self.show()
@@ -110,6 +111,14 @@ class MoveView(QWidget):
     def handle_rename(self, line_edit, move_name):
         def handler():
             error = self.rename_move_method(move_name, line_edit.text())
+            if error:
+                QMessageBox.critical(self, "שגיאה", error)
+
+        line_edit.editingFinished.connect(handler)
+
+    def handle_min_green_update(self, line_edit, move_name):
+        def handler():
+            error = self.update_min_green_method(move_name, line_edit.text())
             if error:
                 QMessageBox.critical(self, "שגיאה", error)
 

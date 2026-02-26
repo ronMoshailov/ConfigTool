@@ -1,7 +1,5 @@
 import re
 
-from PyQt6.QtWidgets import QMessageBox
-
 from Managers.load_data_manager import LoadDataManager
 from Managers.write_data_manager import WriteDataManager
 
@@ -78,9 +76,10 @@ class MoveController:
         try:
             self.model.update_name(old_name, new_name)
         except Exception as e:
-            QMessageBox.critical(self.view, "שגיאה", str(e))
             self.show_view()
-            raise e
+            return str(e)
+            # QMessageBox.critical(self.view, "שגיאה", str(e))
+            # raise e
 
         # If it's blinker fix the matrix and min green time
         if new_name.startswith("B"):
@@ -107,10 +106,11 @@ class MoveController:
         This method set the new min green time to the move
         """
         if not time.isdigit():
-            QMessageBox.critical(self.view, "שגיאה", "ערך לא תקין")
             self.show_view()
+            return "ערך לא תקין"
         else:
             self.model.set_min_green(move, int(time))
+            return None
 
     def remove_move(self, table, btn):
         """

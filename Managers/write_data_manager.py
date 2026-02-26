@@ -85,7 +85,8 @@ class WriteDataManager:
                         line = ""
                         line += f"\t\ttk.{move.name}"
                         line += " " * (12 - (len(line)))
-                        line += f"=  new Move(   tk    , \"_{move.name}\""
+                        move_name = move.name if move.name.startswith("B") else move.name[1:]
+                        line += f"=  new Move(   tk    , \"_{move_name}\""
                         line += " " * (42 - (len(line)))
                         line += f", MoveType.{move.type}"
                         line += " " * (72 - (len(line)))
