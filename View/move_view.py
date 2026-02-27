@@ -20,17 +20,7 @@ class MoveView(QWidget):
 
         # Table
         self.tbl = QTableWidget(0, 5, self)
-        self.tbl.setHorizontalHeaderLabels(["מחיקה", "שם מופע", "סוג", "מופע ראשי", "מינימום ירוק"])
-        self.tbl.setColumnWidth(0, 90)
-        self.tbl.verticalHeader().setVisible(False)
-        self.tbl.verticalHeader().setDefaultSectionSize(60)
-        self.tbl.setObjectName("RootTable")
-
-        # Headers
-        header = self.tbl.horizontalHeader()                                    # get horizontal header
-        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)            # set fixed width to column 0
-        for col in range(1, self.tbl.columnCount()):
-            header.setSectionResizeMode(col, QHeaderView.ResizeMode.Stretch)    # set each column to stretch
+        self.create_table()
 
         # Add Move Button
         add_detector_btn = QPushButton("הוסף מופע")
@@ -54,7 +44,7 @@ class MoveView(QWidget):
         self.tbl.setRowCount(0)
 
         # Fill Table
-        for idx, move in enumerate (move_list):
+        for idx, move in enumerate(move_list):
             # Data
             move_name      = move.name
             move_type      = move.type
@@ -67,14 +57,13 @@ class MoveView(QWidget):
             # Remove Button (col 0)
             remove_btn = QPushButton("X")
             remove_btn.setObjectName("remove_button")
-            remove_btn.clicked.connect(partial(self.remove_move_method, self.tbl, remove_btn))
+            self.handle_remove_move(remove_btn, move_name)
             self.tbl.setCellWidget(idx, 0, remove_btn)
 
             # move name (col 1)
             line_edit = QLineEdit()
             line_edit.setText(move_name)
             self.handle_rename(line_edit, move_name)
-            # line_edit.editingFinished.connect(self.handle_rename(line_edit, move_name))
             self.tbl.setCellWidget(idx, 1, line_edit)
 
             # type (col 2)
@@ -100,7 +89,6 @@ class MoveView(QWidget):
             line_edit = QLineEdit()
             line_edit.setText(str(move_min_green))
             self.handle_min_green_update(line_edit, move_name)
-            # line_edit.editingFinished.connect(lambda le=line_edit, m=move.name: self.update_min_green_method(m, le.text()))
             self.tbl.setCellWidget(idx, 4, line_edit)
 
         self.show()
@@ -108,6 +96,22 @@ class MoveView(QWidget):
     def hide_view(self):
         self.hide()
 
+    # ============================== Create ============================== #
+    def create_table(self):
+        self.tbl.setHorizontalHeaderLabels(["מחיקה", "שם מופע", "סוג", "מופע ראשי", "מינימום ירוק"])
+        self.tbl.setColumnWidth(0, 90)
+        self.tbl.verticalHeader().setVisible(False)
+        self.tbl.verticalHeader().setDefaultSectionSize(60)
+        self.tbl.setObjectName("RootTable")
+
+        # Headers
+        header = self.tbl.horizontalHeader()                                    # get horizontal header
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)            # set fixed width to column 0
+        for col in range(1, self.tbl.columnCount()):
+            header.setSectionResizeMode(col, QHeaderView.ResizeMode.Stretch)    # set each column to stretch
+
+
+    # ============================== Handler ============================== #
     def handle_rename(self, line_edit, move_name):
         def handler():
             error = self.rename_move_method(move_name, line_edit.text())
@@ -123,3 +127,9 @@ class MoveView(QWidget):
                 QMessageBox.critical(self, "שגיאה", error)
 
         line_edit.editingFinished.connect(handler)
+
+    def handle_remove_move(self, btn, move_name):
+        def handler():
+            self.remove_move_method(move_name)
+            self.show_view()
+        btn.clicked.connect(handler)

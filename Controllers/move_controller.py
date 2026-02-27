@@ -78,8 +78,6 @@ class MoveController:
         except Exception as e:
             self.show_view()
             return str(e)
-            # QMessageBox.critical(self.view, "שגיאה", str(e))
-            # raise e
 
         # If it's blinker fix the matrix and min green time
         if new_name.startswith("B"):
@@ -112,41 +110,12 @@ class MoveController:
             self.model.set_min_green(move, int(time))
             return None
 
-    def remove_move(self, table, btn):
+    def remove_move(self, move_name):
         """
         This method removes the move from all the models
         """
-        row_count = table.rowCount()
-        for row in range(row_count):
-            item = table.cellWidget(row, 0)
-            if item is btn:
-                move_name = table.cellWidget(row, 1).text()
-                self.model.remove_move(move_name)
-                self.global_remove_move(move_name)
-                table.removeRow(row)
-                break
-
-    # def calc_min_green(self, move):
-    #     """
-    #     This method calculate the minimum green time depend on the type and if the move is main
-    #     """
-    #     min_green = move.min_green
-    #     if move.type == "Traffic":
-    #         if not move.is_main:
-    #             if min_green > 5:
-    #                 min_green = 5
-    #     elif move.type == "Traffic_Flashing":
-    #         min_green -= 3
-    #         if not move.is_main:
-    #             if min_green > 5:
-    #                 min_green = 5
-    #     elif move.type == "Pedestrian":
-    #         if min_green < 6:
-    #             min_green = 6
-    #     else:
-    #         min_green = 0
-    #
-    #     return min_green
+        self.model.remove_move(move_name)
+        self.global_remove_move(move_name)
 
     # ============================== Logic ============================== #
     def reset(self):
