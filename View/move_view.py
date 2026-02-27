@@ -1,5 +1,3 @@
-from functools import partial
-
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLineEdit, QTableWidget, QComboBox, \
     QCheckBox, QHeaderView, QMessageBox
@@ -17,6 +15,11 @@ class MoveView(QWidget):
         self.update_type_method         = None
         self.update_min_green_method    = None
         self.update_main_method         = None
+
+        # Data
+        self.move_list  = None
+        self.all_types  = None
+        self.tbl        = None
 
         # Table
         self.tbl = QTableWidget(0, 5, self)
@@ -40,6 +43,9 @@ class MoveView(QWidget):
         self.hide()
 
     def show_view(self, move_list, all_types):
+        self.move_list = move_list
+        self.all_types = all_types
+
         # Clear Table Rows
         self.tbl.setRowCount(0)
 
@@ -70,14 +76,14 @@ class MoveView(QWidget):
             combo = QComboBox()
             combo.addItems(all_types)
             combo.setCurrentText(move_type)
-            combo.currentTextChanged.connect(lambda text, m=move.name: self.update_type_method(m, text))
+            self.handle_change_type(combo, move.name)
             combo.wheelEvent = lambda event: None
             self.tbl.setCellWidget(idx, 2, combo)
 
             # is main (col 3)
             checkbox = QCheckBox()
             checkbox.setChecked(move_is_main)
-            checkbox.stateChanged.connect(lambda state, m=move.name: self.update_main_method(m, state))
+            self.handle_main_change(checkbox, move.name)
             container = QWidget()
             layout = QHBoxLayout(container)
             layout.addWidget(checkbox)
@@ -110,6 +116,9 @@ class MoveView(QWidget):
         for col in range(1, self.tbl.columnCount()):
             header.setSectionResizeMode(col, QHeaderView.ResizeMode.Stretch)    # set each column to stretch
 
+    # ============================== Logic ============================== #
+    def show_error(self, message):
+        QMessageBox.critical(self, "שגיאה", message)
 
     # ============================== Handler ============================== #
     def handle_rename(self, line_edit, move_name):
@@ -131,5 +140,15 @@ class MoveView(QWidget):
     def handle_remove_move(self, btn, move_name):
         def handler():
             self.remove_move_method(move_name)
-            self.show_view()
         btn.clicked.connect(handler)
+
+    def handle_change_type(self, combo, move_name):
+        def handler():
+            self.update_type_method(move_name, combo.currentText())
+        combo.currentTextChanged.connect(handler)
+
+    def handle_main_change(self, checkbox, move_name):
+        def handler(state):
+            self.update_main_method(move_name, state)
+        checkbox.stateChanged.connect(handler)
+

@@ -13,7 +13,7 @@ class SettingsController:
         self.view.update_junction_name_method   = self.update_junction_name
         self.view.update_version_method         = self.update_version
         self.view.update_first_cycle_ext_method = self.update_first_ext
-        self.view.add_to_history_method         = self.add_to_history
+        self.view.push_to_history_method        = self.push_to_history
         self.view.remove_from_history_method    = self.remove_from_history
 
     def init_model(self, path):
@@ -36,11 +36,11 @@ class SettingsController:
         self.view.hide_view()
 
     # ============================== CRUD ============================== #
-    def add_to_history(self, date, author):
+    def push_to_history(self, date, author):
         """
         This method add to the history and date and the author
         """
-        self.model.append_to_history(date, author)
+        self.model.push_to_history(date, author)
         self.show_view()
 
     def remove_from_history(self, date, author):

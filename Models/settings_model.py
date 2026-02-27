@@ -17,7 +17,7 @@ class SettingsModel:
         self.first_ext      = first_ext
         self.history        = history
 
-    def append_to_history(self, date, author):
+    def push_to_history(self, date, author):
         """
         This method add date and author to the history
         """

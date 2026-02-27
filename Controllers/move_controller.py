@@ -64,20 +64,24 @@ class MoveController:
 
         # Check if start with k/p/B
         if not (new_name.startswith("k") or new_name.startswith("p") or new_name.startswith("B")):
+            error_str = "מופע חייב להתחיל עם k/p/B"
+            self.view.show_error(error_str)
             self.show_view()
-            return "מופע חייב להתחיל עם k/p/B"
+            raise Exception(error_str)
 
         # Check if new name contain just words and numbers
         if not re.fullmatch(r"[A-Za-z0-9]+", new_name):
+            error_str = "השם יכול להכיל רק אותיות, מספרים"
+            self.view.show_error(error_str)
             self.show_view()
-            return "השם יכול להכיל רק אותיות, מספרים"
+            raise Exception(error_str)
 
         # Update model
         try:
             self.model.update_name(old_name, new_name)
         except Exception as e:
             self.show_view()
-            return str(e)
+            raise e
 
         # If it's blinker fix the matrix and min green time
         if new_name.startswith("B"):
@@ -86,6 +90,7 @@ class MoveController:
 
         # Refresh view
         self.show_view()
+        return None
 
     def update_type(self, move_name,  new_type):
         """
@@ -104,11 +109,10 @@ class MoveController:
         This method set the new min green time to the move
         """
         if not time.isdigit():
+            self.view.show_error("ערך לא תקין")
             self.show_view()
-            return "ערך לא תקין"
         else:
             self.model.set_min_green(move, int(time))
-            return None
 
     def remove_move(self, move_name):
         """

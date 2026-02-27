@@ -14,7 +14,7 @@ class SettingsView(QWidget):
         self.update_junction_name_method    = None
         self.update_version_method          = None
         self.update_first_cycle_ext_method  = None
-        self.add_to_history_method          = None
+        self.push_to_history_method         = None
         self.remove_from_history_method     = None
 
         # Root Layouts

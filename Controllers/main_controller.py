@@ -169,15 +169,15 @@ class MainController:
 
     # ============================== CRUD ============================== #
     def rename_move(self, old_name, new_name):
-        error = self.move_controller.rename_move(old_name, new_name)        # must be first
-        if error:
-            return error
-
-        self.matrix_controller.rename_move(old_name, new_name)
-        self.sk_controller.rename_move(old_name, new_name)
-        self.detector_controller.rename_move(old_name, new_name)
-        self.image_controller.rename_move(old_name, new_name)
-        self.phue_controller.rename_move(old_name, new_name)
+        try:
+            self.move_controller.rename_move(old_name, new_name)  # must be first
+            self.matrix_controller.rename_move(old_name, new_name)
+            self.sk_controller.rename_move(old_name, new_name)
+            self.detector_controller.rename_move(old_name, new_name)
+            self.image_controller.rename_move(old_name, new_name)
+            self.phue_controller.rename_move(old_name, new_name)
+        except Exception as e:
+            print(str(e))
 
     def global_remove_move(self, move_name):
         # self.detector_model.remove_move(move_name)
