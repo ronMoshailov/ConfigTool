@@ -22,7 +22,7 @@ class MatrixModel:
         This method set new value to cell
         """
         for cell in self.all_cells:
-            if cell.move_out == out_name and cell.move_in== in_name:
+            if cell.move_out == out_name and cell.move_in == in_name:
                 cell.wait_time = val
                 return
         self.new_cell(out_name, in_name, val)
@@ -37,7 +37,7 @@ class MatrixModel:
             if cell.move_out == old_name:
                 cell.move_out = new_name
         if new_name.startswith('p') or new_name.startswith('B'):
-            self.clear_cells()
+            self._clear_cells()
 
     def remove_move(self, move_name):
         """
@@ -46,7 +46,14 @@ class MatrixModel:
         # O(n)
         self.all_cells = [cell for cell in self.all_cells if cell.move_out != move_name and cell.move_in != move_name]
 
-    def clear_cells(self):
+    def remove_cell(self, out_name, in_name):
+        """
+        This method removed the cell and the opposite cell
+        """
+        self.all_cells = [cell for cell in self.all_cells if not ((cell.move_out == out_name and cell.move_in == in_name) or (cell.move_out == in_name and cell.move_in == out_name))]
+
+
+    def _clear_cells(self):
         """
         This method clear all values from pedestrian and blinkers
         """

@@ -1,6 +1,6 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QPushButton, QLabel, QLineEdit, QVBoxLayout, QListWidget, \
-    QListWidgetItem
+    QListWidgetItem, QMessageBox
 
 import Config
 
@@ -20,12 +20,12 @@ class SettingsView(QWidget):
         # Root Layouts
         root_layout         = QVBoxLayout()
         content_layout      = QHBoxLayout()
-        left_side_layout    = QVBoxLayout()
-        right_side_layout   = QVBoxLayout()
+        history_list_layout = QVBoxLayout()
+        settings_layout     = QVBoxLayout()
 
         # Content Layout
-        content_layout.addLayout(left_side_layout)
-        content_layout.addLayout(right_side_layout)
+        content_layout.addLayout(history_list_layout)
+        content_layout.addLayout(settings_layout)
 
         # Title
         title = QLabel("Tel Aviv Version")
@@ -36,6 +36,7 @@ class SettingsView(QWidget):
         history_title = QLabel("היסטוריה")
         history_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
+        # QListWidget
         self.list_widget = QListWidget()
         self.list_widget.itemDoubleClicked.connect(self._remove_item_from_list)
 
@@ -44,35 +45,35 @@ class SettingsView(QWidget):
         self.junction_name_textbox, junction_name_layout        = self._create_labeled_line_edit("שם צומת")         # Junction Name
         self.version_textbox, version_layout                    = self._create_labeled_line_edit("גרסה")            # Version
         self.first_cycle_ext_textbox, first_cycle_ext_layout    = self._create_labeled_line_edit("הארכה ראשונית")   # First Cycle Extension
-
         self.name_textbox, name_layout                          = self._create_labeled_line_edit("שם")              # Name
         self.date_textbox, date_layout                          = self._create_labeled_line_edit("תאריך")           # Date
 
-        self.junc_textbox.editingFinished.connect(lambda: self.update_junction_number_method(self.junc_textbox.text()))
-        self.junction_name_textbox.editingFinished.connect(lambda: self.update_junction_name_method(self.junction_name_textbox.text()))
-        self.version_textbox.editingFinished.connect(lambda: self.update_version_method(self.version_textbox.text()))
-        self.first_cycle_ext_textbox.editingFinished.connect(lambda: self.update_first_cycle_ext_method(self.first_cycle_ext_textbox.text()))
+        # Connect lambda
+        self.junc_textbox.editingFinished.connect(self._on_change_junction_number)
+        self.junction_name_textbox.editingFinished.connect(self._on_change_junction_name)
+        self.version_textbox.editingFinished.connect(self._on_change_version)
+        self.first_cycle_ext_textbox.editingFinished.connect(self._on_change_first_cycle_ext)
 
         # Update Button
         update_btn = QPushButton("הוסף")
         update_btn.setProperty("class", "settings_button")
         update_btn.clicked.connect(self._add_to_history)
 
-        # Left Side Layout
-        left_side_layout.addWidget(history_title)
-        left_side_layout.addWidget(self.list_widget)
+        # History List Layout
+        history_list_layout.addWidget(history_title)
+        history_list_layout.addWidget(self.list_widget)
 
-        # Right Side Layout
-        right_side_layout.addLayout(junc_layout)
-        right_side_layout.addLayout(junction_name_layout)
-        right_side_layout.addLayout(version_layout)
-        right_side_layout.addLayout(first_cycle_ext_layout)
-        right_side_layout.addStretch()
-        right_side_layout.addLayout(name_layout)
-        right_side_layout.addLayout(date_layout)
-        right_side_layout.addWidget(update_btn)
+        # Settings Layout
+        settings_layout.addLayout(junc_layout)
+        settings_layout.addLayout(junction_name_layout)
+        settings_layout.addLayout(version_layout)
+        settings_layout.addLayout(first_cycle_ext_layout)
+        settings_layout.addStretch()
+        settings_layout.addLayout(name_layout)
+        settings_layout.addLayout(date_layout)
+        settings_layout.addWidget(update_btn)
 
-        # =============== Layout =============== #
+        # Root Layout
         root_layout.addWidget(title)
         root_layout.addLayout(content_layout)
 
@@ -93,6 +94,7 @@ class SettingsView(QWidget):
         self.version_textbox.setText(version)
         self.first_cycle_ext_textbox.setText(first_ext)
 
+        # Insert data to the list
         for date, author in history:
             text = f"{date} - {author}"
             item = QListWidgetItem(text)
@@ -106,14 +108,17 @@ class SettingsView(QWidget):
 
     # ============================== Layout ============================== #
     def _create_labeled_line_edit(self, label_text):
-        label = QLabel(label_text)                              # Label
-        label.setAlignment(Qt.AlignmentFlag.AlignCenter)        # Label
+        # Label
+        label = QLabel(label_text)
+        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        textbox = QLineEdit()                                   # Textbox
+        # Textbox
+        textbox = QLineEdit()
 
-        layout = QHBoxLayout()                                  # Layout
-        layout.addWidget(textbox)                               # Layout
-        layout.addWidget(label)                                 # Layout
+        # Layout
+        layout = QHBoxLayout()
+        layout.addWidget(textbox)
+        layout.addWidget(label)
 
         return textbox, layout
 
@@ -124,7 +129,18 @@ class SettingsView(QWidget):
         self.remove_from_history_method(date, author)
 
     def _add_to_history(self):
-        self.add_to_history_method(self.date_textbox.text(), self.name_textbox.text())
+        self.push_to_history_method(self.date_textbox.text(), self.name_textbox.text())
         self.name_textbox.clear()
         self.date_textbox.clear()
 
+    def _on_change_junction_number(self):
+        self.update_junction_number_method(self.junc_textbox.text())
+
+    def _on_change_junction_name(self):
+        self.update_junction_name_method(self.junction_name_textbox.text())
+
+    def _on_change_version(self):
+        self.update_version_method(self.version_textbox.text())
+
+    def _on_change_first_cycle_ext(self):
+        self.update_first_cycle_ext_method(self.first_cycle_ext_textbox.text())

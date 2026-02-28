@@ -11,21 +11,15 @@ class MatrixView(QWidget):
         super().__init__()
 
         # Controller Methods
-        self.update_wait_time_method = None
+        self.update_wait_time_method    = None
+        self.remove_cell_method         = None
 
         # Data
-        self.moves_length = None
+        self.moves_length   = None
+        self.tbl            = None
 
         # Table
-        self.tbl = QTableWidget(self)
-        self.tbl.setAlternatingRowColors(True)                                              # allows every even row to be colored in different color
-        self.tbl.setFocusPolicy(Qt.FocusPolicy.NoFocus)                                     # disable the focus
-        self.tbl.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)              # disable the choosing
-        self.tbl.itemChanged.connect(self._on_cell_changed)                                 # fire a function in every change on the table (by the code and the user)
-        self.tbl.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)    # Stretch the horizontal header
-        self.tbl.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)      # Stretch the vertical header
-        self.tbl.horizontalHeader().setMinimumSectionSize(80)                               # Set minimum size
-        self.tbl.verticalHeader().setMinimumSectionSize(50)                                 # Set minimum size
+        self._create_table()
 
         # Root Layout
         root_layout = QVBoxLayout()
@@ -55,6 +49,9 @@ class MatrixView(QWidget):
     def hide_view(self):
         self.hide()
 
+    def show_error(self, msg):
+        QMessageBox.critical(self, "שגיאה", msg)
+
     # ============================== Layout ============================== #
     def _init_table(self, all_moves_names):
         self.tbl.clear()                                        # clear content and headers
@@ -78,6 +75,18 @@ class MatrixView(QWidget):
 
                 # Add item
                 self.tbl.setItem(i, j, item)
+
+    # ============================== Create ============================== #
+    def _create_table(self):
+        self.tbl = QTableWidget(self)
+        self.tbl.setAlternatingRowColors(True)                                              # allows every even row to be colored in different color
+        self.tbl.setFocusPolicy(Qt.FocusPolicy.NoFocus)                                     # disable the focus
+        self.tbl.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)              # disable the choosing
+        self.tbl.itemChanged.connect(self._on_cell_changed)                                 # fire a function in every change on the table (by the code and the user)
+        self.tbl.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)    # Stretch the horizontal header
+        self.tbl.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)      # Stretch the vertical header
+        self.tbl.horizontalHeader().setMinimumSectionSize(80)                               # Set minimum size
+        self.tbl.verticalHeader().setMinimumSectionSize(50)                                 # Set minimum size
 
     # ============================== Logic ============================== #
     def _disable_pedestrian(self):
@@ -103,17 +112,10 @@ class MatrixView(QWidget):
         row_name    = self.tbl.verticalHeaderItem(row_idx).text().strip()      # get row header name
         col_name    = self.tbl.horizontalHeaderItem(col_idx).text().strip()    # get column header name
         val         = item.text().strip()
-
         if val == "":
-            item.setText("")
-            return
-
-        if not val.isdigit():
-            QMessageBox.critical(self, "שגיאה", "הכנס רק מספרים")
-            item.setText("")
-            return
-
-        self.update_wait_time_method(row_name, col_name, val)
+            self.remove_cell_method(row_name, col_name)
+        else:
+            self.update_wait_time_method(row_name, col_name, val)
 
     def _fill_values(self, all_cells):
         # data

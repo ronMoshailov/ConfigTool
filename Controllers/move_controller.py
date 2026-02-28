@@ -1,5 +1,7 @@
 import re
 
+from Config.exceptions import DuplicateMoveError, InvalidMoveName
+
 from Managers.load_data_manager import LoadDataManager
 from Managers.write_data_manager import WriteDataManager
 
@@ -24,7 +26,10 @@ class MoveController:
     def init_model(self, path):
         all_moves = LoadDataManager.load_moves_data(path)
         for variable_name, move_type, is_main, min_green in all_moves:
-            self.model.add_move(variable_name, move_type, is_main, int(min_green))
+            try:
+                self.model.add_move(variable_name, move_type, is_main, int(min_green))
+            except DuplicateMoveError:
+                self.view.show_error(f"המופע {variable_name} כבר קיים במערכת")
 
     def show_view(self):
         self.view.show_view(self.model.all_moves, self.model.get_all_types())
@@ -37,8 +42,11 @@ class MoveController:
         """
         This method add new move to the model
         """
-        self.model.add_move("k0", "Traffic", False, 0)
-        self.show_view()
+        try:
+            self.model.add_move("k0", "Traffic", False, 0)
+            self.show_view()
+        except DuplicateMoveError:
+            return
 
     def get_move_type(self, move_name):
         # Used by Matrix Controller
@@ -60,26 +68,27 @@ class MoveController:
         This method rename a move
         """
         if old_name == new_name:
-            return None
+            return
 
         # Check if start with k/p/B
         if not (new_name.startswith("k") or new_name.startswith("p") or new_name.startswith("B")):
             error_str = "מופע חייב להתחיל עם k/p/B"
             self.view.show_error(error_str)
             self.show_view()
-            raise Exception(error_str)
+            raise InvalidMoveName(error_str)
 
         # Check if new name contain just words and numbers
         if not re.fullmatch(r"[A-Za-z0-9]+", new_name):
             error_str = "השם יכול להכיל רק אותיות, מספרים"
             self.view.show_error(error_str)
             self.show_view()
-            raise Exception(error_str)
+            raise InvalidMoveName(error_str)
 
         # Update model
         try:
             self.model.update_name(old_name, new_name)
-        except Exception as e:
+        except DuplicateMoveError as e:
+            self.view.show_error(str(e))
             self.show_view()
             raise e
 
@@ -90,7 +99,6 @@ class MoveController:
 
         # Refresh view
         self.show_view()
-        return None
 
     def update_type(self, move_name,  new_type):
         """
@@ -109,7 +117,7 @@ class MoveController:
         This method set the new min green time to the move
         """
         if not time.isdigit():
-            self.view.show_error("ערך לא תקין")
+            self.view.show_error("הערך יכול להכיל מספרים בלבד")
             self.show_view()
         else:
             self.model.set_min_green(move, int(time))
@@ -118,8 +126,8 @@ class MoveController:
         """
         This method removes the move from all the models
         """
-        self.model.remove_move(move_name)
-        self.global_remove_move(move_name)
+        if self.model.remove_move(move_name):
+            self.global_remove_move(move_name)
 
     # ============================== Logic ============================== #
     def reset(self):

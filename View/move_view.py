@@ -17,12 +17,9 @@ class MoveView(QWidget):
         self.update_main_method         = None
 
         # Data
-        self.move_list  = None
-        self.all_types  = None
         self.tbl        = None
 
         # Table
-        self.tbl = QTableWidget(0, 5, self)
         self.create_table()
 
         # Add Move Button
@@ -43,9 +40,6 @@ class MoveView(QWidget):
         self.hide()
 
     def show_view(self, move_list, all_types):
-        self.move_list = move_list
-        self.all_types = all_types
-
         # Clear Table Rows
         self.tbl.setRowCount(0)
 
@@ -102,8 +96,12 @@ class MoveView(QWidget):
     def hide_view(self):
         self.hide()
 
+    def show_error(self, msg):
+        QMessageBox.critical(self, "שגיאה", msg)
+
     # ============================== Create ============================== #
     def create_table(self):
+        self.tbl = QTableWidget(0, 5, self)
         self.tbl.setHorizontalHeaderLabels(["מחיקה", "שם מופע", "סוג", "מופע ראשי", "מינימום ירוק"])
         self.tbl.setColumnWidth(0, 90)
         self.tbl.verticalHeader().setVisible(False)
@@ -115,10 +113,6 @@ class MoveView(QWidget):
         header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)            # set fixed width to column 0
         for col in range(1, self.tbl.columnCount()):
             header.setSectionResizeMode(col, QHeaderView.ResizeMode.Stretch)    # set each column to stretch
-
-    # ============================== Logic ============================== #
-    def show_error(self, message):
-        QMessageBox.critical(self, "שגיאה", message)
 
     # ============================== Handler ============================== #
     def handle_rename(self, line_edit, move_name):

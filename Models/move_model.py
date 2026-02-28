@@ -1,3 +1,6 @@
+from Config.exceptions import DuplicateMoveError
+
+
 class _Move:
     def __init__(self, name: str, move_type: str, is_main: bool, min_green: int):
         self.name       = name
@@ -17,15 +20,12 @@ class MoveModel:
         """
         # Check if the move already exist
         if self._is_move_exist(name):
-            return False
+            raise DuplicateMoveError("המופע כבר קיים במערכת")
 
         # Create move
         new_move  = _Move(name, move_type, is_main, min_green)
         self.all_moves.append(new_move)
         self._sort_moves()
-
-        # Return
-        return True
 
     def get_move_type(self, move_name):
         """
@@ -79,30 +79,24 @@ class MoveModel:
         """
         This method change the name of the move
         """
-        # Data
-        move_to_change = None
-
         # Check if move name already exist
+        if self._is_move_exist(old_name):
+            raise DuplicateMoveError("המופע כבר קיים במערכת")
+
         for move in self.all_moves:
             if move.name == old_name:
-                if not move_to_change:
-                    move_to_change = move
-            if move.name == new_name:
-                raise Exception("המופע כבר קיים")
+                move.name = new_name
 
-        # Rename the move
-        move_to_change.name = new_name
+                # Update type depend on the name
+                if move.name.startswith("k") and (move.type != "Traffic" and move.type != "Traffic_Flashing"):
+                    self.set_type(move.name, "Traffic")
+                if move.name.startswith("p") and move.type != "Pedestrian":
+                    self.set_type(move.name, "Pedestrian")
+                if move.name.startswith("B") and (move.type != "Blinker_Conditional" and move.type != "Blinker"):
+                    self.set_type(move.name, "Blinker")
 
-        # Update type depend on the name
-        if move_to_change.name.startswith("k") and (move_to_change.type != "Traffic" and move_to_change.type != "Traffic_Flashing"):
-            self.set_type(move_to_change.name, "Traffic")
-        if move_to_change.name.startswith("p") and move_to_change.type != "Pedestrian":
-            self.set_type(move_to_change.name, "Pedestrian")
-        if move_to_change.name.startswith("B") and (move_to_change.type != "Blinker_Conditional" and move_to_change.type != "Blinker"):
-            self.set_type(move_to_change.name, "Blinker")
-
-        # Sort the moves
-        self._sort_moves()
+                # Sort the moves
+                self._sort_moves()
 
     def set_type(self, move_name,  new_type):
         """

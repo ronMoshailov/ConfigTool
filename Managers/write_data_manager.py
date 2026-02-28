@@ -144,10 +144,11 @@ class WriteDataManager:
                         line += f", tk.{cell.move_in}"
                         line += " " * (37 - len(line))  # add spaces
                         line += f", "
-
+                        if cell.wait_time == '':
+                            continue
                         time = int(cell.wait_time)
-                        if get_move_type(cell.move_out) == "Traffic_Flashing":
-                            time += 3
+                        # if get_move_type(cell.move_out) == "Traffic_Flashing":
+                        #     time += 3
 
                         if time >= 10:
                             line += f"   {time}"
@@ -159,8 +160,8 @@ class WriteDataManager:
                         for c in all_cells:
                             if c.move_in == cell.move_out and c.move_out == cell.move_in:
                                 time = int(c.wait_time)
-                                if get_move_type(c.move_out) == "Traffic_Flashing":
-                                    time += 3
+                                # if get_move_type(c.move_out) == "Traffic_Flashing":
+                                #     time += 3
                                 if time >= 10:
                                     line += f"{time}"
                                 else:

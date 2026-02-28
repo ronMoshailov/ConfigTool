@@ -2,6 +2,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QMessageBox, QMainWindow, QTextEdit, QVBoxLayout, QDialog
 
 import Config
+from Config.exceptions import InvalidMoveName, DuplicateMoveError
 
 from Controllers.parameters_controller import ParametersTaController
 from Controllers.detector_controller import DetectorController
@@ -176,8 +177,8 @@ class MainController:
             self.detector_controller.rename_move(old_name, new_name)
             self.image_controller.rename_move(old_name, new_name)
             self.phue_controller.rename_move(old_name, new_name)
-        except Exception as e:
-            print(str(e))
+        except (InvalidMoveName, DuplicateMoveError):
+            return
 
     def global_remove_move(self, move_name):
         # self.detector_model.remove_move(move_name)
