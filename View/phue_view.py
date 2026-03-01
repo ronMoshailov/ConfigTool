@@ -76,6 +76,9 @@ class PhueView(QWidget):
     def hide_view(self):
         self.hide()
 
+    def show_error(self, msg):
+        QMessageBox.critical(self, "שגיאה", msg)
+
     # ============================== CRUD ============================== #
     def _add_row(self, img_out, img_in):
         self.add_transition_method(img_out, img_in)
@@ -167,7 +170,7 @@ class PhueView(QWidget):
         add_action_btn.setObjectName("add_action_button")
 
         remove_btn = QPushButton("מחק מעבר")
-        remove_btn.clicked.connect(lambda _, img_out=img_out, img_in=img_in: self.remove_phue_method(img_out, img_in)) # img_out} → {img_in
+        remove_btn.clicked.connect(lambda _, image_out=img_out, image_in=img_in: self.remove_phue_method(image_out, image_in))
         remove_btn.setObjectName("remove_button")
 
         btn_layout = QHBoxLayout()
@@ -331,3 +334,18 @@ class PhueView(QWidget):
             item.setText("🔴")
         self.update_color_method(image_out, image_in, move_name)
 
+    def add_phue_handler(self, btn, img_out, img_in):
+        def handler():
+            # check if image out or image out is empty
+            if img_out == "-" or img_in == "-":
+                self.show_error("מעבר לא יכול להיות ריק")
+                return
+
+            # check if image out is the same as image out
+            if img_out == img_in:
+                self.show_error(f"מעבר לא תקין [{img_out} -> {img_in}]")
+                return
+
+            self.add_phue_method(img_out, img_in)
+
+        btn.clicked.connect(handler)

@@ -1,4 +1,4 @@
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QSignalBlocker
 from PyQt6.QtGui import QBrush
 from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel, QAbstractItemView, \
     QTableWidget, QTableWidgetItem, QComboBox, QCheckBox, QHeaderView, QMessageBox
@@ -17,9 +17,9 @@ class SkView(QWidget):
         self.add_sk_card_method     = None
         self.remove_sk_method       = None
         self.change_color_method    = None
-        self.change_name_method     = None
-        self.update_comment_method  = None
-        self.update_data_method     = None
+        # self.change_name_method     = None
+        # self.update_comment_method  = None
+        self.set_channel_method     = None
 
         # Data
         self.tables_list            = []
@@ -124,10 +124,10 @@ class SkView(QWidget):
         # col 1 (name) changes (add signal)
         for row_number in range(24):
             combo = tbl.cellWidget(row_number, 1)
-            combo.currentTextChanged.connect(lambda _text, row_num = row_number: self.change_name_method(tbl, row_num, 1))
+            combo.currentTextChanged.connect(lambda _text, row_num = row_number: self.change_name(tbl, row_num, 1))
 
         # col 2 (color) click (add signal)
-        tbl.cellClicked.connect(lambda row_num, col_num: self.change_color_method(tbl, row_num, col_num))
+        tbl.cellClicked.connect(lambda row_num, col_num: self.change_color(tbl, row_num, col_num))
 
         return wrap
 
@@ -175,7 +175,7 @@ class SkView(QWidget):
             col_3.setChecked(False)
             col_3.setObjectName("checkbox_comment")
             tbl.setCellWidget(r, 3, col_3)
-            col_3.stateChanged.connect(lambda state, row=r: self.update_comment_method(tbl, row, state))
+            col_3.stateChanged.connect(lambda state, row=r: self.update_comment(tbl, row, state))
 
     def _create_buttons(self):
         # Add Buttons
@@ -185,7 +185,7 @@ class SkView(QWidget):
 
         # Update Buttons
         self.btn_update = QPushButton("עדכן")
-        self.btn_update.clicked.connect(lambda: self.update_data_method(self.tables_list))
+        self.btn_update.clicked.connect(lambda: self.update_data(self.tables_list))
         self.btn_update.setObjectName("update_button")
 
 
@@ -229,3 +229,187 @@ class SkView(QWidget):
                 tbl.item(row, 0).setBackground(green_bg)
 
 
+    def change_color(self, table: QTableWidget, row: int, col: int):
+            """
+            This method manages the change of the color of the channel
+            """
+            if col != 2:
+                return
+
+            combo = table.cellWidget(row, 1)
+            item = table.item(row, 2)
+            move_name = combo.currentText()
+
+            with QSignalBlocker(combo), QSignalBlocker(table):
+                if move_name == "-":
+                    return
+
+            cur = item.text()
+
+            if move_name.startswith("k"):
+                nxt_color = {"🔴": "🟡", "🟡": "🟢", "🟢": "🔴", "": "🔴"}.get(cur, "🔴")
+
+            elif move_name.startswith("p"):
+                nxt_color = {"🔴": "🟢", "🟢": "🔴", "": "🔴"}.get(cur, "🔴")
+
+            elif move_name.startswith("B"):
+                nxt_color = {"🟡": "🟡"}.get(cur, "🟡")
+
+            item.setText(nxt_color)
+
+    def fix_color(self, table: QTableWidget, row: int, col: int):
+        """
+        This method fixthe color of the channel
+        """
+        if col != 2:
+            return
+
+        combo       = table.cellWidget(row, 1)
+        item        = table.item(row, 2)
+        move_name   = combo.currentText()
+
+        with QSignalBlocker(combo), QSignalBlocker(table):
+            if move_name == "-":
+                return
+
+        cur = item.text()
+
+        if move_name.startswith("k"):
+            return
+
+        elif move_name.startswith("p"):
+            nxt_color = {"🟢": "🔴"}.get(cur, "🔴")
+
+        elif move_name.startswith("B"):
+            nxt_color = {"🔴": "🟡", "🟢": "🟡"}.get(cur, "🟡")
+
+        item.setText(nxt_color)
+
+    def change_name(self, table: QTableWidget, row: int, col: int):
+        """
+        This method manages the change of the name of the channel
+        """
+        combo       = table.cellWidget(row, col)
+        move_name   = combo.currentText()
+
+        white = QBrush(Config.constants.white_color)
+        gray = QBrush(Config.constants.gray_color)
+
+        with QSignalBlocker(combo), QSignalBlocker(table):
+            move_name = "" if move_name == "-" else move_name
+
+            # clear the row
+            if move_name == "":
+                (table.item(row, 0) or QTableWidgetItem()).setBackground(gray)
+                table.cellWidget(row, 1).setStyleSheet(f"QComboBox {{ background-color: rgb({white.color().red()},{white.color().green()},{white.color().blue()}); }}")
+                (table.item(row, 2) or QTableWidgetItem()).setBackground(white)
+                table.item(row, 2).setText("")
+                table.cellWidget(row, 3).setStyleSheet("margin-left:auto; margin-right:auto;")
+                table.cellWidget(row, 3).setCheckState(Qt.CheckState.Unchecked)
+            else:
+                self.fix_color(table, row, 2)
+
+    def update_comment(self, table, row_number, state):
+        """
+        This method manage the logic of the comment checkbox.
+        Color the row and check if the row can be in comment.
+        """
+        # disable the option to check if there is no move
+        if table.cellWidget(row_number, 1).currentText() == "-":
+            table.cellWidget(row_number, 3).setCheckState(Qt.CheckState.Unchecked)
+            return False
+
+        gray_brush = QBrush(Config.constants.gray_color)
+        light_green_brush = QBrush(Config.constants.light_green_color)
+        white_brush = QBrush(Config.constants.white_color)
+
+        # color the rows
+        if Qt.CheckState(state) == Qt.CheckState.Checked:
+            # col 0
+            (table.item(row_number, 0) or QTableWidgetItem()).setBackground(light_green_brush)
+            # col 1
+            table.cellWidget(row_number, 1).setStyleSheet(f"QComboBox {{ background-color: rgb({light_green_brush.color().red()},{light_green_brush.color().green()},{light_green_brush.color().blue()}); }}")
+            # col 2
+            (table.item(row_number, 2) or QTableWidgetItem()).setBackground(light_green_brush)
+        else:
+            # col 0
+            (table.item(row_number, 0) or QTableWidgetItem()).setBackground(gray_brush)
+            # col 1
+            table.cellWidget(row_number, 1).setStyleSheet(f"QComboBox {{ background-color: rgb({white_brush.color().red()},{white_brush.color().green()},{white_brush.color().blue()}); }}")
+            # col 2
+            (table.item(row_number, 2) or QTableWidgetItem()).setBackground(white_brush)
+        return True
+
+    def _is_names_valid(self, tables_list):
+        """
+        This method check if names has exactly the count instances he needs.
+        """
+        dict_count = {}
+
+        for table in tables_list:
+            for row_number in range(24):
+                move_name = table.cellWidget(row_number, 1).currentText()
+                if move_name != "-":
+                    if move_name in dict_count:
+                        dict_count[move_name] += 1
+                    else:
+                        dict_count[move_name] = 1
+
+        for key, val in dict_count.items():
+            if key.startswith("k"):
+                if val != 3:
+                    QMessageBox.critical(self, "שגיאה", f"המופע {key} מופיע {val} פעמים")
+                    return False
+            elif key.startswith("p"):
+                if val != 2:
+                    QMessageBox.critical(self, "שגיאה", f"המופע {key} מופיע {val} פעמים")
+                    return False
+            elif key.startswith("B"):
+                if val != 1:
+                    QMessageBox.critical(self, "שגיאה", f"המופע {key} מופיע {val} פעמים")
+                    return False
+        return True
+
+    def _is_color_valid(self, tables_list):
+        """
+        This method check if color has exactly the count instances he needs.
+        :return:
+        """
+        dict_count = {}
+
+        for table in tables_list:
+            for row_number in range(24):
+                move_name = table.cellWidget(row_number, 1).currentText()
+                move_color = table.item(row_number, 2).text()
+                if move_name != "-":
+                    if move_name in dict_count:
+                        if move_color in dict_count[move_name]:
+                            QMessageBox.critical(self, "שגיאה", f"המופע {move_name} בעל מספר שגוי של הצבע ה-{move_color}")
+                            return False
+                        dict_count[move_name].append(move_color)
+                    else:
+                        dict_count[move_name] = []
+                        dict_count[move_name].append(move_color)
+        return True
+
+    def update_data(self, tables_list):
+        if self._is_names_valid(tables_list) and self._is_color_valid(tables_list):
+            for idx, table in enumerate(tables_list):     # for each table
+                for row_num in range(24):                       # for each row in table
+
+                    move_name = table.cellWidget(row_num, 1).currentText()
+                    status = table.cellWidget(row_num, 3).isChecked()
+                    mapping_color = {"🔴": "hwRed200", "🟡": "hwAmber200", "🟢": "hwGreen200"}
+                    emoji = table.item(row_num, 2).text()
+                    if emoji in mapping_color:
+                        color = mapping_color[emoji]
+                    else:
+                        color = ""
+
+                    if move_name == "-":
+                        self.set_channel_method(idx + 1, "", "", row_num+1, False)
+                        continue
+
+                    self.set_channel_method(idx + 1, move_name, color, row_num+1, status)
+
+            QMessageBox.information(self, "SK כרטיס", "העדכון הצליח")

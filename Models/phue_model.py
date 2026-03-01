@@ -1,3 +1,6 @@
+from Config.exceptions import DuplicateMoveError, DuplicatePhueError
+
+
 class _Phue:
     def __init__(self, move_out: str, move_in: str, length: int, transitions: list = []):
         self.image_out      = move_out
@@ -25,7 +28,7 @@ class PhueModel:
             img_out = phue.image_out
             img_in = phue.image_in
             if img_out == image_out_arg and img_in == image_in_arg:
-                return False
+                raise DuplicatePhueError("המעבר כבר קיים במערכת")
 
         phue = _Phue(image_out_arg, image_in_arg, length, transitions)
         self.all_phue.append(phue)
@@ -89,7 +92,7 @@ class PhueModel:
                     if t.move_name == old_name:
                         transition_to_change = t
                     elif t.move_name == new_name:
-                        raise ValueError("המופע כבר קיים במעבר")
+                        raise DuplicateMoveError("המופע כבר קיים במעבר")
                 transition_to_change.move_name = new_name
                 return
 

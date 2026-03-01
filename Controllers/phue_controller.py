@@ -4,6 +4,7 @@ from PyQt6.QtWidgets import QMessageBox
 from pathlib import Path
 
 import Config.constants
+from Config.exceptions import DuplicateMoveError, DuplicatePhueError
 from Managers.load_data_manager import LoadDataManager
 from Managers.write_data_manager import WriteDataManager
 
@@ -33,7 +34,7 @@ class PhueController:
 
     def init_model(self, phue_paths, path_init_tk1): # self.phue_model.phue_paths, self.path_init_tk1
 
-        data = LoadDataManager.load_phue_paths(phue_paths)
+        data = LoadDataManager.load_phue_data(phue_paths)
         for img_out, img_in, transitions_data in data:
             transitions = []
             for move, state, time in transitions_data:
@@ -55,23 +56,16 @@ class PhueController:
         """
         This method add new phue to the model
         """
-        # check if image out or image out is empty
-        if img_out == "-" or img_in == "-":
-            QMessageBox.critical(self.view, "שגיאה", f"מעבר לא יכול להיות ריק")
-            return
-
-        # check if image out is the same as image out
-        if img_out == img_in:
-            QMessageBox.critical(self.view, "שגיאה", f"מעבר לא תקין [{img_out} -> {img_in}]")
-            return
-
         # add the new phue
-        if not self.model.create_new_phue(img_out, img_in, 0, []):
-            QMessageBox.critical(self.view, "שגיאה", "המעבר כבר קיים במערכת")
-            return
+        try:
+            self.model.create_new_phue(img_out, img_in, 0, [])
 
-        # refresh the view
-        self.show_view(self.all_images, self.all_moves_names)
+            # refresh the view
+            self.show_view(self.all_images, self.all_moves_names)
+
+        except DuplicatePhueError as e:
+            self.view.show_error(str(e))
+
 
     def add_transition(self, img_out, img_in):
         """
@@ -108,8 +102,9 @@ class PhueController:
         try:
             self.model.set_transition_move(image_out, image_in, old_name, new_name)
             self.show_view(self.all_images, self.all_moves_names)
-        except Exception as e:
-            QMessageBox.critical(self.view, "שגיאה", f"{e}")
+        except DuplicateMoveError as e:
+            self.view.show_error(str(e))
+            # QMessageBox.critical(self.view, "שגיאה", f"{e}")
             self.show_view(self.all_images, self.all_moves_names)
 
     def update_duration(self, img_out, img_in, move_name, duration):
@@ -160,7 +155,8 @@ class PhueController:
         This method check if the names contain "-"
         """
         if not self.model.is_names_valid():
-            QMessageBox.critical(self.view, "הודעה", "המעברים כוללים שם מופע לא תקין")
+            self.view.show_error("המעברים כוללים שם מופע לא תקין")
+            # QMessageBox.critical(self.view, "הודעה", "המעברים כוללים שם מופע לא תקין")
             return False
         return True
 

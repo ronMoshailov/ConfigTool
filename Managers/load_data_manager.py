@@ -205,7 +205,7 @@ class LoadDataManager:
         return all_images_data
 
     @staticmethod
-    def load_phue_paths(phue_paths):
+    def load_phue_data(phue_paths):
         class_pattern       = re.compile(r"public\s+class\s+Phue([A-Za-z0-9]+)_?([A-Za-z0-9]+)")
         sg_pattern          = re.compile( r"_tk\.(\w+)\.(TurnOn|TurnOff)\s*\(\s*(\d+)\s*\)")
 

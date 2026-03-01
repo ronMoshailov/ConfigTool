@@ -1,6 +1,6 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QTableWidget, QTableWidgetItem, QComboBox, \
-    QHeaderView, QLineEdit
+    QHeaderView, QLineEdit, QMessageBox
 
 from Config.style import detector_panel_style
 
@@ -118,5 +118,7 @@ class DetectorView(QWidget):
     def hide_view(self):
         self.hide()
 
+    def show_error(self, msg):
+        QMessageBox.critical(self, "שגיאה", msg)
 
 

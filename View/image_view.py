@@ -4,7 +4,8 @@ import Config
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QPushButton, QLineEdit, QLabel, QCheckBox, \
-    QAbstractItemView, QTableWidget, QHeaderView, QSizePolicy
+    QAbstractItemView, QTableWidget, QHeaderView, QSizePolicy, QMessageBox
+
 
 class ImageView(QWidget):
     MOVE_NAME_WIDTH = 70
@@ -35,7 +36,8 @@ class ImageView(QWidget):
         # Add Button
         self.btn_add = QPushButton("הוסף")
         self.btn_add.setObjectName("add_button")
-        self.btn_add.clicked.connect(lambda: self.add_image_method(self.edit_add.text()))
+        self.handle_add_image(self.btn_add)
+
         self.btn_add.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.btn_add.setFixedWidth(400)
 
@@ -78,6 +80,9 @@ class ImageView(QWidget):
 
     def hide_view(self):
         self.hide()
+
+    def show_error(self, msg):
+        QMessageBox.critical(self, "שגיאה", msg)
 
     # ============================== Layout ============================== #
     def _create_wrap(self, image, all_moves_names):
@@ -222,3 +227,12 @@ class ImageView(QWidget):
             tbl.setCellWidget(row_num, 1, container)
 
         return tbl
+
+    def handle_add_image(self, add_btn):
+        def handler():
+            name = self.edit_add.text().capitalize()
+            name = "EQA" if name.lower == "Eqa" else name
+
+            self.add_image_method(name)
+        add_btn.clicked.connect(handler)
+

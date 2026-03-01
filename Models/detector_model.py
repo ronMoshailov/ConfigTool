@@ -1,3 +1,6 @@
+from Config.exceptions import DuplicateMoveError
+
+
 class _Detector:
     def __init__(self, var_name: str, class_name: str, datector_name :str, move_name: str, ext_unit:int = 0):
         self.var_name       = var_name
@@ -16,10 +19,9 @@ class DetectorModel:
         This method add new detector to the model
         """
         if self.is_detector_exist(var_name):
-            return False
+            raise DuplicateMoveError(f"Detector \"{var_name}\" already exists")
         detector = _Detector(var_name, class_name, detector_name, move_name, ext_unit)
         self.all_detectors.append(detector)
-        return True
 
     def get_all_types(self):
         """

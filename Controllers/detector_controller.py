@@ -1,4 +1,5 @@
 import Config
+from Config.exceptions import DuplicateMoveError
 from Managers.load_data_manager import LoadDataManager
 from Managers.write_data_manager import WriteDataManager
 
@@ -26,7 +27,10 @@ class DetectorController:
         all_detectors = LoadDataManager.load_detectors_data(path)
 
         for var_name, class_name, detector_name, move_name in all_detectors:
-            self.model.new_detector(var_name=var_name, class_name=class_name, detector_name=detector_name, move_name=move_name, ext_unit=0)
+            try:
+                self.model.new_detector(var_name=var_name, class_name=class_name, detector_name=detector_name, move_name=move_name, ext_unit=0)
+            except DuplicateMoveError as e:
+                self.view.show_error(str(e))
 
     def show_view(self):
         self.view.show_view(self.model.all_detectors, self.model.get_all_types(), self.get_all_moves_names())
@@ -36,7 +40,11 @@ class DetectorController:
         """
         This method add new move to the model
         """
-        self.model.new_detector(var_name=var_name, class_name=class_name, detector_name=detector_name, move_name=move_name, ext_unit=ext_unit)
+        try:
+            self.model.new_detector(var_name=var_name, class_name=class_name, detector_name=detector_name, move_name=move_name, ext_unit=ext_unit)
+        except DuplicateMoveError as e:
+            self.view.show_error(str(e))
+
         self.show_view()
 
     def update_variable_name(self, old_var_name, new_var_name):

@@ -1,7 +1,3 @@
-import re
-import Config
-
-from PyQt6.QtWidgets import QMessageBox
 
 from Managers.load_data_manager import LoadDataManager
 from Managers.write_data_manager import WriteDataManager
@@ -38,11 +34,8 @@ class ImageController:
         """
         This method add new image to the model
         """
-        name = name.capitalize()
-        name = "EQA" if name.lower == "Eqa" else name
-
         if not self.model.new_image(name, (len(self.model.all_images) - 1) * 10, 1, len(self.model.all_images)):
-            QMessageBox.critical(self.view, "שגיאה", "התמונה כבר קיימת במערכת")
+            self.view.show_error("התמונה כבר קיימת במערכת")
         self.show_view(self.all_moves_names)
 
     def fetch_images_by_sp(self):
