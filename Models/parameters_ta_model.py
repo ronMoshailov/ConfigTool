@@ -25,7 +25,7 @@ class ParametersTaModel:
         """
         return self.parameters
 
-    def update_parameters(self, program_number, min_list, max_list, type_list, str, cycle, to_copy):
+    def update_program(self, program_number, min_list, max_list, type_list, str, cycle, to_copy):
         """
         This method update all the parameters of the model
         """

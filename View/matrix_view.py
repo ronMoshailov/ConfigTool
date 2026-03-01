@@ -124,9 +124,9 @@ class MatrixView(QWidget):
 
         # set index to each header
         for i in range(self.moves_length):
-            it = self.tbl.verticalHeaderItem(i)
-            row_idx[it.text().strip()] = i  # key - value of header, value - index of the header
-            col_idx[it.text().strip()] = i  # key - value of header, value - index of the header
+            header_widget = self.tbl.verticalHeaderItem(i)
+            row_idx[header_widget.text().strip()] = i  # key - value of header, value - index of the header
+            col_idx[header_widget.text().strip()] = i  # key - value of header, value - index of the header
 
         # fill DB values
         for cell in all_cells:

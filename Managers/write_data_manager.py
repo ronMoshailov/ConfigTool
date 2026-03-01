@@ -39,26 +39,35 @@ class WriteDataManager:
                     blinkers_line = "\tpublic Move "
                     moves_dictionary = {"k": [], "p": [], "B": []}
 
+                    # build the dictionary
                     for name in all_moves_names:
                         moves_dictionary[name[0]].append(name)
 
+                    # create the line of the traffic lights moves
                     for item in moves_dictionary["k"]:
                         cars_line += f"{item}, "
                     cars_line = cars_line[:-2] + ";  // traffic\n"
 
+                    # create the line of the pedestrian moves
                     for item in moves_dictionary["p"]:
                         pedestrians_line += f"{item}, "
                     pedestrians_line = pedestrians_line[:-2] + "; // pedestrians\n"
 
+                    # create the line of the Blinkers moves
                     for item in moves_dictionary["B"]:
                         blinkers_line += f"{item}, "
                     blinkers_line = blinkers_line[:-2] + ";	// blinkers\n"
 
+                    # append the lines of the moves to the code
                     code.append(cars_line)
                     code.append(pedestrians_line)
                     code.append(blinkers_line)
                     continue
+
+                # append line that are not related to moves
                 code.append(line)
+
+        # return the code
         return code
 
     @staticmethod

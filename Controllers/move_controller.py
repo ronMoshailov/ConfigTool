@@ -1,6 +1,6 @@
 import re
 
-from Config.exceptions import DuplicateMoveError, InvalidMoveName
+from Config.exceptions import DuplicateMoveError, InvalidMoveName, InvalidValue
 
 from Managers.load_data_manager import LoadDataManager
 from Managers.write_data_manager import WriteDataManager
@@ -24,6 +24,10 @@ class MoveController:
         self.global_remove_move                 = None
 
     def init_model(self, path):
+        """
+        This method initialize the model from the data in the file
+        """
+        # Used in Main Controller
         all_moves = LoadDataManager.load_moves_data(path)
         for variable_name, move_type, is_main, min_green in all_moves:
             try:
@@ -117,8 +121,7 @@ class MoveController:
         This method set the new min green time to the move
         """
         if not time.isdigit():
-            self.view.show_error("הערך יכול להכיל מספרים בלבד")
-            self.show_view()
+            raise InvalidValue("הערך יכול להכיל מספרים בלבד")
         else:
             self.model.set_min_green(move, int(time))
 
@@ -128,6 +131,7 @@ class MoveController:
         """
         if self.model.remove_move(move_name):
             self.global_remove_move(move_name)
+            self.view.show_view(self.model.all_moves, self.model.get_all_types())
 
     # ============================== Logic ============================== #
     def reset(self):

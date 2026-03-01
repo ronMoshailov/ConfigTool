@@ -3,6 +3,8 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLin
     QCheckBox, QHeaderView, QMessageBox
 
 import Config
+from Config.exceptions import InvalidValue
+
 
 class MoveView(QWidget):
     def __init__(self):
@@ -18,6 +20,8 @@ class MoveView(QWidget):
 
         # Data
         self.tbl        = None
+        self.move_list  = None
+        self.all_types  = None
 
         # Table
         self.create_table()
@@ -40,6 +44,10 @@ class MoveView(QWidget):
         self.hide()
 
     def show_view(self, move_list, all_types):
+        #
+        self.move_list = move_list
+        self.all_types = all_types
+
         # Clear Table Rows
         self.tbl.setRowCount(0)
 
@@ -125,10 +133,11 @@ class MoveView(QWidget):
 
     def handle_min_green_update(self, line_edit, move_name):
         def handler():
-            error = self.update_min_green_method(move_name, line_edit.text())
-            if error:
-                QMessageBox.critical(self, "שגיאה", error)
-
+            try:
+                self.update_min_green_method(move_name, line_edit.text())
+            except InvalidValue as e:
+                self.show_error(str(e))
+                self.show_view(self.move_list, self.all_types)
         line_edit.editingFinished.connect(handler)
 
     def handle_remove_move(self, btn, move_name):

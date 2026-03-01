@@ -11,7 +11,7 @@ class ParametersTaView(QWidget):
         super().__init__()
 
         # Controller Methods
-        self.update_parameters_method = None
+        self.update_program_method = None
 
         # Table
         self.tbl = QTableWidget(self)
@@ -19,7 +19,7 @@ class ParametersTaView(QWidget):
         self.tbl.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)          # disable the choosing
         self.tbl.verticalHeader().setDefaultSectionSize(35)                             # set height of each row
         self.tbl.horizontalHeader().setVisible(False)                                   # remove column names
-        self.tbl.itemChanged.connect(lambda: self.update_parameters_method(self.tbl))
+        self.tbl.itemChanged.connect(lambda: self.update_parameters(self.tbl))
 
         # Content Layout
         root_layout = QHBoxLayout()
@@ -186,7 +186,7 @@ class ParametersTaView(QWidget):
             checkbox.setCursor(Qt.CursorShape.PointingHandCursor)
             if parameter.is_copied:
                 checkbox.setChecked(True)
-            checkbox.stateChanged.connect(lambda _: self.update_parameters_method(self.tbl))
+            checkbox.stateChanged.connect(lambda _: self.update_parameters(self.tbl))
 
             layout = QHBoxLayout()
             layout.addWidget(checkbox)
@@ -208,6 +208,46 @@ class ParametersTaView(QWidget):
         elif len(lst) > target_len:
             del lst[target_len:]
 
+    def update_parameters(self, tbl):
+        """
+        This method update the parameters model from the data in the table
+        """
+        total_rows  = tbl.rowCount() - 2
+        total_cols  = tbl.columnCount()
+        images_list = []
+
+        # col 0 - skip
+
+        # col 1 - get image list for the comments
+        for col in range(0, total_cols):
+            line = tbl.cellWidget(1, col)
+            value = line.text()
+            if value in images_list:
+                break
+            images_list.append(value)
+
+        image_len = len(images_list)
+
+        # Get image list for the comments
+        for row_num in range(2, total_rows+2):
+            min_list = []
+            max_list = []
+            type_list = []
+
+            for col in range(0, image_len):
+                min_list.append(int(tbl.item(row_num, col).text()))
+            for col in range(image_len, 2*image_len):
+                max_list.append(int(tbl.item(row_num, col).text()))
+            for col in range(2*image_len, 3*image_len):
+                type_list.append(int(tbl.item(row_num, col).text()))
+            struct   = int(tbl.item(row_num  , 3*image_len   ).text())
+            cycle = int(tbl.item(row_num  , 3*image_len+1 ).text())
+            to_copy = tbl.cellWidget(row_num, 3*image_len+2).findChild(QCheckBox).isChecked()
+
+            self.update_program_method(row_num-2, min_list, max_list, type_list, struct, cycle, to_copy)
+
+        # Show view
+        # self.show_view(self.all_images)
 
 #######################################################################################################
 # The table run the method "update_parameters_method" when an item change value.                      #

@@ -6,3 +6,6 @@ class DuplicatePhueError(Exception):
 
 class InvalidMoveName(Exception):
     pass
+
+class InvalidValue(Exception):
+    pass
