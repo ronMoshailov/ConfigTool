@@ -19,17 +19,7 @@ class DetectorView(QWidget):
         self.update_ext_unit_method         = None
 
         # Table
-        self.tbl = QTableWidget(0, 6, self)
-        self.tbl.setHorizontalHeaderLabels(["מחיקה", "שם משתנה", "סוג גלאי", "שם גלאי", "מופע תנועה", "יח' הארכה"])
-        self.tbl.setColumnWidth(0, 80)                            # set column to width of 80px
-        self.tbl.verticalHeader().setVisible(False)
-        self.tbl.verticalHeader().setDefaultSectionSize(60)                     # default row size
-        self.tbl.setObjectName("RootTable")
-
-        header = self.tbl.horizontalHeader()                                    # get horizontal header
-        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)            # set fixed width to column 0
-        for col in range(1, self.tbl.columnCount()):
-            header.setSectionResizeMode(col, QHeaderView.ResizeMode.Stretch)    # set each column to stretch
+        self._create_table()
 
         # Button
         add_detector_btn = QPushButton("הוסף גלאי")
@@ -99,13 +89,13 @@ class DetectorView(QWidget):
             combo.addItems(["-"] + self.all_moves_names)
             combo.wheelEvent = lambda event: None
             combo.currentIndexChanged.connect(lambda _, c=combo, var=var_name: self.update_move_name_method(c.currentText(), var))
+            self.tbl.setCellWidget(idx, 4, combo)
 
+            # set value to combo
             if move_name in self.all_moves_names:
                 combo.setCurrentText(move_name)
             else:
                 combo.setCurrentIndex(0)
-
-            self.tbl.setCellWidget(idx, 4, combo)
 
             # add ext unit (col 5)
             line_edit = QLineEdit()
@@ -121,4 +111,16 @@ class DetectorView(QWidget):
     def show_error(self, msg):
         QMessageBox.critical(self, "שגיאה", msg)
 
+    # ============================== Create ============================== #
+    def _create_table(self):
+        self.tbl = QTableWidget(0, 6, self)
+        self.tbl.setHorizontalHeaderLabels(["מחיקה", "שם משתנה", "סוג גלאי", "שם גלאי", "מופע תנועה", "יח' הארכה"])
+        self.tbl.setColumnWidth(0, 80)                            # set column to width of 80px
+        self.tbl.verticalHeader().setVisible(False)
+        self.tbl.verticalHeader().setDefaultSectionSize(60)                     # default row size
+        self.tbl.setObjectName("RootTable")
 
+        header = self.tbl.horizontalHeader()                                    # get horizontal header
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)            # set fixed width to column 0
+        for col in range(1, self.tbl.columnCount()):
+            header.setSectionResizeMode(col, QHeaderView.ResizeMode.Stretch)    # set each column to stretch

@@ -9,6 +9,7 @@ class _Detector:
         self.move_name      = move_name
         self.ext_unit       = ext_unit
 
+
 class DetectorModel:
     def __init__(self):
         self.all_detectors = []
