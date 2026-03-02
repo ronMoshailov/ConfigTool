@@ -2,7 +2,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QMessageBox, QMainWindow, QTextEdit, QVBoxLayout, QDialog
 
 import Config
-from Config.exceptions import InvalidMoveName, DuplicateMoveError
+from Config.exceptions import InvalidMoveName, DuplicateMoveError, InvalidImagesSP
 
 from Controllers.parameters_controller import ParametersTaController
 from Controllers.detector_controller import DetectorController
@@ -38,63 +38,57 @@ from Models.sk_model import SkModel
 from Managers.path_manager import PathManager
 from Managers.load_data_manager import LoadDataManager
 
+
 class MainController:
     def __init__(self):
         # =============== Managers =============== #
-        self.path_manager       = PathManager()
+        self.path_manager = PathManager()
 
         # =============== Models =============== #
-        self.settings_model         = SettingsModel()
-        self.move_model             = MoveModel()
-        self.matrix_model           = MatrixModel()
-        self.sk_model               = SkModel()
-        self.detector_model         = DetectorModel()
-        self.schedule_model         = ScheduleModel()
-        self.image_model            = ImageModel()
-        self.phue_model             = PhueModel()
-        self.parameters_ta_model    = ParametersTaModel()
-
-
-
+        self.settings_model = SettingsModel()
+        self.move_model = MoveModel()
+        self.matrix_model = MatrixModel()
+        self.sk_model = SkModel()
+        self.detector_model = DetectorModel()
+        self.schedule_model = ScheduleModel()
+        self.image_model = ImageModel()
+        self.phue_model = PhueModel()
+        self.parameters_ta_model = ParametersTaModel()
 
         # =============== Views =============== #
-        self.settings_view      = SettingsView()
-        self.move_view          = MoveView()
-        self.matrix_view        = MatrixView()
-        self.sk_view            = SkView()
-        self.detector_view      = DetectorView()
-        self.schedule_view      = ScheduleView()
-        self.image_view         = ImageView()
-        self.phue_view          = PhueView()
+        self.settings_view = SettingsView()
+        self.move_view = MoveView()
+        self.matrix_view = MatrixView()
+        self.sk_view = SkView()
+        self.detector_view = DetectorView()
+        self.schedule_view = ScheduleView()
+        self.image_view = ImageView()
+        self.phue_view = PhueView()
         self.parameters_ta_view = ParametersTaView()
 
-
-
-        self.navigator_view     = NavigatorView(self.show_view, self.print_all)
+        self.navigator_view = NavigatorView(self.show_view, self.print_all)
 
         # =============== Controllers =============== #
-        self.settings_controller        = SettingsController(self.settings_view, self.settings_model)
-        self.move_controller            = MoveController(self.move_view, self.move_model)
-        self.matrix_controller          = MatrixController(self.matrix_view, self.matrix_model)
-        self.sk_controller              = SkController(self.sk_view, self.sk_model)
-        self.detector_controller        = DetectorController(self.detector_view, self.detector_model)
-        self.schedule_controller        = ScheduleController(self.schedule_view, self.schedule_model)
-        self.image_controller           = ImageController(self.image_view, self.image_model)
-        self.phue_controller            = PhueController(self.phue_view, self.phue_model)
-        self.parameters_ta_controller   = ParametersTaController(self.parameters_ta_view, self.parameters_ta_model)
-
-
+        self.settings_controller = SettingsController(self.settings_view, self.settings_model)
+        self.move_controller = MoveController(self.move_view, self.move_model)
+        self.matrix_controller = MatrixController(self.matrix_view, self.matrix_model)
+        self.sk_controller = SkController(self.sk_view, self.sk_model)
+        self.detector_controller = DetectorController(self.detector_view, self.detector_model)
+        self.schedule_controller = ScheduleController(self.schedule_view, self.schedule_model)
+        self.image_controller = ImageController(self.image_view, self.image_model)
+        self.phue_controller = PhueController(self.phue_view, self.phue_model)
+        self.parameters_ta_controller = ParametersTaController(self.parameters_ta_view, self.parameters_ta_model)
 
         # self.io_controller            = IoController(root)
 
         # =============== Set Controllers Methods =============== #
-        self.move_controller.view.rename_move_method           = self.rename_move
-        self.move_controller.global_remove_move                 = self.global_remove_move
-        self.move_controller.remove_move_from_matrix_method     = self.matrix_controller.remove_move
-        self.matrix_controller.get_move_type                    = self.move_controller.get_move_type
-        self.navigator_view.write_to_code_method                = self.write_to_code
-        self.parameters_ta_controller.get_sp_by_image_method    = self.image_controller.get_sp_by_image
-        self.detector_controller.get_all_moves_names            = self.move_controller.get_all_moves_names
+        self.move_controller.view.rename_move_method = self.rename_move
+        self.move_controller.global_remove_move = self.global_remove_move
+        self.move_controller.remove_move_from_matrix_method = self.matrix_controller.remove_move
+        self.matrix_controller.get_move_type = self.move_controller.get_move_type
+        self.navigator_view.write_to_code_method = self.write_to_code
+        self.parameters_ta_controller.get_sp_by_image_method = self.image_controller.get_sp_by_image
+        self.detector_controller.get_all_moves_names = self.move_controller.get_all_moves_names
 
         # =============== Root Layout =============== #
         root_layout = QHBoxLayout()
@@ -120,7 +114,7 @@ class MainController:
         self.root.setCentralWidget(self.main_root)
         self.root.setStyleSheet(Config.style.main_window_style)
         self.root.show()
-        self.root.showMaximized()          # show in full-screen
+        self.root.showMaximized()  # show in full-screen
 
     def show_view(self, act):
         # Hide All Views
@@ -161,9 +155,7 @@ class MainController:
         elif act == "phue":
             self.phue_controller.show_view(self.image_model.all_images, self.move_controller.get_all_moves_names())
         elif act == "parameters_ta":
-            if not self.image_model.is_sp_valid():
-                QMessageBox.critical(self.main_root, "שגיאה", "רצף נקודות ההחלטה לא תקינות")
-                return
+            # self.image_controller.is_sp_valid()
             self.parameters_ta_controller.show_view(self.image_model.all_images)
         else:
             self.settings_controller.show_view()
@@ -223,15 +215,9 @@ class MainController:
 
     # ============================== Write to file ============================== #
     def write_to_code(self):
-        if not self.matrix_controller.is_matrix_valid():
+        if not self.is_data_valid():
             return
 
-        if not self.phue_controller.is_names_valid():
-            self.show_view("phue")
-            return
-
-        if self.image_model.is_sp_valid():
-            print("sp valid")
         if not self.path_manager.create_project(self.root):
             return
 
@@ -276,14 +262,15 @@ class MainController:
         out = ["\n============================== Moves =============================="]
 
         for move in self.move_model.all_moves:
-            out.append(f"name: {move.name:<5}, move_type: {move.type:<25}, is_main: {move.is_main:<8}, min_green: {move.min_green:<3}")
+            out.append(
+                f"name: {move.name:<5}, move_type: {move.type:<25}, is_main: {move.is_main:<8}, min_green: {move.min_green:<3}")
 
         out.append("\n============================== Settings ==============================")
-        out.append(f"junction_num: {self.settings_model.junction_num:<5}, junction_name: {self.settings_model.junction_name:<25}, version: {self.settings_model.version:<8}, first_ext: {self.settings_model.first_ext:<3}")
+        out.append(
+            f"junction_num: {self.settings_model.junction_num:<5}, junction_name: {self.settings_model.junction_name:<25}, version: {self.settings_model.version:<8}, first_ext: {self.settings_model.first_ext:<3}")
         for h in self.settings_model.history:
             date, author = h
             out.append(f"date: {date:<5}, author: {author:<25}")
-
 
         out.append("\n============================== Matrix ==============================")
         for cell in self.matrix_model.all_cells:
@@ -293,12 +280,14 @@ class MainController:
         for sk_card in self.sk_model.sk_list:
             out.append(f"----------------------------- sk:{sk_card.card_number} -----------------------------")
             for channel in sk_card.all_channels:
-                out.append(f"name: {channel.name:<5}, color: {channel.color:<10}, channel: {channel.channel:<5}, is_comment: {channel.is_comment}")
+                out.append(
+                    f"name: {channel.name:<5}, color: {channel.color:<10}, channel: {channel.channel:<5}, is_comment: {channel.is_comment}")
             out.append("")
 
         out.append("\n============================== Detector ==============================")
         for detector in self.detector_model.all_detectors:
-            out.append(f"var_name: {detector.var_name:<5}, class_name: {detector.class_name:<10}, datector_name: {detector.datector_name:<5}, move_name: {detector.move_name:<10}, ext_unit: {detector.ext_unit:<10}")
+            out.append(
+                f"var_name: {detector.var_name:<5}, class_name: {detector.class_name:<10}, datector_name: {detector.datector_name:<5}, move_name: {detector.move_name:<10}, ext_unit: {detector.ext_unit:<10}")
 
         out.append("\n============================== Schedule ==============================")
         for schedule_table in self.schedule_model.all_schedule_tables:
@@ -360,3 +349,18 @@ class MainController:
 
         dialog.setLayout(layout)
         dialog.exec()
+
+    def is_data_valid(self):
+        if not self.matrix_controller.is_matrix_valid():
+            self.show_view("matrix")
+            return False
+
+        if not self.phue_controller.is_names_valid():
+            self.show_view("phue")
+            return False
+
+        if not self.image_controller.is_sp_valid():
+            self.show_view("image")
+            return False
+
+        return True

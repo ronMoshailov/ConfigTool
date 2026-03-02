@@ -1,3 +1,6 @@
+from Config.exceptions import InvalidImagesSP
+
+
 class _Image:
     def __init__(self, name: str, num: str, skeleton: str, sp: str, is_police: bool, move_names_list: list):
         self.image_name = name
@@ -101,16 +104,31 @@ class ImageModel:
     # ============================== Logic ============================== #
     def is_sp_valid(self):
         """
-        This method check if the stop points of all the images starting from 1 to len(all_images)
+        This method check if the stop points of all the images are valid
         """
-        highest_sp = 0
-        for image in self.all_images:
-            if highest_sp < image.sp:
-                highest_sp = image.sp
+        is_found = True
+        count = 0
+        idx = 0
 
-        if highest_sp  == len(self.all_images)-1:
-            return True
-        return False
+        while is_found:
+            is_found = False
+            for image in self.all_images:
+                if image.sp == idx:
+                    count += 1
+                    is_found = True
+                if count == len(self.all_images):
+                    return
+            idx += 1
+        raise InvalidImagesSP("רצף נקודות ההחלטה לא תקין")
+
+        # highest_sp = 0
+        # for image in self.all_images:
+        #     if highest_sp < image.sp:
+        #         highest_sp = image.sp
+        #
+        # if highest_sp  == len(self.all_images)-1:
+        #     return True
+        # return False
 
     def reset_image_model(self):
         """

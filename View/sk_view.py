@@ -17,8 +17,6 @@ class SkView(QWidget):
         self.add_sk_card_method     = None
         self.remove_sk_method       = None
         self.change_color_method    = None
-        # self.change_name_method     = None
-        # self.update_comment_method  = None
         self.set_channel_method     = None
 
         # Data
@@ -127,7 +125,7 @@ class SkView(QWidget):
             combo.currentTextChanged.connect(lambda _text, row_num = row_number: self.change_name(tbl, row_num, 1))
 
         # col 2 (color) click (add signal)
-        tbl.cellClicked.connect(lambda row_num, col_num: self.change_color(tbl, row_num, col_num))
+        tbl.cellClicked.connect(lambda row_num, col_num: self._change_color(tbl, row_num, col_num))
 
         return wrap
 
@@ -175,7 +173,7 @@ class SkView(QWidget):
             col_3.setChecked(False)
             col_3.setObjectName("checkbox_comment")
             tbl.setCellWidget(r, 3, col_3)
-            col_3.stateChanged.connect(lambda state, row=r: self.update_comment(tbl, row, state))
+            col_3.stateChanged.connect(lambda state, row=r: self._update_comment(tbl, row, state))
 
     def _create_buttons(self):
         # Add Buttons
@@ -187,7 +185,6 @@ class SkView(QWidget):
         self.btn_update = QPushButton("עדכן")
         self.btn_update.clicked.connect(lambda: self.update_data(self.tables_list))
         self.btn_update.setObjectName("update_button")
-
 
     # ============================== Logic ============================== #
     def _fill_table(self, tbl: QTableWidget, card_number: int, sk_list):
@@ -228,8 +225,7 @@ class SkView(QWidget):
             if is_commented:
                 tbl.item(row, 0).setBackground(green_bg)
 
-
-    def change_color(self, table: QTableWidget, row: int, col: int):
+    def _change_color(self, table: QTableWidget, row: int, col: int):
             """
             This method manages the change of the color of the channel
             """
@@ -257,7 +253,7 @@ class SkView(QWidget):
 
             item.setText(nxt_color)
 
-    def fix_color(self, table: QTableWidget, row: int, col: int):
+    def _fix_color(self, table: QTableWidget, row: int, col: int):
         """
         This method fixthe color of the channel
         """
@@ -307,9 +303,9 @@ class SkView(QWidget):
                 table.cellWidget(row, 3).setStyleSheet("margin-left:auto; margin-right:auto;")
                 table.cellWidget(row, 3).setCheckState(Qt.CheckState.Unchecked)
             else:
-                self.fix_color(table, row, 2)
+                self._fix_color(table, row, 2)
 
-    def update_comment(self, table, row_number, state):
+    def _update_comment(self, table, row_number, state):
         """
         This method manage the logic of the comment checkbox.
         Color the row and check if the row can be in comment.
@@ -328,7 +324,7 @@ class SkView(QWidget):
             # col 0
             (table.item(row_number, 0) or QTableWidgetItem()).setBackground(light_green_brush)
             # col 1
-            table.cellWidget(row_number, 1).setStyleSheet(f"QComboBox {{ background-color: rgb({light_green_brush.color().red()},{light_green_brush.color().green()},{light_green_brush.color().blue()}); }}")
+            # table.cellWidget(row_number, 1).setStyleSheet(f"QComboBox {{ background-color: rgb({light_green_brush.color().red()},{light_green_brush.color().green()},{light_green_brush.color().blue()}); }}")
             # col 2
             (table.item(row_number, 2) or QTableWidgetItem()).setBackground(light_green_brush)
         else:
@@ -340,6 +336,35 @@ class SkView(QWidget):
             (table.item(row_number, 2) or QTableWidgetItem()).setBackground(white_brush)
         return True
 
+    def update_data(self, tables_list):
+        """
+        This method update the model
+        """
+        if self._is_names_valid(tables_list) and self._is_color_valid(tables_list):
+            for idx, table in enumerate(tables_list):     # for each table
+                for row_num in range(24):                       # for each row in table
+
+                    # Get data from table
+                    move_name = table.cellWidget(row_num, 1).currentText()
+                    status = table.cellWidget(row_num, 3).isChecked()
+                    mapping_color = {"🔴": "hwRed200", "🟡": "hwAmber200", "🟢": "hwGreen200"}
+                    emoji = table.item(row_num, 2).text()
+                    if emoji in mapping_color:
+                        color = mapping_color[emoji]
+                    else:
+                        color = ""
+
+                    # if the row is empty
+                    if move_name == "-":
+                        self.set_channel_method(idx + 1, "", "", row_num+1, False)
+                        continue
+
+                    # update the row
+                    self.set_channel_method(idx + 1, move_name, color, row_num+1, status)
+
+            QMessageBox.information(self, "SK כרטיס", "העדכון הצליח")
+
+    # ============================== Validation ============================== #
     def _is_names_valid(self, tables_list):
         """
         This method check if names has exactly the count instances he needs.
@@ -372,8 +397,7 @@ class SkView(QWidget):
 
     def _is_color_valid(self, tables_list):
         """
-        This method check if color has exactly the count instances he needs.
-        :return:
+        This method check if color has exactly the count instances he needs (Traffics - 3, Pedestrians-2, Blinkers - 1).
         """
         dict_count = {}
 
@@ -392,24 +416,3 @@ class SkView(QWidget):
                         dict_count[move_name].append(move_color)
         return True
 
-    def update_data(self, tables_list):
-        if self._is_names_valid(tables_list) and self._is_color_valid(tables_list):
-            for idx, table in enumerate(tables_list):     # for each table
-                for row_num in range(24):                       # for each row in table
-
-                    move_name = table.cellWidget(row_num, 1).currentText()
-                    status = table.cellWidget(row_num, 3).isChecked()
-                    mapping_color = {"🔴": "hwRed200", "🟡": "hwAmber200", "🟢": "hwGreen200"}
-                    emoji = table.item(row_num, 2).text()
-                    if emoji in mapping_color:
-                        color = mapping_color[emoji]
-                    else:
-                        color = ""
-
-                    if move_name == "-":
-                        self.set_channel_method(idx + 1, "", "", row_num+1, False)
-                        continue
-
-                    self.set_channel_method(idx + 1, move_name, color, row_num+1, status)
-
-            QMessageBox.information(self, "SK כרטיס", "העדכון הצליח")

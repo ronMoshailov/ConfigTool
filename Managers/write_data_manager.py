@@ -131,7 +131,7 @@ class WriteDataManager:
     # ----------------------------------- Matrix ----------------------------------- #
     # ============================================================================== #
     @staticmethod
-    def create_matrix_init_tk1_code(path, all_cells, get_move_type):
+    def create_matrix_init_tk1_code(path, all_cells):
         code = []
 
         with open(path, 'r', encoding='utf-8') as file:
@@ -200,6 +200,7 @@ class WriteDataManager:
             if "write sk cards here" in line:
                 for idx, card in enumerate(sk_list):
                     code.append(f"\t\tSK24 sk{idx + 1} = new SK24(cardsIndex++, (HwTeilknoten)Var.hwTk1);\n")
+                    continue
 
             if "write sk channels here" in line:
                 for sk_card in sk_list:
@@ -227,6 +228,7 @@ class WriteDataManager:
                             line = "//" + line
 
                         code.append(line)
+                    code.append("\n")
                 continue
 
             code.append(line)

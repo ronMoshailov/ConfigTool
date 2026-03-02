@@ -1,4 +1,4 @@
-
+from Config.exceptions import InvalidImagesSP
 from Managers.load_data_manager import LoadDataManager
 from Managers.write_data_manager import WriteDataManager
 
@@ -109,6 +109,14 @@ class ImageController:
         This method clear all the data in the model
         """
         self.model.reset_image_model()
+
+    def is_sp_valid(self):
+        try:
+            self.model.is_sp_valid()
+            return True
+        except InvalidImagesSP as e:
+            self.view.show_error(str(e))
+            return False
 
     # ============================== Write To File ============================== #
     def write_to_file(self, path_tk, path_init_tk, phase_folder_dst):

@@ -9,3 +9,6 @@ class InvalidMoveName(Exception):
 
 class InvalidValue(Exception):
     pass
+
+class InvalidImagesSP(Exception):
+    pass

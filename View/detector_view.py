@@ -34,7 +34,7 @@ class DetectorView(QWidget):
         # Button
         add_detector_btn = QPushButton("הוסף גלאי")
         add_detector_btn.setObjectName("add_button")
-        add_detector_btn.clicked.connect(lambda: self.add_detector_method("Variable Name", "DDetector", "Detector Name", "k0", 0))
+        add_detector_btn.clicked.connect(lambda: self.add_detector_method("Variable Name", "DDetector", "Detector Name", "-", 0))
 
         # Button Layout
         btn_layout = QHBoxLayout()
@@ -96,7 +96,7 @@ class DetectorView(QWidget):
 
             # Add "move name" (col 4)
             combo = QComboBox()
-            combo.addItems(self.all_moves_names)
+            combo.addItems(["-"] + self.all_moves_names)
             combo.wheelEvent = lambda event: None
             combo.currentIndexChanged.connect(lambda _, c=combo, var=var_name: self.update_move_name_method(c.currentText(), var))
 

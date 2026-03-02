@@ -79,12 +79,12 @@ class MatrixController:
         Used by Main Controller before writing to project
         """
         # Get cell's moves
-        pairs = {(cell.move_out, cell.move_in) for cell in self.model.all_cells}
+        pairs = self.model.get_tuples_list()
 
         # Check if the cells valid
         for move_out, move_in in pairs:
             if (move_in, move_out) not in pairs:
-                self.view.show_error("הודעה", f"חסר תא במטריצה ב-[{move_in}, {move_out}]")
+                self.view.show_error(f"חסר תא במטריצה ב-[{move_in}, {move_out}]")
                 return False
         return True
 
@@ -100,6 +100,6 @@ class MatrixController:
         """
         This method write the data from the model to the project
         """
-        code = WriteDataManager.create_matrix_init_tk1_code(path_init_tk1, self.model.all_cells, self.get_move_type)
+        code = WriteDataManager.create_matrix_init_tk1_code(path_init_tk1, self.model.all_cells)
         WriteDataManager.write_code(path_init_tk1, code)
 

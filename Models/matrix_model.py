@@ -17,6 +17,12 @@ class MatrixModel:
         cell = _MatrixCell(move_out, move_in, wait_time)
         self.all_cells.append(cell)
 
+        # sort
+        self.all_cells.sort(key=lambda c: (c.move_out, c.move_in))
+
+    def get_tuples_list(self):
+        return [(cell.move_out, cell.move_in) for cell in self.all_cells]
+
     def set_wait_time(self, out_name, in_name, val):
         """
         This method set new value to cell
