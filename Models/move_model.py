@@ -80,7 +80,7 @@ class MoveModel:
         This method change the name of the move
         """
         # Check if move name already exist
-        if self._is_move_exist(old_name):
+        if self._is_move_exist(new_name):
             raise DuplicateMoveError("המופע כבר קיים במערכת")
 
         for move in self.all_moves:
