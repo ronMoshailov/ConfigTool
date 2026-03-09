@@ -15,7 +15,6 @@ class ScheduleView(QWidget):
         self.fetch_all_channels_method  = None
         self.remove_row_method          = None
         self.add_row_method             = None
-        # self.update_schedule_method     = None
         self.toggle_copy_sunday_method  = None
         self.set_new_cells_method       = None
 
@@ -45,7 +44,6 @@ class ScheduleView(QWidget):
         # Root Layout
         self.root_layout = QVBoxLayout()
         self.root_layout.addLayout(self.schedule_layout)
-        # self.root_layout.addLayout(self.bottom_layout)
         self.root_layout.addWidget(bottom_widget)
 
         # Data
@@ -63,13 +61,13 @@ class ScheduleView(QWidget):
         self.hide()
 
     def show_view(self):
-        # clear the table
+        # clear the tables
         clear_widget_from_layout([self.schedule_layout])
         self.table_list.clear()
         self.add_row_btn_list.clear()
 
         # Build the tables
-        for idx in range (0, 7):
+        for idx in range(7):
             schedule_column, table = self._initialize_schedule_column(idx + 1)      # create schedule_column
             self.table_list.append(table)
             self._fill_table(idx+1, table)                                            # fill table with values
@@ -83,7 +81,7 @@ class ScheduleView(QWidget):
     def show_error(self, msg):
         QMessageBox.critical(self, "שגיאה", msg)
 
-    # ============================== CRUD ============================== #
+    # ============================== Layout ============================== #
     def _create_table(self):
         """
         Create the table with no values
@@ -103,7 +101,6 @@ class ScheduleView(QWidget):
         tbl.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
         return tbl
 
-    # ============================== Layout ============================== #
     def _initialize_schedule_column(self, table_num: int):
         """
         This method initialize column that contain the elements (no values of the elements).
@@ -141,7 +138,6 @@ class ScheduleView(QWidget):
 
         return wrap, tbl
 
-    # ============================== Logic ============================== #
     def _fill_table(self,table_num, table):
         """
         This method fill the table with all the schedules of this day
@@ -159,7 +155,7 @@ class ScheduleView(QWidget):
 
             btn_remove = QPushButton("x")
             btn_remove.setObjectName("remove_button")
-            btn_remove.clicked.connect(lambda _, tbl_num_arg=table_num, tbl=table, btn=btn_remove: self.remove_row_method(tbl_num_arg, tbl, btn))
+            self.handle_remove_btn(table_num, table, btn_remove)
             btn_remove.setFont(font)
 
             time_edit = QTimeEdit()
@@ -181,8 +177,10 @@ class ScheduleView(QWidget):
             table.setCellWidget(row, 1, time_edit)
             table.setCellWidget(row, 2, combo_num_prog)
 
+    # ============================== Logic ============================== #
     def _toggle_button(self):
         self.toggle_copy_sunday_method()
+        self.is_copy_sunday = not self.is_copy_sunday
         self._enable_mon_thu()
 
     def _enable_mon_thu(self):
@@ -237,6 +235,7 @@ class ScheduleView(QWidget):
         self.show_view()
         QMessageBox.information(self, "הודעה", "העדכון הצליח")
 
+    # ============================== Validation ============================== #
     def _check_time(self, table_list):
         """
         This method check if the logic of the time is valid
@@ -257,7 +256,15 @@ class ScheduleView(QWidget):
 
                 # compare
                 if current <= prev:
-                    QMessageBox.critical(self, "שגיאה", f"יש בעיה עם הזמנים בטבלה מספר {idx + 1}")
+                    self.show_error(f"יש בעיה עם הזמנים בטבלה מספר {idx + 1}")
                     return False
         return True
 
+    # ============================== Handler ============================== #
+    def handle_remove_btn(self, table_num, table, btn_remove):
+        def handler():
+            for row_index in range(table.rowCount()):
+                if table.cellWidget(row_index, 0) is btn_remove:
+                    table.removeRow(row_index)
+                    self.remove_row_method(table_num, row_index)
+        btn_remove.clicked.connect(handler)

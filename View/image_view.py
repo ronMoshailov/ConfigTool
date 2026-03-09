@@ -66,6 +66,7 @@ class ImageView(QWidget):
         self.hide()
 
     def show_view(self, all_images, all_moves_names):
+        # clear view
         Config.special.clear_widget_from_layout([self.scroll_layout])
         self.table_dict.clear()
 

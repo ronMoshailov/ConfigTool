@@ -35,6 +35,9 @@ class DetectorController:
     def show_view(self):
         self.view.show_view(self.model.all_detectors, self.model.get_all_types(), self.get_all_moves_names())
 
+    def hide_view(self):
+        self.view.hide_view()
+
     # ============================== CRUD ============================== #
     def add_detector(self, var_name, class_name, detector_name, move_name, ext_unit):
         """

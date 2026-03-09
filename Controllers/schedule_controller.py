@@ -27,8 +27,20 @@ class ScheduleController:
     def show_view(self):
         self.view.show_view()
 
+    def hide_view(self):
+        """
+        This method hide the view
+        """
+        self.view.hide_view()
+
     # ============================== CRUD ============================== #
     def set_new_cells(self, idx, data_list):
+        """
+        This method reset and add new cells of program and time
+
+        :param idx: the day
+        :param data_list: [(hours, minutes, num_prog)]
+        """
         self.model.set_new_cells(idx, data_list)
 
     def fetch_all_channels(self, table_num):
@@ -37,15 +49,11 @@ class ScheduleController:
         """
         return self.model.get_all_channels(table_num)
 
-    def remove_row(self, table_number, table, btn):
+    def remove_row(self, table_number, row_index):
         """
         This method removes a row (time & program number) from the table
         """
-        for row_index in range(table.rowCount()):
-            if table.cellWidget(row_index, 0) is btn:
-                table.removeRow(row_index)
-                self.model.remove_cell_from_table(table_number, row_index)
-        # self.show_view()
+        self.model.remove_cell_from_table(table_number, row_index)
 
     def add_row(self, table_number):
         """

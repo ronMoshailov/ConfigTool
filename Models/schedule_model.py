@@ -4,6 +4,7 @@ class _CellScheduleModel:
         self.minute = minute
         self.prog_num = prog_num
 
+
 class _TableScheduleModel:
     def __init__(self, table_num):
         self.cell_list = []
@@ -20,6 +21,7 @@ class _TableScheduleModel:
         This method return all cells that belong to this table
         """
         return self.cell_list
+
 
 class ScheduleModel:
     def __init__(self):
