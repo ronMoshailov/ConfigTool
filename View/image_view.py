@@ -161,6 +161,19 @@ class ImageView(QWidget):
         self.table_dict[image.image_name] = table
         return wrap
 
+    def _create_table(self):
+        tbl = QTableWidget(0, 2)
+        tbl.setObjectName("tbl")
+        tbl.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)
+        tbl.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        tbl.verticalHeader().setVisible(False)
+        tbl.setHorizontalHeaderLabels(["מופע", "קיים"])
+        tbl.setColumnWidth(0, self.MOVE_NAME_WIDTH)
+        tbl.setColumnWidth(1, self.CHECKBOX_WIDTH)
+        tbl.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)    # Stretch the horizontal header
+        tbl.verticalHeader().setMinimumSectionSize(40)                               # Set minimum size
+        return tbl
+
     # ============================== Logic ============================== #
     def _fill_table(self, table, all_moves_names):
         """
@@ -188,16 +201,7 @@ class ImageView(QWidget):
 
         :return: QTableWidget
         """
-        tbl = QTableWidget(0, 2)
-        tbl.setObjectName("tbl")
-        tbl.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)
-        tbl.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-        tbl.verticalHeader().setVisible(False)
-        tbl.setHorizontalHeaderLabels(["מופע", "קיים"])
-        tbl.setColumnWidth(0, self.MOVE_NAME_WIDTH)
-        tbl.setColumnWidth(1, self.CHECKBOX_WIDTH)
-        tbl.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)    # Stretch the horizontal header
-        tbl.verticalHeader().setMinimumSectionSize(40)                               # Set minimum size
+        tbl = self._create_table()
 
         # build move rows in table
         for move_name in all_moves_names:
@@ -229,6 +233,7 @@ class ImageView(QWidget):
 
         return tbl
 
+    # ============================== Handler ============================== #
     def handle_add_image(self, add_btn):
         def handler():
             name = self.edit_add.text().capitalize()

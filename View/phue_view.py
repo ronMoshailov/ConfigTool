@@ -2,7 +2,8 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QFrame, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QComboBox, QMessageBox, \
     QTableWidgetItem, QLineEdit, QHeaderView, QAbstractItemView, QTableWidget
 
-import Config
+from Config.special import clear_widget_from_layout, init_scroll
+from Config.style import inter_stage_panel_style
 
 
 class PhueView(QWidget):
@@ -22,37 +23,31 @@ class PhueView(QWidget):
         # Data
         self.table_wrap_list = []
 
-        # QFrame
-        line = QFrame()                                     # QFrame
-        line.setFrameShape(QFrame.Shape.HLine)              # Horizontal Line
-        line.setStyleSheet("background-color: black;")      # Set Style
-        line.setFixedHeight(1)                              # Thickness
-
         # Layout
-        top_layout          = self._create_top_layout()
-        combo_layout        = self._create_combo_layout()
+        add_phue_layout     = self._create_add_phue_layout()
+        filter_layout       = self._create_filter_phue_layout()
         root_layout         = QVBoxLayout()
         self.tables_layout  = QHBoxLayout()
 
         # Scroll
-        self.scroll_area = Config.special.init_scroll(self.tables_layout)
+        self.scroll_area = init_scroll(self.tables_layout)
 
         # Root Layout
-        root_layout.addLayout(top_layout)
-        root_layout.addWidget(line)
-        root_layout.addLayout(combo_layout)
+        root_layout.addLayout(add_phue_layout)
+        root_layout.addWidget(self._create_line())
+        root_layout.addLayout(filter_layout)
         root_layout.addWidget(self.scroll_area)
 
         # Self
         self.setLayout(root_layout)
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.setObjectName("root")
-        self.setStyleSheet(Config.style.inter_stage_panel_style)
+        self.setStyleSheet(inter_stage_panel_style)
         self.hide()
 
     def show_view(self, all_phue, all_images, all_moves_names):
         self._reset_view()
-        Config.special.clear_widget_from_layout([self.tables_layout])
+        clear_widget_from_layout([self.tables_layout])
 
         # fill the combos with values
         all_images_name_list = [image.image_name for image in all_images]
@@ -98,7 +93,60 @@ class PhueView(QWidget):
 
         if row != -1:
             self.remove_transition_method(img_out, img_in, tbl.cellWidget(row, 0).currentText())
-            # tbl.removeRow(row)
+
+    # ============================== Layout ============================== #
+    def _create_line(self):
+        line = QFrame()                                     # QFrame
+        line.setFrameShape(QFrame.Shape.HLine)              # Horizontal Line
+        line.setStyleSheet("background-color: black;")      # Set Style
+        line.setFixedHeight(1)                              # Thickness
+        return line
+
+    # ============================== Handler ============================== #
+    def add_phue_handler(self, btn, img_out, img_in):
+        def handler():
+            # check if image out or image out is empty
+            if img_out == "-" or img_in == "-":
+                self.show_error("מעבר לא יכול להיות ריק")
+                return
+
+            # check if image out is the same as image out
+            if img_out == img_in:
+                self.show_error(f"מעבר לא תקין [{img_out} -> {img_in}]")
+                return
+
+            self.add_phue_method(img_out, img_in)
+
+        btn.clicked.connect(handler)
+
+    def remove_transition_handler(self, btn, tbl, img_out, img_in):
+        def handler():
+            self._remove_row(img_out, img_in, tbl)
+        btn.clicked.connect(handler)
+
+    def update_duration_handler(self, img_out, img_in, textbox, move_name):
+        def handler():
+            self.update_duration_method(img_out, img_in, move_name, textbox.text())
+        textbox.editingFinished.connect(handler)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     # ============================== Logic ============================== #
     def _init_table(self, img_out, img_in, length, transitions, all_moves_names):
@@ -108,6 +156,7 @@ class PhueView(QWidget):
         # widget that holds title and table
         wrap = QWidget()
         wrap.setObjectName("Wrap")
+
         # set title
         title = QLabel(f"{img_out} → {img_in}")
         title.setObjectName("title")
@@ -146,11 +195,11 @@ class PhueView(QWidget):
             duration_table_widget = QLineEdit(str(transition.duration))
             # duration_table_widget.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
             tbl.setCellWidget(row, 2, duration_table_widget)
-            duration_table_widget.editingFinished.connect(lambda image_out = img_out, image_in = img_in, le=duration_table_widget, m=transition.move_name: self.update_duration_method(img_out, img_in, m, le.text()))
-
+            # duration_table_widget.editingFinished.connect(lambda image_out = img_out, image_in = img_in, le=duration_table_widget, m=transition.move_name: self.update_duration_method(img_out, img_in, m, le.text()))
+            self.update_duration_handler(img_out, img_in, duration_table_widget, transition.move_name)
             # col 4
             remove_btn = QPushButton("❌")
-            remove_btn.clicked.connect(lambda _, image_out = img_out, image_in = img_in, t=tbl: self._remove_row(img_out, img_in, t))
+            self.remove_transition_handler(remove_btn, tbl, img_out, img_in)
             tbl.setCellWidget(row, 3, remove_btn)
 
         length_layout = QHBoxLayout()
@@ -194,23 +243,23 @@ class PhueView(QWidget):
 
         return wrap
 
-    def _create_top_layout(self):
+    def _create_add_phue_layout(self):
 
         layout = QHBoxLayout()
 
-        btn = QPushButton("הוסף מעבר")
+        btn = QPushButton("הוסף משעבר")
         btn.clicked.connect(lambda: self.add_phue_method(self.move_out_combo_top.currentText(), self.move_in_combo_top.currentText()))
         btn.setObjectName("add_inter_stage_button")
 
         move_out_layout = QVBoxLayout()
-        move_out_label = QLabel("מופע יוצא")
+        move_out_label = QLabel("מופע יושצא")
         self.move_out_combo_top = QComboBox()
         move_out_layout.addWidget(move_out_label)
         move_out_layout.addWidget(self.move_out_combo_top)
         self.move_out_combo_top.wheelEvent = lambda event: None
 
         move_in_layout = QVBoxLayout()
-        move_in_label = QLabel("מופע נכנס")
+        move_in_label = QLabel("מופע נשכנס")
         self.move_in_combo_top = QComboBox()
         move_in_layout.addWidget(move_in_label)
         move_in_layout.addWidget(self.move_in_combo_top)
@@ -223,7 +272,7 @@ class PhueView(QWidget):
 
         return layout
 
-    def _create_combo_layout(self):
+    def _create_filter_phue_layout(self):
         layout = QHBoxLayout()
 
         # move in
@@ -334,18 +383,4 @@ class PhueView(QWidget):
             item.setText("🔴")
         self.update_color_method(image_out, image_in, move_name)
 
-    def add_phue_handler(self, btn, img_out, img_in):
-        def handler():
-            # check if image out or image out is empty
-            if img_out == "-" or img_in == "-":
-                self.show_error("מעבר לא יכול להיות ריק")
-                return
 
-            # check if image out is the same as image out
-            if img_out == img_in:
-                self.show_error(f"מעבר לא תקין [{img_out} -> {img_in}]")
-                return
-
-            self.add_phue_method(img_out, img_in)
-
-        btn.clicked.connect(handler)

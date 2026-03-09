@@ -14,12 +14,7 @@ class ParametersTaView(QWidget):
         self.update_program_method = None
 
         # Table
-        self.tbl = QTableWidget(self)
-        self.tbl.setAlternatingRowColors(True)                                          # allows every even row to be colored in different color
-        self.tbl.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)          # disable the choosing
-        self.tbl.verticalHeader().setDefaultSectionSize(35)                             # set height of each row
-        self.tbl.horizontalHeader().setVisible(False)                                   # remove column names
-        self.tbl.itemChanged.connect(lambda: self.update_parameters(self.tbl))
+        self._create_table()
 
         # Content Layout
         root_layout = QHBoxLayout()
@@ -35,9 +30,11 @@ class ParametersTaView(QWidget):
         images_len          = len(all_images)
         total_cols          = 3 * images_len + 3
         self.image_combos   = []
+        self.all_images = all_images
+        self.parameters_list = parameters_list
 
         # Reset
-        self._create_table(total_cols)
+        self._reset_table(total_cols)
 
         # Block signals when the table is build
         self.tbl.blockSignals(True)
@@ -66,13 +63,13 @@ class ParametersTaView(QWidget):
         self.hide()
 
     # ============================== Layout ============================== #
-    def _create_table(self, total_cols):
-        self.tbl.clear()                            # Clear the table
-        self.tbl.setRowCount(0)                     # Remove the rows
-        self.tbl.setColumnCount(0)                  # Remove the columns
-        self.tbl.setRowCount(2 + 32)                # set how many rows the table will have
-        self.tbl.setColumnCount(total_cols)         # set how many columns the table will have
-        self.tbl.setVerticalHeaderLabels([""] + ["תמונה"] + [str(num) for num in range(1, 32+1)] + ["שכפל את 1"])   # set headers
+    def _create_table(self):
+        self.tbl = QTableWidget(self)
+        self.tbl.setAlternatingRowColors(True)                                          # allows every even row to be colored in different color
+        self.tbl.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)          # disable the choosing
+        self.tbl.verticalHeader().setDefaultSectionSize(35)                             # set height of each row
+        self.tbl.horizontalHeader().setVisible(False)                                   # remove column names
+        self.tbl.itemChanged.connect(lambda: self.update_parameters(self.tbl))
 
     def _create_row_0(self, images_len):
         # min
@@ -184,7 +181,7 @@ class ParametersTaView(QWidget):
             # Checkbox
             checkbox = QCheckBox()
             checkbox.setCursor(Qt.CursorShape.PointingHandCursor)
-            if parameter.is_copied:
+            if parameter.is_copied and row_num != 2:
                 checkbox.setChecked(True)
             checkbox.stateChanged.connect(lambda _: self.update_parameters(self.tbl))
 
@@ -202,6 +199,14 @@ class ParametersTaView(QWidget):
             row_num+=1
 
     # ============================== Logic ============================== #
+    def _reset_table(self, total_cols):
+        self.tbl.clear()                            # Clear the table
+        self.tbl.setRowCount(0)                     # Remove the rows
+        self.tbl.setColumnCount(0)                  # Remove the columns
+        self.tbl.setRowCount(2 + 32)                # set how many rows the table will have
+        self.tbl.setColumnCount(total_cols)         # set how many columns the table will have
+        self.tbl.setVerticalHeaderLabels([""] + ["תמונה"] + [str(num) for num in range(1, 32+1)] + ["שכפל את 1"])   # set headers
+
     def normalize_list(self, lst, target_len, fill_value=0):
         if len(lst) < target_len:
             lst.extend([fill_value] * (target_len - len(lst)))
@@ -247,7 +252,7 @@ class ParametersTaView(QWidget):
             self.update_program_method(row_num-2, min_list, max_list, type_list, struct, cycle, to_copy)
 
         # Show view
-        # self.show_view(self.all_images)
+        self.show_view(self.all_images, self.parameters_list)
 
 #######################################################################################################
 # The table run the method "update_parameters_method" when an item change value.                      #
