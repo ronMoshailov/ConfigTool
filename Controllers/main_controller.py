@@ -13,6 +13,7 @@ from Controllers.phue_controller import PhueController
 from Controllers.schedule_controller import ScheduleController
 from Controllers.settings_controller import SettingsController
 from Controllers.sk_controller import SkController
+from Managers.write_data_manager import WriteDataManager
 
 from View.image_view import ImageView
 from View.matrix_view import MatrixView
@@ -116,15 +117,7 @@ class MainController:
 
     def show_view(self, act):
         # Hide All Views
-        self.settings_controller.hide_view()
-        self.move_controller.hide_view()
-        self.matrix_controller.hide_view()
-        self.detector_controller.hide_view()
-        self.schedule_controller.hide_view()
-        self.sk_controller.hide_view()
-        self.image_controller.hide_view()
-        self.phue_controller.hide_view()
-        self.parameters_ta_controller.hide_view()
+        self.hide_view()
 
         # Initialize app
         if act == "init":
@@ -155,6 +148,17 @@ class MainController:
             self.parameters_ta_controller.show_view(self.image_model.all_images)
         else:
             self.settings_controller.show_view()
+
+    def hide_view(self):
+        self.settings_controller.hide_view()
+        self.move_controller.hide_view()
+        self.matrix_controller.hide_view()
+        self.detector_controller.hide_view()
+        self.schedule_controller.hide_view()
+        self.sk_controller.hide_view()
+        self.image_controller.hide_view()
+        self.phue_controller.hide_view()
+        self.parameters_ta_controller.hide_view()
 
     # ============================== CRUD ============================== #
     def rename_move(self, old_name, new_name):
@@ -217,8 +221,8 @@ class MainController:
         if not self.path_manager.create_project(self.root):
             return
 
-        self.write_phase_imports()
-
+        # self.write_phase_imports()
+        WriteDataManager.write_phase_imports(self.path_manager.path_init_tk1_dst, self.image_controller.get_all_images())
         self.settings_controller.write_settings_to_project(self.path_manager.path_init_dst)
         self.move_controller.write_moves_to_project(self.path_manager.path_tk1_dst, self.path_manager.path_init_tk1_dst)
         self.matrix_controller.write_matrix_to_file(self.path_manager.path_init_tk1_dst)
@@ -229,21 +233,22 @@ class MainController:
         self.parameters_ta_controller.write_to_file(self.path_manager.path_parameters_ta_dst, self.path_manager.path_init_tk1_dst, self.image_controller.fetch_images_by_sp())
         self.detector_controller.write_to_file(self.path_manager.path_init_tk1_dst, self.path_manager.path_tk1_dst)
 
-    def write_phase_imports(self):
-        with open(self.path_manager.path_init_tk1_dst, 'r', encoding='utf-8') as file:
-            code = []
-            for line in file:
-                if "write imports here" in line:
-                    for image in self.image_model.all_images:
-                        if image.image_name == "A":
-                            continue
-                        line = f"import phase.Phase{image.image_name};\n"
-                        code.append(line)
-                    continue
-                code.append(line)
 
-        with open(self.path_manager.path_init_tk1_dst, 'w', encoding='utf-8') as f:
-            f.writelines(code)
+    # def write_phase_imports(self):
+    #     with open(self.path_manager.path_init_tk1_dst, 'r', encoding='utf-8') as file:
+    #         code = []
+    #         for line in file:
+    #             if "write imports here" in line:
+    #                 for image in self.image_model.all_images:
+    #                     if image.image_name == "A":
+    #                         continue
+    #                     line = f"import phase.Phase{image.image_name};\n"
+    #                     code.append(line)
+    #                 continue
+    #             code.append(line)
+    #
+    #     with open(self.path_manager.path_init_tk1_dst, 'w', encoding='utf-8') as f:
+    #         f.writelines(code)
 
     def is_data_valid(self):
         if not self.matrix_controller.is_matrix_valid():

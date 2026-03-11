@@ -676,6 +676,23 @@ class WriteDataManager:
             code.append(line)
         return code
 
+    @staticmethod
+    def write_phase_imports(path_init_tk1_dst, all_images):
+        with open(path_init_tk1_dst, 'r', encoding='utf-8') as file:
+            code = []
+            for line in file:
+                if "write imports here" in line:
+                    for image in all_images:
+                        if image.image_name == "A":
+                            continue
+                        line = f"import phase.Phase{image.image_name};\n"
+                        code.append(line)
+                    continue
+                code.append(line)
+
+        with open(path_init_tk1_dst, 'w', encoding='utf-8') as f:
+            f.writelines(code)
+
     # ============================================================================== #
     # ------------------------------------ Phue ------------------------------------ #
     # ============================================================================== #

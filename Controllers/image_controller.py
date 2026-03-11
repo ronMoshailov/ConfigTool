@@ -48,6 +48,9 @@ class ImageController:
         """
         return self.model.get_images_by_sp()
 
+    def get_all_images(self):
+        return self.model.all_images
+
     def rename_move(self, old_name, new_name):
         # Used By Main Controller
         """
