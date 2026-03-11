@@ -29,6 +29,9 @@ class ImageController:
         self.all_moves_names = all_moves_names
         self.view.show_view(self.model.all_images, self.all_moves_names)
 
+    def hide_view(self):
+        self.view.hide_view()
+
     # ============================== CRUD ============================== #
     def add_image(self, name):
         """

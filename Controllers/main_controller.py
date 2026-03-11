@@ -45,50 +45,48 @@ class MainController:
         self.path_manager = PathManager()
 
         # =============== Models =============== #
-        self.settings_model = SettingsModel()
-        self.move_model = MoveModel()
-        self.matrix_model = MatrixModel()
-        self.sk_model = SkModel()
-        self.detector_model = DetectorModel()
-        self.schedule_model = ScheduleModel()
-        self.image_model = ImageModel()
-        self.phue_model = PhueModel()
-        self.parameters_ta_model = ParametersTaModel()
+        self.settings_model         = SettingsModel()
+        self.move_model             = MoveModel()
+        self.matrix_model           = MatrixModel()
+        self.sk_model               = SkModel()
+        self.detector_model         = DetectorModel()
+        self.schedule_model         = ScheduleModel()
+        self.image_model            = ImageModel()
+        self.phue_model             = PhueModel()
+        self.parameters_ta_model    = ParametersTaModel()
 
         # =============== Views =============== #
-        self.settings_view = SettingsView()
-        self.move_view = MoveView()
-        self.matrix_view = MatrixView()
-        self.sk_view = SkView()
-        self.detector_view = DetectorView()
-        self.schedule_view = ScheduleView()
-        self.image_view = ImageView()
-        self.phue_view = PhueView()
-        self.parameters_ta_view = ParametersTaView()
-
-        self.navigator_view = NavigatorView(self.show_view, self.print_all)
+        self.settings_view          = SettingsView()
+        self.move_view              = MoveView()
+        self.matrix_view            = MatrixView()
+        self.sk_view                = SkView()
+        self.detector_view          = DetectorView()
+        self.schedule_view          = ScheduleView()
+        self.image_view             = ImageView()
+        self.phue_view              = PhueView()
+        self.parameters_ta_view     = ParametersTaView()
+        self.navigator_view         = NavigatorView(self.show_view, self.print_all)
 
         # =============== Controllers =============== #
-        self.settings_controller = SettingsController(self.settings_view, self.settings_model)
-        self.move_controller = MoveController(self.move_view, self.move_model)
-        self.matrix_controller = MatrixController(self.matrix_view, self.matrix_model)
-        self.sk_controller = SkController(self.sk_view, self.sk_model)
-        self.detector_controller = DetectorController(self.detector_view, self.detector_model)
-        self.schedule_controller = ScheduleController(self.schedule_view, self.schedule_model)
-        self.image_controller = ImageController(self.image_view, self.image_model)
-        self.phue_controller = PhueController(self.phue_view, self.phue_model)
-        self.parameters_ta_controller = ParametersTaController(self.parameters_ta_view, self.parameters_ta_model)
-
+        self.settings_controller        = SettingsController(self.settings_view, self.settings_model)
+        self.move_controller            = MoveController(self.move_view, self.move_model)
+        self.matrix_controller          = MatrixController(self.matrix_view, self.matrix_model)
+        self.sk_controller              = SkController(self.sk_view, self.sk_model)
+        self.detector_controller        = DetectorController(self.detector_view, self.detector_model)
+        self.schedule_controller        = ScheduleController(self.schedule_view, self.schedule_model)
+        self.image_controller           = ImageController(self.image_view, self.image_model)
+        self.phue_controller            = PhueController(self.phue_view, self.phue_model)
+        self.parameters_ta_controller   = ParametersTaController(self.parameters_ta_view, self.parameters_ta_model)
         # self.io_controller            = IoController(root)
 
         # =============== Set Controllers Methods =============== #
-        self.move_controller.view.rename_move_method = self.rename_move
-        self.move_controller.global_remove_move = self.global_remove_move
-        self.move_controller.remove_move_from_matrix_method = self.matrix_controller.remove_move
-        self.matrix_controller.get_move_type = self.move_controller.get_move_type
-        self.navigator_view.write_to_code_method = self.write_to_code
-        self.parameters_ta_controller.get_sp_by_image_method = self.image_controller.get_sp_by_image
-        self.detector_controller.get_all_moves_names = self.move_controller.get_all_moves_names
+        self.move_controller.view.rename_move_method            = self.rename_move
+        self.move_controller.global_remove_move                 = self.global_remove_move
+        self.move_controller.remove_move_from_matrix_method     = self.matrix_controller.remove_move
+        self.matrix_controller.get_move_type                    = self.move_controller.get_move_type
+        self.navigator_view.write_to_code_method                = self.write_to_code
+        self.parameters_ta_controller.get_sp_by_image_method    = self.image_controller.get_sp_by_image
+        self.detector_controller.get_all_moves_names            = self.move_controller.get_all_moves_names
 
         # =============== Root Layout =============== #
         root_layout = QHBoxLayout()
@@ -121,14 +119,12 @@ class MainController:
         self.settings_controller.hide_view()
         self.move_controller.hide_view()
         self.matrix_controller.hide_view()
-
-        self.matrix_view.hide_view()
-        self.detector_view.hide_view()
-        self.schedule_view.hide_view()
-        self.sk_view.hide_view()
-        self.image_view.hide_view()
-        self.phue_view.hide_view()
-        self.parameters_ta_view.hide_view()
+        self.detector_controller.hide_view()
+        self.schedule_controller.hide_view()
+        self.sk_controller.hide_view()
+        self.image_controller.hide_view()
+        self.phue_controller.hide_view()
+        self.parameters_ta_controller.hide_view()
 
         # Initialize app
         if act == "init":
@@ -227,7 +223,6 @@ class MainController:
         self.move_controller.write_moves_to_project(self.path_manager.path_tk1_dst, self.path_manager.path_init_tk1_dst)
         self.matrix_controller.write_matrix_to_file(self.path_manager.path_init_tk1_dst)
         self.sk_controller.write_to_file(self.path_manager.path_init_dst)
-
         self.schedule_controller.write_to_file(self.path_manager.path_init_tk1_dst)
         self.image_controller.write_to_file(self.path_manager.path_tk1_dst, self.path_manager.path_init_tk1_dst, self.path_manager.path_phase_folder_dst)
         self.phue_controller.write_to_file(self.path_manager.path_init_tk1_dst, self.path_manager.path_phue_folder_dst)
@@ -249,6 +244,21 @@ class MainController:
 
         with open(self.path_manager.path_init_tk1_dst, 'w', encoding='utf-8') as f:
             f.writelines(code)
+
+    def is_data_valid(self):
+        if not self.matrix_controller.is_matrix_valid():
+            self.show_view("matrix")
+            return False
+
+        if not self.phue_controller.is_names_valid():
+            self.show_view("phue")
+            return False
+
+        if not self.image_controller.is_sp_valid():
+            self.show_view("image")
+            return False
+
+        return True
 
     # ============================== Debug ============================== #
     def print_all(self):
@@ -350,17 +360,3 @@ class MainController:
         dialog.setLayout(layout)
         dialog.exec()
 
-    def is_data_valid(self):
-        if not self.matrix_controller.is_matrix_valid():
-            self.show_view("matrix")
-            return False
-
-        if not self.phue_controller.is_names_valid():
-            self.show_view("phue")
-            return False
-
-        if not self.image_controller.is_sp_valid():
-            self.show_view("image")
-            return False
-
-        return True
