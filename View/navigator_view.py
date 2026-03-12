@@ -5,10 +5,10 @@ import Config
 
 
 class NavigatorView(QWidget):
-    def __init__(self, show_view_method, print_all_method):
+    def __init__(self, show_view_method, print_all_method=None):
         super().__init__()
         self.show_view_method = show_view_method
-        self.print_all_method = print_all_method
+        # self.print_all_method = print_all_method
         self.write_to_code_method = None
 
     #     # =============== QPushButton =============== #
@@ -62,7 +62,7 @@ class NavigatorView(QWidget):
         image_panel_btn = QPushButton("🖼️ תמונות 🖼️")             #  9
         # program_panel_btn = QPushButton(" תוכניות ")          # 10
         inter_stage_panel_btn = QPushButton("➡️ מעברים ➡️")       # 11
-        display_all_btn = QPushButton("🖨️ הדפס הכל 🖨️")           # 12
+        # display_all_btn = QPushButton("🖨️ הדפס הכל 🖨️")           # 12
         parameters_panel_btn = QPushButton("📐פרמטרים📐")  # 13
 
     #
@@ -80,7 +80,7 @@ class NavigatorView(QWidget):
             image_panel_btn,         #  9
             inter_stage_panel_btn,   # 10
             parameters_panel_btn,    # 11
-            display_all_btn,         # 12
+            # display_all_btn,         # 12
         ]
     #
     #     # =============== connect listener =============== #
@@ -96,7 +96,7 @@ class NavigatorView(QWidget):
         buttons[ 8].clicked.connect(lambda: self.show_view_method("image"))
         buttons[ 9].clicked.connect(lambda: self.show_view_method("phue"))
         buttons[10].clicked.connect(lambda: self.show_view_method("parameters_ta"))
-        buttons[11].clicked.connect(lambda: self.print_all_method())
+        # buttons[11].clicked.connect(lambda: self.print_all_method())
     #
     #     # =============== special methods =============== #
     #     set_btn_disable(buttons[1:])                         # Disable buttons
