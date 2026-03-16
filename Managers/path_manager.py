@@ -30,7 +30,7 @@ class PathManager:
         This method create new project and set the destinations paths
         """
         # set source project path
-        source_folder = Path(os.path.join(Config.constants.PROJECT_DIR, "Template"))
+        source_folder = Path(os.path.join(Config.constants.PROJECT_DIR, "TelAvivTemplate"))
 
         # user choose folder
         target_dir = QFileDialog.getExistingDirectory(view, "בחר תיקייה לשמירת הפרויקט")

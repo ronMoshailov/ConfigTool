@@ -13,6 +13,7 @@ from Controllers.phue_controller import PhueController
 from Controllers.schedule_controller import ScheduleController
 from Controllers.settings_controller import SettingsController
 from Controllers.sk_controller import SkController
+from Managers.display_manager import DisplayManager
 from Managers.write_data_manager import WriteDataManager
 
 from View.image_view import ImageView
@@ -43,7 +44,8 @@ from Managers.load_data_manager import LoadDataManager
 class MainController:
     def __init__(self):
         # =============== Managers =============== #
-        self.path_manager = PathManager()
+        self.path_manager       = PathManager()
+        self.display_manager    = DisplayManager()
 
         # =============== Models =============== #
         self.settings_model         = SettingsModel()
@@ -90,6 +92,17 @@ class MainController:
         self.parameters_ta_controller.get_sp_by_image_method    = self.image_controller.get_sp_by_image
         self.detector_controller.get_all_moves_names            = self.move_controller.get_all_moves_names
 
+        # =============== Set Display Manager =============== #
+        self.display_manager.register("move"            , self.move_controller)
+        self.display_manager.register("matrix"          , self.matrix_controller)
+        self.display_manager.register("detector"        , self.detector_controller)
+        self.display_manager.register("sk"              , self.sk_controller)
+        self.display_manager.register("schedule"        , self.schedule_controller)
+        self.display_manager.register("image"           , self.image_controller)
+        self.display_manager.register("phue"            , self.phue_controller)
+        self.display_manager.register("parameters_ta"   , self.parameters_ta_controller)
+        self.display_manager.register("settings"        , self.settings_controller)
+
         # =============== Root Layout =============== #
         root_layout = QHBoxLayout()
         root_layout.addWidget(self.move_view)
@@ -117,9 +130,6 @@ class MainController:
         self.root.showMaximized()  # show in full-screen
 
     def show_view(self, act):
-        # Hide All Views
-        self.hide_view()
-
         # Initialize app
         if act == "init":
             self._initialize_app()
@@ -130,36 +140,18 @@ class MainController:
             return
 
         # Choose which view to show
-        if act == "move":
-            self.move_controller.show_view()
-        elif act == "matrix":
-            self.matrix_controller.show_view(self.move_model.all_moves)
-        elif act == "detector":
-            self.detector_controller.show_view()
-        elif act == "sk":
-            self.sk_controller.show_view(self.move_model.all_moves)
-        elif act == "schedule":
-            self.schedule_controller.show_view()
+        if act == "matrix":
+            self.display_manager.show("matrix", self.move_model.all_moves)
         elif act == "image":
-            self.image_controller.show_view(self.move_controller.get_all_moves_names())
+            self.display_manager.show("image", self.move_controller.get_all_moves_names())
         elif act == "phue":
-            self.phue_controller.show_view(self.image_model.all_images, self.move_controller.get_all_moves_names())
+            self.display_manager.show("phue", self.image_model.all_images, self.move_controller.get_all_moves_names())
         elif act == "parameters_ta":
-            # self.image_controller.is_sp_valid()
-            self.parameters_ta_controller.show_view(self.image_model.all_images)
+            self.display_manager.show("parameters_ta", self.image_model.all_images)
+        elif act == "sk":
+            self.display_manager.show("sk", self.move_model.all_moves)
         else:
-            self.settings_controller.show_view()
-
-    def hide_view(self):
-        self.settings_controller.hide_view()
-        self.move_controller.hide_view()
-        self.matrix_controller.hide_view()
-        self.detector_controller.hide_view()
-        self.schedule_controller.hide_view()
-        self.sk_controller.hide_view()
-        self.image_controller.hide_view()
-        self.phue_controller.hide_view()
-        self.parameters_ta_controller.hide_view()
+            self.display_manager.show(act)
 
     # ============================== CRUD ============================== #
     def rename_move(self, old_name, new_name):

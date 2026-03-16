@@ -1,9 +1,3 @@
-import re
-
-from PyQt6.QtWidgets import QMessageBox
-from pathlib import Path
-
-import Config.constants
 from Config.exceptions import DuplicateMoveError, DuplicatePhueError
 from Managers.load_data_manager import LoadDataManager
 from Managers.write_data_manager import WriteDataManager
@@ -29,8 +23,6 @@ class PhueController:
         self.view.update_color_method               = self.update_color
         self.view.update_duration_method            = self.update_duration
         self.view.update_phue_len_method            = self.update_phue_len
-
-
 
     def init_model(self, phue_paths, path_init_tk1): # self.phue_model.phue_paths, self.path_init_tk1
 
