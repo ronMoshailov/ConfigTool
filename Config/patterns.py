@@ -62,23 +62,23 @@ matrix_pattern = re.compile(
 sk_pattern = re.compile(
     # target: new SchaltKanal(Var.tk1.k5     , Move.lred,   hwRed200  , Hw.HF, sk1, 7, Hw.SK);
     # should be used with "match"
-    r'\s*'                              # start with 0 or more spaces
-    r'(?://)?'                          # maybe will be here //
-    r'\s*'                              # then should be 0 or more spaces
-    r'new SchaltKanal\(Var\.tk1\.'      # then should be "new SchaltKanal(Var.tk1."
-    r'(k\d+|p[a-z]|B[a-z])'             # then should be "k" with at least 1 number after the 'k'
-    r'\s*,\s*'                          # then skip to the next argument
-    r'Move\.(?:lred|lamber|lgreen)'     # then should be "Move.lred" or "Move.lamber" or "Move.lgreen"
-    r'\s*,\s*'                          # then skip to the next argument
-    r'(hwGreen200|hwAmber200|hwRed200)' # then catch "hwGreen200" or "hwAmber200" or "hwRed200"
-    r'\s*,\s*'                          # then skip to the next argument
-    r'Hw.HF'                            # then should be "Hw.HF"
-    r'\s*,\s*'                          # then skip to the next argument
-    r'sk(\d+)'                          # then catch the number sk card
-    r'\s*,\s*'                          # then skip to the next argument
-    r'(\d+)'                            # then catch the number channel
-    r'\s*,\s*'                          # then skip to the next argument
-    r'Hw.SK\);'                         # then should be the end of the line
+    r'\s*'                                          # start with 0 or more spaces
+    r'(?://)?'                                      # maybe will be here //
+    r'\s*'                                          # then should be 0 or more spaces
+    r'new SchaltKanal\(Var\.tk1\.'                  # then should be "new SchaltKanal(Var.tk1."
+    r'(k\d+|p[a-z]|B[a-z])'                         # then should be "k" with at least 1 number after the 'k'
+    r'\s*,\s*'                                      # then skip to the next argument
+    r'Move\.(?:lred|lamber|lgreen|lamber_nuge)'     # then should be "Move.lred" or "Move.lamber" or "Move.lgreen"
+    r'\s*,\s*'                                      # then skip to the next argument
+    r'(hwGreen200|hwAmber200|hwRed200)'             # then catch "hwGreen200" or "hwAmber200" or "hwRed200"
+    r'\s*,\s*'                                      # then skip to the next argument
+    r'Hw.HF'                                        # then should be "Hw.HF"
+    r'\s*,\s*'                                      # then skip to the next argument
+    r'sk(\d+)'                                      # then catch the number sk card
+    r'\s*,\s*'                                      # then skip to the next argument
+    r'(\d+)'                                        # then catch the number channel
+    r'\s*,\s*'                                      # then skip to the next argument
+    r'Hw\.(?:SK|KK)\);'                             # then should be the end of the line (?: group without catching)
 )
 
 # ===================== detector pattern ==================== #

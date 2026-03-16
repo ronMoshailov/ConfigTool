@@ -1,8 +1,8 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QWidget, QHBoxLayout, QMessageBox, QMainWindow, QTextEdit, QVBoxLayout, QDialog
+from PyQt6.QtWidgets import QWidget, QHBoxLayout, QMessageBox, QMainWindow
 
 import Config
-from Config.exceptions import InvalidMoveName, DuplicateMoveError, InvalidImagesSP
+from Config.exceptions import InvalidMoveName, DuplicateMoveError
 
 from Controllers.parameters_controller import ParametersTaController
 from Controllers.detector_controller import DetectorController
@@ -38,7 +38,6 @@ from Models.settings_model import SettingsModel
 from Models.sk_model import SkModel
 
 from Managers.path_manager import PathManager
-from Managers.load_data_manager import LoadDataManager
 
 
 class MainController:
@@ -133,6 +132,8 @@ class MainController:
         # Initialize app
         if act == "init":
             self._initialize_app()
+            self.display_manager.show("settings")
+            return
 
         # Check if the project initialized
         if self.path_manager.path_project is None:
@@ -226,6 +227,20 @@ class MainController:
         self.parameters_ta_controller.write_to_file(self.path_manager.path_parameters_ta_dst, self.path_manager.path_init_tk1_dst, self.image_controller.fetch_images_by_sp())
         self.detector_controller.write_to_file(self.path_manager.path_init_tk1_dst, self.path_manager.path_tk1_dst)
 
+    def is_data_valid(self):
+        if not self.matrix_controller.is_matrix_valid():
+            self.show_view("matrix")
+            return False
+
+        if not self.phue_controller.is_names_valid():
+            self.show_view("phue")
+            return False
+
+        if not self.image_controller.is_sp_valid():
+            self.show_view("image")
+            return False
+
+        return True
 
     # def write_phase_imports(self):
     #     with open(self.path_manager.path_init_tk1_dst, 'r', encoding='utf-8') as file:
@@ -243,20 +258,6 @@ class MainController:
     #     with open(self.path_manager.path_init_tk1_dst, 'w', encoding='utf-8') as f:
     #         f.writelines(code)
 
-    def is_data_valid(self):
-        if not self.matrix_controller.is_matrix_valid():
-            self.show_view("matrix")
-            return False
-
-        if not self.phue_controller.is_names_valid():
-            self.show_view("phue")
-            return False
-
-        if not self.image_controller.is_sp_valid():
-            self.show_view("image")
-            return False
-
-        return True
 
     # ============================== Debug ============================== #
     # def print_all(self):

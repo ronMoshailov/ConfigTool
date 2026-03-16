@@ -207,7 +207,7 @@ class LoadDataManager:
     @staticmethod
     def load_phue_data(phue_paths):
         class_pattern       = re.compile(r"public\s+class\s+Phue([A-Za-z0-9]+)_?([A-Za-z0-9]+)")
-        sg_pattern          = re.compile( r"_tk\.(\w+)\.(TurnOn|TurnOff)\s*\(\s*(\d+)\s*\)")
+        sg_pattern          = re.compile( r"_tk\.(\w+)\s*\.(TurnOn|TurnOff)\s*\(\s*(\d+)\s*\)")
 
         data = []
 

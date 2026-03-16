@@ -1,7 +1,8 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout
+from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QComboBox
 
 import Config
+from Config.constants import all_authorities
 
 
 class NavigatorView(QWidget):
@@ -23,6 +24,13 @@ class NavigatorView(QWidget):
             buttons_layout.addWidget(btn)
             if idx == 1:
                 buttons_layout.addSpacing(20)
+
+        # combo
+        combo = QComboBox()
+        for authority in all_authorities:
+            combo.addItem(authority)
+        buttons_layout.addWidget(combo)
+
         buttons_layout.addStretch()
 
         buttons_layout.addWidget(save_btn)
