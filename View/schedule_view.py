@@ -49,7 +49,7 @@ class ScheduleView(QWidget):
         # Data
         self.table_list = []
         self.add_row_btn_list = []
-        self.is_copy_sunday = True
+        self.is_copy_sunday = None
 
         # Style
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)

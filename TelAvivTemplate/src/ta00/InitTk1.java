@@ -9,6 +9,8 @@ import vt.StgEbene;
 import special.*;
 import special.Move.MoveType;
 import special.Node.SpecialProgram;
+import phase.*;
+import phue.*;
 
 
 public class InitTk1 extends InitTk {

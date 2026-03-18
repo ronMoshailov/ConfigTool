@@ -22,6 +22,15 @@ class _TableScheduleModel:
         """
         return self.cell_list
 
+    def is_table_equal(self, tbl):
+        for cell1, cell2 in zip(self.cell_list, tbl.cell_list):
+            if cell1.prog_num != cell2.prog_num:
+                return False
+            if cell1.hour != cell2.hour:
+                return False
+            if cell1.minute != cell2.minute:
+                return False
+        return True
 
 class ScheduleModel:
     def __init__(self):
@@ -81,4 +90,9 @@ class ScheduleModel:
         for i in range(7):
             self.all_schedule_tables.append(_TableScheduleModel(i+1))
 
+    def is_sunday_to_thursday_equal(self):
+        for i in range(1,5):
+            if not self.all_schedule_tables[0].is_table_equal(self.all_schedule_tables[i]):
+                return False
+        return True
 

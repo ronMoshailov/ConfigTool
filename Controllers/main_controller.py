@@ -1,8 +1,8 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QMessageBox, QMainWindow
 
-import Config
 from Config.exceptions import InvalidMoveName, DuplicateMoveError
+from Config.style import main_window_style
 
 from Controllers.parameters_controller import ParametersTaController
 from Controllers.detector_controller import DetectorController
@@ -124,15 +124,15 @@ class MainController:
         self.root = QMainWindow()
         self.root.setWindowTitle("Tel Aviv Version")
         self.root.setCentralWidget(self.main_root)
-        self.root.setStyleSheet(Config.style.main_window_style)
+        self.root.setStyleSheet(main_window_style)
         self.root.show()
         self.root.showMaximized()  # show in full-screen
 
     def show_view(self, act):
         # Initialize app
         if act == "init":
-            self._initialize_app()
-            self.display_manager.show("settings")
+            if self._initialize_app():
+                self.display_manager.show("settings")
             return
 
         # Check if the project initialized
@@ -174,7 +174,7 @@ class MainController:
         self.sk_controller.remove_move(move_name)
 
     # ============================== Logic ============================== #
-    def reset_all(self):
+    def reset_models(self):
         self.sk_controller.reset()
         self.phue_controller.reset()
         self.move_controller.reset()
@@ -189,10 +189,10 @@ class MainController:
         # Set Project Path
         if not self.path_manager.set_folder_path():
             QMessageBox.critical(self.main_root, "שגיאה", "לא נבחרה תיקייה")
-            return
+            return False
 
         # Reset
-        self.reset_all()
+        self.reset_models()
 
         # Initialize Controllers
         self.path_manager.set_files_path(self.phue_model.phue_paths)
@@ -206,6 +206,7 @@ class MainController:
         self.phue_controller.init_model(self.phue_model.phue_paths, self.path_manager.path_init_tk1)
         self.schedule_controller.init_model(self.path_manager.path_init_tk1)
         self.parameters_ta_controller.init_model(self.path_manager.path_parameters_ta, len(self.image_model.all_images))
+        return True
 
     # ============================== Write to file ============================== #
     def write_to_code(self):
@@ -223,7 +224,7 @@ class MainController:
         self.sk_controller.write_to_file(self.path_manager.path_init_dst)
         self.schedule_controller.write_to_file(self.path_manager.path_init_tk1_dst)
         self.image_controller.write_to_file(self.path_manager.path_tk1_dst, self.path_manager.path_init_tk1_dst, self.path_manager.path_phase_folder_dst)
-        self.phue_controller.write_to_file(self.path_manager.path_init_tk1_dst, self.path_manager.path_phue_folder_dst)
+        self.phue_controller.write_to_file(self.path_manager.path_tk1_dst, self.path_manager.path_init_tk1_dst, self.path_manager.path_phue_folder_dst)
         self.parameters_ta_controller.write_to_file(self.path_manager.path_parameters_ta_dst, self.path_manager.path_init_tk1_dst, self.image_controller.fetch_images_by_sp())
         self.detector_controller.write_to_file(self.path_manager.path_init_tk1_dst, self.path_manager.path_tk1_dst)
 

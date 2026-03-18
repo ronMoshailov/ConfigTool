@@ -111,7 +111,7 @@ class LoadDataManager:
         return count
 
     @staticmethod
-    def load_schedule_data(path, is_copy_sunday):
+    def load_schedule_data(path, is_copy_sunday=None):
         mapping_day = {"sun_thur": [1, 2, 3, 4, 5], "sunday": [1], "monday": [2], "tuesday": [3], "wednesday": [4],
                        "thursday": [5], "fr": [6], "sa": [7]}
         data = []
@@ -130,10 +130,10 @@ class LoadDataManager:
                         return data
 
                     # check if each day have different schedule
-                    if not is_copy_sunday or (var_name == "monday"):
-                        is_copy_sunday = False
-                    else:
-                        is_copy_sunday = True
+                    # if not is_copy_sunday or (var_name == "monday"):
+                    #     is_copy_sunday = False
+                    # else:
+                    #     is_copy_sunday = True
 
                     #
                     program_number = int(match.group(2))

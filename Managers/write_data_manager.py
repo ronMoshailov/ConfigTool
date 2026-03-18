@@ -59,9 +59,12 @@ class WriteDataManager:
                     blinkers_line = blinkers_line[:-2] + ";	// blinkers\n"
 
                     # append the lines of the moves to the code
-                    code.append(cars_line)
-                    code.append(pedestrians_line)
-                    code.append(blinkers_line)
+                    if not moves_dictionary["k"] == []:
+                        code.append(cars_line)
+                    if not moves_dictionary["p"] == []:
+                        code.append(pedestrians_line)
+                    if not moves_dictionary["B"] == []:
+                        code.append(blinkers_line)
                     continue
 
                 # append line that are not related to moves
@@ -485,7 +488,7 @@ class WriteDataManager:
             line += "import special.Stage;\n"
             line += f"import {Config.constants.PROJECT_NUMBER}.Tk1;\n"
             line += f"import {Config.constants.PROJECT_NUMBER}.ParametersTelAviv;\n"
-            line += f"import tk.Var;\n"
+            line += f"import {Config.constants.PROJECT_NUMBER}.Var;\n"
             line += "\n"
             line += f"public class Phase{image_name}"
             line += " extends Stage {\n"
@@ -753,7 +756,7 @@ class WriteDataManager:
                 f.write(line)
 
     @staticmethod
-    def create_phue_tk1_code(init_tk1_dst, all_phue):
+    def create_phue_init_tk1_code(init_tk1_dst, all_phue):
         with open(init_tk1_dst, 'r', encoding='utf-8') as f:
             lines = f.readlines()
 
@@ -782,6 +785,26 @@ class WriteDataManager:
 
                     code.append(line)
                     line = ""
+                continue
+            code.append(line)
+        return code
+
+    @staticmethod
+    def create_phue_tk1_code(tk1_dst, all_phue):
+        with open(tk1_dst, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+
+        code = []
+        for line in lines:
+            if "write phues here" in line:
+                # code = []
+                line = "\tpublic InterStage "
+
+                for phue in all_phue:
+                    line += f"Phue{phue.image_out}_{phue.image_in}, "
+                line = line[:-2] + ";\n"
+
+                code.append(line)
                 continue
             code.append(line)
         return code

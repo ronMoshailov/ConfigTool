@@ -26,11 +26,11 @@ public class Tk1 extends Node {
 //	public Output PB;
 	//stages
 	public MainStage PhA;
-	public Stage PhEQA, PhB, PhC, PhD, PhE;
-	
+	// write images here
+
 	//interstages
-	public InterStage PhueEQA_B, PhueB_C, PhueB_D, PhueC_D, PhueD_A, PhueD_E, PhueE_A;
-	
+	// write phues here
+
 	public Preemptiontk1 preemption;
 
 	public boolean isExitConditionsDone() {

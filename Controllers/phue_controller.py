@@ -156,10 +156,13 @@ class PhueController:
         return True
 
     # ============================== Write To File ============================== #
-    def write_to_file(self, init_tk1_dst, phue_folder_dst):
+    def write_to_file(self, tk1_dst, init_tk1_dst, phue_folder_dst):
         # create files
         WriteDataManager.create_phue_file_code(self.model.all_phue, phue_folder_dst)
 
-        code = WriteDataManager.create_phue_tk1_code(init_tk1_dst, self.model.all_phue)
+        code = WriteDataManager.create_phue_init_tk1_code(init_tk1_dst, self.model.all_phue)
         WriteDataManager.write_code(init_tk1_dst, code)
+
+        code = WriteDataManager.create_phue_tk1_code(tk1_dst, self.model.all_phue)
+        WriteDataManager.write_code(tk1_dst, code)
 

@@ -10,7 +10,7 @@ class ScheduleController:
         # Fields
         self.view               = view
         self.model              = model
-        self.is_copy_sunday     = True
+        self.is_copy_sunday     = None
 
         # Set View Methods
         self.view.fetch_all_channels_method     = self.fetch_all_channels
@@ -20,9 +20,11 @@ class ScheduleController:
         self.view.set_new_cells_method          = self.set_new_cells
 
     def init_model(self, path):
-        data = LoadDataManager.load_schedule_data(path, self.is_copy_sunday)
+        data = LoadDataManager.load_schedule_data(path)
         for day, hour, minute, program_number in data:
             self.model.create_cell(day, hour, minute, program_number)
+        self.is_copy_sunday = self.model.is_sunday_to_thursday_equal()
+        self.view.is_copy_sunday = self.is_copy_sunday
 
     def show_view(self):
         self.view.show_view()
