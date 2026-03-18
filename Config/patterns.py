@@ -98,6 +98,21 @@ detectors_pattern = re.compile(
     r'\s*,\s*true\s*,\s*true\s*,\s*true\s*\);'  # then should be the end of the line
 )
 
+gap_detectors_pattern = re.compile(
+    r'\s*'
+    r'Var\.tk1\.'
+    r'(\w+)'
+    r'\.gapUnit'
+    r'\s*=\s*'
+    r'VarInt\.init\(Var\.tk1,'
+    r'\s*'
+    r'"GAP '
+    r'(\w-)+'
+    r'\s*,\s*'
+    r'(\d+)'
+    r', true, true, true\);'
+)
+
 # ===================== schedule pattern ==================== #
 schedule_pattern = re.compile(
     # should be used with "match"
@@ -143,6 +158,7 @@ settings_pattern = re.compile(
     r'Var\.tk1\s*=\s*new\s+Tk1\([^,]+,\s*[^,]+,\s*[^,]+,\s*(?P<tk1Arg>\d+)\s*\)',
     re.MULTILINE
 )
+
 
 # ===================== Explanation ==================== #
 # *     - 0 or more
