@@ -12,11 +12,10 @@ class _IoChannel:
         self.is_comment     = is_comment
 
 class _IoCard:
-    def __init__(self, card_number):
-        self.card_number    = card_number
+    def __init__(self):
         self.all_channels   = []
 
-        for i in range(24):
+        for i in range(64):
             channel = _IoChannel(channel=i+1)
             self.all_channels.append(channel)
 
@@ -28,34 +27,40 @@ class _IoCard:
             if sk_channel.channel == channel_number:
                 sk_channel.set(name, is_comment)
 
-class IoModel:
+    def reset(self):
+        self.all_channels.clear()
+        for i in range(64):
+            channel = _IoChannel(channel=i+1)
+            self.all_channels.append(channel)
+
+class Io64Model:
     def __init__(self):
-        self.io_list = []
+        self.io64_card = _IoCard()
 
     # ============================== CRUD ============================== #
-    def add_io_card(self):
-        """
-        This method add new io card to the model
-        """
-        io_card = _IoCard(len(self.io_list) + 1)
-        self.io_list.append(io_card)
+    # def add_io_card(self):
+    #     """
+    #     This method add new io card to the model
+    #     """
+    #     io_card = _IoCard(len(self.io_list) + 1)
+    #     self.io_list.append(io_card)
 
-    def remove_card_sk(self, card_num):
-        """
-        This method removes sk card from the model
-        """
-        is_removed = False
-        io_to_remove = None
-
-        for card in self.io_list:
-            if card.card_number == card_num and is_removed is False:
-                io_to_remove = card
-                is_removed = True
-                continue
-            if is_removed:
-                card.card_number = card.card_number - 1
-
-        self.io_list.remove(io_to_remove)
+    # def remove_card_sk(self, card_num):
+    #     """
+    #     This method removes sk card from the model
+    #     """
+    #     is_removed = False
+    #     io_to_remove = None
+    #
+    #     for card in self.io_list:
+    #         if card.card_number == card_num and is_removed is False:
+    #             io_to_remove = card
+    #             is_removed = True
+    #             continue
+    #         if is_removed:
+    #             card.card_number = card.card_number - 1
+    #
+    #     self.io_list.remove(io_to_remove)
 
     # def rename_move(self, old_name, new_name):
     #     """
@@ -81,23 +86,19 @@ class IoModel:
         """
         This method set channel of a sk card
         """
-        for io_card in self.io_list:
-            if io_card.card_number == card_number:
-                io_card.set_channel(var_name, channel, is_commented)
+        self.io64_card.set_channel(var_name, channel, is_commented)
 
-    def reset_io_model(self):
+    def reset_io64_model(self):
         """
         This method removes all the data in the model
         """
-        self.io_list.clear()
+        self.io64_card.reset()
 
     def print_data(self):
-        for io in self.io_list:
-            card_num = io.card_number
-            channels = io.all_channels
+        channels = self.io64_card.all_channels
 
-            print(f"==== {card_num} ====")
-            for channel in channels:
-                if channel.name == "":
-                    continue
-                print(f"name: {channel.name:<30}, channel: {channel.channel:<10}, is_comment: {channel.is_comment:<10}")
+        print(f"==== IO64 ====")
+        for channel in channels:
+            if channel.name == "":
+                continue
+            print(f"name: {channel.name:<30}, channel: {channel.channel:<10}, is_comment: {channel.is_comment:<10}")

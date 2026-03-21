@@ -40,6 +40,9 @@ class IoModel:
         io_card = _IoCard(len(self.io_list) + 1)
         self.io_list.append(io_card)
 
+    def get_io_list(self):
+        return self.io_list
+
     def remove_card_sk(self, card_num):
         """
         This method removes sk card from the model

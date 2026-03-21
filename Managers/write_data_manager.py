@@ -238,6 +238,47 @@ class WriteDataManager:
         return code
 
     # ============================================================================== #
+    # ------------------------------------- IO24 ----------------------------------- #
+    # ============================================================================== #
+    @classmethod
+    def create_io24_code(cls, path, io_list):
+        code = []
+        # update tk1.java file
+        with open(path, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+
+        for line in lines:
+            if "write io cards here" in line:
+                for i in range(len(io_list)):
+                    code.append(f"\t\tIO24 io{i + 1} = new IO24(cardsIndex++);\n")
+                    continue
+
+            if "write io channels here" in line:
+                for io_card in io_list:
+                    card_num = io_card.card_number
+                    all_channels = io_card.all_channels
+                    for channel in all_channels:
+                        if not channel.name:
+                            continue
+
+                        line = ""
+                        line += f"\t\tnew IoKanal({channel.name}"
+                        line += " " * (33 - len(line))
+                        line += f", io{card_num}"
+                        line += " " * (51 - len(line))
+                        line += f", {channel.channel}"
+                        line += f");\n"
+                        if channel.is_comment:
+                            line = "//" + line
+
+                        code.append(line)
+                    code.append("\n")
+                continue
+
+            code.append(line)
+        return code
+
+    # ============================================================================== #
     # ---------------------------------- Detectors --------------------------------- #
     # ============================================================================== #
     @staticmethod
@@ -1048,3 +1089,4 @@ class WriteDataManager:
     def write_code(path, code):
         with open(path, 'w', encoding='utf-8') as f:
             f.writelines(code)
+

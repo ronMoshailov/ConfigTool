@@ -174,6 +174,8 @@ public class Init implements enp.Initialisierung {
 		//switch cards
         // write sk cards here
 
+        // write io cards here
+
 		//input/output-cards
 		IO24 io1  = new IO24(cardsIndex++);
 		IO64 io64 = null;
@@ -184,7 +186,7 @@ public class Init implements enp.Initialisierung {
 		//switch channels
         // write sk channels here
 
-		
+
 		//all blinkers, including conditioned (mutne),                        
 		//have to be excluded  from current monitoring                        
 		//therefore the last parameter must be Hw.KK
@@ -198,19 +200,11 @@ public class Init implements enp.Initialisierung {
 		//if Compact: Input channels: 3, 4, 7, 8, 13 - 16. Output channels: 21 - 24
 
 		//		 I/O24 - Input channels 1-16
-// 		new IoKanal (Var.tk1.d_3                , io1,  1);
-// 		new IoKanal (Var.tk1.e_3                , io1,  2);
-// 		new IoKanal (Var.tk1.d_6                , io1,  3);
-// 		new IoKanal (Var.tk1.e_6                , io1,  4);
-
-		new IoKanal (SpecialInOuts.ups_door_open, io1, 14);
-		new IoKanal (SpecialInOuts.ups_failure  , io1, 15);
-		new IoKanal (SpecialInOuts.ups_power_off, io1, 16);	
-	
-
 		//		 I/O24 - Output channels 17-24
-		new IoKanal (Signs.signs_on             , io1, 23);
-		new IoKanal	(SpecialInOuts.reset        , io1, 24);
+        // write io channels here
+
+
+
 
 		if (io64 != null) {
 			//       I/O64 - Input channels 1-32

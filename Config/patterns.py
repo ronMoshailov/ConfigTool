@@ -90,7 +90,7 @@ io_pattern = re.compile(
     r'\s*'              # then should be 0 or more spaces
     r'new IoKanal'      # then should be "new SchaltKanal(Var.tk1."
     r'\s*\(\s*'              # then should be 0 or more spaces
-    r'([\w+.]+)'          # then should be "k" with at least 1 number after the 'k'
+    r'([^,]+?)'          # then should be "k" with at least 1 number after the 'k'
     r'\s*,\s*'          # then skip to the next argument
     r'io(\d+)'            # then should be "Move.lred" or "Move.lamber" or "Move.lgreen"
     r'\s*,\s*'          # then skip to the next argument
