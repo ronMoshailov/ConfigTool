@@ -81,6 +81,23 @@ sk_pattern = re.compile(
     r'Hw\.(?:SK|KK)\);'                             # then should be the end of the line (?: group without catching)
 )
 
+# ===================== io channel pattern ==================== #
+io_pattern = re.compile(
+    # target: new SchaltKanal(Var.tk1.k5     , Move.lred,   hwRed200  , Hw.HF, sk1, 7, Hw.SK);
+    # should be used with "match"
+    r'\s*'              # start with 0 or more spaces
+    r'(?://)?'          # maybe will be here //
+    r'\s*'              # then should be 0 or more spaces
+    r'new IoKanal'      # then should be "new SchaltKanal(Var.tk1."
+    r'\s*\(\s*'              # then should be 0 or more spaces
+    r'([\w+.]+)'          # then should be "k" with at least 1 number after the 'k'
+    r'\s*,\s*'          # then skip to the next argument
+    r'io(\d+)'            # then should be "Move.lred" or "Move.lamber" or "Move.lgreen"
+    r'\s*,\s*'          # then skip to the next argument
+    r'(\d+)'            # then catch "hwGreen200" or "hwAmber200" or "hwRed200"
+    r'\s*\);'             # then should be the end of the line (?: group without catching)
+)
+
 # ===================== detector pattern ==================== #
 detectors_pattern = re.compile(
     # target: tk.d_3	  = new DDetector ("D-3"   , tk.k3 ,    true ,        true ,                  true );

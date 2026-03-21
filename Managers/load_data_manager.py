@@ -116,17 +116,14 @@ class LoadDataManager:
 
         with open(path, 'r', encoding='utf-8') as file:
             for line in file:
-                if line.startswith("package"):
-                    Config.constants.PROJECT_NUMBER = line.replace("package", "").replace(";", "").strip()
-                    continue
                 line = line.strip()
-                if "new SchaltKanal" not in line:
+                if "new IoKanal" not in line:
                     continue
-                match = Config.patterns.sk_pattern.match(line)
+                match = Config.patterns.io_pattern.match(line)
                 if match:
-                    move_name, color, card_number, channel = match.groups()
+                    var_name, card_number, channel = match.groups()
                     is_commented = line.startswith("//")
-                    all_cells.append((int(card_number), move_name, color, int(channel), is_commented))
+                    all_cells.append((int(card_number), var_name, int(channel), is_commented))
         return all_cells
 
     @staticmethod

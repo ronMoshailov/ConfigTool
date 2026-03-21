@@ -1,7 +1,7 @@
 from Managers.load_data_manager import LoadDataManager
 
 
-class IoController:
+class Io64Controller:
 
     def __init__(self, view, model):
         # Fields
@@ -9,21 +9,16 @@ class IoController:
         self.model = model
 
     def init_model(self, path):
-        io_count = LoadDataManager.check_io_count(path)
-        for _ in range(io_count):
-            self.model.add_io_card()
-
         all_cells = LoadDataManager.load_io_data(path)
         for card_number, var_name, channel, is_commented in all_cells:
-            if card_number == 64:
+            if not card_number == 64:
                 continue
             self.model.set_channel(var_name, card_number, channel, is_commented)
-
         self.model.print_data()
-        print("done")
+
     def reset(self):
         # Used By Main Controller
         """
         This method clear all the data in the model
         """
-        self.model.reset_io_model()
+        self.model.reset_io64_model()
