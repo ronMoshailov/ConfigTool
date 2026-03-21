@@ -3,6 +3,7 @@ from PyQt6.QtWidgets import QWidget, QHBoxLayout, QMessageBox, QMainWindow
 
 from Config.exceptions import InvalidMoveName, DuplicateMoveError
 from Config.style import main_window_style
+from Controllers.io_controller import IoController
 
 from Controllers.parameters_controller import ParametersTaController
 from Controllers.detector_controller import DetectorController
@@ -15,6 +16,7 @@ from Controllers.settings_controller import SettingsController
 from Controllers.sk_controller import SkController
 from Managers.display_manager import DisplayManager
 from Managers.write_data_manager import WriteDataManager
+from Models.io_model import IoModel
 
 from View.image_view import ImageView
 from View.matrix_view import MatrixView
@@ -51,6 +53,7 @@ class MainController:
         self.move_model             = MoveModel()
         self.matrix_model           = MatrixModel()
         self.sk_model               = SkModel()
+        self.io_model               = IoModel()
         self.detector_model         = DetectorModel()
         self.schedule_model         = ScheduleModel()
         self.image_model            = ImageModel()
@@ -80,7 +83,7 @@ class MainController:
         self.image_controller           = ImageController(self.image_view, self.image_model)
         self.phue_controller            = PhueController(self.phue_view, self.phue_model)
         self.parameters_ta_controller   = ParametersTaController(self.parameters_ta_view, self.parameters_ta_model)
-        # self.io_controller            = IoController(root)
+        self.io_controller              = IoController(None, self.io_model)
 
         # =============== Set Controllers Methods =============== #
         self.move_controller.view.rename_move_method            = self.rename_move
@@ -179,6 +182,7 @@ class MainController:
         self.phue_controller.reset()
         self.move_controller.reset()
         self.matrix_controller.reset()
+        self.io_controller.reset()
         self.image_controller.reset()
         self.detector_controller.reset()
         self.schedule_controller.reset()
@@ -200,6 +204,7 @@ class MainController:
         self.move_controller.init_model(self.path_manager.path_init_tk1)
         self.matrix_controller.init_model(self.path_manager.path_init_tk1)
         self.sk_controller.init_model(self.path_manager.path_init)
+        self.io_controller.init_model(self.path_manager.path_init)
 
         self.detector_controller.init_model(self.path_manager.path_init_tk1)
         self.image_controller.init_model(self.path_manager.path_init_tk1, self.move_controller.get_all_moves_names())

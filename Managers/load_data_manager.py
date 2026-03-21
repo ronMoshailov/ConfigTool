@@ -111,6 +111,36 @@ class LoadDataManager:
         return count
 
     @staticmethod
+    def load_io_data(path):
+        all_cells = []
+
+        with open(path, 'r', encoding='utf-8') as file:
+            for line in file:
+                if line.startswith("package"):
+                    Config.constants.PROJECT_NUMBER = line.replace("package", "").replace(";", "").strip()
+                    continue
+                line = line.strip()
+                if "new SchaltKanal" not in line:
+                    continue
+                match = Config.patterns.sk_pattern.match(line)
+                if match:
+                    move_name, color, card_number, channel = match.groups()
+                    is_commented = line.startswith("//")
+                    all_cells.append((int(card_number), move_name, color, int(channel), is_commented))
+        return all_cells
+
+    @staticmethod
+    def check_io_count(path):
+        count = 0
+
+        with open(path, 'r', encoding='utf-8') as file:
+            for line in file:
+                line = line.strip()
+                if "IO24 io" in line and not line.startswith("//"):
+                    count += 1
+        return count
+
+    @staticmethod
     def load_schedule_data(path, is_copy_sunday=None):
         mapping_day = {"sun_thur": [1, 2, 3, 4, 5], "sunday": [1], "monday": [2], "tuesday": [3], "wednesday": [4],
                        "thursday": [5], "fr": [6], "sa": [7]}
