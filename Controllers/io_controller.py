@@ -15,7 +15,7 @@ class IoController:
             self.model.add_io_card()
 
         all_cells = LoadDataManager.load_io_data(path)
-        for card_number, var_name, channel, is_commented in all_cells:
+        for card_number, var_name, channel, is_commented, comment in all_cells:
             if card_number == 64:
                 continue
             self.model.set_channel(var_name, card_number, channel, is_commented)

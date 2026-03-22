@@ -1,15 +1,17 @@
 class _IoChannel:
-    def __init__(self, name: str = "", channel: int = None, is_comment: bool = False):
+    def __init__(self, name: str = "", channel: int = None, is_comment: bool = False, comment: str = None):
         self.name           = name
         self.channel        = channel
         self.is_comment     = is_comment
+        self.comment        = comment
 
-    def set(self, name, is_comment):
+    def set(self, name, is_comment, comment):
         """
         This method sets the values of the channel
         """
         self.name           = name
         self.is_comment     = is_comment
+        self.comment        = comment
 
 class _IoCard:
     def __init__(self):
@@ -19,13 +21,13 @@ class _IoCard:
             channel = _IoChannel(channel=i+1)
             self.all_channels.append(channel)
 
-    def set_channel(self, name, channel_number, is_comment):
+    def set_channel(self, name, channel_number, is_comment, comment):
         """
         This method sets the values of the channel
         """
         for sk_channel in self.all_channels:
             if sk_channel.channel == channel_number:
-                sk_channel.set(name, is_comment)
+                sk_channel.set(name, is_comment, comment)
 
     def reset(self):
         self.all_channels.clear()
@@ -82,11 +84,11 @@ class Io64Model:
     #                 channel.is_comment = True
 
     # ============================== Logic ============================== #
-    def set_channel(self, var_name, card_number, channel, is_commented):
+    def set_channel(self, var_name, channel, is_commented, comment):
         """
         This method set channel of a sk card
         """
-        self.io64_card.set_channel(var_name, channel, is_commented)
+        self.io64_card.set_channel(var_name, channel, is_commented, comment)
 
     def reset_io64_model(self):
         """
@@ -101,4 +103,4 @@ class Io64Model:
         for channel in channels:
             if channel.name == "":
                 continue
-            print(f"name: {channel.name:<30}, channel: {channel.channel:<10}, is_comment: {channel.is_comment:<10}")
+            print(f"name: {channel.name:<30}, channel: {channel.channel:<10}, is_comment: {channel.is_comment:<10}, comment: {channel.comment}")

@@ -121,9 +121,9 @@ class LoadDataManager:
                     continue
                 match = Config.patterns.io_pattern.match(line)
                 if match:
-                    var_name, card_number, channel = match.groups()
+                    var_name, card_number, channel, comment = match.groups()
                     is_commented = line.startswith("//")
-                    all_cells.append((int(card_number), var_name, int(channel), is_commented))
+                    all_cells.append((int(card_number), var_name, int(channel), is_commented, comment))
         return all_cells
 
     @staticmethod

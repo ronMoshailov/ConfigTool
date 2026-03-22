@@ -96,6 +96,7 @@ io_pattern = re.compile(
     r'\s*,\s*'          # then skip to the next argument
     r'(\d+)'            # then catch "hwGreen200" or "hwAmber200" or "hwRed200"
     r'\s*\);'             # then should be the end of the line (?: group without catching)
+    r'(\s*//.*)?'
 )
 
 # ===================== detector pattern ==================== #

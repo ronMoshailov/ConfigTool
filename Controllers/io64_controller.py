@@ -10,10 +10,10 @@ class Io64Controller:
 
     def init_model(self, path):
         all_cells = LoadDataManager.load_io_data(path)
-        for card_number, var_name, channel, is_commented in all_cells:
+        for card_number, var_name, channel, is_commented, comment in all_cells:
             if not card_number == 64:
                 continue
-            self.model.set_channel(var_name, card_number, channel, is_commented)
+            self.model.set_channel(var_name, channel, is_commented, comment)
         self.model.print_data()
 
     def reset(self):
