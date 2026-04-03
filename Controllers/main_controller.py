@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import QWidget, QHBoxLayout, QMessageBox, QMainWindow
 from Config.exceptions import InvalidMoveName, DuplicateMoveError
 from Config.style import main_window_style
 from Controllers.io64_controller import Io64Controller
-from Controllers.io_controller import IoController
+from Controllers.io24_controller import Io24Controller
 
 from Controllers.parameters_controller import ParametersTaController
 from Controllers.detector_controller import DetectorController
@@ -18,9 +18,11 @@ from Controllers.sk_controller import SkController
 from Managers.display_manager import DisplayManager
 from Managers.write_data_manager import WriteDataManager
 from Models.io64_model import Io64Model
-from Models.io_model import IoModel
+from Models.io24_model import Io24Model
 
 from View.image_view import ImageView
+from View.io24_view import Io24View
+from View.io64_view import Io64View
 from View.matrix_view import MatrixView
 from View.navigator_view import NavigatorView
 from View.detector_view import DetectorView
@@ -55,7 +57,7 @@ class MainController:
         self.move_model             = MoveModel()
         self.matrix_model           = MatrixModel()
         self.sk_model               = SkModel()
-        self.io_model               = IoModel()
+        self.io24_model             = Io24Model()
         self.io64_model             = Io64Model()
         self.detector_model         = DetectorModel()
         self.schedule_model         = ScheduleModel()
@@ -68,6 +70,8 @@ class MainController:
         self.move_view              = MoveView()
         self.matrix_view            = MatrixView()
         self.sk_view                = SkView()
+        self.io24_view              = Io24View()
+        self.io64_view              = Io64View()
         self.detector_view          = DetectorView()
         self.schedule_view          = ScheduleView()
         self.image_view             = ImageView()
@@ -81,13 +85,15 @@ class MainController:
         self.move_controller            = MoveController(self.move_view, self.move_model)
         self.matrix_controller          = MatrixController(self.matrix_view, self.matrix_model)
         self.sk_controller              = SkController(self.sk_view, self.sk_model)
+        self.io24_Controller            = Io64Controller(self.io24_view, self.io24_model)
+        self.io64_Controller            = Io64Controller(self.io64_view, self.io64_model)
         self.detector_controller        = DetectorController(self.detector_view, self.detector_model)
         self.schedule_controller        = ScheduleController(self.schedule_view, self.schedule_model)
         self.image_controller           = ImageController(self.image_view, self.image_model)
         self.phue_controller            = PhueController(self.phue_view, self.phue_model)
         self.parameters_ta_controller   = ParametersTaController(self.parameters_ta_view, self.parameters_ta_model)
-        self.io_controller              = IoController(None, self.io_model)
-        self.io64_controller            = Io64Controller(None, self.io64_model)
+        # self.io_controller              = IoController(None, self.io_model)
+        # self.io64_controller            = Io64Controller(None, self.io64_model)
 
         # =============== Set Controllers Methods =============== #
         self.move_controller.view.rename_move_method            = self.rename_move
@@ -103,6 +109,7 @@ class MainController:
         self.display_manager.register("matrix"          , self.matrix_controller)
         self.display_manager.register("detector"        , self.detector_controller)
         self.display_manager.register("sk"              , self.sk_controller)
+        self.display_manager.register("io64"            , self.io64_Controller)
         self.display_manager.register("schedule"        , self.schedule_controller)
         self.display_manager.register("image"           , self.image_controller)
         self.display_manager.register("phue"            , self.phue_controller)
@@ -186,8 +193,8 @@ class MainController:
         self.phue_controller.reset()
         self.move_controller.reset()
         self.matrix_controller.reset()
-        self.io_controller.reset()
-        self.io64_controller.reset()
+        # self.io_controller.reset()
+        # self.io64_controller.reset()
         self.image_controller.reset()
         self.detector_controller.reset()
         self.schedule_controller.reset()
@@ -209,8 +216,8 @@ class MainController:
         self.move_controller.init_model(self.path_manager.path_init_tk1)
         self.matrix_controller.init_model(self.path_manager.path_init_tk1)
         self.sk_controller.init_model(self.path_manager.path_init)
-        self.io_controller.init_model(self.path_manager.path_init)
-        self.io64_controller.init_model(self.path_manager.path_init)
+        # self.io_controller.init_model(self.path_manager.path_init)
+        # self.io64_controller.init_model(self.path_manager.path_init)
 
         self.detector_controller.init_model(self.path_manager.path_init_tk1)
         self.image_controller.init_model(self.path_manager.path_init_tk1, self.move_controller.get_all_moves_names())
@@ -233,7 +240,7 @@ class MainController:
         self.move_controller.write_moves_to_project(self.path_manager.path_tk1_dst, self.path_manager.path_init_tk1_dst)
         self.matrix_controller.write_matrix_to_file(self.path_manager.path_init_tk1_dst)
         self.sk_controller.write_to_file(self.path_manager.path_init_dst)
-        self.io_controller.write_io24_to_project(self.path_manager.path_init_dst)
+        # self.io_controller.write_io24_to_project(self.path_manager.path_init_dst)
         self.schedule_controller.write_to_file(self.path_manager.path_init_tk1_dst)
         self.image_controller.write_to_file(self.path_manager.path_tk1_dst, self.path_manager.path_init_tk1_dst, self.path_manager.path_phase_folder_dst)
         self.phue_controller.write_to_file(self.path_manager.path_tk1_dst, self.path_manager.path_init_tk1_dst, self.path_manager.path_phue_folder_dst)

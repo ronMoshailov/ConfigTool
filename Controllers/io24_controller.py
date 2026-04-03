@@ -2,7 +2,7 @@ from Managers.load_data_manager import LoadDataManager
 from Managers.write_data_manager import WriteDataManager
 
 
-class IoController:
+class Io24Controller:
 
     def __init__(self, view, model):
         # Fields
@@ -16,7 +16,7 @@ class IoController:
 
         all_cells = LoadDataManager.load_io_data(path)
         for card_number, var_name, channel, is_commented, comment in all_cells:
-            if card_number == 64:
+            if not card_number == 24:
                 continue
             self.model.set_channel(var_name, card_number, channel, is_commented)
 

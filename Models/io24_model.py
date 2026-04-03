@@ -28,7 +28,7 @@ class _IoCard:
             if sk_channel.channel == channel_number:
                 sk_channel.set(name, is_comment)
 
-class IoModel:
+class Io24Model:
     def __init__(self):
         self.io_list = []
 
