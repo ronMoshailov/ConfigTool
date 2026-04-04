@@ -1,5 +1,7 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QWidget, QTableWidget, QMessageBox, QHBoxLayout, QVBoxLayout, QLabel
+from PyQt6.QtWidgets import QWidget, QTableWidget, QMessageBox, QHBoxLayout, QVBoxLayout, QLabel, QTableWidgetItem
+
+from Config.style import io64_style
 
 
 class Io64View(QWidget):
@@ -10,7 +12,10 @@ class Io64View(QWidget):
 
         # Data
         self.input_title  = QLabel("Intput")
+        self.input_title.setObjectName("table_title")
+
         self.output_title = QLabel("Output")
+        self.output_title.setObjectName("table_title")
 
         self.input_table  = QTableWidget(32, 2)
         self.output_table = QTableWidget(32, 2)
@@ -33,19 +38,26 @@ class Io64View(QWidget):
 
         # Self
         self.setLayout(self.cards_layout)
-        # self.setStyleSheet(sk_panel_style)
-        # self.setObjectName("RootWidget")
+        self.setObjectName("RootWidget")
+        self.setStyleSheet(io64_style)
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.hide()
 
-    def show_view(self):
+    def show_view(self, all_channels):
         """
         This method clears the main layout and build back with data from DB.
         """
         # refresh the table
         # clear_widget_from_layout([self.cards_layout])
         # self.tables_list.clear()
+        self.input_table.clearContents()
+        self.output_table.clearContents()
 
+        for i in range(64):
+            if i < 32:
+                self.input_table.setItem(i, 0, QTableWidgetItem(all_channels[i].name))
+            else:
+                self.output_table.setItem(i-32, 0, QTableWidgetItem(all_channels[i].name))
 
         # # for each SK card initialize a table
         # for i in range(1, len(sk_list) + 1):

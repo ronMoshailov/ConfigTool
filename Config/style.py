@@ -860,7 +860,78 @@ QCheckBox#checkbox_comment::indicator:checked {
 """
 
 
+io64_style = """
+/* ********************************* Root ********************************* */
+#RootWidget {
+    background: #94cfff;
+    border-radius: 12px;
+    border: 1px solid #0062b3;
+}
 
+/* ********************************* Titles ********************************* */
+QLabel#table_title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #2c3e50;
+    background: #eef3fb;
+    border: 1px solid #cfd8e3;
+    border-radius: 8px;
+    padding: 6px;
+    min-height: 40px;
+}
+
+/* ********************************* Card ********************************* */
+QWidget#card {
+    background: #e4f0fb;
+    border-radius: 12px;
+    border: 1px solid #d0d7de;
+    padding: 8px;
+}
+
+/* ********************************* Table ********************************* */
+QTableWidget {
+    background: #ffffff;
+    border-radius: 10px;
+    border: 1px solid #cfd8e3;
+    gridline-color: #dfe6ee;
+    font-size: 14px;
+}
+
+/* Header */
+QHeaderView::section {
+    background: #eef3fb;
+    border: 1px solid #cfd8e3;
+    padding: 4px;
+    font-weight: bold;
+}
+
+/* Selected row */
+QTableWidget::item:selected {
+    background: #5b8def;
+    color: white;
+}
+
+/* Hover */
+QTableWidget::item:hover {
+    background: #e4ecf8;
+}
+
+/* ********************************* Scroll ********************************* */
+QScrollBar:vertical {
+    background: #f1f1f1;
+    width: 10px;
+    border-radius: 5px;
+}
+
+QScrollBar::handle:vertical {
+    background: #c1c9d6;
+    border-radius: 5px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #aab4c3;
+}
+"""
 inter_stage_panel_style = """
 /* ********************************* RootWidget ********************************* */
 QWidget#root {

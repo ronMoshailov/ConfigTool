@@ -14,10 +14,10 @@ class Io64Controller:
         for card_number, var_name, channel, is_commented, comment in all_cells:
             if not card_number == 64:
                 continue
-            self.model.set_channel(var_name, card_number, channel, is_commented)
+            self.model.set_channel(var_name, channel, comment, is_commented)
 
     def show_view(self):
-        self.view.show_view()
+        self.view.show_view(self.model.get_all_channels())
 
     def hide_view(self):
         self.view.hide_view()

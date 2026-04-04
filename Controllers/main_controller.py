@@ -86,14 +86,13 @@ class MainController:
         self.matrix_controller          = MatrixController(self.matrix_view, self.matrix_model)
         self.sk_controller              = SkController(self.sk_view, self.sk_model)
         self.io24_Controller            = Io64Controller(self.io24_view, self.io24_model)
-        self.io64_Controller            = Io64Controller(self.io64_view, self.io64_model)
+        self.io64_controller            = Io64Controller(self.io64_view, self.io64_model)
         self.detector_controller        = DetectorController(self.detector_view, self.detector_model)
         self.schedule_controller        = ScheduleController(self.schedule_view, self.schedule_model)
         self.image_controller           = ImageController(self.image_view, self.image_model)
         self.phue_controller            = PhueController(self.phue_view, self.phue_model)
         self.parameters_ta_controller   = ParametersTaController(self.parameters_ta_view, self.parameters_ta_model)
         # self.io_controller              = IoController(None, self.io_model)
-        # self.io64_controller            = Io64Controller(None, self.io64_model)
 
         # =============== Set Controllers Methods =============== #
         self.move_controller.view.rename_move_method            = self.rename_move
@@ -109,7 +108,7 @@ class MainController:
         self.display_manager.register("matrix"          , self.matrix_controller)
         self.display_manager.register("detector"        , self.detector_controller)
         self.display_manager.register("sk"              , self.sk_controller)
-        self.display_manager.register("io64"            , self.io64_Controller)
+        self.display_manager.register("io64"            , self.io64_controller)
         self.display_manager.register("schedule"        , self.schedule_controller)
         self.display_manager.register("image"           , self.image_controller)
         self.display_manager.register("phue"            , self.phue_controller)
@@ -127,6 +126,8 @@ class MainController:
         root_layout.addWidget(self.image_view)
         root_layout.addWidget(self.phue_view)
         root_layout.addWidget(self.parameters_ta_view)
+        root_layout.addWidget(self.io64_view)
+        root_layout.addWidget(self.io24_view)
         root_layout.addWidget(self.navigator_view)
         root_layout.setAlignment(Qt.AlignmentFlag.AlignRight)
 
@@ -217,7 +218,7 @@ class MainController:
         self.matrix_controller.init_model(self.path_manager.path_init_tk1)
         self.sk_controller.init_model(self.path_manager.path_init)
         # self.io_controller.init_model(self.path_manager.path_init)
-        # self.io64_controller.init_model(self.path_manager.path_init)
+        self.io64_controller.init_model(self.path_manager.path_init)
 
         self.detector_controller.init_model(self.path_manager.path_init_tk1)
         self.image_controller.init_model(self.path_manager.path_init_tk1, self.move_controller.get_all_moves_names())

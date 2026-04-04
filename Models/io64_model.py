@@ -47,6 +47,9 @@ class Io64Model:
     #     io_card = _IoCard(len(self.io_list) + 1)
     #     self.io_list.append(io_card)
 
+    def get_all_channels(self):
+        return self.io64_card.all_channels
+
     # def remove_card_sk(self, card_num):
     #     """
     #     This method removes sk card from the model
