@@ -16,12 +16,18 @@ class Io24Controller:
 
         all_cells = LoadDataManager.load_io_data(path)
         for card_number, var_name, channel, is_commented, comment in all_cells:
-            if not card_number == 24:
+            if card_number == 64:
                 continue
             self.model.set_channel(var_name, card_number, channel, is_commented)
 
         # self.model.print_data()
         print("done")
+
+    def show_view(self):
+        self.view.show_view(self.model.get_io_list())
+
+    def hide_view(self):
+        self.view.hide_view()
 
     def reset(self):
         # Used By Main Controller

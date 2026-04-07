@@ -64,6 +64,7 @@ class NavigatorView(QWidget):
         # min_green_panel_btn = QPushButton("🕰️ מינימום 🕰️")        #  3
         matrix_panel_btn = QPushButton("🔢 מטריצה 🔢")            #  4
         sk24_panel_btn = QPushButton("🧑‍💻   SK24   👩‍💻")                #  5
+        io24_panel_btn = QPushButton("IO24")                #  6
         io64_panel_btn = QPushButton("IO64")                #  6
         detector_panel_btn = QPushButton("👩🏻‍🔧  גלאים  👨🏻‍🔧")           #  7
         schedule_panel_btn = QPushButton("🕛    לו\"ז    🕛")           #  8
@@ -81,13 +82,14 @@ class NavigatorView(QWidget):
             move_panel_btn,          #  2
             matrix_panel_btn,        #  3
             sk24_panel_btn,          #  4
-            io64_panel_btn,          #  5
-            detector_panel_btn,      #  6
-            schedule_panel_btn,      #  7
-            image_panel_btn,         #  8
-            inter_stage_panel_btn,   #  9
-            parameters_panel_btn,    # 10
-            # display_all_btn,       # 11
+            io24_panel_btn,          #  5
+            io64_panel_btn,          #  6
+            detector_panel_btn,      #  7
+            schedule_panel_btn,      #  8
+            image_panel_btn,         #  9
+            inter_stage_panel_btn,   # 10
+            parameters_panel_btn,    # 11
+            # display_all_btn,       # 12
         ]
     #
     #     # =============== connect listener =============== #
@@ -96,12 +98,13 @@ class NavigatorView(QWidget):
         buttons[ 2].clicked.connect(lambda: self.show_view_method("move"))
         buttons[ 3].clicked.connect(lambda: self.show_view_method("matrix"))
         buttons[ 4].clicked.connect(lambda: self.show_view_method("sk"))
-        buttons[ 5].clicked.connect(lambda: self.show_view_method("io64"))
-        buttons[ 6].clicked.connect(lambda: self.show_view_method("detector"))
-        buttons[ 7].clicked.connect(lambda: self.show_view_method("schedule"))
-        buttons[ 8].clicked.connect(lambda: self.show_view_method("image"))
-        buttons[ 9].clicked.connect(lambda: self.show_view_method("phue"))
-        buttons[10].clicked.connect(lambda: self.show_view_method("parameters_ta"))
+        buttons[ 5].clicked.connect(lambda: self.show_view_method("io24"))
+        buttons[ 6].clicked.connect(lambda: self.show_view_method("io64"))
+        buttons[ 7].clicked.connect(lambda: self.show_view_method("detector"))
+        buttons[ 8].clicked.connect(lambda: self.show_view_method("schedule"))
+        buttons[ 9].clicked.connect(lambda: self.show_view_method("image"))
+        buttons[10].clicked.connect(lambda: self.show_view_method("phue"))
+        buttons[11].clicked.connect(lambda: self.show_view_method("parameters_ta"))
         # buttons[11].clicked.connect(lambda: self.print_all_method())
     #
     #     # =============== special methods =============== #

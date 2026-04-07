@@ -83,7 +83,7 @@ sk_pattern = re.compile(
 
 # ===================== io channel pattern ==================== #
 io_pattern = re.compile(
-    # target: new SchaltKanal(Var.tk1.k5     , Move.lred,   hwRed200  , Hw.HF, sk1, 7, Hw.SK);
+    # target: new IoKanal (SpecialInOuts.ups_door_open, io1, 14);
     # should be used with "match"
     r'\s*'              # start with 0 or more spaces
     r'(?://)?'          # maybe will be here //
