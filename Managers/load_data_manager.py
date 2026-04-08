@@ -7,6 +7,7 @@ from Config.patterns import settings_pattern, move_pattern, matrix_pattern
 
 class LoadDataManager:
 
+    # ---------- settings --------- #
     @staticmethod
     def load_settings_data(path):
         # Data
@@ -46,6 +47,7 @@ class LoadDataManager:
 
         return anlagenName, tk1Name, version, first_time_ext, history
 
+    # ---------- moves --------- #
     @staticmethod
     def load_moves_data(path):
         # path: initTk1.java
@@ -61,6 +63,7 @@ class LoadDataManager:
                     all_moves.append((variable_name, move_type, is_main, int(min_green)))
         return all_moves
 
+    # ---------- matrix --------- #
     @staticmethod
     def load_matrix_data(path):
         # path: initTk1.java
@@ -79,6 +82,7 @@ class LoadDataManager:
 
         return all_cells
 
+    # ---------- sk --------- #
     @staticmethod
     def load_sk_data(path):
         all_cells = []
@@ -99,6 +103,7 @@ class LoadDataManager:
         return all_cells
                     # if card == self.number_card:
                     #     self.sk_channel_list.append(SkChannel(name, color, channel, is_commented))
+
     @staticmethod
     def check_sk_count(path):
         count = 0
@@ -110,6 +115,7 @@ class LoadDataManager:
                     count += 1
         return count
 
+    # ---------- io24 & io64 --------- #
     @staticmethod
     def load_io_data(path):
         all_cells = []
@@ -137,6 +143,7 @@ class LoadDataManager:
                     count += 1
         return count
 
+    # ---------- schedule --------- #
     @staticmethod
     def load_schedule_data(path, is_copy_sunday=None):
         mapping_day = {"sun_thur": [1, 2, 3, 4, 5], "sunday": [1], "monday": [2], "tuesday": [3], "wednesday": [4],
@@ -182,6 +189,7 @@ class LoadDataManager:
                         # self.model.create_cell(day, hour, minute, program_number)
             return data
 
+    # ---------- detectors --------- #
     @staticmethod
     def load_detectors_data(path):
         all_detectors = []
@@ -198,6 +206,7 @@ class LoadDataManager:
 
         return all_detectors
 
+    # ---------- images --------- #
     @staticmethod
     def load_images_data(path, all_moves_names):
         all_images_data = []
@@ -231,6 +240,7 @@ class LoadDataManager:
 
         return all_images_data
 
+    # ---------- phue --------- #
     @staticmethod
     def load_phue_data(phue_paths):
         class_pattern       = re.compile(r"public\s+class\s+Phue([A-Za-z0-9]+)_?([A-Za-z0-9]+)")
@@ -277,6 +287,7 @@ class LoadDataManager:
 
         return data
 
+    # ---------- parameters --------- #
     @staticmethod
     def load_parameters_ta(path, images_len):
         pattern = re.compile(r'^static int\[\]\s+DVI35_P(\d+)\s*=\s*\{([^}]*)\}', re.IGNORECASE)

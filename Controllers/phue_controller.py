@@ -32,7 +32,10 @@ class PhueController:
             for move, state, time in transitions_data:
                 transition = self.model.create_new_transition(move, state, time)
                 transitions.append(transition)
-            self.model.create_new_phue(img_out, img_in, 0, transitions)
+            try:
+                self.model.create_new_phue(img_out, img_in, 0, transitions)
+            except DuplicatePhueError as e:
+                self.view.show_error(f"נמצא אותו מעבר פעמיים ולכן השני דולג (מצב שלא אמור היה להתקיים)")
 
         data = LoadDataManager.load_phue_length(path_init_tk1)
         for img_out, img_in, length in data:
