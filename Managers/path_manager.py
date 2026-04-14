@@ -30,7 +30,7 @@ class PathManager:
         This method create new project and set the destinations paths
         """
         # set source project path
-        source_folder = Path(os.path.join(Config.constants.PROJECT_DIR, "TelAvivTemplate"))
+        source_folder = Path(os.path.join(Config.constants.PROJECT_DIR, "Templates", "TelAvivTemplate"))
 
         # user choose folder
         target_dir = QFileDialog.getExistingDirectory(view, "בחר תיקייה לשמירת הפרויקט")
@@ -43,12 +43,12 @@ class PathManager:
         # set destinations paths
         dst                         = target_dir / f"{Config.constants.PROJECT_NUMBER}"
 
-        self.path_init_dst          = dst / "src" / f"{Config.constants.PROJECT_NUMBER}" / "init.java"
-        self.path_tk1_dst           = dst / "src" / f"{Config.constants.PROJECT_NUMBER}" / "Tk1.java"
-        self.path_init_tk1_dst      = dst / "src" / f"{Config.constants.PROJECT_NUMBER}" / "initTk1.java"
-        self.path_parameters_ta_dst = dst / "src" / f"{Config.constants.PROJECT_NUMBER}" / "ParametersTelAviv.java"
-        self.path_phue_folder_dst   = dst / "src" / "phue"
-        self.path_phase_folder_dst  = dst / "src" / "phase"
+        self.path_init_dst          = dst / "Code" / "src" / f"{Config.constants.PROJECT_NUMBER}" / "init.java"
+        self.path_tk1_dst           = dst / "Code" / "src" / f"{Config.constants.PROJECT_NUMBER}" / "Tk1.java"
+        self.path_init_tk1_dst      = dst / "Code" / "src" / f"{Config.constants.PROJECT_NUMBER}" / "initTk1.java"
+        self.path_parameters_ta_dst = dst / "Code" / "src" / f"{Config.constants.PROJECT_NUMBER}" / "ParametersTelAviv.java"
+        self.path_phue_folder_dst   = dst / "Code" / "src" / "phue"
+        self.path_phase_folder_dst  = dst / "Code" / "src" / "phase"
 
         # If the folder exist remove it
         if dst.exists():
@@ -62,8 +62,8 @@ class PathManager:
         self.path_phase_folder_dst.mkdir(parents=True, exist_ok=True)
 
         # rename
-        old_path = dst / "src" / "ta00"
-        new_path = dst / "src" / f"{Config.constants.PROJECT_NUMBER}"
+        old_path = dst / "Code" / "src" / "ta00"
+        new_path = dst / "Code" / "src" / f"{Config.constants.PROJECT_NUMBER}"
 
         old_path.rename(new_path)
         print(f"Folder renamed to {new_path}")

@@ -3,6 +3,7 @@ from PyQt6.QtWidgets import QWidget, QHBoxLayout, QMessageBox, QMainWindow
 
 from Config.exceptions import InvalidMoveName, DuplicateMoveError
 from Config.style import main_window_style
+from Config.var import Var
 from Controllers.io64_controller import Io64Controller
 from Controllers.io24_controller import Io24Controller
 
@@ -77,8 +78,7 @@ class MainController:
         self.image_view             = ImageView()
         self.phue_view              = PhueView()
         self.parameters_ta_view     = ParametersTaView()
-        # self.navigator_view         = NavigatorView(self.show_view, self.print_all)
-        self.navigator_view         = NavigatorView(self.show_view)
+        self.navigator_view         = NavigatorView()
 
         # =============== Controllers =============== #
         self.settings_controller        = SettingsController(self.settings_view, self.settings_model)
@@ -92,7 +92,6 @@ class MainController:
         self.image_controller           = ImageController(self.image_view, self.image_model)
         self.phue_controller            = PhueController(self.phue_view, self.phue_model)
         self.parameters_ta_controller   = ParametersTaController(self.parameters_ta_view, self.parameters_ta_model)
-        # self.io_controller              = IoController(None, self.io_model)
 
         # =============== Set Controllers Methods =============== #
         self.move_controller.view.rename_move_method            = self.rename_move
@@ -102,19 +101,7 @@ class MainController:
         self.navigator_view.write_to_code_method                = self.write_to_code
         self.parameters_ta_controller.get_sp_by_image_method    = self.image_controller.get_sp_by_image
         self.detector_controller.get_all_moves_names            = self.move_controller.get_all_moves_names
-
-        # =============== Set Display Manager =============== #
-        self.display_manager.register("move"            , self.move_controller)
-        self.display_manager.register("matrix"          , self.matrix_controller)
-        self.display_manager.register("detector"        , self.detector_controller)
-        self.display_manager.register("sk"              , self.sk_controller)
-        self.display_manager.register("io24"            , self.io24_controller)
-        self.display_manager.register("io64"            , self.io64_controller)
-        self.display_manager.register("schedule"        , self.schedule_controller)
-        self.display_manager.register("image"           , self.image_controller)
-        self.display_manager.register("phue"            , self.phue_controller)
-        self.display_manager.register("parameters_ta"   , self.parameters_ta_controller)
-        self.display_manager.register("settings"        , self.settings_controller)
+        self.navigator_view.show_view_method                    = self.show_view
 
         # =============== Root Layout =============== #
         root_layout = QHBoxLayout()
@@ -136,9 +123,12 @@ class MainController:
         self.main_root = QWidget()
         self.main_root.setLayout(root_layout)
 
+        # =============== Logic =============== #
+        self.set_display_logic()
+
         # =============== Root Widget =============== #
         self.root = QMainWindow()
-        self.root.setWindowTitle("Tel Aviv Version")
+        self.root.setWindowTitle("Config Tool")
         self.root.setCentralWidget(self.main_root)
         self.root.setStyleSheet(main_window_style)
         self.root.show()
@@ -148,6 +138,8 @@ class MainController:
         # Initialize app
         if act == "init":
             if self._initialize_app():
+                Var.authority = self.navigator_view.authority_combo.currentText()
+                self.navigator_view.authority_combo.setDisabled(True)
                 self.display_manager.show("settings")
             return
 
@@ -188,6 +180,7 @@ class MainController:
         self.phue_model.remove_move(move_name)
         self.matrix_controller.remove_move(move_name)
         self.sk_controller.remove_move(move_name)
+        self.detector_controller.remove_move(move_name)
 
     # ============================== Logic ============================== #
     def reset_models(self):
@@ -228,6 +221,20 @@ class MainController:
         self.parameters_ta_controller.init_model(self.path_manager.path_parameters_ta, len(self.image_model.all_images))
         return True
 
+    def set_display_logic(self):
+        self.display_manager.register("move"            , self.move_controller)
+        self.display_manager.register("matrix"          , self.matrix_controller)
+        self.display_manager.register("detector"        , self.detector_controller)
+        self.display_manager.register("sk"              , self.sk_controller)
+        self.display_manager.register("io24"            , self.io24_controller)
+        self.display_manager.register("io64"            , self.io64_controller)
+        self.display_manager.register("schedule"        , self.schedule_controller)
+        self.display_manager.register("image"           , self.image_controller)
+        self.display_manager.register("phue"            , self.phue_controller)
+        self.display_manager.register("parameters_ta"   , self.parameters_ta_controller)
+        self.display_manager.register("settings"        , self.settings_controller)
+
+
     # ============================== Write to file ============================== #
     def write_to_code(self):
         if not self.is_data_valid():
@@ -262,122 +269,8 @@ class MainController:
             self.show_view("image")
             return False
 
+        if not self.detector_controller.is_data_valid():
+            self.show_view("detector")
+            return False
         return True
-
-    # def write_phase_imports(self):
-    #     with open(self.path_manager.path_init_tk1_dst, 'r', encoding='utf-8') as file:
-    #         code = []
-    #         for line in file:
-    #             if "write imports here" in line:
-    #                 for image in self.image_model.all_images:
-    #                     if image.image_name == "A":
-    #                         continue
-    #                     line = f"import phase.Phase{image.image_name};\n"
-    #                     code.append(line)
-    #                 continue
-    #             code.append(line)
-    #
-    #     with open(self.path_manager.path_init_tk1_dst, 'w', encoding='utf-8') as f:
-    #         f.writelines(code)
-
-
-    # ============================== Debug ============================== #
-    # def print_all(self):
-    #     """
-    #     This method prints all the data for the window.
-    #     :return: None
-    #     """
-    #     if self.path_manager.path_project is None:
-    #         return
-    #
-    #     out = ["\n============================== Moves =============================="]
-    #
-    #     for move in self.move_model.all_moves:
-    #         out.append(
-    #             f"name: {move.name:<5}, move_type: {move.type:<25}, is_main: {move.is_main:<8}, min_green: {move.min_green:<3}")
-    #
-    #     out.append("\n============================== Settings ==============================")
-    #     out.append(
-    #         f"junction_num: {self.settings_model.junction_num:<5}, junction_name: {self.settings_model.junction_name:<25}, version: {self.settings_model.version:<8}, first_ext: {self.settings_model.first_ext:<3}")
-    #     for h in self.settings_model.history:
-    #         date, author = h
-    #         out.append(f"date: {date:<5}, author: {author:<25}")
-    #
-    #     out.append("\n============================== Matrix ==============================")
-    #     for cell in self.matrix_model.all_cells:
-    #         out.append(f"out: {cell.move_out:<5}, in: {cell.move_in:<5}, wait: {cell.wait_time:<5}")
-    #
-    #     out.append("\n============================== SK ==============================")
-    #     for sk_card in self.sk_model.sk_list:
-    #         out.append(f"----------------------------- sk:{sk_card.card_number} -----------------------------")
-    #         for channel in sk_card.all_channels:
-    #             out.append(
-    #                 f"name: {channel.name:<5}, color: {channel.color:<10}, channel: {channel.channel:<5}, is_comment: {channel.is_comment}")
-    #         out.append("")
-    #
-    #     out.append("\n============================== Detector ==============================")
-    #     for detector in self.detector_model.all_detectors:
-    #         out.append(
-    #             f"var_name: {detector.var_name:<5}, class_name: {detector.class_name:<10}, datector_name: {detector.datector_name:<5}, move_name: {detector.move_name:<10}, ext_unit: {detector.ext_unit:<10}")
-    #
-    #     out.append("\n============================== Schedule ==============================")
-    #     for schedule_table in self.schedule_model.all_schedule_tables:
-    #         out.append(f"----- table: {schedule_table.table_num} -----")
-    #         for cell in schedule_table.cell_list:
-    #             out.append(f"hour: {cell.hour:<5}, minute: {cell.minute:<5}, program_num: {cell.prog_num:<5}")
-    #
-    #     out.append("\n============================== Image ==============================")
-    #     for image in self.image_model.all_images:
-    #         if image.image_name == 'A':
-    #             out.append(
-    #                 f"name: {image.image_name:<5}, number: {image.image_num:<5}, skeleton: {image.skeleton:<5}, is_police: {image.is_police:<5}")
-    #         else:
-    #             out.append(
-    #                 f"name: {image.image_name:<5}, number: {image.image_num:<5}, skeleton: {image.skeleton:<5}, sp: {image.sp:<5}, is_police: {image.is_police:<5}")
-    #         move_str = ", ".join(image.move_names_list)
-    #         out.append(f"moves: {move_str}\n")
-    #
-    #     out.append("\n============================== Phue ==============================")
-    #     for phue in self.phue_model.all_phue:
-    #         out.append(f"{phue.image_out:<4} → {phue.image_in:<4}, length: {phue.length:<3}")
-    #         for tran in phue.transitions:
-    #             out.append(f"move: {tran.move_name:<4}, state: {tran.state:<5}, duration: {tran.duration:<5}")
-    #         out.append("")
-    #
-    #     out.append("\n============================== Parameters ==============================")
-    #     for parameter in self.parameters_ta_model.parameters:
-    #         out.append(f"Program number: {parameter.program_number:<4}")
-    #         min_str = ""
-    #         for min_param in parameter.min_list:
-    #             min_str += f"{min_param:<4}"
-    #         out.append(f"Min: {min_str}")
-    #         max_str = ""
-    #         for max_param in parameter.max_list:
-    #             max_str += f"{max_param:<4}"
-    #         out.append(f"Max: {max_str}")
-    #         type_str = ""
-    #         for type_param in parameter.type_list:
-    #             type_str += f"{type_param:<4}"
-    #         out.append(f"Type: {type_str}")
-    #
-    #         out.append(f"str: {parameter.str:<4}")
-    #         out.append(f"cycle: {parameter.cycle:<4}")
-    #         out.append("")
-    #
-    #     text_to_show = "\n".join(out)
-    #
-    #     # create window for the data
-    #     dialog = QDialog(self.root)
-    #     dialog.setWindowTitle("Print All Output")
-    #     dialog.resize(800, 600)
-    #
-    #     text_edit = QTextEdit()
-    #     text_edit.setReadOnly(True)
-    #     text_edit.setText(text_to_show)
-    #
-    #     layout = QVBoxLayout()
-    #     layout.addWidget(text_edit)
-    #
-    #     dialog.setLayout(layout)
-    #     dialog.exec()
 

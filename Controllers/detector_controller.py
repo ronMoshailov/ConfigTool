@@ -100,6 +100,18 @@ class DetectorController:
         """
         self.model.rename_move(old_name, new_name)
 
+    def is_data_valid(self):
+        try:
+            self.model.is_data_valid()
+            return True
+        except Exception as e:
+            self.view.show_error(str(e))
+            return False
+
+    def remove_move(self, move_name):
+        self.model.remove_move(move_name)
+
+
     # ============================== Write To File ============================== #
     def write_to_file(self, path_init_tk1, path_tk1):
         code = WriteDataManager.create_detectors_init_tk1_code(path_init_tk1, self.model.all_detectors)

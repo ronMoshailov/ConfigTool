@@ -6,33 +6,32 @@ from Config.constants import all_authorities
 
 
 class NavigatorView(QWidget):
-    def __init__(self, show_view_method, print_all_method=None):
+    def __init__(self):
         super().__init__()
-        self.show_view_method = show_view_method
-        # self.print_all_method = print_all_method
-        self.write_to_code_method = None
+        # =============== Methods =============== #
+        self.show_view_method       = None
+        self.write_to_code_method   = None
 
-    #     # =============== QPushButton =============== #
+        # =============== QPushButton =============== #
         self.buttons_list = self._initialize_buttons()
-    #
-        buttons_layout = QVBoxLayout()
+
         save_btn = QPushButton("💾 עדכן קוד 💾")  # 13
         save_btn.setProperty("class", "navigator_button")
         save_btn.clicked.connect(lambda: self.write_to_code_method())
 
+        # =============== Authority Combo =============== #
+        self.authority_combo = QComboBox()
+        for authority in all_authorities:
+            self.authority_combo.addItem(authority)
+
+        # =============== Set Layout =============== #
+        buttons_layout = QVBoxLayout()
         for idx, btn in enumerate (self.buttons_list):
             buttons_layout.addWidget(btn)
             if idx == 1:
                 buttons_layout.addSpacing(20)
-
-        # combo
-        combo = QComboBox()
-        for authority in all_authorities:
-            combo.addItem(authority)
-        buttons_layout.addWidget(combo)
-
+        buttons_layout.addWidget(self.authority_combo)
         buttons_layout.addStretch()
-
         buttons_layout.addWidget(save_btn)
     #
     #     # =============== Grid QWidget =============== #
@@ -61,15 +60,13 @@ class NavigatorView(QWidget):
         settings_btn = QPushButton("⚙️ הגדרות ⚙️")                #  1
         settings_btn.setObjectName("MainButton")
         move_panel_btn = QPushButton("🚦 מופעים 🚦")              #  2
-        # min_green_panel_btn = QPushButton("🕰️ מינימום 🕰️")        #  3
         matrix_panel_btn = QPushButton("🔢 מטריצה 🔢")            #  4
         sk24_panel_btn = QPushButton("🧑‍💻   SK24   👩‍💻")                #  5
-        io24_panel_btn = QPushButton("IO24")                #  6
-        io64_panel_btn = QPushButton("IO64")                #  6
+        io24_panel_btn = QPushButton("🔌   IO24   🔌")                #  6
+        io64_panel_btn = QPushButton("⚡   IO64   ⚡")                #  6
         detector_panel_btn = QPushButton("👩🏻‍🔧  גלאים  👨🏻‍🔧")           #  7
         schedule_panel_btn = QPushButton("🕛    לו\"ז    🕛")           #  8
         image_panel_btn = QPushButton("🖼️ תמונות 🖼️")             #  9
-        # program_panel_btn = QPushButton(" תוכניות ")          # 10
         inter_stage_panel_btn = QPushButton("➡️ מעברים ➡️")       # 11
         # display_all_btn = QPushButton("🖨️ הדפס הכל 🖨️")           # 12
         parameters_panel_btn = QPushButton("📐פרמטרים📐")  # 13
@@ -91,7 +88,7 @@ class NavigatorView(QWidget):
             parameters_panel_btn,    # 11
             # display_all_btn,       # 12
         ]
-    #
+
     #     # =============== connect listener =============== #
         buttons[ 0].clicked.connect(lambda: self.show_view_method("init"))
         buttons[ 1].clicked.connect(lambda: self.show_view_method("settings"))
@@ -108,7 +105,6 @@ class NavigatorView(QWidget):
         # buttons[11].clicked.connect(lambda: self.print_all_method())
     #
     #     # =============== special methods =============== #
-    #     set_btn_disable(buttons[1:])                         # Disable buttons
         Config.special.set_property("class", "navigator_button", buttons)
     #
         return buttons

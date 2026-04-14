@@ -138,3 +138,12 @@ class DetectorModel:
         """
         self.all_detectors.clear()
 
+    def remove_move(self, move_name):
+        for detector in self.all_detectors:
+            if detector.move_name == move_name:
+                detector.move_name = ""
+
+    def is_data_valid(self):
+        for detector in self.all_detectors:
+            if detector.move_name == "":
+                raise Exception("גלאי ללא מופע")
