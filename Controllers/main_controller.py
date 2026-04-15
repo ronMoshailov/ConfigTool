@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QWidget, QHBoxLayout, QMessageBox, QMainWindow
 
 from Config.exceptions import InvalidMoveName, DuplicateMoveError
 from Config.style import main_window_style
-from Config.var import Var
+from Config.variables import Var
 from Controllers.io64_controller import Io64Controller
 from Controllers.io24_controller import Io24Controller
 
@@ -219,6 +219,8 @@ class MainController:
         self.phue_controller.init_model(self.phue_model.phue_paths, self.path_manager.path_init_tk1)
         self.schedule_controller.init_model(self.path_manager.path_init_tk1)
         self.parameters_ta_controller.init_model(self.path_manager.path_parameters_ta, len(self.image_model.all_images))
+
+        # self.path_manager.load_project_number_and_name()
         return True
 
     def set_display_logic(self):

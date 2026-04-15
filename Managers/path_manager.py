@@ -4,6 +4,7 @@ import shutil
 
 from PyQt6.QtWidgets import QFileDialog, QMessageBox
 
+from Config.variables import Var
 import Config
 
 class PathManager:
@@ -16,6 +17,7 @@ class PathManager:
         self.path_tk1           = None
         self.path_init_tk1      = None
         self.path_parameters_ta = None
+        self.dot_project        = None
 
         # Destination
         self.path_init_dst          = None
@@ -41,14 +43,17 @@ class PathManager:
         target_dir = Path(target_dir)
 
         # set destinations paths
-        dst                         = target_dir / f"{Config.constants.PROJECT_NUMBER}"
+        print("Var: " + Var.PROJECT_NAME)
+        dst                         = target_dir / f"{Var.PROJECT_NUMBER}"
 
-        self.path_init_dst          = dst / "Code" / "src" / f"{Config.constants.PROJECT_NUMBER}" / "init.java"
-        self.path_tk1_dst           = dst / "Code" / "src" / f"{Config.constants.PROJECT_NUMBER}" / "Tk1.java"
-        self.path_init_tk1_dst      = dst / "Code" / "src" / f"{Config.constants.PROJECT_NUMBER}" / "initTk1.java"
-        self.path_parameters_ta_dst = dst / "Code" / "src" / f"{Config.constants.PROJECT_NUMBER}" / "ParametersTelAviv.java"
+        self.path_init_dst          = dst / "Code" / "src" / f"{Var.PROJECT_NUMBER}" / "init.java"
+        self.path_tk1_dst           = dst / "Code" / "src" / f"{Var.PROJECT_NUMBER}" / "Tk1.java"
+        self.path_init_tk1_dst      = dst / "Code" / "src" / f"{Var.PROJECT_NUMBER}" / "initTk1.java"
+        self.path_parameters_ta_dst = dst / "Code" / "src" / f"{Var.PROJECT_NUMBER}" / "ParametersTelAviv.java"
         self.path_phue_folder_dst   = dst / "Code" / "src" / "phue"
         self.path_phase_folder_dst  = dst / "Code" / "src" / "phase"
+
+        self.dot_project            = dst / "Code" / ".project"
 
         # If the folder exist remove it
         if dst.exists():
@@ -57,13 +62,28 @@ class PathManager:
         # Copy the template project
         shutil.copytree(source_folder, dst)
 
+        # update .project
+        with open(self.dot_project, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        content = content.replace(
+            "<name>WriteProjectNameHere</name>",
+            f"<name>{Config}</name>"
+        )
+
+        with open(self.dot_project, "w", encoding="utf-8") as f:
+            f.write(content)
+
+        #
+        # def load_project_number_and_name(self):
+
         #
         self.path_phue_folder_dst.mkdir(parents=True, exist_ok=True)
         self.path_phase_folder_dst.mkdir(parents=True, exist_ok=True)
 
         # rename
         old_path = dst / "Code" / "src" / "ta00"
-        new_path = dst / "Code" / "src" / f"{Config.constants.PROJECT_NUMBER}"
+        new_path = dst / "Code" / "src" / f"{Var.PROJECT_NUMBER}"
 
         old_path.rename(new_path)
         print(f"Folder renamed to {new_path}")
@@ -94,6 +114,17 @@ class PathManager:
                 elif file.lower().startswith("phue") and file.lower().endswith(".java"):
                     path_to_add = os.path.join(root, file)
                     phue_paths.append(path_to_add)
+                elif file.lower().startswith(".project"):
+                    full_path = os.path.join(root, file)
+
+                    with open(full_path, "r", encoding="utf-8") as f:
+                        content = f.read()
+
+                    start = content.find("<name>") + len("<name>")
+                    end = content.find("</name>")
+                    current_name = content[start:end]
+                    Var.PROJECT_NAME = current_name
+                    print("Var: " + Var.PROJECT_NAME)
 
     def set_folder_path(self):
         """

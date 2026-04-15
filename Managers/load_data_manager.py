@@ -3,6 +3,7 @@ import Config
 from pathlib import Path
 
 from Config.patterns import settings_pattern, move_pattern, matrix_pattern
+from Config.variables import Var
 
 
 class LoadDataManager:
@@ -90,7 +91,7 @@ class LoadDataManager:
         with open(path, 'r', encoding='utf-8') as file:
             for line in file:
                 if line.startswith("package"):
-                    Config.constants.PROJECT_NUMBER = line.replace("package", "").replace(";", "").strip()
+                    Var.PROJECT_NUMBER = line.replace("package", "").replace(";", "").strip()
                     continue
                 line = line.strip()
                 if "new SchaltKanal" not in line:

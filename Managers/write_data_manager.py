@@ -1,5 +1,6 @@
 import Config
 
+from Config.variables import Var
 
 class WriteDataManager:
     # ============================================================================== #
@@ -527,9 +528,9 @@ class WriteDataManager:
             line += "import enums.ExtensionType;\n"
             line += "import special.Move;\n"
             line += "import special.Stage;\n"
-            line += f"import {Config.constants.PROJECT_NUMBER}.Tk1;\n"
-            line += f"import {Config.constants.PROJECT_NUMBER}.ParametersTelAviv;\n"
-            line += f"import {Config.constants.PROJECT_NUMBER}.Var;\n"
+            line += f"import {Var.PROJECT_NUMBER}.Tk1;\n"
+            line += f"import {Var.PROJECT_NUMBER}.ParametersTelAviv;\n"
+            line += f"import {Var.PROJECT_NUMBER}.Var;\n"
             line += "\n"
             line += f"public class Phase{image_name}"
             line += " extends Stage {\n"
@@ -749,7 +750,7 @@ class WriteDataManager:
             line += "\n"
             line += "import vt.*;\n"
             line += "import special.InterStage;\n"
-            line += f"import {Config.constants.PROJECT_NUMBER}.Tk1;"
+            line += f"import {Var.PROJECT_NUMBER}.Tk1;"
             line += "\n"
             line += f"public class Phue{phue.image_out}_{phue.image_in} "
             line += "extends InterStage {\n"

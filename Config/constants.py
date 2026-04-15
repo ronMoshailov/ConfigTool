@@ -3,7 +3,7 @@ import os
 from PyQt6.QtGui import QColor
 
 # =============== data =============== #
-PROJECT_NUMBER      = None
+
 all_authorities = ["תל אביב", "ירושלים", "חיפה", "נתיבי ישראל"]
 
 # =============== paths =============== #
