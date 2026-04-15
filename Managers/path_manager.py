@@ -124,7 +124,6 @@ class PathManager:
                     end = content.find("</name>")
                     current_name = content[start:end]
                     Var.PROJECT_NAME = current_name
-                    print("Var: " + Var.PROJECT_NAME)
 
     def set_folder_path(self):
         """

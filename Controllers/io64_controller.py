@@ -27,7 +27,7 @@ class Io64Controller:
         """
         This method clear all the data in the model
         """
-        self.model.reset_io_model()
+        self.model.reset_io64_model()
 
     # ============================== Write To File ============================== #
     # def write_io24_to_project(self, path_init_tk1):

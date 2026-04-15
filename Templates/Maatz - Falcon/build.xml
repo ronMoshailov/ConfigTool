@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+
+<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++
++ Beschreibung : Ant Build-File fuer die Erstellung von Java VT's
++ Ant Version  : 1.5.4
++ Erstelldatum : 21.11.03
++ Autor        : C. Schyma / D. Schoellkopf / A. Weyerich
++ Version      : 2.0
++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+<project name="vt" default="dist" basedir=".">
+
+	<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	+ Setzen globaler Variablen
+	++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+	<!-- Quellverzeichnis -->
+	<property name="dir.package_base" value="${basedir}/src" />
+	<property name="dir.src" value="${dir.package_base}" />
+
+	<!-- Byte-Code Ausgabeverzeichnis -->
+	<property name="dir.bin" value="${basedir}/classes" />
+
+	<!-- JAR-Archive Ausgabeverzeichnis -->
+	<property name="dir.dist" value="${basedir}/ROM1" />
+	<property name="file.dist" value ="${dir.dist}/vt.jar" />
+
+	<!-- VT-Bibliothek -->
+	<property name="lib.vtbib" value="${basedir}/lib/VTBIB.JAR" />
+
+		<!-- javac flags -->
+	<property name="compile.debug" value="false" />
+	<property name="compile.deprecation" value="false" />
+	<property name="compile.optimize" value="true" />
+	<property name="compile.failonerror" value="true" />
+	<property name="compile.source" value="1.5" />
+	<property name="compile.target" value="1.5" />
+
+	<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	+ Targets
+	++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+	<target name="init">
+		<!-- Neuen Zeitstempel erstellen -->
+		<tstamp />
+		<available file="${lib.vtbib}" property="lib.vtbib.present" />
+	</target>
+
+	<target name="libCheck" unless="lib.vtbib.present">
+		<echo>Vtbib.jar in ./lib nicht gefunden! Bitte Verzeichnis anlegen und Bibliothek hineinkopieren.</echo>
+		<fail message="-> libCheck" />
+	</target>
+
+	<!-- Kompilieren der Quellen in das classes-Verzeichnis -->
+	<target name="compile" depends="clean, init, libCheck">
+		<mkdir dir="${dir.bin}" />
+		<javac srcdir="${dir.src}" destdir="${dir.bin}" classpath="${dir.bin};${lib.vtbib}" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" failonerror="${compile.failonerror}" source="${compile.source}" target="${compile.target}" />
+	</target>
+
+	<!-- Erstellen eines jar-Archivs aus dem zuvor erstellen Byte-Code -->
+	<target name="dist" depends="compile">
+		<mkdir dir="${dir.dist}" />
+		<jar jarfile="${file.dist}" basedir="${dir.bin}" compress="true" />
+	</target>
+
+	<!-- Loeschen aller von Ant erstellten Verzeichnisse -->
+	<target name="clean">
+		<delete dir="${dir.bin}" />
+		<delete file="${file.dist}" />
+	</target>
+
+	<!-- Ausgabe der Hilfe -->
+	<target name="help">
+		<echo>
+		folgende Optionen sind vorhanden:
+
+		compile:
+			Uebersetzt die Quellen.
+		dist:
+			Uebersetzt die Quellen und erstellt
+			daraus ein JAR-Archiv.
+		clean:
+			Loescht alle von Ant erstellten Verzeichnisse.
+		help:
+			diese Ausgabe.
+		</echo>
+	</target>
+
+</project>

@@ -11,7 +11,7 @@ class SkController:
 
         # Controller Methods
         self.view.add_sk_card_method = self.add_sk_card
-        self.view.remove_sk_card_method = self.remove_sk_card_card
+        self.view.remove_sk_method = self.remove_sk_card_card
         self.view.set_channel_method = self.set_channel
 
     def init_model(self, path):
@@ -45,7 +45,7 @@ class SkController:
         """
         This method remove sk card from the model
         """
-        self.model.remove_sk_card(card_num)
+        self.model.remove_sk(card_num)
         self.view.show_view(self.model.sk_list, self.all_moves)
 
     def rename_move(self, old_name, new_name):

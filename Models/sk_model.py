@@ -42,7 +42,7 @@ class SkModel:
         sk_card = _SkCard(len(self.sk_list) + 1)
         self.sk_list.append(sk_card)
 
-    def remove_card_sk(self, card_num):
+    def remove_sk(self, card_num):
         """
         This method removes sk card from the model
         """

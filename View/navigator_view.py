@@ -11,6 +11,7 @@ class NavigatorView(QWidget):
         # =============== Methods =============== #
         self.show_view_method       = None
         self.write_to_code_method   = None
+        self.start_new_project      = None
 
         # =============== QPushButton =============== #
         self.buttons_list = self._initialize_buttons()
@@ -18,6 +19,10 @@ class NavigatorView(QWidget):
         save_btn = QPushButton("💾 עדכן קוד 💾")  # 13
         save_btn.setProperty("class", "navigator_button")
         save_btn.clicked.connect(lambda: self.write_to_code_method())
+
+        new_project_btn = QPushButton("🗽 פרויקט חדש 🗽")  # 13
+        new_project_btn.setProperty("class", "navigator_button")
+        new_project_btn.clicked.connect(lambda: self.start_new_project())
 
         # =============== Authority Combo =============== #
         self.authority_combo = QComboBox()
@@ -32,7 +37,9 @@ class NavigatorView(QWidget):
                 buttons_layout.addSpacing(20)
         buttons_layout.addWidget(self.authority_combo)
         buttons_layout.addStretch()
+        buttons_layout.addWidget(new_project_btn)
         buttons_layout.addWidget(save_btn)
+
     #
     #     # =============== Grid QWidget =============== #
         self.container = QWidget()

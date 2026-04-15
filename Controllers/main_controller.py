@@ -102,6 +102,7 @@ class MainController:
         self.parameters_ta_controller.get_sp_by_image_method    = self.image_controller.get_sp_by_image
         self.detector_controller.get_all_moves_names            = self.move_controller.get_all_moves_names
         self.navigator_view.show_view_method                    = self.show_view
+        self.navigator_view.start_new_project                   = self.start_new_project
 
         # =============== Root Layout =============== #
         root_layout = QHBoxLayout()
@@ -188,8 +189,8 @@ class MainController:
         self.phue_controller.reset()
         self.move_controller.reset()
         self.matrix_controller.reset()
-        # self.io_controller.reset()
-        # self.io64_controller.reset()
+        self.io24_controller.reset()
+        self.io64_controller.reset()
         self.image_controller.reset()
         self.detector_controller.reset()
         self.schedule_controller.reset()
@@ -236,6 +237,25 @@ class MainController:
         self.display_manager.register("parameters_ta"   , self.parameters_ta_controller)
         self.display_manager.register("settings"        , self.settings_controller)
 
+    def start_new_project(self):
+        reply = QMessageBox.question(
+            self.main_root,
+            "אישור",
+            "האם אתה בטוח?",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No           # default
+        )
+
+        if reply == QMessageBox.StandardButton.No:
+            return
+
+        self.path_manager.path_project          = True
+        self.schedule_view.is_copy_sunday       = True
+        self.navigator_view.authority_combo.setDisabled(True)
+        self.reset_models()
+        self.show_view("settings")
+        QMessageBox.information(self.main_root,"פרויקט חדש","הופעל פרויקט חדש")
+        pass
 
     # ============================== Write to file ============================== #
     def write_to_code(self):

@@ -20,8 +20,6 @@ class Io24Controller:
                 continue
             self.model.set_channel(var_name, card_number, channel, is_commented)
 
-        # self.model.print_data()
-        print("done")
 
     def show_view(self):
         self.view.show_view(self.model.get_io_list())
