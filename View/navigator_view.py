@@ -24,6 +24,10 @@ class NavigatorView(QWidget):
         new_project_btn.setProperty("class", "navigator_button")
         new_project_btn.clicked.connect(lambda: self.start_new_project())
 
+        close_project_btn = QPushButton("🔐 סגור פרויקט 🔐")  # 13
+        close_project_btn.setProperty("class", "navigator_button")
+        close_project_btn.clicked.connect(lambda: self.start_new_project())
+
         # =============== Authority Combo =============== #
         self.authority_combo = QComboBox()
         for authority in all_authorities:
@@ -37,6 +41,7 @@ class NavigatorView(QWidget):
                 buttons_layout.addSpacing(20)
         buttons_layout.addWidget(self.authority_combo)
         buttons_layout.addStretch()
+        buttons_layout.addWidget(close_project_btn)
         buttons_layout.addWidget(new_project_btn)
         buttons_layout.addWidget(save_btn)
 

@@ -4,120 +4,34 @@ from PyQt6.QtWidgets import QWidget, QHBoxLayout, QMessageBox, QMainWindow
 from Config.exceptions import InvalidMoveName, DuplicateMoveError
 from Config.style import main_window_style
 from Config.variables import Var
-from Controllers.io64_controller import Io64Controller
-from Controllers.io24_controller import Io24Controller
 
-from Controllers.parameters_controller import ParametersTaController
-from Controllers.detector_controller import DetectorController
-from Controllers.image_controller import ImageController
-from Controllers.matrix_controller import MatrixController
-from Controllers.move_controller import MoveController
-from Controllers.phue_controller import PhueController
-from Controllers.schedule_controller import ScheduleController
-from Controllers.settings_controller import SettingsController
-from Controllers.sk_controller import SkController
+from Managers.builder import SetupBuilder
 from Managers.display_manager import DisplayManager
 from Managers.write_data_manager import WriteDataManager
-from Models.io64_model import Io64Model
-from Models.io24_model import Io24Model
-
-from View.image_view import ImageView
-from View.io24_view import Io24View
-from View.io64_view import Io64View
-from View.matrix_view import MatrixView
-from View.navigator_view import NavigatorView
-from View.detector_view import DetectorView
-from View.move_view import MoveView
-from View.parameters_ta_view import ParametersTaView
-from View.phue_view import PhueView
-from View.schedule_view import ScheduleView
-from View.settings_view import SettingsView
-from View.sk_view import SkView
-
-from Models.detector_model import DetectorModel
-from Models.image_model import ImageModel
-from Models.matrix_model import MatrixModel
-from Models.move_model import MoveModel
-from Models.parameters_ta_model import ParametersTaModel
-from Models.phue_model import PhueModel
-from Models.schedule_model import ScheduleModel
-from Models.settings_model import SettingsModel
-from Models.sk_model import SkModel
-
 from Managers.path_manager import PathManager
 
 
 class MainController:
     def __init__(self):
-        # =============== Managers =============== #
+        # =============== Build =============== #
         self.path_manager       = PathManager()
         self.display_manager    = DisplayManager()
-
-        # =============== Models =============== #
-        self.settings_model         = SettingsModel()
-        self.move_model             = MoveModel()
-        self.matrix_model           = MatrixModel()
-        self.sk_model               = SkModel()
-        self.io24_model             = Io24Model()
-        self.io64_model             = Io64Model()
-        self.detector_model         = DetectorModel()
-        self.schedule_model         = ScheduleModel()
-        self.image_model            = ImageModel()
-        self.phue_model             = PhueModel()
-        self.parameters_ta_model    = ParametersTaModel()
-
-        # =============== Views =============== #
-        self.settings_view          = SettingsView()
-        self.move_view              = MoveView()
-        self.matrix_view            = MatrixView()
-        self.sk_view                = SkView()
-        self.io24_view              = Io24View()
-        self.io64_view              = Io64View()
-        self.detector_view          = DetectorView()
-        self.schedule_view          = ScheduleView()
-        self.image_view             = ImageView()
-        self.phue_view              = PhueView()
-        self.parameters_ta_view     = ParametersTaView()
-        self.navigator_view         = NavigatorView()
-
-        # =============== Controllers =============== #
-        self.settings_controller        = SettingsController(self.settings_view, self.settings_model)
-        self.move_controller            = MoveController(self.move_view, self.move_model)
-        self.matrix_controller          = MatrixController(self.matrix_view, self.matrix_model)
-        self.sk_controller              = SkController(self.sk_view, self.sk_model)
-        self.io24_controller            = Io24Controller(self.io24_view, self.io24_model)
-        self.io64_controller            = Io64Controller(self.io64_view, self.io64_model)
-        self.detector_controller        = DetectorController(self.detector_view, self.detector_model)
-        self.schedule_controller        = ScheduleController(self.schedule_view, self.schedule_model)
-        self.image_controller           = ImageController(self.image_view, self.image_model)
-        self.phue_controller            = PhueController(self.phue_view, self.phue_model)
-        self.parameters_ta_controller   = ParametersTaController(self.parameters_ta_view, self.parameters_ta_model)
+        self.models             = SetupBuilder.build_models()
+        self.views              = SetupBuilder.build_views()
+        self.controllers        = SetupBuilder.build_controllers(self.models, self.views)
 
         # =============== Set Controllers Methods =============== #
-        self.move_controller.view.rename_move_method            = self.rename_move
-        self.move_controller.global_remove_move                 = self.global_remove_move
-        self.move_controller.remove_move_from_matrix_method     = self.matrix_controller.remove_move
-        self.matrix_controller.get_move_type                    = self.move_controller.get_move_type
-        self.navigator_view.write_to_code_method                = self.write_to_code
-        self.parameters_ta_controller.get_sp_by_image_method    = self.image_controller.get_sp_by_image
-        self.detector_controller.get_all_moves_names            = self.move_controller.get_all_moves_names
-        self.navigator_view.show_view_method                    = self.show_view
-        self.navigator_view.start_new_project                   = self.start_new_project
+        SetupBuilder.connect_controllers(self.controllers)
+        self.controllers["move"].view.rename_move_method        = self.rename_move
+        self.controllers["move"].global_remove_move             = self.global_remove_move
+        self.views["navigator"].write_to_code_method            = self.write_to_code
+        self.views["navigator"].show_view_method                = self.show_view
+        self.views["navigator"].start_new_project               = self.start_new_project
 
         # =============== Root Layout =============== #
         root_layout = QHBoxLayout()
-        root_layout.addWidget(self.move_view)
-        root_layout.addWidget(self.detector_view)
-        root_layout.addWidget(self.settings_view)
-        root_layout.addWidget(self.matrix_view)
-        root_layout.addWidget(self.sk_view)
-        root_layout.addWidget(self.schedule_view)
-        root_layout.addWidget(self.image_view)
-        root_layout.addWidget(self.phue_view)
-        root_layout.addWidget(self.parameters_ta_view)
-        root_layout.addWidget(self.io64_view)
-        root_layout.addWidget(self.io24_view)
-        root_layout.addWidget(self.navigator_view)
+        for view in self.views.values():
+            root_layout.addWidget(view)
         root_layout.setAlignment(Qt.AlignmentFlag.AlignRight)
 
         # =============== Main Root =============== #
@@ -135,12 +49,28 @@ class MainController:
         self.root.show()
         self.root.showMaximized()  # show in full-screen
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def show_view(self, act):
         # Initialize app
         if act == "init":
             if self._initialize_app():
-                Var.authority = self.navigator_view.authority_combo.currentText()
-                self.navigator_view.authority_combo.setDisabled(True)
+                Var.authority = self.views["navigator"].authority_combo.currentText()
+                self.views["navigator"].authority_combo.setDisabled(True)
                 self.display_manager.show("settings")
             return
 
@@ -151,15 +81,15 @@ class MainController:
 
         # Choose which view to show
         if act == "matrix":
-            self.display_manager.show("matrix", self.move_model.all_moves)
+            self.display_manager.show("matrix", self.models["move"].all_moves)
         elif act == "image":
-            self.display_manager.show("image", self.move_controller.get_all_moves_names())
+            self.display_manager.show("image", self.controllers["move"].get_all_moves_names())
         elif act == "phue":
-            self.display_manager.show("phue", self.image_model.all_images, self.move_controller.get_all_moves_names())
+            self.display_manager.show("phue", self.models["image"].all_images, self.controllers["move"].get_all_moves_names())
         elif act == "parameters_ta":
-            self.display_manager.show("parameters_ta", self.image_model.all_images)
+            self.display_manager.show("parameters_ta", self.models["image"].all_images)
         elif act == "sk":
-            self.display_manager.show("sk", self.move_model.all_moves)
+            self.display_manager.show("sk", self.models["move"].all_moves)
         else:
             self.display_manager.show(act)
 
@@ -185,17 +115,8 @@ class MainController:
 
     # ============================== Logic ============================== #
     def reset_models(self):
-        self.sk_controller.reset()
-        self.phue_controller.reset()
-        self.move_controller.reset()
-        self.matrix_controller.reset()
-        self.io24_controller.reset()
-        self.io64_controller.reset()
-        self.image_controller.reset()
-        self.detector_controller.reset()
-        self.schedule_controller.reset()
-        self.settings_controller.reset()
-        self.parameters_ta_controller.reset()
+        for controller in self.controllers.values():
+            controller.reset()
 
     def _initialize_app(self):
         # Set Project Path
@@ -225,17 +146,17 @@ class MainController:
         return True
 
     def set_display_logic(self):
-        self.display_manager.register("move"            , self.move_controller)
-        self.display_manager.register("matrix"          , self.matrix_controller)
-        self.display_manager.register("detector"        , self.detector_controller)
-        self.display_manager.register("sk"              , self.sk_controller)
-        self.display_manager.register("io24"            , self.io24_controller)
-        self.display_manager.register("io64"            , self.io64_controller)
-        self.display_manager.register("schedule"        , self.schedule_controller)
-        self.display_manager.register("image"           , self.image_controller)
-        self.display_manager.register("phue"            , self.phue_controller)
-        self.display_manager.register("parameters_ta"   , self.parameters_ta_controller)
-        self.display_manager.register("settings"        , self.settings_controller)
+        self.display_manager.register("move"            , self.controllers["move"])
+        self.display_manager.register("matrix"          , self.controllers["matrix"])
+        self.display_manager.register("detector"        , self.controllers["detector"])
+        self.display_manager.register("sk"              , self.controllers["sk"])
+        self.display_manager.register("io24"            , self.controllers["io24"])
+        self.display_manager.register("io64"            , self.controllers["io64"])
+        self.display_manager.register("schedule"        , self.controllers["schedule"])
+        self.display_manager.register("image"           , self.controllers["image"])
+        self.display_manager.register("phue"            , self.controllers["phue"])
+        self.display_manager.register("parameters_ta"   , self.controllers["parameters_ta"])
+        self.display_manager.register("settings"        , self.controllers["settings"])
 
     def start_new_project(self):
         reply = QMessageBox.question(
