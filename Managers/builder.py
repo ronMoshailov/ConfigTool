@@ -87,8 +87,8 @@ class SetupBuilder:
     @staticmethod
     def connect_controllers(controllers):
         # =============== Set Controllers Methods =============== #
-        controllers["move"].move_controller.remove_move_from_matrix_method              = controllers["matrix"].remove_move
-        controllers["matrix"].matrix_controller.get_move_type                           = controllers["move"].get_move_type
-        controllers["parameters_ta"].parameters_ta_controller.get_sp_by_image_method    = controllers["image"].get_sp_by_image
-        controllers["detector"].detector_controller.get_all_moves_names                 = controllers["move"].get_all_moves_names
+        controllers["move"].remove_move_from_matrix_method  = controllers["matrix"].remove_move
+        controllers["matrix"].get_move_type                 = controllers["move"].get_move_type
+        controllers["parameters_ta"].get_sp_by_image_method = controllers["image"].get_sp_by_image
+        controllers["detector"].get_all_moves_names         = controllers["move"].get_all_moves_names
 
