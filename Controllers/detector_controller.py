@@ -7,28 +7,29 @@ from Managers.write_data_manager import WriteDataManager
 class DetectorController:
     def __init__(self, view, model):
         # Fields
-        self.view               = view
-        self.model              = model
-        self.all_moves_names    = None
+        self.view = view
+        self.model = model
+        self.all_moves_names = None
 
         # Set View Methods
-        self.view.remove_detector_method            = self.remove_detector
-        self.view.add_detector_method               = self.add_detector
-        self.view.update_variable_name_method       = self.update_variable_name
-        self.view.update_detector_type_method       = self.update_detector_type
-        self.view.update_move_name_method           = self.update_move_name
-        self.view.update_detector_name_method       = self.update_detector_name
-        self.view.update_ext_unit_method            = self.update_ext_unit
+        self.view.remove_detector_method = self.remove_detector
+        self.view.add_detector_method = self.add_detector
+        self.view.update_variable_name_method = self.update_variable_name
+        self.view.update_detector_type_method = self.update_detector_type
+        self.view.update_move_name_method = self.update_move_name
+        self.view.update_detector_name_method = self.update_detector_name
+        self.view.update_ext_unit_method = self.update_ext_unit
 
         # Set Main Controller Methods
-        self.get_all_moves_names            = None
+        self.get_all_moves_names = None
 
     def init_model(self, path):
         all_detectors = LoadDataManager.load_detectors_data(path)
 
         for var_name, class_name, detector_name, move_name in all_detectors:
             try:
-                self.model.new_detector(var_name=var_name, class_name=class_name, detector_name=detector_name, move_name=move_name, ext_unit=0)
+                self.model.new_detector(var_name=var_name, class_name=class_name, detector_name=detector_name,
+                                        move_name=move_name, ext_unit=0)
             except DuplicateMoveError as e:
                 self.view.show_error(str(e))
 
@@ -44,7 +45,8 @@ class DetectorController:
         This method add new move to the model
         """
         try:
-            self.model.new_detector(var_name=var_name, class_name=class_name, detector_name=detector_name, move_name=move_name, ext_unit=ext_unit)
+            self.model.new_detector(var_name=var_name, class_name=class_name, detector_name=detector_name,
+                                    move_name=move_name, ext_unit=ext_unit)
         except DuplicateMoveError as e:
             self.view.show_error(str(e))
 
@@ -111,12 +113,15 @@ class DetectorController:
     def remove_move(self, move_name):
         self.model.remove_move(move_name)
 
-
     # ============================== Write To File ============================== #
     def write_to_file(self, path_init_tk1, path_tk1):
         code = WriteDataManager.create_detectors_init_tk1_code(path_init_tk1, self.model.all_detectors)
         WriteDataManager.write_code(path_init_tk1, code)
 
-        code = WriteDataManager.create_detectors_tk1_code(path_tk1, self.model.get_all_d_detectors(), self.model.get_all_e_detectors(), self.model.get_all_de_detectors(), self.model.get_all_tp_detectors(), self.model.get_all_q_detectors())
+        code = WriteDataManager.create_detectors_tk1_code(path_tk1,
+                                                          self.model.get_all_d_detectors(),
+                                                          self.model.get_all_e_detectors(),
+                                                          self.model.get_all_de_detectors(),
+                                                          self.model.get_all_tp_detectors(),
+                                                          self.model.get_all_q_detectors())
         WriteDataManager.write_code(path_tk1, code)
-

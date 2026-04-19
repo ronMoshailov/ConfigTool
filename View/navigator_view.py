@@ -9,9 +9,10 @@ class NavigatorView(QWidget):
     def __init__(self):
         super().__init__()
         # =============== Methods =============== #
-        self.show_view_method       = None
-        self.write_to_code_method   = None
-        self.start_new_project      = None
+        self.show_view_method           = None
+        self.write_to_code_method       = None
+        self.start_new_project_method   = None
+        self.close_project_method       = None
 
         # =============== QPushButton =============== #
         self.buttons_list = self._initialize_buttons()
@@ -22,11 +23,11 @@ class NavigatorView(QWidget):
 
         new_project_btn = QPushButton("🗽 פרויקט חדש 🗽")  # 13
         new_project_btn.setProperty("class", "navigator_button")
-        new_project_btn.clicked.connect(lambda: self.start_new_project())
+        new_project_btn.clicked.connect(lambda: self.start_new_project_method())
 
         close_project_btn = QPushButton("🔐 סגור פרויקט 🔐")  # 13
         close_project_btn.setProperty("class", "navigator_button")
-        close_project_btn.clicked.connect(lambda: self.start_new_project())
+        close_project_btn.clicked.connect(lambda: self.close_project_method())
 
         # =============== Authority Combo =============== #
         self.authority_combo = QComboBox()

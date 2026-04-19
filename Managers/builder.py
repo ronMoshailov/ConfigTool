@@ -1,7 +1,7 @@
-
 from View.image_view import ImageView
 from View.io24_view import Io24View
 from View.io64_view import Io64View
+from View.main_view import MainView
 from View.matrix_view import MatrixView
 from View.navigator_view import NavigatorView
 from View.detector_view import DetectorView
@@ -36,6 +36,7 @@ from Controllers.sk_controller import SkController
 from Controllers.io64_controller import Io64Controller
 from Controllers.io24_controller import Io24Controller
 
+
 class SetupBuilder:
     @staticmethod
     def build_models():
@@ -54,19 +55,22 @@ class SetupBuilder:
 
     @staticmethod
     def build_views():
-        return {"settings": SettingsView(),
-                "move": MoveView(),
-                "matrix": MatrixView(),
-                "sk": SkView(),
-                "io24": Io24View(),
-                "io64": Io64View(),
-                "detector": DetectorView(),
-                "schedule": ScheduleView(),
-                "image": ImageView(),
-                "phue": PhueView(),
-                "parameters_ta": ParametersTaView(),
-                "navigator": NavigatorView(),
-                }
+        views = {"settings": SettingsView(),
+                 "move": MoveView(),
+                 "matrix": MatrixView(),
+                 "sk": SkView(),
+                 "io24": Io24View(),
+                 "io64": Io64View(),
+                 "detector": DetectorView(),
+                 "schedule": ScheduleView(),
+                 "image": ImageView(),
+                 "phue": PhueView(),
+                 "parameters_ta": ParametersTaView(),
+                 "navigator": NavigatorView()
+                 }
+
+        views["main"] = MainView(views)
+        return views
 
     @staticmethod
     def build_controllers(models, views):
@@ -87,8 +91,8 @@ class SetupBuilder:
     @staticmethod
     def connect_controllers(controllers):
         # =============== Set Controllers Methods =============== #
-        controllers["move"].remove_move_from_matrix_method  = controllers["matrix"].remove_move
-        controllers["matrix"].get_move_type                 = controllers["move"].get_move_type
+        controllers["move"].remove_move_from_matrix_method = controllers["matrix"].remove_move
+        controllers["matrix"].get_move_type = controllers["move"].get_move_type
         controllers["parameters_ta"].get_sp_by_image_method = controllers["image"].get_sp_by_image
-        controllers["detector"].get_all_moves_names         = controllers["move"].get_all_moves_names
+        controllers["detector"].get_all_moves_names = controllers["move"].get_all_moves_names
 
