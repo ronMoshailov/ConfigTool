@@ -29,7 +29,8 @@ class MainController:
         self.views["navigator"].close_project_method        = self.close_project
 
         # =============== Logic =============== #
-        self.set_display_logic()
+        for name, controller in self.controllers.items():
+            self.display_manager.register(name, controller)
 
         # =============== Root Widget =============== #
         self.root = QMainWindow()
@@ -43,7 +44,7 @@ class MainController:
         # Initialize app
         if act == "init":
             if self._initialize_app():
-                Var.authority = self.views["navigator"].authority_combo.currentText()
+                Var.authority = self.views["navigator"].authority_combo.currentData()
                 self.views["navigator"].authority_combo.setDisabled(True)
                 self.display_manager.show("settings")
             return
@@ -118,10 +119,6 @@ class MainController:
         # self.path_manager.load_project_number_and_name()
         return True
 
-    def set_display_logic(self):
-        for name, controller in self.controllers.items():
-            self.display_manager.register(name, controller)
-
     def start_new_project(self):
         reply = QMessageBox.question(
             self.views["main"],
@@ -168,6 +165,9 @@ class MainController:
 
         if not self.path_manager.create_project(self.root):
             return
+
+        # if maatz falcon
+
 
         # self.write_phase_imports()
         WriteDataManager.write_phase_imports(self.path_manager.path_init_tk1_dst, self.controllers["image"].get_all_images())

@@ -3,6 +3,7 @@ from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QComboBox
 
 import Config
 from Config.constants import all_authorities
+from Enum.Authority import Authority
 
 
 class NavigatorView(QWidget):
@@ -31,8 +32,8 @@ class NavigatorView(QWidget):
 
         # =============== Authority Combo =============== #
         self.authority_combo = QComboBox()
-        for authority in all_authorities:
-            self.authority_combo.addItem(authority)
+        for a in Authority:
+            self.authority_combo.addItem(a.value, a)
 
         # =============== Set Layout =============== #
         buttons_layout = QVBoxLayout()
