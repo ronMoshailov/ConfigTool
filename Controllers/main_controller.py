@@ -154,8 +154,9 @@ class MainController:
         self.views["schedule"].is_copy_sunday       = True
         self.views["navigator"].authority_combo.setDisabled(True)
         self.reset_models()
-        self.show_view("settings")
-        QMessageBox.information(self.views["main"],"פרויקט חדש","הופעל פרויקט חדש")
+        self.path_manager.reset()
+        self.show_view("")
+        QMessageBox.information(self.views["main"],"פרויקט חדש","הפרויקט נסגר")
         pass
 
     # ============================== Write to file ============================== #

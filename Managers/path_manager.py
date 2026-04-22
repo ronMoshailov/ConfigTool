@@ -135,3 +135,21 @@ class PathManager:
         self.path_project = folder_path
         return True
 
+    def reset(self):
+        # Data
+        self.path_project       = None
+
+        # Source
+        self.path_init          = None
+        self.path_tk1           = None
+        self.path_init_tk1      = None
+        self.path_parameters_ta = None
+        self.dot_project        = None
+
+        # Destination
+        self.path_init_dst          = None
+        self.path_tk1_dst           = None
+        self.path_init_tk1_dst      = None
+        self.path_parameters_ta_dst = None
+        self.path_phue_folder_dst   = None
+        self.path_phase_folder_dst  = None
