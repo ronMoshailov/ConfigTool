@@ -1,28 +1,16 @@
-import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QComboBox
+from docx import Document
 
+doc = Document(r"C:\Users\ron.MENORAH-RND\Desktop\ta172\Docs\Cards.docx")
+for i, section in enumerate(doc.sections):
+    header = section.header
+    print(f"--- Section {i} ---")
 
-class Window(QWidget):
-    def __init__(self):
-        super().__init__()
+    print("PARAGRAPHS:")
+    for p in header.paragraphs:
+        print(p.text)
 
-        self.setWindowTitle("Drop Down Example")
-
-        layout = QVBoxLayout()
-
-        self.combo = QComboBox()
-
-        # הוספת אפשרויות
-        self.combo.addItem("Apple")
-        self.combo.addItem("Banana")
-        self.combo.addItem("Orange")
-
-        layout.addWidget(self.combo)
-
-        self.setLayout(layout)
-
-
-app = QApplication(sys.argv)
-window = Window()
-window.show()
-app.exec()
+    print("TABLES:")
+    for table in header.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                print(cell.text)

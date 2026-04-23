@@ -4,6 +4,7 @@ import shutil
 
 from PyQt6.QtWidgets import QFileDialog, QMessageBox
 
+from Config.constants import PROJECT_DIR
 from Config.variables import Var
 import Config
 
@@ -27,12 +28,14 @@ class PathManager:
         self.path_phue_folder_dst   = None
         self.path_phase_folder_dst  = None
 
+        self.path_cards_dst         = None
+
     def create_project(self, view):
         """
         This method create new project and set the destinations paths
         """
         # set source project path
-        source_folder = Path(os.path.join(Config.constants.PROJECT_DIR, "Templates", "TelAvivTemplate"))
+        source_folder = Path(os.path.join(PROJECT_DIR, "Templates", "Tel Aviv"))
 
         # user choose folder
         target_dir = QFileDialog.getExistingDirectory(view, "בחר תיקייה לשמירת הפרויקט")
@@ -43,7 +46,6 @@ class PathManager:
         target_dir = Path(target_dir)
 
         # set destinations paths
-        print("Var: " + Var.PROJECT_NAME)
         dst                         = target_dir / f"{Var.PROJECT_NUMBER}"
 
         self.path_init_dst          = dst / "Code" / "src" / f"{Var.PROJECT_NUMBER}" / "init.java"
@@ -54,6 +56,8 @@ class PathManager:
         self.path_phase_folder_dst  = dst / "Code" / "src" / "phase"
 
         self.dot_project            = dst / "Code" / ".project"
+
+        self.path_cards_dst         = dst / "Docs" / "Cards.docx"
 
         # If the folder exist remove it
         if dst.exists():
@@ -84,9 +88,7 @@ class PathManager:
         # rename
         old_path = dst / "Code" / "src" / "ta00"
         new_path = dst / "Code" / "src" / f"{Var.PROJECT_NUMBER}"
-
         old_path.rename(new_path)
-        print(f"Folder renamed to {new_path}")
 
         QMessageBox.information(view, "הצלחה", "הפרויקט נשמר בהצלחה")
         return True

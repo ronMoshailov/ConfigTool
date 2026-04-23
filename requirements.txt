@@ -1,3 +1,4 @@
 # PyQt6
 # torch
 # numpy
+# python-docx           pip install python-docx
