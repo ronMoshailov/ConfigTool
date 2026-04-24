@@ -1,6 +1,8 @@
 import Config
 
 from Config.variables import Var
+from docx import Document
+from datetime import datetime
 
 class WriteDataManager:
     # ============================================================================== #
@@ -1082,6 +1084,38 @@ class WriteDataManager:
 
             code.append(line)
         return code
+
+    #
+    #
+    #
+    @staticmethod
+    def write_ta_docs(path_manager):
+        # ===== Cards ===== #
+        doc = Document(path_manager.path_cards_dst)
+        today = datetime.now().strftime("%d/%m/%Y")
+
+        for section in doc.sections:
+            header = section.header
+            for table in header.tables:
+                for row in table.rows:
+                    for cell in row.cells:
+                        for paragraph in cell.paragraphs:
+                            if "<date>" in paragraph.text:
+                                paragraph.text = paragraph.text.replace("<date>", today)        # שמירה
+
+        doc.save(f"{path_manager.path_cards_dst}")
+
+        # ===== Parameters TA ===== #
+        doc = Document(path_manager.path_parameters_ta_doc_dst)
+        for section in doc.sections:
+            header = section.header
+            print(header.paragraphs)
+            # for table in header.tables:
+            #     for row in table.rows:
+            #         for cell in row.cells:
+            #             for paragraph in cell.paragraphs:
+            #                 if "<date>" in paragraph.text:
+            #                     paragraph.text = paragraph.text.replace("<date>", today)        # שמירה
 
     # ============================================================================== #
     # ----------------------------------- General ---------------------------------- #

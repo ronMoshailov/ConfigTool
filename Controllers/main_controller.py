@@ -3,14 +3,13 @@ from PyQt6.QtWidgets import QMessageBox, QMainWindow
 from Config.exceptions import InvalidMoveName, DuplicateMoveError
 from Config.style import main_window_style
 from Config.variables import Var
+from Enum.Authority import Authority
 
 from Managers.builder import SetupBuilder
 from Managers.display_manager import DisplayManager
 from Managers.write_data_manager import WriteDataManager
 from Managers.path_manager import PathManager
 
-from docx import Document
-from datetime import datetime
 
 class MainController:
     def __init__(self):
@@ -183,27 +182,12 @@ class MainController:
         self.controllers["schedule"].write_to_file(self.path_manager.path_init_tk1_dst)
         self.controllers["image"].write_to_file(self.path_manager.path_tk1_dst, self.path_manager.path_init_tk1_dst, self.path_manager.path_phase_folder_dst)
         self.controllers["phue"].write_to_file(self.path_manager.path_tk1_dst, self.path_manager.path_init_tk1_dst, self.path_manager.path_phue_folder_dst)
-        self.controllers["parameters_ta"].write_to_file(self.path_manager.path_parameters_ta_dst, self.path_manager.path_init_tk1_dst, self.controllers["image"].fetch_images_by_sp())
         self.controllers["detector"].write_to_file(self.path_manager.path_init_tk1_dst, self.path_manager.path_tk1_dst)
 
-        # פתיחת הקובץ
-        doc = Document(self.path_manager.path_cards_dst)
+        if Var.authority is Authority.TEL_AVIV:
+            self.controllers["parameters_ta"].write_to_file(self.path_manager.path_parameters_ta_dst, self.path_manager.path_init_tk1_dst, self.controllers["image"].fetch_images_by_sp())
+            WriteDataManager.write_ta_docs(self.path_manager)
 
-        # תאריך נוכחי
-        today = datetime.now().strftime("%d/%m/%Y")
-
-        for section in doc.sections:
-            header = section.header
-
-            for table in header.tables:
-                for row in table.rows:
-                    for cell in row.cells:
-                        for paragraph in cell.paragraphs:
-                            for run in paragraph.runs:
-                                if "<date>" in run.text:
-                                    run.text = run.text.replace("<date>", today)        # שמירה
-
-        doc.save("file_updated.docx")
 
     def is_data_valid(self):
         if not self.controllers["matrix"].is_matrix_valid():

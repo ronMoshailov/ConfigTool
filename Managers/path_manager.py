@@ -28,7 +28,8 @@ class PathManager:
         self.path_phue_folder_dst   = None
         self.path_phase_folder_dst  = None
 
-        self.path_cards_dst         = None
+        self.path_cards_dst                 = None
+        self.path_parameters_ta_doc_dst     = None
 
     def create_project(self, view):
         """
@@ -58,6 +59,7 @@ class PathManager:
         self.dot_project            = dst / "Code" / ".project"
 
         self.path_cards_dst         = dst / "Docs" / "Cards.docx"
+        self.path_parameters_ta_doc_dst         = dst / "Docs" / "Parameters.docx"
 
         # If the folder exist remove it
         if dst.exists():
