@@ -91,7 +91,7 @@ class PhueController:
         """
         This method remove all transitions that has the same 'move_name'
         """
-        self.model.rename_move(move_name)
+        self.model.remove_move(move_name)
 
     def update_transition_move(self, image_out, image_in, old_name, new_name):
         """

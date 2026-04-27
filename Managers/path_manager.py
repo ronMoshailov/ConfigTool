@@ -6,7 +6,6 @@ from PyQt6.QtWidgets import QFileDialog, QMessageBox
 
 from Config.constants import PROJECT_DIR
 from Config.variables import Var
-import Config
 
 class PathManager:
     def __init__(self):
@@ -74,7 +73,7 @@ class PathManager:
 
         content = content.replace(
             "<name>WriteProjectNameHere</name>",
-            f"<name>{Config}</name>"
+            f"<name>{Var.PROJECT_NUMBER}</name>"
         )
 
         with open(self.dot_project, "w", encoding="utf-8") as f:

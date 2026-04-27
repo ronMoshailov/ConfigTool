@@ -59,9 +59,15 @@ class SettingsView(QWidget):
         update_btn.setProperty("class", "settings_button")
         update_btn.clicked.connect(self._add_to_history)
 
+        # Date Button
+        date_btn = QPushButton("רשום תאריך")
+        date_btn.setProperty("class", "settings_button")
+        # date_btn.clicked.connect(self._add_to_history)
+
         # History List Layout
         history_list_layout.addWidget(history_title)
         history_list_layout.addWidget(self.list_widget)
+        date_layout.addWidget(date_btn)
 
         # Settings Layout
         settings_layout.addLayout(junc_layout)
