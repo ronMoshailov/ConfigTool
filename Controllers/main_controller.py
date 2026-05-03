@@ -105,17 +105,17 @@ class MainController:
 
         # Initialize Controllers
         self.path_manager.set_files_path(self.models["phue"].phue_paths)
-        self.controllers["settings"].init_model(self.path_manager.path_init)
-        self.controllers["move"].init_model(self.path_manager.path_init_tk1)
-        self.controllers["matrix"].init_model(self.path_manager.path_init_tk1)
-        self.controllers["sk"].init_model(self.path_manager.path_init)
-        self.controllers["io24"].init_model(self.path_manager.path_init)
-        self.controllers["io64"].init_model(self.path_manager.path_init)
-        self.controllers["detector"].init_model(self.path_manager.path_init_tk1)
-        self.controllers["image"].init_model(self.path_manager.path_init_tk1, self.controllers["move"].get_all_moves_names())
-        self.controllers["phue"].init_model(self.models["phue"].phue_paths, self.path_manager.path_init_tk1)
-        self.controllers["schedule"].init_model(self.path_manager.path_init_tk1)
-        self.controllers["parameters_ta"].init_model(self.path_manager.path_parameters_ta, len(self.models["image"].all_images))
+        self.controllers["settings"].init_model(self.path_manager.path_init_src)
+        self.controllers["move"].init_model(self.path_manager.path_init_tk1_src)
+        self.controllers["matrix"].init_model(self.path_manager.path_init_tk1_src)
+        self.controllers["sk"].init_model(self.path_manager.path_init_src)
+        self.controllers["io24"].init_model(self.path_manager.path_init_src)
+        self.controllers["io64"].init_model(self.path_manager.path_init_src)
+        self.controllers["detector"].init_model(self.path_manager.path_init_tk1_src)
+        self.controllers["image"].init_model(self.path_manager.path_init_tk1_src, self.controllers["move"].get_all_moves_names())
+        self.controllers["phue"].init_model(self.models["phue"].phue_paths, self.path_manager.path_init_tk1_src)
+        self.controllers["schedule"].init_model(self.path_manager.path_init_tk1_src)
+        self.controllers["parameters_ta"].init_model(self.path_manager.path_parameters_ta_src, len(self.models["image"].all_images))
 
         # self.path_manager.load_project_number_and_name()
         return True
@@ -183,6 +183,8 @@ class MainController:
         self.controllers["image"].write_to_file(self.path_manager.path_tk1_dst, self.path_manager.path_init_tk1_dst, self.path_manager.path_phase_folder_dst)
         self.controllers["phue"].write_to_file(self.path_manager.path_tk1_dst, self.path_manager.path_init_tk1_dst, self.path_manager.path_phue_folder_dst)
         self.controllers["detector"].write_to_file(self.path_manager.path_init_tk1_dst, self.path_manager.path_tk1_dst)
+
+        WriteDataManager.write_json(self.path_manager.path_json_dst)
 
         if Var.authority is Authority.TEL_AVIV:
             self.controllers["parameters_ta"].write_to_file(self.path_manager.path_parameters_ta_dst, self.path_manager.path_init_tk1_dst, self.controllers["image"].fetch_images_by_sp())

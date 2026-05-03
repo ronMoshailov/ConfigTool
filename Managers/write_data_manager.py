@@ -1015,3 +1015,11 @@ class WriteDataManager:
         with open(path, 'w', encoding='utf-8') as f:
             f.writelines(code)
 
+    @staticmethod
+    def write_json(json_path):
+        code = "{"
+        code += "\n"
+        code += "  \"ControllerDetails\": {"
+        code += "\n"
+        code += f"\"Name\": \"{Var.PROJECT_NUMBER}\",\n\","
+

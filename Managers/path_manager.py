@@ -13,11 +13,11 @@ class PathManager:
         self.path_project       = None
 
         # Source
-        self.path_init          = None
-        self.path_tk1           = None
-        self.path_init_tk1      = None
-        self.path_parameters_ta = None
-        self.dot_project        = None
+        self.path_init_src          = None
+        self.path_tk1_src           = None
+        self.path_init_tk1_src      = None
+        self.path_parameters_ta_src = None
+        self.dot_project_src        = None
 
         # Destination
         self.path_init_dst          = None
@@ -29,6 +29,9 @@ class PathManager:
 
         self.path_cards_dst                 = None
         self.path_parameters_ta_doc_dst     = None
+
+        self.path_json_dst          = None
+        self.dot_project            = None
 
     def create_project(self, view):
         """
@@ -59,6 +62,8 @@ class PathManager:
 
         self.path_cards_dst         = dst / "Docs" / "Cards.docx"
         self.path_parameters_ta_doc_dst         = dst / "Docs" / "Parameters.docx"
+
+        self.path_json_dst         = dst / "Lists" / f"{Var.PROJECT_NUMBER}.json"
 
         # If the folder exist remove it
         if dst.exists():
@@ -107,13 +112,13 @@ class PathManager:
             # ============================================================
             for file in files:
                 if file.lower() == "init.java":  # בודק בלי תלות ברישיות
-                    self.path_init = os.path.join(root, file)
+                    self.path_init_src = os.path.join(root, file)
                 elif file.lower() == "tk1.java":
-                    self.path_tk1 = os.path.join(root, file)
+                    self.path_tk1_src = os.path.join(root, file)
                 elif file.lower() == "inittk1.java":
-                    self.path_init_tk1 = os.path.join(root, file)
+                    self.path_init_tk1_src = os.path.join(root, file)
                 elif file.lower() == "parameterstelaviv.java":
-                    self.path_parameters_ta = os.path.join(root, file)
+                    self.path_parameters_ta_src = os.path.join(root, file)
                 elif file.lower().startswith("phue") and file.lower().endswith(".java"):
                     path_to_add = os.path.join(root, file)
                     phue_paths.append(path_to_add)
@@ -143,11 +148,11 @@ class PathManager:
         self.path_project       = None
 
         # Source
-        self.path_init          = None
-        self.path_tk1           = None
-        self.path_init_tk1      = None
-        self.path_parameters_ta = None
-        self.dot_project        = None
+        self.path_init_src          = None
+        self.path_tk1_src           = None
+        self.path_init_tk1_src      = None
+        self.path_parameters_ta_src = None
+        self.dot_project_src        = None
 
         # Destination
         self.path_init_dst          = None

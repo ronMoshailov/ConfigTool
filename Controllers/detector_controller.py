@@ -1,4 +1,3 @@
-import Config
 from Config.exceptions import DuplicateMoveError
 from Managers.load_data_manager import LoadDataManager
 from Managers.write_data_manager import WriteDataManager
