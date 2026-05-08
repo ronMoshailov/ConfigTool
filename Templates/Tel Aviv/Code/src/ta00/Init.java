@@ -205,7 +205,7 @@ public class Init implements enp.Initialisierung {
 
 
 
-
+        //        NOT RELEVALT        //
 		if (io64 != null) {
 			//       I/O64 - Input channels 1-32
 			//		 constant inputs for all applications
@@ -270,6 +270,8 @@ public class Init implements enp.Initialisierung {
 //			new IoKanal (Var.tk1.tp_g.feedback      , io64, 62);
 //			new IoKanal (Var.tk1.tp_d.feedback      , io64, 63);
 //			new IoKanal (Var.tk1.tp_c.feedback      , io64, 64);
+        //        NOT RELEVALT        //
+
 		}
 			
 		System.out.println("java initialization of the device complete!");

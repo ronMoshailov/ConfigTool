@@ -1,5 +1,6 @@
 from Managers.load_data_manager import LoadDataManager
 from Managers.write_data_manager import WriteDataManager
+from datetime import datetime
 
 
 class SettingsController:
@@ -15,6 +16,8 @@ class SettingsController:
         self.view.update_first_cycle_ext_method = self.update_first_ext
         self.view.push_to_history_method        = self.push_to_history
         self.view.remove_from_history_method    = self.remove_from_history
+        self.view.get_date_method               = self.get_date
+
 
     def init_model(self, path):
         """
@@ -81,6 +84,9 @@ class SettingsController:
         This method clear all the data in the model
         """
         self.model.reset_settings_model()
+
+    def get_date(self):
+        return datetime.now().strftime("%d/%m/%Y")
 
     # ============================== Write To File ============================== #
     def write_settings_to_project(self, path):

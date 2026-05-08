@@ -119,3 +119,4 @@ class FilesCodeManager:
         line += "\t\treturn KEINE_UMSCHALTUNG;\n"
         line += "\t}\n"
         line += "}\n"
+        return line

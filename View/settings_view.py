@@ -16,6 +16,7 @@ class SettingsView(QWidget):
         self.update_first_cycle_ext_method  = None
         self.push_to_history_method         = None
         self.remove_from_history_method     = None
+        self.get_date_method                = None
 
         # Root Layouts
         root_layout         = QVBoxLayout()
@@ -46,7 +47,7 @@ class SettingsView(QWidget):
         self.version_textbox, version_layout                    = self._create_labeled_line_edit("גרסה")            # Version
         self.first_cycle_ext_textbox, first_cycle_ext_layout    = self._create_labeled_line_edit("הארכה ראשונית")   # First Cycle Extension
         self.name_textbox, name_layout                          = self._create_labeled_line_edit("שם")              # Name
-        self.date_textbox, date_layout                          = self._create_labeled_line_edit("תאריך")           # Date
+        self.date_textbox, date_layout                          = self._create_date_labeled_line_edit("תאריך")       # Date
 
         # Connect lambda
         self.junc_textbox.editingFinished.connect(self._on_change_junction_number)
@@ -59,15 +60,9 @@ class SettingsView(QWidget):
         update_btn.setProperty("class", "settings_button")
         update_btn.clicked.connect(self._add_to_history)
 
-        # Date Button
-        date_btn = QPushButton("רשום תאריך")
-        date_btn.setProperty("class", "settings_button")
-        # date_btn.clicked.connect(self._add_to_history)
-
         # History List Layout
         history_list_layout.addWidget(history_title)
         history_list_layout.addWidget(self.list_widget)
-        date_layout.addWidget(date_btn)
 
         # Settings Layout
         settings_layout.addLayout(junc_layout)
@@ -128,6 +123,27 @@ class SettingsView(QWidget):
 
         return textbox, layout
 
+    def _create_date_labeled_line_edit(self, label_text):
+        # Label
+        label = QLabel(label_text)
+        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        # Textbox
+        textbox = QLineEdit()
+
+        # Date Button
+        date_btn = QPushButton("רשום תאריך")
+        date_btn.setProperty("class", "settings_button")
+        date_btn.clicked.connect(self._on_write_date)
+
+        # Layout
+        layout = QHBoxLayout()
+        layout.addWidget(date_btn)
+        layout.addWidget(textbox)
+        layout.addWidget(label)
+
+        return textbox, layout
+
     # ============================== CRUD ============================== #
     def _remove_item_from_list(self, item: QListWidgetItem):
         value = item.text()
@@ -150,3 +166,10 @@ class SettingsView(QWidget):
 
     def _on_change_first_cycle_ext(self):
         self.update_first_cycle_ext_method(self.first_cycle_ext_textbox.text())
+
+    def _on_write_date(self):
+        date = self.get_date_method()
+        self.date_textbox.setText(date)
+        # self.update_junction_name_method(self.junction_name_textbox.text())
+
+    # ============================== Logic ============================== #
