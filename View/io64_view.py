@@ -1,10 +1,11 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QWidget, QTableWidget, QMessageBox, QHBoxLayout, QVBoxLayout, QLabel, QTableWidgetItem
+from PyQt6.QtWidgets import QTableWidget, QHBoxLayout, QVBoxLayout, QLabel, QTableWidgetItem
 
 from Config.style import io64_style
+from View.baseView import BaseView
 
 
-class Io64View(QWidget):
+class Io64View(BaseView):
 
     def __init__(self):
         super().__init__()
@@ -68,11 +69,5 @@ class Io64View(QWidget):
         # self.cards_layout.addStretch(1)
 
         self.show()
-
-    def hide_view(self):
-        self.hide()
-
-    def show_error(self, msg):
-        QMessageBox.critical(self, "שגיאה", msg)
 
     # ============================== Layout ============================== #

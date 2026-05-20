@@ -4,10 +4,12 @@ import Config
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QPushButton, QLineEdit, QLabel, QCheckBox, \
-    QAbstractItemView, QTableWidget, QHeaderView, QSizePolicy, QMessageBox
+    QAbstractItemView, QTableWidget, QHeaderView, QSizePolicy
+
+from View.baseView import BaseView
 
 
-class ImageView(QWidget):
+class ImageView(BaseView):
     MOVE_NAME_WIDTH = 70
     CHECKBOX_WIDTH = 70
 
@@ -78,12 +80,6 @@ class ImageView(QWidget):
             self.scroll_layout.addWidget(wrap)
         self.scroll_layout.addStretch(1)
         self.show()                                                         # show panel
-
-    def hide_view(self):
-        self.hide()
-
-    def show_error(self, msg):
-        QMessageBox.critical(self, "שגיאה", msg)
 
     # ============================== Layout ============================== #
     def _create_wrap(self, image, all_moves_names):

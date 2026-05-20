@@ -5,9 +5,10 @@ from PyQt6.QtWidgets import QWidget, QPushButton, QCheckBox, QHBoxLayout, QVBoxL
 
 from Config.special import clear_widget_from_layout
 from Config.style import schedule_panel_style
+from View.baseView import BaseView
 
 
-class ScheduleView(QWidget):
+class ScheduleView(BaseView):
     def __init__(self):
         super().__init__()
 
@@ -74,12 +75,6 @@ class ScheduleView(QWidget):
             self.schedule_layout.addWidget(schedule_column, stretch=1)              # add schedule_column to layout
         self._enable_mon_thu()
         self.show()
-
-    def hide_view(self):
-        self.hide()
-
-    def show_error(self, msg):
-        QMessageBox.critical(self, "שגיאה", msg)
 
     # ============================== Layout ============================== #
     def _create_table(self):

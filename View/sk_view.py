@@ -8,8 +8,10 @@ from Config.special import clear_widget_from_layout
 from Config.style import sk_panel_style
 
 import Config
+from View.baseView import BaseView
 
-class SkView(QWidget):
+
+class SkView(BaseView):
 
     def __init__(self):
         super().__init__()
@@ -68,12 +70,6 @@ class SkView(QWidget):
         self.cards_layout.addStretch(1)
 
         self.show()
-
-    def hide_view(self):
-        self.hide()
-
-    def show_error(self, msg):
-        QMessageBox.critical(self, "שגיאה", msg)
 
     # ============================== Layout ============================== #
     def _build_table_layout(self, card_number: int, all_moves, sk_list):

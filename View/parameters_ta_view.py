@@ -4,9 +4,10 @@ from PyQt6.QtWidgets import QWidget, QTableWidget, QAbstractItemView, QTableWidg
     QLineEdit, QHeaderView
 
 from Config.style import parameters_ta_window_style
+from View.baseView import BaseView
 
 
-class ParametersTaView(QWidget):
+class ParametersTaView(BaseView):
     def __init__(self):
         super().__init__()
 
@@ -58,9 +59,6 @@ class ParametersTaView(QWidget):
 
         # Show
         self.show()
-
-    def hide_view(self):
-        self.hide()
 
     # ============================== Layout ============================== #
     def _create_table(self):

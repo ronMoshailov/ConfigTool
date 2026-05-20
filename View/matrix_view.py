@@ -2,11 +2,12 @@ import Config
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor, QFont
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QAbstractItemView, QTableWidget, QTableWidgetItem, QMessageBox, \
-    QHeaderView
+from PyQt6.QtWidgets import QVBoxLayout, QAbstractItemView, QTableWidget, QTableWidgetItem, QHeaderView
+
+from View.baseView import BaseView
 
 
-class MatrixView(QWidget):
+class MatrixView(BaseView):
     def __init__(self):
         super().__init__()
 
@@ -46,11 +47,7 @@ class MatrixView(QWidget):
         self.tbl.blockSignals(False)        # release signals
         self.show()
 
-    def hide_view(self):
-        self.hide()
 
-    def show_error(self, msg):
-        QMessageBox.critical(self, "שגיאה", msg)
 
     # ============================== Layout ============================== #
     def _init_table(self, all_moves_names):

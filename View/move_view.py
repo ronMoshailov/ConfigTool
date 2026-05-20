@@ -4,9 +4,10 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLin
 
 import Config
 from Config.exceptions import InvalidValue
+from View.baseView import BaseView
 
 
-class MoveView(QWidget):
+class MoveView(BaseView):
     def __init__(self):
         super().__init__()
 
@@ -100,12 +101,6 @@ class MoveView(QWidget):
             self.tbl.setCellWidget(idx, 4, line_edit)
 
         self.show()
-
-    def hide_view(self):
-        self.hide()
-
-    def show_error(self, msg):
-        QMessageBox.critical(self, "שגיאה", msg)
 
     # ============================== Create ============================== #
     def create_table(self):

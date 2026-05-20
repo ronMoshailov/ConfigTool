@@ -4,9 +4,10 @@ from PyQt6.QtWidgets import QWidget, QFrame, QVBoxLayout, QHBoxLayout, QPushButt
 
 from Config.special import clear_widget_from_layout, init_scroll
 from Config.style import inter_stage_panel_style
+from View.baseView import BaseView
 
 
-class PhueView(QWidget):
+class PhueView(BaseView):
     def __init__(self):
         super().__init__()
 
@@ -67,12 +68,6 @@ class PhueView(QWidget):
             self.tables_layout.addWidget(wrap)
         self.tables_layout.addStretch()
         self.show()
-
-    def hide_view(self):
-        self.hide()
-
-    def show_error(self, msg):
-        QMessageBox.critical(self, "שגיאה", msg)
 
     # ============================== CRUD ============================== #
     def _add_row(self, img_out, img_in):

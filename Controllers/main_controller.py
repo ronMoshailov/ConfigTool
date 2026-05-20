@@ -45,7 +45,7 @@ class MainController:
         # Initialize app
         if act == "init":
             if self._initialize_app():
-                Var.authority = self.views["navigator"].authority_combo.currentData()
+                Var.AUTHORITY = self.views["navigator"].authority_combo.currentData()
                 self.views["navigator"].authority_combo.setDisabled(True)
                 self.display_manager.show("settings")
             return
@@ -186,7 +186,7 @@ class MainController:
 
         WriteDataManager.write_json(self.path_manager.path_json_dst)
 
-        if Var.authority is Authority.TEL_AVIV:
+        if Var.AUTHORITY is Authority.TEL_AVIV:
             self.controllers["parameters_ta"].write_to_file(self.path_manager.path_parameters_ta_dst, self.path_manager.path_init_tk1_dst, self.controllers["image"].fetch_images_by_sp())
             WriteDataManager.write_ta_docs(self.path_manager)
 

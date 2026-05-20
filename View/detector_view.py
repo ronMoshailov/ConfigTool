@@ -1,11 +1,11 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QTableWidget, QTableWidgetItem, QComboBox, \
-    QHeaderView, QLineEdit, QMessageBox
+from PyQt6.QtWidgets import QVBoxLayout, QHBoxLayout, QPushButton, QTableWidget, QComboBox, QHeaderView, QLineEdit
 
 from Config.style import detector_panel_style
+from View.baseView import BaseView
 
 
-class DetectorView(QWidget):
+class DetectorView(BaseView):
     def __init__(self):
         super().__init__()
 
@@ -104,12 +104,6 @@ class DetectorView(QWidget):
             self.tbl.setCellWidget(idx, 5, line_edit)
 
         self.show()
-
-    def hide_view(self):
-        self.hide()
-
-    def show_error(self, msg):
-        QMessageBox.critical(self, "שגיאה", msg)
 
     # ============================== Create ============================== #
     def _create_table(self):

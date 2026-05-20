@@ -1,15 +1,16 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QWidget, QHBoxLayout, QPushButton, QLabel, QLineEdit, QVBoxLayout, QListWidget, \
-    QListWidgetItem, QMessageBox
+from PyQt6.QtWidgets import QHBoxLayout, QLabel, QLineEdit, QVBoxLayout, QListWidget, QListWidgetItem
+from Config.variables import Var
 
 import Config
+from View.baseView import BaseView
 
-class SettingsView(QWidget):
 
+class SettingsView(BaseView):
     def __init__(self):
         super().__init__()
 
-        # Controller Methods
+        # ========== Controller Methods ========== #
         self.update_junction_number_method  = None
         self.update_junction_name_method    = None
         self.update_version_method          = None
@@ -18,67 +19,11 @@ class SettingsView(QWidget):
         self.remove_from_history_method     = None
         self.get_date_method                = None
 
-        # Root Layouts
-        root_layout         = QVBoxLayout()
-        content_layout      = QHBoxLayout()
-        history_list_layout = QVBoxLayout()
-        settings_layout     = QVBoxLayout()
+        history_list_layout     = self._build_history_layout()
+        settings_layout         = self._build_settings_layout()
+        root_layout             = self._build_root_layout([history_list_layout, settings_layout])
 
-        # Content Layout
-        content_layout.addLayout(history_list_layout)
-        content_layout.addLayout(settings_layout)
-
-        # Title
-        title = QLabel("Tel Aviv Version")
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title.setObjectName("Title")
-
-        # List
-        history_title = QLabel("היסטוריה")
-        history_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        # QListWidget
-        self.list_widget = QListWidget()
-        self.list_widget.itemDoubleClicked.connect(self._remove_item_from_list)
-
-        # Textbox
-        self.junc_textbox, junc_layout                          = self._create_labeled_line_edit("מספר צומת")       # Junction Number
-        self.junction_name_textbox, junction_name_layout        = self._create_labeled_line_edit("שם צומת")         # Junction Name
-        self.version_textbox, version_layout                    = self._create_labeled_line_edit("גרסה")            # Version
-        self.first_cycle_ext_textbox, first_cycle_ext_layout    = self._create_labeled_line_edit("הארכה ראשונית")   # First Cycle Extension
-        self.name_textbox, name_layout                          = self._create_labeled_line_edit("שם")              # Name
-        self.date_textbox, date_layout                          = self._create_date_labeled_line_edit("תאריך")       # Date
-
-        # Connect lambda
-        self.junc_textbox.editingFinished.connect(self._on_change_junction_number)
-        self.junction_name_textbox.editingFinished.connect(self._on_change_junction_name)
-        self.version_textbox.editingFinished.connect(self._on_change_version)
-        self.first_cycle_ext_textbox.editingFinished.connect(self._on_change_first_cycle_ext)
-
-        # Update Button
-        update_btn = QPushButton("הוסף")
-        update_btn.setProperty("class", "settings_button")
-        update_btn.clicked.connect(self._add_to_history)
-
-        # History List Layout
-        history_list_layout.addWidget(history_title)
-        history_list_layout.addWidget(self.list_widget)
-
-        # Settings Layout
-        settings_layout.addLayout(junc_layout)
-        settings_layout.addLayout(junction_name_layout)
-        settings_layout.addLayout(version_layout)
-        settings_layout.addLayout(first_cycle_ext_layout)
-        settings_layout.addStretch()
-        settings_layout.addLayout(name_layout)
-        settings_layout.addLayout(date_layout)
-        settings_layout.addWidget(update_btn)
-
-        # Root Layout
-        root_layout.addWidget(title)
-        root_layout.addLayout(content_layout)
-
-        # Self
+        # ========== Self ========== #
         self.setObjectName("SettingsPanel")
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.setLayout(root_layout)
@@ -87,7 +32,7 @@ class SettingsView(QWidget):
 
     def show_view(self, junction_num, junction_name, version, first_ext, history):
         # Clear
-        self.list_widget.clear()
+        self.history_list.clear()
 
         # Update data from DB to view
         self.junc_textbox.setText(junction_num)
@@ -99,15 +44,106 @@ class SettingsView(QWidget):
         for date, author in history:
             text = f"{date} - {author}"
             item = QListWidgetItem(text)
-            self.list_widget.addItem(item)
+            self.history_list.addItem(item)
 
         # Show view
         self.show()
 
-    def hide_view(self):
-        self.hide()
-
     # ============================== Layout ============================== #
+    def _build_history_layout(self):
+        """
+        This method build the left side of the view.
+        The left side manages the history.
+        """
+        # ========== History Layout ========== #
+        history_list_layout = QVBoxLayout()
+
+        # title
+        title = self.get_centered_label("היסטוריה")
+
+        # List
+        self.history_list = QListWidget()
+        self.history_list.itemDoubleClicked.connect(self._remove_item_from_list)
+
+        # Programmer Name
+        self.name_textbox = QLineEdit()
+
+        combo = self.get_combo(list(Var.EMPLOYEES.keys()), self._on_change_programmer)
+
+        name_layout = QHBoxLayout()
+        name_layout.addWidget(combo)
+        name_layout.addWidget(self.name_textbox)
+        name_layout.addWidget(self.get_centered_label("שם"))
+
+        # Date
+        self.date_textbox = QLineEdit()
+
+        date_btn = self.create_button("רשום תאריך", self._on_write_date, property="settings_button")
+
+        date_layout = QHBoxLayout()
+        date_layout.addWidget(date_btn)
+        date_layout.addWidget(self.date_textbox)
+        date_layout.addWidget(self.get_centered_label("תאריך"))
+
+        # "Add To List" Button
+        add_btn = self.create_button("הוסף", self._add_to_history, property="settings_button")
+
+        # Connect History Layout
+        history_list_layout.addWidget(title)
+        history_list_layout.addWidget(self.history_list)
+        history_list_layout.addLayout(name_layout)
+        history_list_layout.addLayout(date_layout)
+        history_list_layout.addWidget(add_btn)
+
+        return history_list_layout
+
+    def _build_settings_layout(self):
+        """
+        This method build the right side of the view.
+        The right side manages the settings of the app.
+        """
+        # ========== Settings Layout ========== #
+        settings_layout     = QVBoxLayout()
+
+        # Textbox
+        self.junc_textbox, junc_layout                          = self._create_labeled_line_edit("מספר צומת")       # Junction Number
+        self.junction_name_textbox, junction_name_layout        = self._create_labeled_line_edit("שם צומת")         # Junction Name
+        self.version_textbox, version_layout                    = self._create_labeled_line_edit("גרסה")            # Version
+        self.first_cycle_ext_textbox, first_cycle_ext_layout    = self._create_labeled_line_edit("הארכה ראשונית")   # First Cycle Extension
+
+        # Connect lambda
+        self.junc_textbox.editingFinished.connect(self._on_change_junction_number)
+        self.junction_name_textbox.editingFinished.connect(self._on_change_junction_name)
+        self.version_textbox.editingFinished.connect(self._on_change_version)
+        self.first_cycle_ext_textbox.editingFinished.connect(self._on_change_first_cycle_ext)
+
+        # Settings Layout
+        settings_layout.addLayout(junc_layout)
+        settings_layout.addLayout(junction_name_layout)
+        settings_layout.addLayout(version_layout)
+        settings_layout.addLayout(first_cycle_ext_layout)
+        settings_layout.addStretch()
+
+        return settings_layout
+
+    def _build_root_layout(self, layout_list):
+        # ========== Root Layout ========== #
+        root_layout = QVBoxLayout()
+
+        # Title
+        title = self.get_centered_label("Tel Aviv Version", "Title")
+
+        # ========== Content Layout ========== #
+        content_layout      = QHBoxLayout()
+        for layout in layout_list:
+            content_layout.addLayout(layout)
+
+        # Root Layout
+        root_layout.addWidget(title)
+        root_layout.addLayout(content_layout)
+
+        return root_layout
+
     def _create_labeled_line_edit(self, label_text):
         # Label
         label = QLabel(label_text)
@@ -123,33 +159,8 @@ class SettingsView(QWidget):
 
         return textbox, layout
 
-    def _create_date_labeled_line_edit(self, label_text):
-        # Label
-        label = QLabel(label_text)
-        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        # Textbox
-        textbox = QLineEdit()
-
-        # Date Button
-        date_btn = QPushButton("רשום תאריך")
-        date_btn.setProperty("class", "settings_button")
-        date_btn.clicked.connect(self._on_write_date)
-
-        # Layout
-        layout = QHBoxLayout()
-        layout.addWidget(date_btn)
-        layout.addWidget(textbox)
-        layout.addWidget(label)
-
-        return textbox, layout
 
     # ============================== CRUD ============================== #
-    def _remove_item_from_list(self, item: QListWidgetItem):
-        value = item.text()
-        date, author = value.split(" - ", 1)
-        self.remove_from_history_method(date, author)
-
     def _add_to_history(self):
         self.push_to_history_method(self.date_textbox.text(), self.name_textbox.text())
         self.name_textbox.clear()
@@ -167,9 +178,17 @@ class SettingsView(QWidget):
     def _on_change_first_cycle_ext(self):
         self.update_first_cycle_ext_method(self.first_cycle_ext_textbox.text())
 
+    def _on_change_programmer(self, text):
+        if text == "-":
+            return
+        self.name_textbox.setText(Var.EMPLOYEES[text])
+        self._on_write_date()
+
     def _on_write_date(self):
         date = self.get_date_method()
         self.date_textbox.setText(date)
-        # self.update_junction_name_method(self.junction_name_textbox.text())
 
-    # ============================== Logic ============================== #
+    def _remove_item_from_list(self, item: QListWidgetItem):
+        value = item.text()
+        date, author = value.split(" - ", 1)
+        self.remove_from_history_method(date, author)
