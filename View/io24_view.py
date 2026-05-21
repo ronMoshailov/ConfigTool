@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QTableWidget, QHBoxLayout, QLabel, QVBoxLayout, QTableWidgetItem
 
 from Config.special import clear_widget_from_layout
-from View.baseView import BaseView
+from View.base_view import BaseView
 
 
 class Io24View(BaseView):

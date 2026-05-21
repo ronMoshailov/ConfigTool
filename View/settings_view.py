@@ -3,10 +3,18 @@ from PyQt6.QtWidgets import QHBoxLayout, QLabel, QLineEdit, QVBoxLayout, QListWi
 from Config.variables import Var
 
 import Config
-from View.baseView import BaseView
+from View.base_view import BaseView
 
 
 class SettingsView(BaseView):
+    """
+    SettingsView manages the settings of the app.
+
+    Layout:
+    The View have 2 sides.
+    Left Side - This side manages the information about previous programmers.
+    Right Side - This side manages the general settings (Node name, Node Number, etc.).
+    """
     def __init__(self):
         super().__init__()
 
@@ -19,6 +27,7 @@ class SettingsView(BaseView):
         self.remove_from_history_method     = None
         self.get_date_method                = None
 
+        # ========== Build Layout ========== #
         history_list_layout     = self._build_history_layout()
         settings_layout         = self._build_settings_layout()
         root_layout             = self._build_root_layout([history_list_layout, settings_layout])
@@ -30,12 +39,12 @@ class SettingsView(BaseView):
         self.setStyleSheet(Config.style.settings_panel_style)
         self.hide()
 
-    def show_view(self, junction_num, junction_name, version, first_ext, history):
+    def show_view(self, junction_name_num, junction_name, version, first_ext, history):
         # Clear
         self.history_list.clear()
 
         # Update data from DB to view
-        self.junc_textbox.setText(junction_num)
+        self.junc_textbox.setText(junction_name_num)
         self.junction_name_textbox.setText(junction_name)
         self.version_textbox.setText(version)
         self.first_cycle_ext_textbox.setText(first_ext)
@@ -59,7 +68,7 @@ class SettingsView(BaseView):
         history_list_layout = QVBoxLayout()
 
         # title
-        title = self.get_centered_label("היסטוריה")
+        title = self.create_centered_label("היסטוריה")
 
         # List
         self.history_list = QListWidget()
@@ -68,12 +77,12 @@ class SettingsView(BaseView):
         # Programmer Name
         self.name_textbox = QLineEdit()
 
-        combo = self.get_combo(list(Var.EMPLOYEES.keys()), self._on_change_programmer)
+        combo = self.create_combo(list(Var.EMPLOYEES.keys()), self._on_change_programmer)
 
         name_layout = QHBoxLayout()
         name_layout.addWidget(combo)
         name_layout.addWidget(self.name_textbox)
-        name_layout.addWidget(self.get_centered_label("שם"))
+        name_layout.addWidget(self.create_centered_label("שם"))
 
         # Date
         self.date_textbox = QLineEdit()
@@ -83,7 +92,7 @@ class SettingsView(BaseView):
         date_layout = QHBoxLayout()
         date_layout.addWidget(date_btn)
         date_layout.addWidget(self.date_textbox)
-        date_layout.addWidget(self.get_centered_label("תאריך"))
+        date_layout.addWidget(self.create_centered_label("תאריך"))
 
         # "Add To List" Button
         add_btn = self.create_button("הוסף", self._add_to_history, property="settings_button")
@@ -131,7 +140,7 @@ class SettingsView(BaseView):
         root_layout = QVBoxLayout()
 
         # Title
-        title = self.get_centered_label("Tel Aviv Version", "Title")
+        title = self.create_centered_label("Tel Aviv Version", "Title")
 
         # ========== Content Layout ========== #
         content_layout      = QHBoxLayout()

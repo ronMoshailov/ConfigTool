@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import QWidget, QPushButton, QCheckBox, QHBoxLayout, QVBoxL
 
 from Config.special import clear_widget_from_layout
 from Config.style import schedule_panel_style
-from View.baseView import BaseView
+from View.base_view import BaseView
 
 
 class ScheduleView(BaseView):

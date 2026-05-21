@@ -2,19 +2,13 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QMessageBox, QLabel, QComboBox, QPushButton
 
 
-class BaseView(QWidget):
+class BaseLayoutView(QWidget):
     def __init__(self):
         super().__init__()
 
-    def hide_view(self):
-        self.hide()
-
-    def show_error(self, msg):
-        QMessageBox.critical(self, "שגיאה", msg)
-
-    # ========== Create Layout ========== #
+    # ========== Create Layout - Combo ========== #
     @staticmethod
-    def get_centered_label(name, object_name = None):
+    def create_centered_label(name, object_name = None):
         label = QLabel(name)
         label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         if object_name is not None:
@@ -22,17 +16,33 @@ class BaseView(QWidget):
         return label
 
     @staticmethod
-    def get_combo(data, callback, add_dash = False):
+    def create_combo(data, callback, add_dash = False, set_value = None):
         combo = QComboBox()
+
         if add_dash:
             data = [" - "] + data
         combo.addItems(data)
+
+        if set_value is not None:
+            combo.setCurrentText(set_value)
         combo.currentTextChanged.connect(callback)
 
+        return combo
+
     @staticmethod
-    def create_button(name, callback, property = None):
+    def create_button(name, callback, object_name = None, property = None):
         date_btn = QPushButton(name)
-        if property is not None:
-            date_btn.setProperty("class", property)
         date_btn.clicked.connect(callback)
 
+        if property is not None:
+            date_btn.setProperty("class", property)
+        if object_name is not None:
+            date_btn.setObjectName(object_name)
+
+"""
+===== Combo =====
+setCurrentText:
+* return the new value of the 
+
+
+"""

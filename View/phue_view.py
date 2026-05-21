@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import QWidget, QFrame, QVBoxLayout, QHBoxLayout, QPushButt
 
 from Config.special import clear_widget_from_layout, init_scroll
 from Config.style import inter_stage_panel_style
-from View.baseView import BaseView
+from View.base_view import BaseView
 
 
 class PhueView(BaseView):

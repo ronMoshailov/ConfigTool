@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import QWidget, QTableWidget, QAbstractItemView, QTableWidg
     QLineEdit, QHeaderView
 
 from Config.style import parameters_ta_window_style
-from View.baseView import BaseView
+from View.base_view import BaseView
 
 
 class ParametersTaView(BaseView):

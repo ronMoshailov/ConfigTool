@@ -2,7 +2,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QVBoxLayout, QHBoxLayout, QPushButton, QTableWidget, QComboBox, QHeaderView, QLineEdit
 
 from Config.style import detector_panel_style
-from View.baseView import BaseView
+from View.base_view import BaseView
 
 
 class DetectorView(BaseView):

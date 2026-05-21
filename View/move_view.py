@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLin
 
 import Config
 from Config.exceptions import InvalidValue
-from View.baseView import BaseView
+from View.base_view import BaseView
 
 
 class MoveView(BaseView):
@@ -64,9 +64,7 @@ class MoveView(BaseView):
             self.tbl.insertRow(self.tbl.rowCount())
 
             # Remove Button (col 0)
-            remove_btn = QPushButton("X")
-            remove_btn.setObjectName("remove_button")
-            self.handle_remove_move(remove_btn, move_name)
+            remove_btn = self.create_button("X", lambda m=move_name: self.remove_move_method(m))
             self.tbl.setCellWidget(idx, 0, remove_btn)
 
             # move name (col 1)
@@ -76,9 +74,7 @@ class MoveView(BaseView):
             self.tbl.setCellWidget(idx, 1, line_edit)
 
             # type (col 2)
-            combo = QComboBox()
-            combo.addItems(all_types)
-            combo.setCurrentText(move_type)
+            combo = self.create_combo(all_types, lambda m=move_name: self.update_type_method(m, combo.currentText()))
             self.handle_change_type(combo, move.name)
             combo.wheelEvent = lambda event: None
             self.tbl.setCellWidget(idx, 2, combo)
@@ -134,11 +130,6 @@ class MoveView(BaseView):
                 self.show_error(str(e))
                 self.show_view(self.move_list, self.all_types)
         line_edit.editingFinished.connect(handler)
-
-    def handle_remove_move(self, btn, move_name):
-        def handler():
-            self.remove_move_method(move_name)
-        btn.clicked.connect(handler)
 
     def handle_change_type(self, combo, move_name):
         def handler():
