@@ -1,5 +1,5 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QWidget, QMessageBox, QLabel, QComboBox, QPushButton
+from PyQt6.QtWidgets import QWidget, QMessageBox, QLabel, QComboBox, QPushButton, QLineEdit
 
 
 class BaseLayoutView(QWidget):
@@ -30,14 +30,23 @@ class BaseLayoutView(QWidget):
         return combo
 
     @staticmethod
-    def create_button(name, callback, object_name = None, property = None):
-        date_btn = QPushButton(name)
+    def create_button(text, callback, object_name = None, property = None):
+        date_btn = QPushButton(text)
         date_btn.clicked.connect(callback)
 
         if property is not None:
             date_btn.setProperty("class", property)
         if object_name is not None:
             date_btn.setObjectName(object_name)
+
+        return date_btn
+
+    @staticmethod
+    def create_edit_line(text, callback):
+        line_edit = QLineEdit()
+        line_edit.setText(text)
+
+
 
 """
 ===== Combo =====

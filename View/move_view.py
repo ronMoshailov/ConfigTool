@@ -28,9 +28,7 @@ class MoveView(BaseView):
         self.create_table()
 
         # Add Move Button
-        add_detector_btn = QPushButton("הוסף מופע")
-        add_detector_btn.clicked.connect(lambda: self.add_move_method())
-        add_detector_btn.setObjectName("add_button")
+        add_detector_btn = self.create_button("הוסף מופע", self.add_move_method, object_name="add_button")
 
         # Root Layout
         self.root_layout = QVBoxLayout()
@@ -64,12 +62,11 @@ class MoveView(BaseView):
             self.tbl.insertRow(self.tbl.rowCount())
 
             # Remove Button (col 0)
-            remove_btn = self.create_button("X", lambda m=move_name: self.remove_move_method(m))
+            remove_btn = self.create_button("X", lambda m=move_name: self.remove_move_method(m), object_name="remove_button")
             self.tbl.setCellWidget(idx, 0, remove_btn)
 
             # move name (col 1)
             line_edit = QLineEdit()
-            line_edit.setText(move_name)
             self.handle_rename(line_edit, move_name)
             self.tbl.setCellWidget(idx, 1, line_edit)
 
@@ -91,6 +88,7 @@ class MoveView(BaseView):
             self.tbl.setCellWidget(idx, 3, container)
 
             # min green (col 4)
+            line_edit = self.create_edit_line(str(move_min_green), lambda l=line_edit, m=move_name: self.handle_min_green_update(l, m))
             line_edit = QLineEdit()
             line_edit.setText(str(move_min_green))
             self.handle_min_green_update(line_edit, move_name)
