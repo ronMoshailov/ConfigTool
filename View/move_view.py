@@ -28,7 +28,7 @@ class MoveView(BaseView):
         self.create_table()
 
         # Add Move Button
-        add_detector_btn = self.create_button("הוסף מופע", self.add_move_method, object_name="add_button")
+        add_detector_btn = self.create_button("הוסף מופע", self.on_add_move_clicked, object_name="add_button")
 
         # Root Layout
         self.root_layout = QVBoxLayout()
@@ -88,7 +88,7 @@ class MoveView(BaseView):
             self.tbl.setCellWidget(idx, 3, container)
 
             # min green (col 4)
-            line_edit = self.create_edit_line(str(move_min_green), lambda l=line_edit, m=move_name: self.handle_min_green_update(l, m))
+            # line_edit = self.create_edit_line(str(move_min_green), lambda l=line_edit, m=move_name: self.handle_min_green_update(l, m))
             line_edit = QLineEdit()
             line_edit.setText(str(move_min_green))
             self.handle_min_green_update(line_edit, move_name)
@@ -139,3 +139,5 @@ class MoveView(BaseView):
             self.update_main_method(move_name, state)
         checkbox.stateChanged.connect(handler)
 
+    def on_add_move_clicked(self):
+        self.add_move_method()

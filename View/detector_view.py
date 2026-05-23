@@ -22,9 +22,8 @@ class DetectorView(BaseView):
         self._create_table()
 
         # Button
-        add_detector_btn = QPushButton("הוסף גלאי")
-        add_detector_btn.setObjectName("add_button")
-        add_detector_btn.clicked.connect(lambda: self.add_detector_method("Variable Name", "DDetector", "Detector Name", "-", 0))
+        callback = lambda: self.add_detector_method("Variable Name", "DDetector", "Detector Name", "-", 0)
+        add_detector_btn = self.create_button('הוסף גלאי', callback, object_name="add_button")
 
         # Button Layout
         btn_layout = QHBoxLayout()
@@ -59,9 +58,7 @@ class DetectorView(BaseView):
             self.tbl.insertRow(self.tbl.rowCount())     # add new row
 
             # Add Remove Button (col 0)
-            remove_btn = QPushButton("X")
-            remove_btn.setObjectName("remove_button")
-            remove_btn.clicked.connect(lambda _, var=var_name: self.remove_detector_method(var))
+            remove_btn = self.create_button("X", lambda _, var=var_name: self.remove_detector_method(var), object_name="remove_button")
             self.tbl.setCellWidget(idx, 0, remove_btn)
 
             # Add "var name" (col 1)
@@ -85,10 +82,9 @@ class DetectorView(BaseView):
             self.tbl.setCellWidget(idx, 3, line_edit)
 
             # Add "move name" (col 4)
-            combo = QComboBox()
-            combo.addItems(["-"] + self.all_moves_names)
-            combo.wheelEvent = lambda event: None
-            combo.currentIndexChanged.connect(lambda _, c=combo, var=var_name: self.update_move_name_method(c.currentText(), var))
+            callback = lambda _, c=combo, var=var_name: self.update_move_name_method(c.currentText(), var)
+            combo = self.create_combo(self.all_moves_names, callback, add_dash=True, disable_wheel_event=True)
+            combo.currentIndexChanged.connect()
             self.tbl.setCellWidget(idx, 4, combo)
 
             # set value to combo

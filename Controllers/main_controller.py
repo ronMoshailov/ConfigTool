@@ -14,11 +14,12 @@ from Managers.path_manager import PathManager
 class MainController:
     def __init__(self):
         # =============== Build =============== #
-        self.path_manager       = PathManager()
-        self.display_manager    = DisplayManager()
         self.models             = SetupBuilder.build_models()
         self.views              = SetupBuilder.build_views()
         self.controllers        = SetupBuilder.build_controllers(self.models, self.views)
+
+        self.path_manager       = PathManager()
+        self.display_manager    = DisplayManager()
 
         # =============== Set Controllers Methods =============== #
         SetupBuilder.connect_controllers(self.controllers)

@@ -81,9 +81,8 @@ class SkView(BaseView):
         wrap.setObjectName("wrap")
 
         # Title
-        title = QLabel(f"SK_{card_number}")
-        title.setObjectName("title")
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        table = QTableWidget()
+        title = self.create_label(f"SK_{card_number}", object_name="title", center=True)
 
         # Table
         tbl = QTableWidget(24, 4, wrap)
@@ -95,9 +94,7 @@ class SkView(BaseView):
         self.tables_list.append(tbl)
 
         # Remove Button
-        btn_remove = QPushButton("מחק SK")
-        btn_remove.clicked.connect(lambda _, card_num = card_number: self.remove_sk_method(card_num))
-        btn_remove.setObjectName("remove_button")
+        btn_remove = self.create_button("מחק SK", lambda _, card_num = card_number: self.remove_sk_method(card_num), object_name="remove_button")
 
         # Set Layout
         column_layout = QVBoxLayout()
@@ -118,7 +115,8 @@ class SkView(BaseView):
         # col 1 (name) changes (add signal)
         for row_number in range(24):
             combo = tbl.cellWidget(row_number, 1)
-            combo.currentTextChanged.connect(lambda _text, row_num = row_number: self.change_name(tbl, row_num, 1))
+            combo.currentTextChanged.connect(
+                lambda _text, row_num = row_number: self.change_name(tbl, row_num, 1))
 
         # col 2 (color) click (add signal)
         tbl.cellClicked.connect(lambda row_num, col_num: self._change_color(tbl, row_num, col_num))
@@ -153,9 +151,7 @@ class SkView(BaseView):
             tbl.setItem(r, 0, col_0)
 
             # Col 1 (combo)
-            combo = QComboBox()
-            combo.addItems(all_moves_names)
-            combo.wheelEvent = lambda event: None # override the wheel mouse event (disable the wheel mouse)
+            combo = self.create_combo(all_moves_names, None, disable_wheel_event=True)
             tbl.setCellWidget(r, 1, combo)
 
             # Col 2 (color)
@@ -165,9 +161,7 @@ class SkView(BaseView):
             tbl.setItem(r, 2, col_2)
 
             # Col 3 (check box)
-            col_3 = QCheckBox()
-            col_3.setChecked(False)
-            col_3.setObjectName("checkbox_comment")
+            col_3 = self.create_check_box(is_checked=False, object_name="checkbox_comment")
             tbl.setCellWidget(r, 3, col_3)
             col_3.stateChanged.connect(lambda state, row=r: self._update_comment(tbl, row, state))
 

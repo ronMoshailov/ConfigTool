@@ -29,9 +29,9 @@ class LoadDataManager:
                 if not value:
                     continue
 
-                if key == "anlagenName":        # junction number
+                if key == "anlagenName":        # junction number ('Tel-Aviv Junc. 172')
                     anlagenName = value
-                elif key == "tk1Name":          # junction name
+                elif key == "tk1Name":          # junction name ('HaShalomn / HaTayasim')
                     tk1Name = value
                 elif key == "version":          # version
                     version = value

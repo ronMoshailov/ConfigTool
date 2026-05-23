@@ -153,9 +153,7 @@ class PhueView(BaseView):
         wrap.setObjectName("Wrap")
 
         # set title
-        title = QLabel(f"{img_out} → {img_in}")
-        title.setObjectName("title")
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        title = self.create_label(f"{img_out} → {img_in}", "title", to_center=True)
 
         # set table
         tbl = QTableWidget(len(transitions), 4, wrap)

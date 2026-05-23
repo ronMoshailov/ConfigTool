@@ -36,8 +36,7 @@ class ImageView(BaseView):
         self.scroll_area = Config.special.init_scroll(self.scroll_layout)
 
         # Add Button
-        self.btn_add = QPushButton("הוסף")
-        self.btn_add.setObjectName("add_button")
+        self.btn_add = self.create_button("הוסף", self.on_add_image_clicked, object_name="add_button")
         self.handle_add_image(self.btn_add)
 
         self.btn_add.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
@@ -89,9 +88,7 @@ class ImageView(BaseView):
         wrap.setFixedWidth(self.MOVE_NAME_WIDTH + self.CHECKBOX_WIDTH + 30)
 
         # title
-        title = QLabel(f"{image.image_name}({image.image_num})")
-        title.setObjectName("title")
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        title = self.create_label(f"{image.image_name}({image.image_num})", object_name="title", to_center=True)
 
         wrap.title = image.image_name
 
@@ -101,16 +98,14 @@ class ImageView(BaseView):
         self._fill_table(table, image.move_names_list)
 
         # # button
-        remove_button = QPushButton("מחק")
-        remove_button.setObjectName("remove_button")
-        remove_button.clicked.connect(lambda _, w=wrap: self.remove_image_method(w.title))
+        remove_button = self.create_button("מחק", lambda _, w=wrap: self.remove_image_method(w.title), object_name="remove_button")
 
         # skeleton
         textbox_skeleton = QLineEdit()
         textbox_skeleton.setText(str(image.skeleton))
         textbox_skeleton.editingFinished.connect(lambda textbox=textbox_skeleton, m=image.image_name: self.update_skeleton_method(m, textbox.text()))
 
-        label = QLabel("שלד")
+        label = self.create_label("שלד")
 
         skeleton_layout = QHBoxLayout()
         skeleton_layout.addWidget(textbox_skeleton)
@@ -238,3 +233,5 @@ class ImageView(BaseView):
             self.add_image_method(name)
         add_btn.clicked.connect(handler)
 
+    def on_add_image_clicked(self):
+        self.add_image_method(name)

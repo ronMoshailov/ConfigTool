@@ -1,16 +1,24 @@
-from docx import Document
+from PyQt6.QtWidgets import QApplication, QWidget, QListWidget, QVBoxLayout
 
-doc = Document(r"C:\Users\ron.MENORAH-RND\Desktop\ta172\Docs\Cards.docx")
-for i, section in enumerate(doc.sections):
-    header = section.header
-    print(f"--- Section {i} ---")
+app = QApplication([])
 
-    print("PARAGRAPHS:")
-    for p in header.paragraphs:
-        print(p.text)
+window = QWidget()
+window.setWindowTitle("QListWidget Example")
 
-    print("TABLES:")
-    for table in header.tables:
-        for row in table.rows:
-            for cell in row.cells:
-                print(cell.text)
+layout = QVBoxLayout()
+
+# יצירת רשימה
+list_widget = QListWidget()
+
+# הוספת פריטים
+list_widget.addItem("Apple")
+list_widget.addItem("Banana")
+list_widget.addItem("Orange")
+
+layout.addWidget(list_widget)
+
+window.setLayout(layout)
+window.resize(300, 200)
+window.show()
+
+app.exec()
