@@ -71,9 +71,7 @@ class MoveView(BaseView):
             self.tbl.setCellWidget(idx, 1, line_edit)
 
             # type (col 2)
-            combo = self.create_combo(all_types, lambda m=move_name: self.update_type_method(m, combo.currentText()))
-            self.handle_change_type(combo, move.name)
-            combo.wheelEvent = lambda event: None
+            combo = self.create_combo(all_types, lambda m=move_name: self.update_type_method(m, combo.currentText()), disable_wheel_event=True)
             self.tbl.setCellWidget(idx, 2, combo)
 
             # is main (col 3)
@@ -128,11 +126,6 @@ class MoveView(BaseView):
                 self.show_error(str(e))
                 self.show_view(self.move_list, self.all_types)
         line_edit.editingFinished.connect(handler)
-
-    def handle_change_type(self, combo, move_name):
-        def handler():
-            self.update_type_method(move_name, combo.currentText())
-        combo.currentTextChanged.connect(handler)
 
     def handle_main_change(self, checkbox, move_name):
         def handler(state):

@@ -20,14 +20,11 @@ class ScheduleView(BaseView):
         self.set_new_cells_method       = None
 
         # QPushButton Update
-        self.btn_add = QPushButton("עדכן")
-        self.btn_add.setObjectName("update_button")
-        self.btn_add.clicked.connect(lambda: self.update_schedule(self.check_box.isChecked(), self.table_list))
+        callback = lambda: self.update_schedule(self.check_box.isChecked(), self.table_list)
+        self.btn_add = self.create_button("עדכן", callback, object_name="update_button")
 
         # CheckBox
-        self.check_box = QCheckBox("ראשון עד חמישי")
-        self.check_box.setObjectName("check_box")
-        self.check_box.clicked.connect(lambda: self._toggle_button())
+        self.check_box = self.create_check_box(name = "ראשון עד חמישי", callback=self._toggle_button, object_name="check_box")
 
         # Button Layout
         self.bottom_layout = QHBoxLayout()
@@ -109,17 +106,13 @@ class ScheduleView(BaseView):
         day = {1: "ראשון", 2: "שני", 3: "שלישי", 4: "רביעי", 5: "חמישי", 6: "שישי", 7: "שבת"}.get(table_num, "לא קיים")
 
         # title
-        title = QLabel(f"{day}")
-        title.setObjectName("title")
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        title = self.create_label(f"{day}", object_name="title", to_center=True)
 
         # Set Table
         tbl = self._create_table()
 
         # Add Row Button
-        btn_add = QPushButton("הוסף שורה")
-        btn_add.clicked.connect(lambda: self.add_row_method(table_num))
-        btn_add.setObjectName("add_row_button")
+        btn_add = self.create_button("הוסף שורה", lambda: self.add_row_method(table_num), object_name="add_row_button")
         self.add_row_btn_list.append(btn_add)
 
         # set layout
@@ -148,9 +141,7 @@ class ScheduleView(BaseView):
 
             font = QFont("Roboto")
 
-            btn_remove = QPushButton("x")
-            btn_remove.setObjectName("remove_button")
-            self.handle_remove_btn(table_num, table, btn_remove)
+            btn_remove = self.create_button("x", lambda: self.handle_remove_btn(table_num, table, btn_remove), object_name="remove_button")
             btn_remove.setFont(font)
 
             time_edit = QTimeEdit()
@@ -161,12 +152,9 @@ class ScheduleView(BaseView):
             time_edit.setFont(font)
             time_edit.wheelEvent = lambda event: None
 
-            combo_num_prog = QComboBox()
+            combo_num_prog = self.create_combo([str(i) for i in range(1, 33)], None, set_value=str(schedule.prog_num), disable_wheel_event = True)
             combo_num_prog.setObjectName("combo_num_prog")
-            combo_num_prog.addItems([str(i) for i in range(1, 33)])
-            combo_num_prog.setCurrentText(str(schedule.prog_num))
             combo_num_prog.setFont(font)
-            combo_num_prog.wheelEvent = lambda event: None
 
             table.setCellWidget(row, 0, btn_remove)
             table.setCellWidget(row, 1, time_edit)

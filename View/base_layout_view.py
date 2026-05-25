@@ -58,18 +58,23 @@ class BaseLayoutView(QWidget):
         return combo
 
     @staticmethod
-    def create_check_box(is_checked = False, object_name = None):
+    def create_check_box(name = "", callback = None, is_checked = False, object_name = None):
         """
         This method creates a QCheckBox object.
 
+        :param name: Optional - Text displayed next to the checkBox.
+        :param callback: Function to connect to the checkbox change event.
         :param is_checked: Optional - Determines whether the checkBox is initially checked.
         :param object_name: Optional - object name used for styling or identification.
 
         :return: Configured QCheckBox instance.
         """
-        check_box = QCheckBox()
+        check_box = QCheckBox(name)
 
         check_box.setChecked(is_checked)
+
+        if callback is not None:
+            check_box.clicked.connect(callback)
 
         if object_name is not None:
             check_box.setObjectName(object_name)
