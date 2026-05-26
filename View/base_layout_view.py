@@ -50,7 +50,7 @@ class BaseLayoutView(QWidget):
         if set_value is not None:
             combo.setCurrentText(set_value)
 
-        if not disable_wheel_event:
+        if disable_wheel_event:
             combo.wheelEvent = lambda event: None # override the wheel mouse event (disable the wheel mouse)
 
         combo.currentTextChanged.connect(callback)

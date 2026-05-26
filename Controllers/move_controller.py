@@ -36,7 +36,7 @@ class MoveController:
                 self.view.show_error(f"המופע {variable_name} כבר קיים במערכת")
 
     def show_view(self):
-        self.view.show_view(self.model.all_moves, self.model.get_all_types())
+        self.view.show_view(self.model.all_moves)
 
     def hide_view(self):
         self.view.hide_view()
@@ -131,7 +131,7 @@ class MoveController:
         """
         if self.model.remove_move(move_name):
             self.global_remove_move(move_name)
-            self.view.show_view(self.model.all_moves, self.model.get_all_types())
+            self.view.show_view(self.model.all_moves)
 
     # ============================== Logic ============================== #
     def reset(self):

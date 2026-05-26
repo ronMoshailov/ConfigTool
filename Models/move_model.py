@@ -69,12 +69,6 @@ class MoveModel:
         """
         return [m.name for m in self.all_moves]
 
-    def get_all_types(self):
-        """
-        This method return all the possible types of the moves
-        """
-        return ["Traffic", "Traffic_Flashing", "Pedestrian", "Blinker_Conditional", "Blinker"]
-
     def update_name(self, old_name, new_name):
         """
         This method change the name of the move
