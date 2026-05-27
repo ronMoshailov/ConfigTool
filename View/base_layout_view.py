@@ -8,7 +8,7 @@ class BaseLayoutView(QWidget):
 
     # ========== Create Layout - Combo ========== #
     @staticmethod
-    def create_label(name, object_name = None, to_center=None):
+    def create_label(name, object_name=None, to_center=None):
         """
         This method creates a QLabel object.
 
@@ -29,7 +29,7 @@ class BaseLayoutView(QWidget):
         return label
 
     @staticmethod
-    def create_combo(data, callback, add_dash = False, set_value = None, disable_wheel_event=False):
+    def create_combo(data, callback, add_dash=False, set_value=None, disable_wheel_event=False):
         """
         This method creates a QComboBox object.
 
@@ -51,14 +51,14 @@ class BaseLayoutView(QWidget):
             combo.setCurrentText(set_value)
 
         if disable_wheel_event:
-            combo.wheelEvent = lambda event: None # override the wheel mouse event (disable the wheel mouse)
+            combo.wheelEvent = lambda event: None  # override the wheel mouse event (disable the wheel mouse)
 
         combo.currentTextChanged.connect(callback)
 
         return combo
 
     @staticmethod
-    def create_check_box(name = "", callback = None, is_checked = False, object_name = None):
+    def create_check_box(name="", callback=None, is_checked=False, object_name=None):
         """
         This method creates a QCheckBox object.
 
@@ -80,7 +80,7 @@ class BaseLayoutView(QWidget):
             check_box.setObjectName(object_name)
 
     @staticmethod
-    def create_button(text, callback, object_name = None, property_name = None):
+    def create_button(text, callback, object_name=None, property_name=None):
         """
         :param text: The text displayed on the button.
         :param callback: Function to connect to the button click event.
@@ -125,12 +125,11 @@ class BaseLayoutView(QWidget):
 
         return lst
 
-
-
 # ================================================== #
 # -------------------- QLineEdit ------------------- #
 # textChanged -> fire every change.
 # textEdited -> fire when the user edit the text (not from the code)
 # editingFinished -> fire when the user lose focus or press enter
-
-
+#
+# -------------------- QLineEdit ------------------- #
+# clicked -> fire after click. the first argument is True is the button checked else it will be False (regular button is always False)

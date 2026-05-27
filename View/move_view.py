@@ -1,8 +1,9 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QTableWidget, QCheckBox, QHeaderView, QMessageBox
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTableWidget, QHeaderView
 
 from Config.exceptions import InvalidValue
 from Config.style import move_panel_style
+
 from Enum.move_type import MoveType
 from View.base_view import BaseView
 
@@ -22,7 +23,6 @@ class MoveView(BaseView):
         # Data
         self.tbl        = None
         self.move_list  = None
-        self.remove_btn = None
 
         # Table
         self.create_table()
@@ -31,12 +31,12 @@ class MoveView(BaseView):
         add_detector_btn = self.create_button("הוסף מופע", self.on_add_move_clicked, object_name="add_button")
 
         # Root Layout
-        self.root_layout = QVBoxLayout()
-        self.root_layout.addWidget(self.tbl)
-        self.root_layout.addWidget(add_detector_btn)
+        root_layout = QVBoxLayout()
+        root_layout.addWidget(self.tbl)
+        root_layout.addWidget(add_detector_btn)
 
         # Self
-        self.setLayout(self.root_layout)
+        self.setLayout(root_layout)
         self.setObjectName("RootWidget")
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.setStyleSheet(move_panel_style)
@@ -48,33 +48,28 @@ class MoveView(BaseView):
 
         # Fill Table
         for idx, move in enumerate(move_list):
-            move_name      = move.name
-            move_type      = move.type
-            move_is_main   = move.is_main
-            move_min_green = move.min_green
-
             # Add New Row
             self.tbl.insertRow(self.tbl.rowCount())
 
             # Remove Button (col 0)
-            self.remove_btn = self.create_button("X", lambda m=move_name: self.on_remove_move_clicked(m), object_name="remove_button")
-            self.tbl.setCellWidget(idx, 0, self.remove_btn)
+            callback = lambda _, m=move.name: self.on_remove_move_clicked(m)
+            remove_btn = self.create_button("X", callback, object_name="remove_button")
+            self.tbl.setCellWidget(idx, 0, remove_btn)
 
             # move name (col 1)
-            line_edit = self.create_textbox(move_name)
-            self.handle_rename(line_edit, move_name)
+            line_edit = self.create_textbox(move.name)
+            self.handle_rename(line_edit, move.name)
             self.tbl.setCellWidget(idx, 1, line_edit)
 
             # type (col 2)
             all_types = [t.value for t in MoveType]
-            callback = lambda m=move_name: self.update_type_method(m, combo.currentText())
+            callback = lambda m=move.name: self.update_type_method(m, combo.currentText())
             combo = self.create_combo(all_types, callback, disable_wheel_event=True)
             self.tbl.setCellWidget(idx, 2, combo)
 
             # is main (col 3)
-            checkbox = QCheckBox()
-            checkbox.setChecked(move_is_main)
-            self.handle_main_change(checkbox, move.name)
+            checkbox = self.create_check_box(is_checked=move.is_main)
+            # self.handle_main_change(checkbox, move.name)
             container = QWidget()
             layout = QHBoxLayout(container)
             layout.addWidget(checkbox)
@@ -83,8 +78,8 @@ class MoveView(BaseView):
             self.tbl.setCellWidget(idx, 3, container)
 
             # min green (col 4)
-            line_edit = self.create_textbox(str(move_min_green))
-            self.handle_min_green_update(line_edit, move_name)
+            line_edit = self.create_textbox(str(move.min_green))
+            self.handle_min_green_update(line_edit, move.name)
             self.tbl.setCellWidget(idx, 4, line_edit)
 
         self.show()

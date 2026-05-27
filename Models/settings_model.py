@@ -1,9 +1,9 @@
 class SettingsModel:
     def __init__(self):
-        self.junction_num   = None
-        self.junction_name  = None     # anlagenName
-        self.version        = None
-        self.first_ext      = None
+        self.junction_num   = None      # anlagenName -> Tel-Aviv Junc. 172
+        self.junction_name  = None      # tk1Name     -> HaShalomn / HaTayasim /
+        self.version        = None      # version     -> V1.4.1e G4qr.2-p1 V7.1
+        self.first_ext      = None      # 2
         self.history        = []
 
     # ============================== CRUD ============================== #

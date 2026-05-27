@@ -1,8 +1,10 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QWidget, QHBoxLayout, QMessageBox
+from PyQt6.QtWidgets import QHBoxLayout
+
+from View.base_view import BaseView
 
 
-class MainView(QWidget):
+class MainView(BaseView):
     def __init__(self, all_views):
         super().__init__()
 
@@ -15,10 +17,4 @@ class MainView(QWidget):
     def show_view(self):
         # Data
         self.show()
-
-    def hide_view(self):
-        self.hide()
-
-    def show_error(self, msg):
-        QMessageBox.critical(self, "שגיאה", msg)
 

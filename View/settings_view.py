@@ -1,5 +1,5 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QHBoxLayout, QLabel, QLineEdit, QVBoxLayout, QListWidget, QListWidgetItem
+from PyQt6.QtWidgets import QHBoxLayout, QLineEdit, QVBoxLayout, QListWidgetItem
 from Config.variables import Var
 
 import Config
@@ -52,8 +52,7 @@ class SettingsView(BaseView):
         # Insert data to the list
         for date, author in history:
             text = f"{date} - {author}"
-            item = QListWidgetItem(text)
-            self.history_list.addItem(item)
+            self._add_to_list(text)
 
         # Show view
         self.show()
@@ -87,7 +86,7 @@ class SettingsView(BaseView):
 
         # Date
         btn                 = self.create_button("רשום תאריך", self._on_write_date, property_name="settings_button")
-        self.date_textbox   = QLineEdit()
+        self.date_textbox   = self.create_textbox()
         label               = self.create_label("תאריך", to_center=True)
 
         layout = QHBoxLayout()
@@ -172,6 +171,10 @@ class SettingsView(BaseView):
 
         return root_layout
 
+    # ============================== CRUD ============================== #
+    def _add_to_list(self, text):
+        item = QListWidgetItem(text)
+        self.history_list.addItem(item)
 
     # ============================== CRUD ============================== #
     def _add_to_history(self):
