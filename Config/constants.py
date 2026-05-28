@@ -1,13 +1,13 @@
 import os
 
 from PyQt6.QtGui import QColor
+# This file holds the data that don't change.
 
 # =============== IP =============== #
 TEL_AVIV_IP     = "172.18.0.2"
-MAATZ_IP        = "192.168.16.99"
+MAATZ_FALCON_IP = "192.168.16.99"
 
 # =============== data =============== #
-all_authorities = ["תל אביב", "ירושלים", "חיפה", "נתיבי ישראל"]
 
 # =============== paths =============== #
 BASE_DIR            = os.path.dirname(__file__)     # path of the file

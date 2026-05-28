@@ -1,5 +1,5 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QHBoxLayout, QLabel, QLineEdit, QVBoxLayout, QListWidget, QListWidgetItem
+from PyQt6.QtWidgets import QHBoxLayout, QVBoxLayout, QListWidgetItem
 from Config.variables import Var
 
 import Config
@@ -39,7 +39,7 @@ class SettingsView(BaseView):
         self.setStyleSheet(Config.style.settings_panel_style)
         self.hide()
 
-    def show_view(self, junction_name_num, junction_name, version, first_ext, history):
+    def show_view(self, junction_name_num:str, junction_name:str, version:str, first_ext:str, history:list):
         # Clear
         self.history_list.clear()
 
@@ -64,43 +64,28 @@ class SettingsView(BaseView):
         This method build the left side of the view.
         The left side manages the history.
         """
-        history_list_layout = QVBoxLayout()
-
         # Title
-        title               = self.create_label("היסטוריה", to_center=True)
-        history_list_layout.addWidget(title)
+        title                       = self.create_label("היסטוריה", to_center=True)
 
         # List
-        self.history_list   = self.create_list(callback_double_click=self._remove_item_from_list)
-        history_list_layout.addWidget(self.history_list)
+        self.history_list           = self.create_list(callback_double_click=self._remove_item_from_list)
 
         # Programmer
         combo                       = self.create_combo(list(Var.EMPLOYEES.keys()), self._on_change_programmer)
         self.programmer_textbox     = self.create_textbox()
         label                       = self.create_label("שם", to_center=True)
-
-        layout = QHBoxLayout()
-        layout.addWidget(combo)
-        layout.addWidget(self.programmer_textbox)
-        layout.addWidget(label)
-        history_list_layout.addLayout(layout)
+        programmer_layout           = self.create_h_layout([combo, self.programmer_textbox, label])
 
         # Date
-        btn                 = self.create_button("רשום תאריך", self._on_write_date, property_name="settings_button")
-        self.date_textbox   = QLineEdit()
-        label               = self.create_label("תאריך", to_center=True)
-
-        layout = QHBoxLayout()
-        layout.addWidget(btn)
-        layout.addWidget(self.date_textbox)
-        layout.addWidget(label)
-        history_list_layout.addLayout(layout)
+        btn                         = self.create_button("רשום תאריך", self._on_write_date, property_name="settings_button")
+        self.date_textbox           = self.create_textbox()
+        label                       = self.create_label("תאריך", to_center=True)
+        date_layout                 = self.create_h_layout([btn, self.date_textbox, label])
 
         # "Add To List" Button
-        add_btn = self.create_button("הוסף", self._add_to_history, property_name="settings_button")
-        history_list_layout.addWidget(add_btn)
+        add_btn                     = self.create_button("הוסף", self._add_to_history, property_name="settings_button")
 
-        return history_list_layout
+        return self.create_v_layout([title, self.history_list, programmer_layout, date_layout, add_btn])
 
     def _build_settings_layout(self):
         """

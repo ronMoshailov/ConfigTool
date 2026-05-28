@@ -1,5 +1,6 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QWidget, QLabel, QComboBox, QPushButton, QLineEdit, QCheckBox, QListWidget
+from PyQt6.QtWidgets import QWidget, QLabel, QComboBox, QPushButton, QLineEdit, QCheckBox, QListWidget, QHBoxLayout, \
+    QLayout, QVBoxLayout
 
 
 class BaseLayoutView(QWidget):
@@ -125,7 +126,31 @@ class BaseLayoutView(QWidget):
 
         return lst
 
+    @staticmethod
+    def create_h_layout(data:list=None):
+        layout = QHBoxLayout()
 
+        if data is not None:
+            for item in data:
+                if isinstance(item, QWidget):
+                    layout.addWidget(item)
+
+                elif isinstance(item, QLayout):
+                    layout.addLayout(item)
+        return layout
+
+    @staticmethod
+    def create_v_layout(data:list=None):
+        layout = QVBoxLayout()
+
+        if data is not None:
+            for item in data:
+                if isinstance(item, QWidget):
+                    layout.addWidget(item)
+
+                elif isinstance(item, QLayout):
+                    layout.addLayout(item)
+        return layout
 
 # ================================================== #
 # -------------------- QLineEdit ------------------- #

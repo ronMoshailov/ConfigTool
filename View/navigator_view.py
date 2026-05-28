@@ -2,7 +2,6 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QComboBox
 
 import Config
-from Config.constants import all_authorities
 from Enum.Authority import Authority
 
 
