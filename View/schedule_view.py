@@ -152,7 +152,7 @@ class ScheduleView(BaseView):
             time_edit.setFont(font)
             time_edit.wheelEvent = lambda event: None
 
-            combo_num_prog = self.create_combo([str(i) for i in range(1, 33)], None, set_value=str(schedule.prog_num), disable_wheel_event = True)
+            combo_num_prog = self.create_combo([str(i) for i in range(1, 33)], None, set_value=str(schedule.prog_num), disable_wheel_event=True)
             combo_num_prog.setObjectName("combo_num_prog")
             combo_num_prog.setFont(font)
 

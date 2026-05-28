@@ -53,7 +53,7 @@ class MainController:
 
         # Check if the project initialized
         if self.path_manager.path_project is None:
-            QMessageBox.critical(self.views["main"], "שגיאה", "פרויקט לא מאותחל")
+            self.views["main"].show_error("פרויקט לא מאותחל")
             return
 
         # Choose which view to show
@@ -98,7 +98,7 @@ class MainController:
     def _initialize_app(self):
         # Set Project Path
         if not self.path_manager.set_folder_path():
-            QMessageBox.critical(self.views["main"], "שגיאה", "לא נבחרה תיקייה")
+            self.views["main"].show_error("לא נבחרה תיקייה")
             return False
 
         # Reset
