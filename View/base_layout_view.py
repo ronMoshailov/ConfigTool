@@ -103,7 +103,7 @@ class BaseLayoutView(QWidget):
         return btn
 
     @staticmethod
-    def create_textbox(text=None, callback=None, placeholder=None):
+    def create_textbox(text=None, callback=None, placeholder=None, center=None, width=None):
         line_edit = QLineEdit()
 
         if text is not None:
@@ -114,6 +114,12 @@ class BaseLayoutView(QWidget):
 
         if placeholder is not None:
             line_edit.setPlaceholderText(placeholder)
+
+        if center is not None:
+            line_edit.Alignment = Qt.AlignmentFlag.AlignRight
+
+        if width is not None:
+            line_edit.setFixedWidth(300)
 
         return line_edit
 

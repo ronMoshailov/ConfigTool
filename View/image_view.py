@@ -3,7 +3,7 @@ from PyQt6.QtGui import QFont
 import Config
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QPushButton, QLineEdit, QLabel, QCheckBox, \
+from PyQt6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QLineEdit, QLabel, QCheckBox, \
     QAbstractItemView, QTableWidget, QHeaderView, QSizePolicy
 
 from View.base_view import BaseView
@@ -43,10 +43,7 @@ class ImageView(BaseView):
         self.btn_add.setFixedWidth(400)
 
         # =============== QLineEdit =============== #
-        self.edit_add = QLineEdit()
-        self.edit_add.setPlaceholderText("שם התמונה")
-        self.edit_add.Alignment = Qt.AlignmentFlag.AlignRight
-        self.edit_add.setFixedWidth(300)
+        self.edit_add = self.create_textbox(placeholder="שם התמונה", center=True, width=300)
 
         # Button Layout
         self.btn_layout = QHBoxLayout()
@@ -199,8 +196,7 @@ class ImageView(BaseView):
             row_num = tbl.rowCount()
             tbl.insertRow(row_num)
 
-            label = QLabel(move_name)
-            label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            label = self.create_label(move_name, to_center=True)
 
             font = QFont()
             font.setFamily("Arial")
@@ -234,4 +230,5 @@ class ImageView(BaseView):
         add_btn.clicked.connect(handler)
 
     def on_add_image_clicked(self):
-        self.add_image_method(name)
+        # self.add_image_method(name)
+        pass
