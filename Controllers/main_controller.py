@@ -22,7 +22,7 @@ class MainController:
         self.display_manager    = DisplayManager()
 
         # =============== Set Controllers Methods =============== #
-        SetupBuilder.connect_controllers(self.controllers)
+        SetupBuilder.connect_controllers_methods(self.controllers)
         self.controllers["move"].view.rename_move_method    = self.rename_move
         self.controllers["move"].global_remove_move         = self.global_remove_move
         self.views["navigator"].write_to_code_method        = self.write_to_code

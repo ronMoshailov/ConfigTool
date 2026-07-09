@@ -38,8 +38,16 @@ from Controllers.io24_controller import Io24Controller
 
 
 class SetupBuilder:
+    """
+    This class build all the models, views and controllers.
+    This class set methods from each one to other.
+    """
+
     @staticmethod
     def build_models():
+        """
+        This method build all the models and return them as a dictionary.
+        """
         return {"settings": SettingsModel(),
                 "move": MoveModel(),
                 "matrix": MatrixModel(),
@@ -55,6 +63,9 @@ class SetupBuilder:
 
     @staticmethod
     def build_views():
+        """
+        This method build all the views and return them as a dictionary.
+        """
         views = {"settings": SettingsView(),
                  "move": MoveView(),
                  "matrix": MatrixView(),
@@ -74,7 +85,9 @@ class SetupBuilder:
 
     @staticmethod
     def build_controllers(models, views):
-        # =============== Controllers =============== #
+        """
+        This method build all the controllers and return them as a dictionary.
+        """
         return {"settings": SettingsController(views["settings"], models["settings"]),
                 "move": MoveController(views["move"], models["move"]),
                 "matrix": MatrixController(views["matrix"], models["matrix"]),
@@ -89,8 +102,10 @@ class SetupBuilder:
                 }
 
     @staticmethod
-    def connect_controllers(controllers):
-        # =============== Set Controllers Methods =============== #
+    def connect_controllers_methods(controllers):
+        """
+        This method set methods from each one to other.
+        """
         controllers["move"].remove_move_from_matrix_method = controllers["matrix"].remove_move
         controllers["matrix"].get_move_type = controllers["move"].get_move_type
         controllers["parameters_ta"].get_sp_by_image_method = controllers["image"].get_sp_by_image
