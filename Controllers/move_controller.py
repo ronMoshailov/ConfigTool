@@ -1,6 +1,6 @@
 import re
 
-from Config.exceptions import DuplicateMoveError, InvalidMoveName, InvalidValue
+from Utilities.exceptions import DuplicateMoveError, InvalidMoveName, InvalidValue
 
 from Managers.load_data_manager import LoadDataManager
 from Managers.write_data_manager import WriteDataManager

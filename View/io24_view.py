@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QTableWidget, QHBoxLayout, QLabel, QVBoxLayout, QTableWidgetItem
 
-from Config.special import clear_widget_from_layout
+from Utilities.special import clear_widget_from_layout
 from View.base_view import BaseView
 
 

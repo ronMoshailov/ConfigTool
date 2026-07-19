@@ -1,4 +1,4 @@
-from Config.variables import Var
+from Utilities.variables import Var
 
 
 class FilesCodeManager:

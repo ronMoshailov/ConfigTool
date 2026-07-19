@@ -1,9 +1,9 @@
 import re
-import Config
+import Utilities
 from pathlib import Path
 
-from Config.patterns import settings_pattern, move_pattern, matrix_pattern
-from Config.variables import Var
+from Utilities.regex import settings_pattern, RegexPattern
+from Utilities.variables import Var
 
 
 class LoadDataManager:
@@ -57,7 +57,7 @@ class LoadDataManager:
         with open(path, 'r', encoding='utf-8') as file:
             for line in file:
                 line = line.strip()
-                match = move_pattern.match(line)
+                match = RegexPattern.get_move_regex().match(line)
                 if match:
                     variable_name, move_name, move_type, min_green, is_main = match.groups()
                     is_main = True if is_main == "true" else False
@@ -76,7 +76,7 @@ class LoadDataManager:
                 if not line:
                     continue
 
-                match = matrix_pattern.match(line)
+                match = RegexPattern.get_matrix_regex().match(line)
                 if match:
                     move_out, move_in, t1, t2 = match.groups()
                     all_cells.append((move_out, move_in, t1, t2))
@@ -96,7 +96,7 @@ class LoadDataManager:
                 line = line.strip()
                 if "new SchaltKanal" not in line:
                     continue
-                match = Config.patterns.sk_pattern.match(line)
+                match = Utilities.regex.sk_pattern.match(line)
                 if match:
                     move_name, color, card_number, channel = match.groups()
                     is_commented = line.startswith("//")
@@ -126,7 +126,7 @@ class LoadDataManager:
                 line = line.strip()
                 if "new IoKanal" not in line:
                     continue
-                match = Config.patterns.io_pattern.match(line)
+                match = Utilities.regex.io_pattern.match(line)
                 if match:
                     var_name, card_number, channel, comment = match.groups()
                     is_commented = line.startswith("//")
@@ -154,7 +154,7 @@ class LoadDataManager:
         with open(path, 'r', encoding='utf-8') as file:
             for line in file:
                 line = line.strip()
-                match = Config.patterns.schedule_pattern.match(line)
+                match = Utilities.regex.schedule_pattern.match(line)
                 if not match:
                     continue
 
@@ -200,7 +200,7 @@ class LoadDataManager:
                 if line.startswith("//"):
                     continue
 
-                match = Config.patterns.detectors_pattern.match(line)
+                match = Utilities.regex.detectors_pattern.match(line)
                 if match:
                     var_name, class_name, detector_name, move_name = match.groups()
                     all_detectors.append((var_name, class_name, detector_name, move_name))
@@ -216,7 +216,7 @@ class LoadDataManager:
             for line in file:
                 if line.startswith("//"):
                     continue
-                m = Config.patterns.image_pattern.search(line)
+                m = Utilities.regex.image_pattern.search(line)
                 if m:
                     image_name = m.group(1)
                     image_num = int(m.group(2).strip())

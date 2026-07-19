@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QMessageBox
 
-import Config
+import Utilities
 from Managers.load_data_manager import LoadDataManager
 from Managers.write_data_manager import WriteDataManager
 

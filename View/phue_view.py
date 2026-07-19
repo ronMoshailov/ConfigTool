@@ -2,8 +2,8 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QFrame, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QComboBox, QMessageBox, \
     QTableWidgetItem, QLineEdit, QHeaderView, QAbstractItemView, QTableWidget
 
-from Config.special import clear_widget_from_layout, init_scroll
-from Config.style import inter_stage_panel_style
+from Utilities.special import clear_widget_from_layout, init_scroll
+from Utilities.style import inter_stage_panel_style
 from View.base_view import BaseView
 
 

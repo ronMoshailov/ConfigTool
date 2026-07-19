@@ -1,4 +1,4 @@
-import Config
+import Utilities
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor, QFont
@@ -28,7 +28,7 @@ class MatrixView(BaseView):
 
         # Self
         self.setLayout(root_layout)
-        self.setStyleSheet(Config.style.matrix_panel_style)
+        self.setStyleSheet(Utilities.style.matrix_panel_style)
         self.setObjectName("RootWidget")
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.hide()
@@ -93,7 +93,7 @@ class MatrixView(BaseView):
             for j in p_cols:
                 item = self.tbl.item(i, j)
                 item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
-                item.setBackground(Config.constants.light_red_color)
+                item.setBackground(Utilities.constants.light_red_color)
 
     def _shade_diagonal(self):
         for i in range(self.moves_length):

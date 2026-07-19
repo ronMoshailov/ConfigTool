@@ -12,3 +12,6 @@ class InvalidValue(Exception):
 
 class InvalidImagesSP(Exception):
     pass
+
+class ControllerNotInitialized(Exception):
+    pass

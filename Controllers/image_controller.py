@@ -1,4 +1,4 @@
-from Config.exceptions import InvalidImagesSP
+from Utilities.exceptions import InvalidImagesSP
 from Managers.load_data_manager import LoadDataManager
 from Managers.write_data_manager import WriteDataManager
 

@@ -49,16 +49,16 @@ class SetupBuilder:
         This method build all the models and return them as a dictionary.
         """
         return {"settings": SettingsModel(),
-                "move": MoveModel(),
-                "matrix": MatrixModel(),
-                "sk": SkModel(),
-                "io24": Io24Model(),
-                "io64": Io64Model(),
-                "detector": DetectorModel(),
-                "schedule": ScheduleModel(),
-                "image": ImageModel(),
-                "phue": PhueModel(),
-                "parameters_ta": ParametersTaModel(),
+                # "move": MoveModel(),
+                # "matrix": MatrixModel(),
+                # "sk": SkModel(),
+                # "io24": Io24Model(),
+                # "io64": Io64Model(),
+                # "detector": DetectorModel(),
+                # "schedule": ScheduleModel(),
+                # "image": ImageModel(),
+                # "phue": PhueModel(),
+                # "parameters_ta": ParametersTaModel(),
                 }
 
     @staticmethod
@@ -67,16 +67,16 @@ class SetupBuilder:
         This method build all the views and return them as a dictionary.
         """
         views = {"settings": SettingsView(),
-                 "move": MoveView(),
-                 "matrix": MatrixView(),
-                 "sk": SkView(),
-                 "io24": Io24View(),
-                 "io64": Io64View(),
-                 "detector": DetectorView(),
-                 "schedule": ScheduleView(),
-                 "image": ImageView(),
-                 "phue": PhueView(),
-                 "parameters_ta": ParametersTaView(),
+                 # "move": MoveView(),
+                 # "matrix": MatrixView(),
+                 # "sk": SkView(),
+                 # "io24": Io24View(),
+                 # "io64": Io64View(),
+                 # "detector": DetectorView(),
+                 # "schedule": ScheduleView(),
+                 # "image": ImageView(),
+                 # "phue": PhueView(),
+                 # "parameters_ta": ParametersTaView(),
                  "navigator": NavigatorView()
                  }
 
@@ -89,16 +89,16 @@ class SetupBuilder:
         This method build all the controllers and return them as a dictionary.
         """
         return {"settings": SettingsController(views["settings"], models["settings"]),
-                "move": MoveController(views["move"], models["move"]),
-                "matrix": MatrixController(views["matrix"], models["matrix"]),
-                "sk": SkController(views["sk"], models["sk"]),
-                "io24": Io24Controller(views["io24"], models["io24"]),
-                "io64": Io64Controller(views["io64"], models["io64"]),
-                "detector": DetectorController(views["detector"], models["detector"]),
-                "schedule": ScheduleController(views["schedule"], models["schedule"]),
-                "image": ImageController(views["image"], models["image"]),
-                "phue": PhueController(views["phue"], models["phue"]),
-                "parameters_ta": ParametersTaController(views["parameters_ta"], models["parameters_ta"]),
+                # "move": MoveController(views["move"], models["move"]),
+                # "matrix": MatrixController(views["matrix"], models["matrix"]),
+                # "sk": SkController(views["sk"], models["sk"]),
+                # "io24": Io24Controller(views["io24"], models["io24"]),
+                # "io64": Io64Controller(views["io64"], models["io64"]),
+                # "detector": DetectorController(views["detector"], models["detector"]),
+                # "schedule": ScheduleController(views["schedule"], models["schedule"]),
+                # "image": ImageController(views["image"], models["image"]),
+                # "phue": PhueController(views["phue"], models["phue"]),
+                # "parameters_ta": ParametersTaController(views["parameters_ta"], models["parameters_ta"]),
                 }
 
     @staticmethod
@@ -106,8 +106,8 @@ class SetupBuilder:
         """
         This method set methods from each one to other.
         """
-        controllers["move"].remove_move_from_matrix_method = controllers["matrix"].remove_move
-        controllers["matrix"].get_move_type = controllers["move"].get_move_type
-        controllers["parameters_ta"].get_sp_by_image_method = controllers["image"].get_sp_by_image
-        controllers["detector"].get_all_moves_names = controllers["move"].get_all_moves_names
+        # controllers["move"].remove_move_from_matrix_method = controllers["matrix"].remove_move
+        # controllers["matrix"].get_move_type = controllers["move"].get_move_type
+        # controllers["parameters_ta"].get_sp_by_image_method = controllers["image"].get_sp_by_image
+        # controllers["detector"].get_all_moves_names = controllers["move"].get_all_moves_names
 

@@ -1,4 +1,4 @@
-from Config.exceptions import DuplicateMoveError, DuplicatePhueError
+from Utilities.exceptions import DuplicateMoveError, DuplicatePhueError
 
 
 class _Phue:

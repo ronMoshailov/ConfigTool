@@ -1,4 +1,4 @@
-from Config.exceptions import DuplicateMoveError
+from Utilities.exceptions import DuplicateMoveError
 from Managers.load_data_manager import LoadDataManager
 from Managers.write_data_manager import WriteDataManager
 
@@ -101,7 +101,7 @@ class DetectorController:
         """
         self.model.rename_move(old_name, new_name)
 
-    def is_data_valid(self):
+    def is_detectors_valid(self):
         try:
             self.model.is_data_valid()
             return True

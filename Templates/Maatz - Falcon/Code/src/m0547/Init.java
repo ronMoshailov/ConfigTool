@@ -27,6 +27,8 @@ import vt.*;
 import vtvar.*;  
 
 public class Init implements enp.Initialisierung {
+    // write settings here
+
     public static String anlagenName = " Netivei-Israel Junc.0547";
     public static String tk1Name     = " Road 721 / Atlit Interchange - East";
     public static String version     = " v2.0.0 G5tf.7";

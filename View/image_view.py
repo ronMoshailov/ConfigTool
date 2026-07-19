@@ -1,6 +1,6 @@
 from PyQt6.QtGui import QFont
 
-import Config
+import Utilities
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QLineEdit, QLabel, QCheckBox, \
@@ -33,7 +33,7 @@ class ImageView(BaseView):
         self.scroll_layout.setSpacing(16)
 
         # QScrollArea
-        self.scroll_area = Config.special.init_scroll(self.scroll_layout)
+        self.scroll_area = Utilities.special.init_scroll(self.scroll_layout)
 
         # Add Button
         self.btn_add = self.create_button("הוסף", self.on_add_image_clicked, object_name="add_button")
@@ -59,13 +59,13 @@ class ImageView(BaseView):
         # =============== Self =============== #
         self.setLayout(self.root_layout)
         self.setObjectName("RootWidget")
-        self.setStyleSheet(Config.style.image_panel_style)
+        self.setStyleSheet(Utilities.style.image_panel_style)
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True) # ask from the engine style of Qt to color the background of the widget (QWidget not always active this)
         self.hide()
 
     def show_view(self, all_images, all_moves_names):
         # clear view
-        Config.special.clear_widget_from_layout([self.scroll_layout])
+        Utilities.special.clear_widget_from_layout([self.scroll_layout])
         self.table_dict.clear()
 
         # widget that holds title and table

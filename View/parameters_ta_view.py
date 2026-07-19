@@ -3,7 +3,7 @@ from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import QWidget, QTableWidget, QAbstractItemView, QTableWidgetItem, QCheckBox, QHBoxLayout, \
     QLineEdit, QHeaderView
 
-from Config.style import parameters_ta_window_style
+from Utilities.style import parameters_ta_window_style
 from View.base_view import BaseView
 
 

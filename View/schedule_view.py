@@ -3,8 +3,8 @@ from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import QWidget, QPushButton, QCheckBox, QHBoxLayout, QVBoxLayout, QLabel, QTimeEdit, \
     QAbstractSpinBox, QComboBox, QAbstractItemView, QHeaderView, QTableWidget, QMessageBox
 
-from Config.special import clear_widget_from_layout
-from Config.style import schedule_panel_style
+from Utilities.special import clear_widget_from_layout
+from Utilities.style import schedule_panel_style
 from View.base_view import BaseView
 
 

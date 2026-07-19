@@ -1,4 +1,4 @@
-from Config.exceptions import DuplicateMoveError
+from Utilities.exceptions import DuplicateMoveError
 
 
 class _Detector:

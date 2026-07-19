@@ -1,8 +1,10 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QHBoxLayout, QVBoxLayout, QListWidgetItem
-from Config.variables import Var
 
-import Config
+from Utilities.constants import Constants
+from Utilities.variables import Var
+
+import Utilities
 from View.base_view import BaseView
 
 
@@ -36,7 +38,7 @@ class SettingsView(BaseView):
         self.setObjectName("SettingsPanel")
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.setLayout(root_layout)
-        self.setStyleSheet(Config.style.settings_panel_style)
+        self.setStyleSheet(Utilities.style.settings_panel_style)
         self.hide()
 
     def show_view(self, junction_name_num:str, junction_name:str, version:str, first_ext:str, history:list):
@@ -71,7 +73,7 @@ class SettingsView(BaseView):
         self.history_list           = self.create_list(callback_double_click=self._remove_item_from_list)
 
         # Programmer
-        combo                       = self.create_combo(list(Var.EMPLOYEES.keys()), self._on_change_programmer)
+        combo                       = self.create_combo(list(Constants.EMPLOYEES.keys()), self._on_change_programmer)
         self.programmer_textbox     = self.create_textbox()
         label                       = self.create_label("שם", to_center=True)
         programmer_layout           = self.create_h_layout([combo, self.programmer_textbox, label])
@@ -179,7 +181,7 @@ class SettingsView(BaseView):
     def _on_change_programmer(self, text):
         if text == "-":
             return
-        self.programmer_textbox.setText(Var.EMPLOYEES[text])
+        self.programmer_textbox.setText(Constants.EMPLOYEES[text])
         self._on_write_date()
 
     def _on_write_date(self):

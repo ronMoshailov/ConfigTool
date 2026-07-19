@@ -98,6 +98,7 @@ class BaseLayoutView(QWidget):
         if property_name is not None:
             btn.setProperty("class", property_name)
 
+
         btn.clicked.connect(callback)
 
         return btn
@@ -133,7 +134,7 @@ class BaseLayoutView(QWidget):
         return lst
 
     @staticmethod
-    def create_h_layout(data:list=None):
+    def create_h_layout(data:list=None, is_centered:bool=False):
         layout = QHBoxLayout()
 
         if data is not None:
@@ -143,6 +144,10 @@ class BaseLayoutView(QWidget):
 
                 elif isinstance(item, QLayout):
                     layout.addLayout(item)
+
+        if is_centered:
+            layout.setAlignment(Qt.AlignmentFlag.AlignRight)
+
         return layout
 
     @staticmethod

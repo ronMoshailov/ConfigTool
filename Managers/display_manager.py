@@ -1,10 +1,18 @@
+from Utilities.exceptions import ControllerNotInitialized
+
+
 class DisplayManager:
-    def __init__(self):
+    def __init__(self, controllers_list=None):
         """
         Class that manages all the display & hide of the views.
         Each controller need to have the methods "show_view" and "hide_view"
         """
+        if controllers_list is None:
+            raise ControllerNotInitialized("The controller list is empty")
+
         self.views = {}
+        for name, controller in controllers_list.items():
+            self.register(name, controller)
 
     def register(self, name, controller):
         """

@@ -1,10 +1,10 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTableWidget, QHeaderView
 
-from Config.exceptions import InvalidValue
-from Config.style import move_panel_style
+from Utilities.exceptions import InvalidValue
+from Utilities.style import move_panel_style
 
-from Enum.move_type import MoveType
+from Utilities.Enum.move_type import MoveType
 from View.base_view import BaseView
 
 

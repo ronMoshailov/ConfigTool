@@ -1,7 +1,7 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QTableWidget, QHBoxLayout, QVBoxLayout, QLabel, QTableWidgetItem
 
-from Config.style import io64_style
+from Utilities.style import io64_style
 from View.base_view import BaseView
 
 

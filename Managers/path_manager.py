@@ -4,13 +4,12 @@ import shutil
 
 from PyQt6.QtWidgets import QFileDialog, QMessageBox
 
-from Config.constants import PROJECT_DIR
-from Config.variables import Var
+from Utilities.variables import Var
 
 class PathManager:
     def __init__(self):
         # Data
-        self.path_project       = None
+        self.path_project           = None
 
         # Source
         self.path_init_src          = None
@@ -38,7 +37,7 @@ class PathManager:
         This method create new project and set the destinations paths
         """
         # set source project path
-        source_folder = Path(os.path.join(PROJECT_DIR, "Templates", "Tel Aviv"))
+        source_folder = Path(os.path.join(Var.PROJECT_DIR, "Templates", "Tel Aviv"))
 
         # user choose folder
         target_dir = QFileDialog.getExistingDirectory(view, "בחר תיקייה לשמירת הפרויקט")

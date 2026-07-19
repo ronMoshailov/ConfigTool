@@ -1,6 +1,7 @@
-import Config
+import Utilities
+from Utilities.Enum.Authority import Authority
 
-from Config.variables import Var
+from Utilities.variables import Var
 from docx import Document
 from datetime import datetime
 
@@ -15,20 +16,56 @@ class WriteDataManager:
     def create_settings_init_code(path, model_dict):
         code = []
 
-        with open(path, 'r', encoding='utf-8') as file:
-            for line in file:
-                if "write settings here" in line:
-                    code.append(f"\tpublic static String anlagenName = \"{model_dict['junction_num']}\";\n")
-                    code.append(f"\tpublic static String tk1Name     = \"{model_dict['junction_name']}\";\n")
-                    code.append(f"\tpublic static String version     = \" {model_dict['version']}\";\n")
-                    code.append("\tpublic static String[] versions = {\n")
-                    for date, author in model_dict['history']:
-                        code.append(f"\t\t\"{date} - {author}\",\n")
-                    code[-1] = code[-1][:-2]
-                    code.append("\n};\n")
-                    continue
-                code.append(line)
-        return code
+        if Var.AUTHORITY == Authority.TEL_AVIV:
+            with open(path, 'r', encoding='utf-8') as file:
+                for line in file:
+                    if "write settings here" in line:
+                        code.append(f"\tpublic static String anlagenName = \"{model_dict['junction_num']}\";\n")
+                        code.append(f"\tpublic static String tk1Name     = \"{model_dict['junction_name']}\";\n")
+                        code.append(f"\tpublic static String version     = \" {model_dict['version']}\";\n")
+                        code.append("\tpublic static String[] versions = {\n")
+                        for date, author in model_dict['history']:
+                            code.append(f"\t\t\"{date} - {author}\",\n")
+                        code[-1] = code[-1][:-2]
+                        code.append("\n};\n")
+                        continue
+                    code.append(line)
+            return code
+
+        elif Var.AUTHORITY == Authority.JERUSALEM:
+            with open(path, 'r', encoding='utf-8') as file:
+                for line in file:
+                    if "write settings here" in line:
+
+                        date, author = model_dict['history'][-1]
+
+                        code.append(f"\tpublic static String anlagenName = \"{model_dict['junction_num']}\";\n")
+                        code.append(f"\tpublic static String tk1Name     = \"{model_dict['junction_name']}\";\n")
+                        code.append(f"\tpublic static String version     = \" {model_dict['version']}\";\n")
+                        code.append(f"\tpublic static String date        = \"{date}\";\n")
+                        code.append(f"\tpublic static String editor      = \"{author}\";\n")
+                        code.append("\n};\n")
+                        continue
+                    code.append(line)
+            return code
+
+        elif Var.AUTHORITY == Authority.NETIVEI_ISRAEL_FALCON:
+            with open(path, 'r', encoding='utf-8') as file:
+                for line in file:
+                    if "write settings here" in line:
+
+                        date, author = model_dict['history'][-1]
+
+                        code.append(f"\tpublic static String anlagenName = \"{model_dict['junction_num']}\";\n")
+                        code.append(f"\tpublic static String tk1Name     = \"{model_dict['junction_name']}\";\n")
+                        code.append(f"\tpublic static String version     = \" {model_dict['version']}\";\n")
+                        code.append(f"\tpublic static String revision    = \" 28/01/2025\";\n")
+                        code.append(f"\tpublic static String date        = \"{date}\";\n")
+                        code.append(f"\tpublic static String editor      = \"{author}\";\n")
+                        code.append("\n};\n")
+                        continue
+                    code.append(line)
+            return code
 
     # ============================================================================== #
     # ------------------------------------ Moves ----------------------------------- #
@@ -473,8 +510,8 @@ class WriteDataManager:
 
                     #
                     line = (f"\t\tfr.initProgWunsch("
-                            f"{Config.special.get_space(0, 1, str(cell.hour))}{cell.hour} ,"
-                            f"{Config.special.get_space(1, 2, str(cell.minute))}{cell.minute},  tk.p{prog_num} );\n")
+                            f"{Utilities.special.get_space(0, 1, str(cell.hour))}{cell.hour} ,"
+                            f"{Utilities.special.get_space(1, 2, str(cell.minute))}{cell.minute},  tk.p{prog_num} );\n")
                     new_lines.append(line)
                 new_lines.append("\n")
 
@@ -498,8 +535,8 @@ class WriteDataManager:
 
                     #
                     line = (f"\t\tsa.initProgWunsch("
-                            f"{Config.special.get_space(0, 1, str(cell.hour))}{cell.hour} ,"
-                            f"{Config.special.get_space(1, 2, str(cell.minute))}{cell.minute},  tk.p{prog_num} );\n")
+                            f"{Utilities.special.get_space(0, 1, str(cell.hour))}{cell.hour} ,"
+                            f"{Utilities.special.get_space(1, 2, str(cell.minute))}{cell.minute},  tk.p{prog_num} );\n")
                     new_lines.append(line)
                 new_lines.append("\n")
                 continue

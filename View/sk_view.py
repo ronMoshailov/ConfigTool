@@ -3,11 +3,11 @@ from PyQt6.QtGui import QBrush
 from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QLabel, QAbstractItemView, \
     QTableWidget, QTableWidgetItem, QComboBox, QCheckBox, QHeaderView, QMessageBox
 
-from Config.constants import gray_color, light_green_color
-from Config.special import clear_widget_from_layout
-from Config.style import sk_panel_style
+from Utilities.constants import Constants
+from Utilities.special import clear_widget_from_layout
+from Utilities.style import sk_panel_style
 
-import Config
+import Utilities
 from View.base_view import BaseView
 
 
@@ -32,7 +32,7 @@ class SkView(BaseView):
         self.cards_layout.setSpacing(16)
 
         # QScrollArea
-        scroll_area = Config.special.init_scroll(self.cards_layout)
+        scroll_area = Utilities.special.init_scroll(self.cards_layout)
 
         self._create_buttons()
 
@@ -139,7 +139,7 @@ class SkView(BaseView):
         tbl.setColumnWidth(2, 50)
         tbl.setColumnWidth(3, 90)
 
-        gray = QBrush(gray_color)
+        gray = QBrush(Constants.gray_color)
 
         # Set columns (without values)
         for r in range(24):
@@ -170,7 +170,7 @@ class SkView(BaseView):
         This method fill the tables with values from DB.
         """
         all_channels_list   = sk_list[card_number - 1].all_channels
-        green_bg            = QBrush(light_green_color)
+        green_bg            = QBrush(Constants.light_green_color)
 
         for ch in all_channels_list:
             # get data
@@ -222,8 +222,8 @@ class SkView(BaseView):
         combo       = table.cellWidget(row, col)
         move_name   = combo.currentText()
 
-        white = QBrush(Config.constants.white_color)
-        gray = QBrush(Config.constants.gray_color)
+        white = QBrush(Utilities.constants.white_color)
+        gray = QBrush(Utilities.constants.gray_color)
 
         with QSignalBlocker(combo), QSignalBlocker(table):
             move_name = "" if move_name == "-" else move_name
@@ -277,9 +277,9 @@ class SkView(BaseView):
             table.cellWidget(row_number, 3).setCheckState(Qt.CheckState.Unchecked)
             return False
 
-        gray_brush = QBrush(Config.constants.gray_color)
-        light_green_brush = QBrush(Config.constants.light_green_color)
-        white_brush = QBrush(Config.constants.white_color)
+        gray_brush = QBrush(Utilities.constants.gray_color)
+        light_green_brush = QBrush(Utilities.constants.light_green_color)
+        white_brush = QBrush(Utilities.constants.white_color)
 
         # color the rows
         if Qt.CheckState(state) == Qt.CheckState.Checked:

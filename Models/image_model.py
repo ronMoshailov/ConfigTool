@@ -1,4 +1,4 @@
-from Config.exceptions import InvalidImagesSP
+from Utilities.exceptions import InvalidImagesSP
 
 
 class _Image:
