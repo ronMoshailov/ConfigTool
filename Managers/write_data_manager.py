@@ -1,5 +1,5 @@
 import Utilities
-from Utilities.Enum.Authority import Authority
+from Utilities.enums import Authority
 
 from Utilities.variables import Var
 from docx import Document

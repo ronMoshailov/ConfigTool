@@ -2,7 +2,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QComboBox
 
 import Utilities
-from Utilities.Enum.Authority import Authority
+from Utilities.enums import Authority
 from View.base_view import BaseView
 
 

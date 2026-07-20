@@ -1,14 +1,12 @@
 from PyQt6.QtWidgets import QMessageBox, QMainWindow
 
+from Managers.builder import SetupBuilder
+from Managers.display_manager import DisplayManager
+from Managers.path_manager import PathManager
+from Utilities.enums import *
 from Utilities.exceptions import InvalidMoveName, DuplicateMoveError
 from Utilities.style import main_window_style
 from Utilities.variables import Var
-from Utilities.Enum.Authority import Authority
-
-from Managers.builder import SetupBuilder
-from Managers.display_manager import DisplayManager
-from Managers.write_data_manager import WriteDataManager
-from Managers.path_manager import PathManager
 
 
 class MainController:
@@ -106,7 +104,17 @@ class MainController:
 
         self.path_manager.path_project              = True
         # self.views["schedule"].is_copy_sunday       = True
-        # self.views["navigator"].authority_combo.setDisabled(True)
+        self.views["navigator"].authority_combo.setDisabled(True)
+        if self.views["navigator"].authority_combo.currentData() == Authority.TEL_AVIV:
+            Var.PROJECT_NUMBER = "ta00"
+            Var.AUTHORITY = Authority.TEL_AVIV
+        elif self.views["navigator"].authority_combo.currentData() == Authority.JERUSALEM:
+            Var.PROJECT_NUMBER = "j0000"
+            Var.AUTHORITY = Authority.JERUSALEM
+        elif self.views["navigator"].authority_combo.currentData() == Authority.NETIVEI_ISRAEL_FALCON:
+            Var.PROJECT_NUMBER = "m000"
+            Var.AUTHORITY = Authority.NETIVEI_ISRAEL_FALCON
+
         self._reset_models()
         self.show_view("settings")
         QMessageBox.information(self.views["main"],"פרויקט חדש","הופעל פרויקט חדש")

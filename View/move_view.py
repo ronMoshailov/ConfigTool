@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QTableWidget, QHe
 from Utilities.exceptions import InvalidValue
 from Utilities.style import move_panel_style
 
-from Utilities.Enum.move_type import MoveType
+from Utilities.enums import MoveType
 from View.base_view import BaseView
 
 

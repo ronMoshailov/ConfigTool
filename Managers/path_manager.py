@@ -4,19 +4,23 @@ import shutil
 
 from PyQt6.QtWidgets import QFileDialog, QMessageBox
 
+from Utilities.enums import Authority
 from Utilities.variables import Var
 
 class PathManager:
+    """
+    This class manages all the information about the paths of the files.
+    """
     def __init__(self):
         # Data
-        self.path_project           = None
+        # self.path_project           = None
 
         # Source
-        self.path_init_src          = None
-        self.path_tk1_src           = None
-        self.path_init_tk1_src      = None
-        self.path_parameters_ta_src = None
-        self.dot_project_src        = None
+        # self.path_init_src          = None
+        # self.path_tk1_src           = None
+        # self.path_init_tk1_src      = None
+        # self.path_parameters_ta_src = None
+        # self.dot_project_src        = None
 
         # Destination
         self.path_init_dst          = None
@@ -26,18 +30,26 @@ class PathManager:
         self.path_phue_folder_dst   = None
         self.path_phase_folder_dst  = None
 
-        self.path_cards_dst                 = None
-        self.path_parameters_ta_doc_dst     = None
+        # self.path_cards_dst                 = None
+        # self.path_parameters_ta_doc_dst     = None
 
-        self.path_json_dst          = None
-        self.dot_project            = None
+        # self.path_json_dst          = None
+        # self.dot_project            = None
 
     def create_project(self, view):
         """
         This method create new project and set the destinations paths
         """
         # set source project path
-        source_folder = Path(os.path.join(Var.PROJECT_DIR, "Templates", "Tel Aviv"))
+        if Var.AUTHORITY == Authority.TEL_AVIV:
+            source_folder = Path(os.path.join(Var.PROJECT_DIR, "Templates", "Tel Aviv"))
+
+        elif Var.AUTHORITY == Authority.JERUSALEM:
+            source_folder = Path(os.path.join(Var.PROJECT_DIR, "Templates", "Jerusalem"))
+
+        elif Var.AUTHORITY == Authority.NETIVEI_ISRAEL_FALCON:
+            source_folder = Path(os.path.join(Var.PROJECT_DIR, "Templates", "Maatz - Falcon"))
+
 
         # user choose folder
         target_dir = QFileDialog.getExistingDirectory(view, "בחר תיקייה לשמירת הפרויקט")
@@ -57,12 +69,12 @@ class PathManager:
         self.path_phue_folder_dst   = dst / "Code" / "src" / "phue"
         self.path_phase_folder_dst  = dst / "Code" / "src" / "phase"
 
-        self.dot_project            = dst / "Code" / ".project"
-
-        self.path_cards_dst         = dst / "Docs" / "Cards.docx"
-        self.path_parameters_ta_doc_dst         = dst / "Docs" / "Parameters.docx"
-
-        self.path_json_dst         = dst / "Lists" / f"{Var.PROJECT_NUMBER}.json"
+        # self.dot_project            = dst / "Code" / ".project"
+        #
+        # self.path_cards_dst         = dst / "Docs" / "Cards.docx"
+        # self.path_parameters_ta_doc_dst         = dst / "Docs" / "Parameters.docx"
+        #
+        # self.path_json_dst         = dst / "Lists" / f"{Var.PROJECT_NUMBER}.json"
 
         # If the folder exist remove it
         if dst.exists():
@@ -72,16 +84,16 @@ class PathManager:
         shutil.copytree(source_folder, dst)
 
         # update .project
-        with open(self.dot_project, "r", encoding="utf-8") as f:
-            content = f.read()
+        # with open(self.dot_project, "r", encoding="utf-8") as f:
+        #     content = f.read()
 
-        content = content.replace(
-            "<name>WriteProjectNameHere</name>",
-            f"<name>{Var.PROJECT_NUMBER}</name>"
-        )
+        # content = content.replace(
+        #     "<name>WriteProjectNameHere</name>",
+        #     f"<name>{Var.PROJECT_NUMBER}</name>"
+        # )
 
-        with open(self.dot_project, "w", encoding="utf-8") as f:
-            f.write(content)
+        # with open(self.dot_project, "w", encoding="utf-8") as f:
+        #     f.write(content)
 
         #
         # def load_project_number_and_name(self):
@@ -91,7 +103,7 @@ class PathManager:
         self.path_phase_folder_dst.mkdir(parents=True, exist_ok=True)
 
         # rename
-        old_path = dst / "Code" / "src" / "ta00"
+        old_path = dst / "Code" / "src" / "m000"
         new_path = dst / "Code" / "src" / f"{Var.PROJECT_NUMBER}"
         old_path.rename(new_path)
 
@@ -144,7 +156,7 @@ class PathManager:
 
     def reset(self):
         # Data
-        self.path_project       = None
+        self.path_project           = None
 
         # Source
         self.path_init_src          = None
